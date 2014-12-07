@@ -58,6 +58,13 @@ projectfiles/**/*objs*
 !utils/umc_dev/org.wesnoth*/.settings/
 !utils/umc_dev/org.wesnoth*/.project
 
+# Qt Creator Project files
+Wesnoth.config
+Wesnoth.creator
+Wesnoth.creator.user*
+Wesnoth.files
+Wesnoth.includes
+
 # autotools
 config.h
 config.h.in
@@ -178,3 +185,4 @@ config.h
 6not
 .kdev*
 callgrind.out.*
+
