@@ -527,6 +527,7 @@ Version 1.11.10:
  * Units:
    * New baseframes for Jundi, Muharib, Batal, Qatif-al-nar, Qudafi, Rasikh.
  * User interface:
+   * Support for using the QtQuick gui toolkit.
    * New UI for displaying errors detected during the core and add-on WML
      loading process (parser and preprocessor errors), including the
      ability to copy the report to clipboard.
