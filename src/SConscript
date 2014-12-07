@@ -155,6 +155,11 @@ libcampaignd_sources = Split("""
     """)
 libcampaignd = env.Library("campaignd", libcampaignd_sources, OBJPREFIX = "campaignd_")
 
+libwesnoth_qt_sources = Split("""
+    qt/utils.cpp
+    """)
+libwesnoth_qt  = client_env.Library("wesnoth_qt", libwesnoth_qt_sources, CCFLAGS = ["-fPIC"])
+
 libwesnoth_sdl_sources = Split("""
     sdl/utils.cpp
     sdl/alpha.cpp
@@ -630,7 +635,7 @@ for env in [test_env, client_env, env]:
     env.AddMethod(WesnothProgram)
 
 wesnoth_objects = ["wesnoth.cpp", libwesnoth_extras, libwesnoth_core, libwesnoth,
-                   libwesnoth_sdl, libwesnoth_extras, env["wesnoth_res"]]
+                   libwesnoth_sdl, libwesnoth_qt, libwesnoth_extras, env["wesnoth_res"]]
 if env["host"] in ["x86_64-nacl", "i686-nacl"]:
     wesnoth_objects += [SConscript("nacl/SConscript")]
 client_env.WesnothProgram("wesnoth", wesnoth_objects, have_client_prereqs)
