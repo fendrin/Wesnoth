@@ -49,6 +49,12 @@ static void mbutton_event_execute(display& disp, const SDL_MouseButtonEvent& eve
 bool command_executor::execute_command(const hotkey_command&  cmd, int /*index*/)
 {
 	switch(cmd.id) {
+		case HOTKEY_SHOW_QUICK:
+			show_quick();
+			break;
+		case HOTKEY_SHOW_APPLICATION:
+			show_application();
+			break;
 		case HOTKEY_CYCLE_UNITS:
 			cycle_units();
 			break;

@@ -261,6 +261,9 @@ hotkey::hotkey_command_temp hotkey_list_[] = {
 
 	{ hotkey::LUA_CONSOLE, "global__lua__console", N_("Show Lua Console"), false, scope_game | scope_editor | scope_main, ""},
 
+	{ hotkey::HOTKEY_SHOW_APPLICATION, "show_application", N_("Show QtQuick Application"), false, scope_game | scope_editor | scope_main, ""},
+	{ hotkey::HOTKEY_SHOW_QUICK, "show_quick", N_("Show QtQuick Dialog"), false, scope_game | scope_editor | scope_main, ""},
+
 	//This list item must stay at the end since it is used as terminator for iterating.
 	{ hotkey::HOTKEY_NULL, "null", N_("Unrecognized Command"), true, hotkey::SCOPE_COUNT, "" }
 };

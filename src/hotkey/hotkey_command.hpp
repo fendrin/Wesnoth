@@ -179,6 +179,9 @@ enum HOTKEY_COMMAND {
 	HOTKEY_EDITOR_SCENARIO_NEW,
 	HOTKEY_EDITOR_SCENARIO_SAVE_AS,
 
+	HOTKEY_SHOW_APPLICATION,
+	HOTKEY_SHOW_QUICK,
+
 	/* This item must stay at the end since it is used as terminator for iterating. */
 	HOTKEY_NULL
 };

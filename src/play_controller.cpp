@@ -58,6 +58,8 @@
 #include "wmi_pager.hpp"
 #include "wml_exception.hpp"
 
+#include "qt/utils.hpp"
+
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
 
@@ -306,6 +308,14 @@ void play_controller::save_replay(){
 	} else {
 		save_blocker::on_unblock(this,&play_controller::save_replay);
 	}
+}
+
+void play_controller::show_quick(){
+	qt::show_quick("data/gui/qt/HelloWorld.qml");
+}
+
+void play_controller::show_application(){
+	qt::show_application("data/gui/qt/window/WesnothWindow.qml");
 }
 
 void play_controller::save_map(){
@@ -762,6 +772,9 @@ bool play_controller::can_execute_command(const hotkey::hotkey_command& cmd, int
 	switch(cmd.id) {
 
 	// Commands we can always do:
+	case hotkey::HOTKEY_SHOW_APPLICATION:
+	case hotkey::HOTKEY_SHOW_QUICK:
+
 	case hotkey::HOTKEY_LEADER:
 	case hotkey::HOTKEY_CYCLE_UNITS:
 	case hotkey::HOTKEY_CYCLE_BACK_UNITS:

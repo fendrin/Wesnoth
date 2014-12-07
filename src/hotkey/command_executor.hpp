@@ -32,6 +32,8 @@ protected:
 	virtual ~command_executor() {}
 
 public:
+	virtual void show_quick() {}
+	virtual void show_application() {}
 	virtual void cycle_units() {}
 	virtual void cycle_back_units() {}
 	virtual void end_turn() {}

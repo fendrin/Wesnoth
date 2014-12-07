@@ -88,6 +88,8 @@ public:
 	virtual void handle_generic_event(const std::string& /*name*/) {}
 
 	//event handlers, overridden from command_executor
+	virtual void show_quick();
+	virtual void show_application();
 	virtual void objectives();
 	virtual void show_statistics();
 	virtual void unit_list();
