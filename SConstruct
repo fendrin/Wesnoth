@@ -478,6 +478,7 @@ for env in [test_env, client_env, env]:
     env.Prepend(CPPPATH = [build_root + "$build_dir", "#/src"])
 
     env.Append(CPPDEFINES = ["HAVE_CONFIG_H"])
+	env.Append(CCFLAGS = ["-fPIC"])
 
     if "gcc" in env["TOOLS"]:
         env.AppendUnique(CCFLAGS = Split("-W -Wall"), CFLAGS = ["-std=c99"])
