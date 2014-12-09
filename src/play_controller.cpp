@@ -58,10 +58,9 @@
 #include "wmi_pager.hpp"
 #include "wml_exception.hpp"
 
-#include "qt/utils.hpp"
-
 #include <boost/foreach.hpp>
 #include <boost/make_shared.hpp>
+#include <gui_qt/utils.hpp>
 
 static lg::log_domain log_aitesting("aitesting");
 #define LOG_AIT LOG_STREAM(info, log_aitesting)
@@ -311,11 +310,11 @@ void play_controller::save_replay(){
 }
 
 void play_controller::show_quick(){
-	qt::show_quick("data/gui/qt/HelloWorld.qml");
+	gui_qt::show_quick("data/gui/qt/HelloWorld.qml");
 }
 
 void play_controller::show_application(){
-	qt::show_application("data/gui/qt/window/WesnothWindow.qml");
+	gui_qt::show_application("data/gui/qt/window/WesnothWindow.qml");
 }
 
 void play_controller::save_map(){

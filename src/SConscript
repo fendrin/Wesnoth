@@ -156,7 +156,7 @@ libcampaignd_sources = Split("""
 libcampaignd = env.Library("campaignd", libcampaignd_sources, OBJPREFIX = "campaignd_")
 
 libwesnoth_qt_sources = Split("""
-    qt/utils.cpp
+    gui_qt/utils.cpp
     """)
 libwesnoth_qt  = client_env.Library("wesnoth_qt", libwesnoth_qt_sources, CCFLAGS = ["-fPIC"])
 

@@ -17,7 +17,7 @@
 
 #include <string>
 
-namespace qt {
+namespace gui_qt {
 
 	/**
 	 * Helper function to display QML Applications.
