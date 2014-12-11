@@ -76,6 +76,7 @@ if(MSVC)
 	# Since MSVC does autolinking of boost adding those files will duplicate
 	# the includes and cause build errors.
 	set(common-external-libs
+                ${QT_LIBRARY}
 		${SDL_LIBRARY}
 		${SDLMAIN_LIBRARY}
 		${LIBINTL_LIBRARY}
@@ -84,6 +85,7 @@ if(MSVC)
 	)
 else(MSVC)
 	set(common-external-libs
+		${QT_LIBRARY}
 		${SDL_LIBRARY}
 		${Boost_IOSTREAMS_LIBRARY}
 		${Boost_REGEX_LIBRARY}
@@ -416,6 +418,11 @@ endif()
 
 ########### Helper libraries ###############
 
+set(wesnoth-qt_SRC
+	gui_qt/utils.cpp
+	gui_qt/widget.cpp
+)
+
 set(wesnoth-sdl_SRC
 	sdl/alpha.cpp
 	sdl/exception.cpp
@@ -445,6 +452,16 @@ add_library(wesnoth-sdl
 target_link_libraries(wesnoth-sdl
 	${SDL_LIBRARY}
 	${SDLIMAGE_LIBRARY}
+)
+
+add_library(wesnoth-qt
+	${LIBRARY_TYPE}
+	EXCLUDE_FROM_ALL
+	${wesnoth-qt_SRC}
+)
+
+target_link_libraries(wesnoth-qt
+	${QL_LIBRARY}
 )
 
 # The main library is rather huge especially in debug mode, causing quite a bit
