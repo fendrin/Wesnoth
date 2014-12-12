@@ -90,6 +90,7 @@ opts.AddVariables(
     BoolVariable('static_test', 'Staticaly build against boost test (Not supported yet)', False),
     BoolVariable('verbose', 'Emit progress messages during data installation.', False),
     PathVariable('sdldir', 'Directory of SDL installation.', "", OptionalPath),
+    PathVariable('qtdir', 'Directory of Qt installation.', "", OptionalPath),
     PathVariable('boostdir', 'Directory of boost installation.', "", OptionalPath),
     PathVariable('boostlibdir', 'Directory where boost libraries are installed.', "", OptionalPath),
     ('boost_suffix', 'Suffix of boost libraries.'),
