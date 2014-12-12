@@ -17,7 +17,12 @@
 
 namespace gui_qt {
 
+void widget::cppSlot(const QVariant &v)
+{
+    qDebug() << "Called the C++ slot with value:" << v;
 
-
+    QQuickItem *item = qobject_cast<QQuickItem*>(v.value<QObject*>());
+    qDebug() << "Item dimensions:" << item->width() << item->height();
+}
 
 }  // namespace gui_qt

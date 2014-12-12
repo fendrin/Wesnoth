@@ -15,26 +15,28 @@
 #ifndef QT_WIDGET_INCLUDED
 #define QT_WIDGET_INCLUDED
 
-#include <qt5/QtCore/QObject>
-#include <qt5/QtQuick/QQuickItem>
+#include <QtCore/QObject>
+#include <QtQuick/QQuickItem>
 
 namespace gui_qt {
 
 class widget : public QObject {
+    Q_OBJECT
 
-	Q_OBJECT
+public:
 
-	public slots:
+    explicit widget (QObject* parent = 0) : QObject(parent) {}
+    Q_INVOKABLE int test() {
+        return 1;
+    }
 
-	void cppSlot(const QVariant &v) {
-//		qDebug() << "Called the C++ slot with value:" << v;
+public slots:
 
-		QQuickItem *item = qobject_cast<QQuickItem*>(v.value<QObject*>());
-//		qDebug() << "Item dimensions:" << item->width() << item->height();
-	}
+    void cppSlot(const QVariant &v);
+
 };
 
-};
+}
 
 #endif
 
