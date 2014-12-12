@@ -299,6 +299,8 @@ configure_args = dict(
 
 env.MergeFlags(env["extra_flags_config"])
 
+env["ENV"]["PKG_CONFIG_PATH"] = os.environ.get("PKG_CONFIG_PATH")
+
 # Some tests need to load parts of boost
 if env["boostfilesystem"]:
     env.PrependENVPath('LD_LIBRARY_PATH', env["boostlibdir"])

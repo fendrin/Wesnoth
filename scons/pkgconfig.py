@@ -6,10 +6,6 @@ from SCons.Util import AppendPath
 def run_pkg_config(context, name):
     env = context.env
     try:
-#        env["ENV"]["PKG_CONFIG_PATH"] = AppendPath(env.get("PKG_CONFIG_PATH",""), os.environ.get("PKG_CONFIG_PATH", ""), sep=',')
-
-
-#//os.environ.get("PKG_CONFIG_PATH")
         env.ParseConfig("pkg-config --libs --cflags --silence-errors $PKGCONFIG_FLAGS \"" + name + "\"")
         context.Log("Found '" + name + "' with pkg-config.\n")
         return True

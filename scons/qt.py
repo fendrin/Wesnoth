@@ -12,10 +12,15 @@ def CheckQtQuick(context):
     env = context.env
     backup = env.Clone().Dictionary()
 
-    qtdir = env.get("qtdir")
-    env["ENV"]["PKG_CONFIG_PATH"] = AppendPath(env.get("PKG_CONFIG_PATH",""), join(qtdir, "lib/pkgconfig"), sep=',')
+    if env.get("qtdir", ""):
+        qtdir = env.get("qtdir", "")
+        backup_pkg_config_path = env["ENV"]["PKG_CONFIG_PATH"]
+        env["ENV"]["PKG_CONFIG_PATH"] = AppendPath(env.get("PKG_CONFIG_PATH",""), join(qtdir, "lib/pkgconfig"), sep=',')
 
     found = run_pkg_config(context, "Qt5Quick")
+
+    if env.get("qtdir", ""):
+        env["ENV"]["PKG_CONFIG_PATH"] = backup_pkg_config_path
 
     if found:
         context.Result("yes")
