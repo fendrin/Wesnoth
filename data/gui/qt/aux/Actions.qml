@@ -8,6 +8,12 @@ import QtQuick.Dialogs 1.2;
 
 QtObject {
 
+/*
+    MyWidget {
+        id: myobject
+    }
+*/
+
     property Action cancel: Action {
         text: "&Cancel"
     }
@@ -58,6 +64,7 @@ QtObject {
         // iconSource: "images/document-open.png"
         // onTriggered: fileDialog.open()
         tooltip: "Open an image"
+        // onTriggered: myobject.objectives()
     }
 
     property Action statistics: Action {
