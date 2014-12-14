@@ -59,11 +59,7 @@ projectfiles/**/*objs*
 !utils/umc_dev/org.wesnoth*/.project
 
 # Qt Creator Project files
-Wesnoth.config
-Wesnoth.creator
-Wesnoth.creator.user*
-Wesnoth.files
-Wesnoth.includes
+projectfiles/QtCreator/Wesnoth.creator.user*
 
 # autotools
 config.h
