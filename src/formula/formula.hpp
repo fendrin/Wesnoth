@@ -19,6 +19,11 @@
 #include "formula/formula_fwd.hpp"
 #include "formula/tokenizer.hpp"
 #include "formula/variant.hpp"
+#include <set>
+
+namespace lua_formula_bridge {
+	class fwrapper;
+}
 
 namespace wfl
 {
@@ -33,7 +38,8 @@ namespace tk = tokenizer;
 class formula
 {
 public:
-	formula(const std::string& str, function_symbol_table* symbols = nullptr);
+	explicit formula(const std::string& str, function_symbol_table* symbols = nullptr);
+	explicit formula(expression_ptr expr, function_symbol_table* symbols = nullptr);
 	formula(const tk::token* i1, const tk::token* i2, function_symbol_table* symbols = nullptr);
 
 	~formula();
@@ -74,7 +80,8 @@ public:
 	const std::string& str() const { return str_; }
 
 	static const char* const id_chars;
-
+	static const std::set<std::string> keywords; // defined in formula/tokenizer.cpp
+	function_symbol_table* get_functions() {return symbols_;}
 private:
 	variant execute(const formula_callable& variables, formula_debugger* fdb = nullptr) const;
 	variant execute(formula_debugger* fdb) const;
@@ -85,6 +92,7 @@ private:
 	bool managing_symbols;
 
 	friend class formula_debugger;
+	friend class lua_formula_bridge::fwrapper;
 };
 
 struct formula_error : public game::error
