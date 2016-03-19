@@ -102,8 +102,7 @@ void run_lobby_loop(CVideo& video, mp::ui& ui)
 		events::raise_process_event();
 		events::raise_draw_event();
 
-		video.flip();
-		CVideo::delay(20);
+		CVideo::delay(10);
 	}
 	font::cache_mode(font::CACHE_GAME);
 }

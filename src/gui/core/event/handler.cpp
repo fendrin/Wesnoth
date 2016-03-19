@@ -532,9 +532,7 @@ void thandler::draw(const bool force)
 	}
 
 	if(!dispatchers_.empty()) {
-		CVideo& video = dynamic_cast<twindow&>(*dispatchers_.back()).video();
-
-		video.flip();
+		//CVideo& video = dynamic_cast<twindow&>(*dispatchers_.back()).video();
 	}
 }
 

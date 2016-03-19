@@ -365,7 +365,6 @@ void dialog::draw_contents()
 	}
 	events::raise_draw_event(); //draw widgets
 
-	video_.flip();
 }
 
 dialog_frame& dialog::get_frame()
@@ -459,7 +458,6 @@ void dialog::update_widget_positions()
 
 void dialog::refresh()
 {
-	video_.flip();
 	CVideo::delay(10);
 }
 

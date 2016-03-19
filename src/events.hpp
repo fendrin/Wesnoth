@@ -149,6 +149,9 @@ public:
 	virtual void process(pump_info& info) = 0;
 };
 
+void initialise();
+void finalize();
+
 void raise_process_event();
 void raise_resize_event();
 void raise_draw_event();

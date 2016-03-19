@@ -41,8 +41,6 @@ void the_end(CVideo &video, std::string text, unsigned int duration)
 	SDL_Rect area = screen_area();
 	sdl::fill_rect(video.getSurface(),&area,0);
 
-	video.flip();
-
 	const size_t font_size = font::SIZE_XLARGE;
 
 	area = font::text_area(text,font_size);
@@ -60,7 +58,6 @@ void the_end(CVideo &video, std::string text, unsigned int duration)
 		events::pump();
 		events::raise_process_event();
 		events::raise_draw_event();
-		video.flip();
 		CVideo::delay(10);
 	}
 
@@ -73,7 +70,6 @@ void the_end(CVideo &video, std::string text, unsigned int duration)
 		events::pump();
 		events::raise_process_event();
 		events::raise_draw_event();
-		video.flip();
 		CVideo::delay(10);
 		--count;
 	}
