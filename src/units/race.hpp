@@ -16,11 +16,8 @@
 #define RACE_HPP_INCLUDED
 
 #include "config.hpp"
-#include "serialization/unicode_types.hpp"
-
-
-
-typedef std::map<ucs4::string, ucs4::string > markov_prefix_map;
+#include "utils/name_generator.hpp"
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 class unit_race
 {
@@ -39,6 +36,7 @@ public:
 	const t_string& description() const { return description_; }
 
 	std::string generate_name(GENDER gender) const;
+	const name_generator& generator(GENDER gender) const;
 
 	bool uses_global_traits() const;
 
@@ -61,8 +59,7 @@ private:
 	t_string plural_name_;
 	t_string description_;
 	unsigned int ntraits_;
-	markov_prefix_map next_[NUM_GENDERS];
-	int chain_size_;
+	boost::shared_ptr<name_generator> name_generator_[NUM_GENDERS];
 
 	config::const_child_itors traits_;
 	config::const_child_itors topics_;
