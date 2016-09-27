@@ -107,6 +107,8 @@ Version 1.13.5+dev:
      * Own and allied units on tunnel exits do not block the tunnel any more.
        The blocking behavior can be reenabled by setting pass_allied_units=no
        in the [tunnel] tag.
+   * New formula= key in [set_variable] allows evaluating a WFL formula with
+     the variable, which may be either a scalar or a container.
  * Lua API:
    * Added new functions wesnoth.fire_event_by_id and fire_event_by_name. The
      old function wesnoth.fire_event is now an alias for wesnoth.fire_event_by_name
