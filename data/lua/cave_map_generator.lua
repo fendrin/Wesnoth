@@ -42,8 +42,8 @@ function callbacks.generate_map(params)
 
 	for chamber in helper.child_range(params, "chamber") do
 		local chance = tonumber(chamber.chance) or 100
-		local x = chamber.x
-		local y = chamber.y
+		local x = helper.rand(chamber.x)
+		local y = helper.rand(chamber.y)
 		local id = chamber.id
 		if chance == 0 or random(100) > chance then
 			-- Set chance to 0 so that the scenario generator can tell which chambers were used
@@ -52,14 +52,6 @@ function callbacks.generate_map(params)
 		end
 		-- Ditto, set it to 100
 		params.chance = 100
-		if type(x) == "string" then
-			local x_min, x_max = x:match("(%d+)-(%d+)")
-			x = random(tonumber(x_min), tonumber(x_max))
-		end
-		if type(y) == "string" then
-			local y_min, y_max = y:match("(%d+)-(%d+)")
-			y = random(tonumber(y_min), tonumber(y_max))
-		end
 		local locs_set = LS.create()
 		build_chamber(x, y, locs_set, chamber.size or 3, chamber.jagged or 0)
 		local items = {}
