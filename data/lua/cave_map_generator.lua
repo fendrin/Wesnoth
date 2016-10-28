@@ -42,8 +42,7 @@ function callbacks.generate_map(params)
 
 	for chamber in helper.child_range(params, "chamber") do
 		local chance = tonumber(chamber.chance) or 100
-		local x = helper.rand(chamber.x)
-		local y = helper.rand(chamber.y)
+		local x, y = MG.random_location(chamber.x, chamber.y)
 		local id = chamber.id
 		if chance == 0 or random(100) > chance then
 			-- Set chance to 0 so that the scenario generator can tell which chambers were used

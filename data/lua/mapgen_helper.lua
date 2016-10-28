@@ -1,4 +1,5 @@
 local LS = wesnoth.require "location_set"
+local helper = wesnoth.require "helper"
 
 local mapgen_helper, map_mt = {}, {__index = {}}
 
@@ -8,6 +9,21 @@ function mapgen_helper.create_map(width,height,default_terrain)
 		table.insert(map, default_terrain or 'Gg')
 	end
 	return map
+end
+
+function mapgen_helper.random_location(x_list, y_list)
+	local x, y
+	if type(x_list) == "number" then
+		x = x_list
+	elseif type(x_list) == "string" then
+		x = tonumber(helper.rand(x_list))
+	end
+	if type(y_list) == "number" then
+		y = y_list
+	elseif type(y_list) == "string" then
+		y = tonumber(helper.rand(y_list))
+	end
+	return x or 0, y or 0
 end
 
 local valid_transforms = {
