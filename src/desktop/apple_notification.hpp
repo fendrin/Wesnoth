@@ -21,6 +21,7 @@
 
 namespace apple_notifications {
     void send_notification(const std::string& owner, const std::string& message, const desktop::notifications::type note_type);
+	bool available();
 }
 
 #endif
