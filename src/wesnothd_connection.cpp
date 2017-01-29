@@ -40,12 +40,45 @@ wesnothd_connection::wesnothd_connection(const std::string& host, const std::str
 	, bytes_written_(0)
 	, bytes_to_read_(0)
 	, bytes_read_(0)
+	, deadline_(io_service_)
 {
 	resolver_.async_resolve(
 		boost::asio::ip::tcp::resolver::query(host, service),
 		std::bind(&wesnothd_connection::handle_resolve, this, _1, _2)
 	);
 	LOG_NW << "Resolving hostname: " << host << '\n';
+	
+    deadline_.expires_at(boost::posix_time::pos_infin);
+}
+
+void wesnothd_connection::check_deadline()
+{
+	if (deadline_.expires_at() <= boost::asio::deadline_timer::traits_type::now())
+	{
+		if (ping_times_missed_ >= 5) {
+			boost::system::error_code ec;
+			socket_.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+			socket_.close(ec);
+			throw system_error(ec); //force disconnect for player side
+			return;
+		}
+
+		config cfg = config();
+		cfg["pingtest"]="true";
+		const configr_of cof = configr_of(cfg);
+		poll();
+		send_queue_.emplace_back();
+		std::ostream os(&send_queue_.back());
+		write_gz(os, cof);
+		send();
+      
+		std::cout << "deadline up!!! " << ping_times_missed_ << " times missed from socket: " << socket_.remote_endpoint().address().to_string() <<  "\n";
+		//std::cout << "sending data with deadline: " << cfg <<  "\n";
+		ping_times_missed_++;
+	}
+
+	deadline_.expires_from_now(boost::posix_time::seconds(3));
+	deadline_.async_wait(boost::bind(&wesnothd_connection::check_deadline, this));
 }
 
 void wesnothd_connection::handle_resolve(const error_code& ec, resolver::iterator iterator)
@@ -84,6 +117,10 @@ void wesnothd_connection::handle_connect(
 	} else {
 		LOG_NW << "Connected to " << iterator->endpoint().address() << '\n';
 		handshake();
+
+		//start deadlinetimer for pings
+		deadline_.expires_from_now(boost::posix_time::seconds(3));
+		deadline_.async_wait(std::bind(&wesnothd_connection::check_deadline, this));
 	}
 }
 
@@ -243,6 +280,12 @@ bool wesnothd_connection::receive_data(config& result)
 		return false;
 	}
 	else {
+		if (recv_queue_.front()["pingtest"].equals("true")) {
+			//std::cout << "pingtest received!\n";
+			recv_queue_.front().clear();
+			ping_times_missed_ = 0;
+		}
+		
 		result.swap(recv_queue_.front());
 		recv_queue_.pop_front();
 		return true;

@@ -837,6 +837,7 @@ void server::handle_read_from_player(socket_ptr socket, std::shared_ptr<simple_w
 {
 	read_from_player(socket);
 	//DBG_SERVER << client_address(socket) << "\tWML received:\n" << doc->output() << std::endl;
+	
 	if(doc->child("refresh_lobby")) {
 		send_to_player(socket, games_and_users_list_);
 	}
@@ -1248,6 +1249,10 @@ void server::handle_player_in_game(socket_ptr socket, std::shared_ptr<simple_wml
 	game& g = *(p->get_game());
 
 	simple_wml::document& data = *doc;
+
+	if (doc->root().has_attr("pingtest")) {
+		return;
+	}
 
 	// If this is data describing the level for a game.
 	if (doc->child("snapshot") || doc->child("scenario")) {

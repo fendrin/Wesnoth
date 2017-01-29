@@ -132,6 +132,8 @@ private:
 	void send();
 	void recv();
 
+	void check_deadline();
+
 	std::list<boost::asio::streambuf> send_queue_;
 	std::list<config> recv_queue_;
 
@@ -140,5 +142,7 @@ private:
 	std::size_t bytes_written_;
 	std::size_t bytes_to_read_;
 	std::size_t bytes_read_;
-
+	
+	boost::asio::deadline_timer deadline_;
+	uint32_t ping_times_missed_ = 0;
 };

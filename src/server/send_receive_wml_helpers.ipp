@@ -222,6 +222,12 @@ struct handle_receive_doc : public handle_doc<Handler, ErrorHandler>
 			simple_wml::string_span compressed_buf(this->buffer.get(), buf_size);
 			try {
 				this->doc.reset(new simple_wml::document(compressed_buf));
+				if (this->doc->root().has_attr("pingtest")) {
+					//std::cout << "received the following WML:\n" << this->doc->output() << "\n";
+					simple_wml::document pingtest("pingtest=true\n", simple_wml::INIT_COMPRESSED);
+					async_send_doc(this->socket, pingtest);
+					//this->doc->clear();
+				}
 			} catch (simple_wml::error& e) {
 				ERR_SERVER <<
 							  client_address(this->socket) <<
