@@ -173,6 +173,7 @@ bool unit_animation_component::invalidate (const display & disp)
 		params.image_mod = u_.image_mods();
 		params.halo_mod = u_.TC_image_mods();
 		params.image= u_.default_anim_image();
+		params.drawing_layer = display::LAYER_UNIT_DEFAULT - display::LAYER_UNIT_FIRST;
 
 		result |= get_animation()->invalidate(params);
 	}

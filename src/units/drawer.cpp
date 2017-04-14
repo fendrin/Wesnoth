@@ -144,7 +144,7 @@ void unit_drawer::redraw_unit (const unit & u) const
 	params.image_mod = u.image_mods();
 	params.halo_mod = u.TC_image_mods();
 	params.image= u.default_anim_image();
-
+	params.drawing_layer = display::LAYER_UNIT_DEFAULT - display::LAYER_UNIT_FIRST;
 
 	if(u.incapacitated()) params.image_mod +="~GS()";
 	params.primary_frame = true;
