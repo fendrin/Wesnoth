@@ -102,6 +102,7 @@ struct basic_frame_parameters {
 
 /** All parameters from a frame at a given instant */
 using frame_parameters = basic_frame_parameters<int, double, std::string, image::locator>;
+
 using builder_frame_parameters = basic_frame_parameters<std::string, std::string, std::string, std::string>;
 using parsed_frame_parameters = basic_frame_parameters<progressive_int, progressive_double, progressive_string, progressive_image>;
 
