@@ -299,7 +299,7 @@ int lua_formula_bridge::intf_eval_formula(lua_State *L)
 		form = static_cast<fwrapper*>(ud);
 	} else {
 		functionstb_ptr fcns = nullptr;
-		if(luaW_hasmetatable(L, 2, formfcntbKey)) {
+		if(luaL_testudata(L, 2, formfcntbKey)) {
 			fcns = *static_cast<functionstb_ptr*>(lua_touserdata(L, 2));
 		}
 		need_delete = true;
@@ -327,14 +327,12 @@ int lua_formula_bridge::intf_compile_formula(lua_State* L)
 		luaW_type_error(L, 1, "string");
 	}
 	functionstb_ptr fcns = nullptr;
-	if(luaW_hasmetatable(L, 2, formfcntbKey)) {
+	if(luaL_testudata(L, 2, formfcntbKey)) {
 		fcns = *static_cast<functionstb_ptr*>(lua_touserdata(L, 2));
 	} else if(lua_istable(L, 2)) {
 		// Create a functions table on the Lua stack
-		fcns = *new(lua_newuserdata(L, sizeof(functionstb_ptr))) functionstb_ptr(new function_symbol_table);
-		lua_pushlightuserdata(L, formfcntbKey);
-		lua_rawget(L, LUA_REGISTRYINDEX);
-		lua_setmetatable(L, -2);
+		fcns = *new(L) functionstb_ptr(new function_symbol_table);
+		luaL_setmetatable(L, formfcntbKey);
 		// Set it to be collected
 		lua_owned_fcntb.insert(fcns);
 		// Iterate through the Lua table and register each entry as a function
@@ -407,13 +405,11 @@ static int impl_formula_get(lua_State* L)
 	lua_formula_bridge::fwrapper* form = static_cast<lua_formula_bridge::fwrapper*>(lua_touserdata(L, 1));
 	std::string key = luaL_checkstring(L, 2);
 	if(key == "functions") {
-		if(boost::shared_ptr<formula> f = form->to_formula()) {
+		if(std::shared_ptr<formula> f = form->to_formula()) {
 			// This should not happen, but just in case...
-			if(f->get_functions() == NULL) return 0;
-			new(lua_newuserdata(L, sizeof(functionstb_ptr))) functionstb_ptr(f->get_functions());
-			lua_pushlightuserdata(L, formfcntbKey);
-			lua_rawget(L, LUA_REGISTRYINDEX);
-			lua_setmetatable(L, -2);
+			if(f->get_functions() == nullptr) return 0;
+			new(L) functionstb_ptr(f->get_functions());
+			luaL_setmetatable(L, formfcntbKey);
 			return 1;
 		} else {
 			// The fwrapper is either invalid or wraps just a formula_expression, not a full formula.
