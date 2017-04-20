@@ -1103,12 +1103,12 @@ double readonly_context_impl::power_projection(const map_location& loc, const mo
 			const unit& un = *u;
 
 			// The unit might play on the next turn
-			int attack_turn = resources::tod_manager->turn();
+			int attack_turn = tod_manager::get_singleton()->turn();
 			if(un.side() < get_side()) {
 				++attack_turn;
 			}
 			// Considering the unit location would be too slow, we only apply the bonus granted by the global ToD
-			const int lawful_bonus = resources::tod_manager->get_time_of_day(attack_turn).lawful_bonus;
+			const int lawful_bonus = tod_manager::get_singleton()->get_time_of_day(attack_turn).lawful_bonus;
 			int tod_modifier = 0;
 			if(un.alignment() == unit_type::ALIGNMENT::LAWFUL) {
 				tod_modifier = lawful_bonus;
@@ -1283,13 +1283,13 @@ bool readonly_context_impl::is_active(const std::string &time_of_day, const std:
 {
 		if(time_of_day.empty() == false) {
 			const std::vector<std::string>& times = utils::split(time_of_day);
-			if(std::count(times.begin(),times.end(),resources::tod_manager->get_time_of_day().id) == 0) {
+			if(std::count(times.begin(),times.end(),tod_manager::get_singleton()->get_time_of_day().id) == 0) {
 				return false;
 			}
 		}
 
 		if(turns.empty() == false) {
-			int turn = resources::tod_manager->turn();
+			int turn = tod_manager::get_singleton()->turn();
 			const std::vector<std::string>& turns_list = utils::split(turns);
 			for(std::vector<std::string>::const_iterator j = turns_list.begin(); j != turns_list.end() ; ++j ) {
 				const std::pair<int,int> range = utils::parse_range(*j);

@@ -293,7 +293,7 @@ WML_HANDLER_FUNCTION(do_command,, cfg)
 	if(!resources::controller->current_team().is_local() && synced_context::get_synced_state() == synced_context::UNSYNCED)
 	{
 		ERR_NG << "[do_command] can only be used from clients that control the currently playing side" << std::endl;
-		return;		
+		return;
 	}
 	for(vconfig::all_children_iterator i = cfg.ordered_begin(); i != cfg.ordered_end(); ++i)
 	{
@@ -331,7 +331,7 @@ WML_HANDLER_FUNCTION(modify_turns,, cfg)
 	config::attribute_value value = cfg["value"];
 	std::string add = cfg["add"];
 	config::attribute_value current = cfg["current"];
-	tod_manager& tod_man = *resources::tod_manager;
+	tod_manager& tod_man = *tod_manager::get_singleton();
 	if(!add.empty()) {
 		tod_man.modify_turns_by_wml(add);
 	} else if(!value.empty()) {
@@ -802,7 +802,7 @@ WML_HANDLER_FUNCTION(store_time_of_day,, cfg)
 	const map_location loc = cfg_to_loc(cfg);
 	int turn = cfg["turn"];
 	// using 0 will use the current turn
-	const time_of_day& tod = resources::tod_manager->get_time_of_day(loc,turn);
+	const time_of_day& tod = tod_manager::get_singleton()->get_time_of_day(loc,turn);
 
 	std::string variable = cfg["variable"];
 	if(variable.empty()) {

@@ -1008,7 +1008,7 @@ void mouse_handler::attack_enemy_(const map_location& att_loc
 	current_team().set_action_bonus_count(1 + current_team().action_bonus_count());
 	///@todo change ToD to be location specific for the defender
 
-	const tod_manager & tod_man = pc_.get_tod_manager_const();
+	const tod_manager & tod_man = *tod_manager::get_singleton();
 
 	synced_context::run_and_throw("attack", replay_helper::get_attack(attacker_loc, defender_loc, att.attack_num, def.attack_num,
 		attacker->type_id(), defender->type_id(), att.level,

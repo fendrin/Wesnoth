@@ -44,7 +44,6 @@ private:
 public:
 	game_data gamedata_;
 	game_board board_;
-	tod_manager tod_manager_;
 	std::unique_ptr<pathfind::manager> pathfind_manager_;
 	const std::unique_ptr<reports> reports_;
 	std::unique_ptr<game_lua_kernel> lua_kernel_;
@@ -83,7 +82,6 @@ public:
 	void write(config& cfg) const;
 
 	virtual const display_context & get_disp_context() const { return board_; }
-	virtual const tod_manager & get_tod_man() const { return tod_manager_; }
 	virtual const game_data * get_game_data() const { return &gamedata_; }
 	virtual game_lua_kernel * get_lua_kernel() const { return lua_kernel_.get(); }
 

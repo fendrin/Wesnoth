@@ -161,7 +161,6 @@ void editor_controller::init_music(const config& game_config)
 editor_controller::~editor_controller()
 {
 	resources::units = nullptr;
-	resources::tod_manager = nullptr;
 	resources::filter_con = nullptr;
 
 	resources::classification = nullptr;
@@ -223,7 +222,7 @@ void editor_controller::custom_tods_dialog()
 
 	image::color_adjustment_resetter adjust_resetter;
 
-	tod_manager& manager = *context_manager_->get_map_context().get_time_manager();
+	tod_manager& manager = context_manager_->get_map_context().get_time_manager();
 
 	if(gui2::dialogs::custom_tod::execute(manager.times(), manager.get_current_time(), gui().video())) {
 		// TODO save the new tod here
@@ -390,11 +389,11 @@ bool editor_controller::can_execute_command(const hotkey::hotkey_command& cmd, i
 		case HOTKEY_EDITOR_AREA_RENAME:
 		case HOTKEY_EDITOR_LOCAL_TIME:
 			return !context_manager_->get_map_context().is_pure_map() &&
-					!context_manager_->get_map_context().get_time_manager()->get_area_ids().empty();
+					!context_manager_->get_map_context().get_time_manager().get_area_ids().empty();
 
 		case HOTKEY_EDITOR_AREA_SAVE:
 			return 	!context_manager_->get_map_context().is_pure_map() &&
-					!context_manager_->get_map_context().get_time_manager()->get_area_ids().empty()
+					!context_manager_->get_map_context().get_time_manager().get_area_ids().empty()
 					&& !context_manager_->get_map().selection().empty();
 
 		case HOTKEY_EDITOR_SELECTION_EXPORT:
@@ -551,10 +550,10 @@ hotkey::ACTION_STATE editor_controller::get_action_state(hotkey::HOTKEY_COMMAND 
 			return static_cast<size_t>(index) == gui_->playing_team()
 					? ACTION_SELECTED : ACTION_DESELECTED;
 		case editor::TIME:
-			return index ==	context_manager_->get_map_context().get_time_manager()->get_current_time()
+			return index ==	context_manager_->get_map_context().get_time_manager().get_current_time()
 					? ACTION_SELECTED : ACTION_DESELECTED;
 		case editor::LOCAL_TIME:
-			return index ==	context_manager_->get_map_context().get_time_manager()->get_current_area_time(
+			return index ==	context_manager_->get_map_context().get_time_manager().get_current_area_time(
 					context_manager_->get_map_context().get_active_area())
 					? ACTION_SELECTED : ACTION_DESELECTED;
 		case editor::MUSIC:
@@ -565,7 +564,7 @@ hotkey::ACTION_STATE editor_controller::get_action_state(hotkey::HOTKEY_COMMAND 
 				tods_map::const_iterator it = tods_.begin();
 				std::advance(it, index);
 				const std::vector<time_of_day>& times1 = it->second.second;
-				const std::vector<time_of_day>& times2 = context_manager_->get_map_context().get_time_manager()->times();
+				const std::vector<time_of_day>& times2 = context_manager_->get_map_context().get_time_manager().times();
 				return (times1 == times2) ? ACTION_SELECTED : ACTION_DESELECTED;
 			}
 		case editor::LOCAL_SCHEDULE:
@@ -574,7 +573,7 @@ hotkey::ACTION_STATE editor_controller::get_action_state(hotkey::HOTKEY_COMMAND 
 				std::advance(it, index);
 				const std::vector<time_of_day>& times1 = it->second.second;
 				int active_area = context_manager_->get_map_context().get_active_area();
-				const std::vector<time_of_day>& times2 = context_manager_->get_map_context().get_time_manager()->times(active_area);
+				const std::vector<time_of_day>& times2 = context_manager_->get_map_context().get_time_manager().times(active_area);
 				return (times1 == times2) ? ACTION_SELECTED : ACTION_DESELECTED;
 			}
 		case editor::UNIT_FACING:
@@ -631,7 +630,7 @@ bool editor_controller::execute_command(const hotkey::hotkey_command& cmd, int i
 				{
 					context_manager_->get_map_context().set_active_area(index);
 					const std::set<map_location>& area =
-							context_manager_->get_map_context().get_time_manager()->get_area_by_index(index);
+							context_manager_->get_map_context().get_time_manager().get_area_by_index(index);
 					std::vector<map_location> locs(area.begin(), area.end());
 					context_manager_->get_map_context().select_area(index);
 					gui_->scroll_to_tiles(locs.begin(), locs.end());
@@ -640,8 +639,8 @@ bool editor_controller::execute_command(const hotkey::hotkey_command& cmd, int i
 			case TIME:
 				{
 					context_manager_->get_map_context().set_starting_time(index);
-					const tod_manager* tod = context_manager_->get_map_context().get_time_manager();
-					tod_color col = tod->times()[index].color;
+					const tod_manager& tod = context_manager_->get_map_context().get_time_manager();
+					tod_color col = tod.times()[index].color;
 					gui_->adjust_color_overlay(col.r, col.g, col.b);
 					return true;
 				}
@@ -666,8 +665,8 @@ bool editor_controller::execute_command(const hotkey::hotkey_command& cmd, int i
 					tods_map::iterator iter = tods_.begin();
 					std::advance(iter, index);
 					context_manager_->get_map_context().replace_schedule(iter->second.second);
-					const tod_manager* tod = context_manager_->get_map_context().get_time_manager();
-					tod_color col = tod->times()[0].color;
+					const tod_manager& tod = context_manager_->get_map_context().get_time_manager();
+					tod_color col = tod.times()[0].color;
 					gui_->adjust_color_overlay(col.r, col.g, col.b);
 					return true;
 				}

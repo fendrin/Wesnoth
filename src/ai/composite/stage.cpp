@@ -105,7 +105,7 @@ idle_stage::~idle_stage()
 }
 
 bool idle_stage::do_play_stage(){
-	LOG_AI_STAGE << "Turn " << resources::tod_manager->turn() << ": playing idle stage for side: "<< get_side() << std::endl;
+	LOG_AI_STAGE << "Turn " << tod_manager::get_singleton()->turn() << ": playing idle stage for side: "<< get_side() << std::endl;
 	return false;
 }
 

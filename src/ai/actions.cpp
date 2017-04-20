@@ -51,6 +51,7 @@
 #include "resources.hpp"
 #include "synced_context.hpp"
 #include "team.hpp"
+#include "tod_manager.hpp"
 #include "units/unit.hpp"
 #include "units/ptr.hpp"
 #include "whiteboard/manager.hpp"
@@ -291,8 +292,8 @@ void attack_result::do_execute()
 		wb::real_map rm;
 		//we don't use synced_context::run_in_synced_context because that wouldn't allow us to pass advancements_
 		resources::recorder->add_synced_command("attack", replay_helper::get_attack(attacker_loc_, defender_loc_, attacker_weapon, defender_weapon, a_->type_id(),
-			d_->type_id(), a_->level(), d_->level(), resources::tod_manager->turn(),
-			resources::tod_manager->get_time_of_day()));
+			d_->type_id(), a_->level(), d_->level(), tod_manager::get_singleton()->turn(),
+			tod_manager::get_singleton()->get_time_of_day()));
 		set_scontext_synced sync;
 		attack_unit_and_advance(attacker_loc_, defender_loc_, attacker_weapon, defender_weapon, true, advancements_);
 		resources::controller->check_victory();

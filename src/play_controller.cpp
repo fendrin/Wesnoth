@@ -121,7 +121,6 @@ static void clear_resources()
 	resources::persist = nullptr;
 	resources::screen = nullptr;
 	resources::soundsources = nullptr;
-	resources::tod_manager = nullptr;
 	resources::tunnels = nullptr;
 	resources::undo_stack = nullptr;
 	resources::recorder = nullptr;
@@ -212,7 +211,6 @@ void play_controller::init(CVideo& video, const config& level)
 
 		resources::gameboard = &gamestate().board_;
 		resources::gamedata = &gamestate().gamedata_;
-		resources::tod_manager = &gamestate().tod_manager_;
 		resources::units = &gamestate().board_.units_;
 		resources::filter_con = &gamestate();
 		resources::undo_stack = &undo_stack();
@@ -237,7 +235,7 @@ void play_controller::init(CVideo& video, const config& level)
 
 		LOG_NG << "building terrain rules... " << (SDL_GetTicks() - ticks()) << std::endl;
 		gui2::dialogs::loading_screen::progress("build terrain");
-		gui_.reset(new game_display(gamestate().board_, video, whiteboard_manager_, *gamestate().reports_, gamestate().tod_manager_, theme_cfg, level));
+		gui_.reset(new game_display(gamestate().board_, video, whiteboard_manager_, *gamestate().reports_, theme_cfg, level));
 		if (!gui_->video().faked()) {
 			if (saved_game_.mp_settings().mp_countdown)
 				gui_->get_theme().modify_label("time-icon", _ ("time left for current turn"));
@@ -296,7 +294,6 @@ void play_controller::reset_gamestate(const config& level, int replay_pos)
 {
 	resources::gameboard = nullptr;
 	resources::gamedata = nullptr;
-	resources::tod_manager = nullptr;
 	resources::units = nullptr;
 	resources::filter_con = nullptr;
 	resources::lua_kernel = nullptr;
@@ -309,7 +306,6 @@ void play_controller::reset_gamestate(const config& level, int replay_pos)
 	gamestate_.reset(new game_state(level, *this, tdata_));
 	resources::gameboard = &gamestate().board_;
 	resources::gamedata = &gamestate().gamedata_;
-	resources::tod_manager = &gamestate().tod_manager_;
 	resources::units = &gamestate().board_.units_;
 	resources::filter_con = &gamestate();
 	resources::undo_stack = &undo_stack();
@@ -320,7 +316,6 @@ void play_controller::reset_gamestate(const config& level, int replay_pos)
 	gamestate().set_game_display(gui_.get());
 	resources::tunnels = gamestate().pathfind_manager_.get();
 
-	gui_->reset_tod_manager(gamestate().tod_manager_);
 	gui_->reset_reports(*gamestate().reports_);
 	gui_->change_display_context(&gamestate().board_);
 	saved_game_.get_replay().set_pos(replay_pos);
@@ -433,11 +428,11 @@ void play_controller::do_init_side()
 	gamestate().gamedata_.get_variable("side_number") = current_side();
 
 	// We might have skipped some sides because they were empty so it is not enough to check for side_num==1
-	if(!gamestate().tod_manager_.has_turn_event_fired())
+	if(!gamestate().get_tod_man().has_turn_event_fired())
 	{
 		pump().fire("turn_" + turn_num);
 		pump().fire("new_turn");
-		gamestate().tod_manager_.turn_event_fired();
+		gamestate().get_tod_man().turn_event_fired();
 	}
 
 	pump().fire("side_turn");
@@ -482,7 +477,7 @@ void play_controller::do_init_side()
 
 void play_controller::init_side_end()
 {
-	const time_of_day& tod = gamestate().tod_manager_.get_time_of_day();
+	const time_of_day& tod = gamestate().get_tod_man().get_time_of_day();
 
 	if (current_side() == 1 || !init_side_done_now_)
 		sound::play_sound(tod.sounds, sound::SOUND_SOURCES);
@@ -1198,7 +1193,7 @@ void play_controller::play_turn()
 
 void play_controller::check_time_over()
 {
-	const bool time_left = gamestate().tod_manager_.next_turn(&gamestate().gamedata_);
+	const bool time_left = gamestate().get_tod_man().next_turn(&gamestate().gamedata_);
 
 	if(!time_left) {
 		LOG_NG << "firing time over event...\n";
@@ -1206,7 +1201,7 @@ void play_controller::check_time_over()
 		pump().fire("time_over");
 		LOG_NG << "done firing time over event...\n";
 		// If turns are added while handling 'time over' event.
-		if (gamestate().tod_manager_.is_time_left()) {
+		if (gamestate().get_tod_man().is_time_left()) {
 			return;
 		}
 

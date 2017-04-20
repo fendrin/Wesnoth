@@ -4034,7 +4034,7 @@ game_data & game_lua_kernel::gamedata() {
 }
 
 tod_manager & game_lua_kernel::tod_man() {
-	return game_state_.tod_manager_;
+	return game_state_.get_tod_man();
 }
 
 const game_events::queued_event & game_lua_kernel::get_event_info() {

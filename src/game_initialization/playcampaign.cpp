@@ -156,7 +156,7 @@ void campaign_controller::show_carryover_message(playsingle_controller& playcont
 			state_.classification().campaign_type == game_classification::CAMPAIGN_TYPE::TEST))
 	{
 		const gamemap& map = playcontroller.get_map_const();
-		const tod_manager& tod = playcontroller.get_tod_manager_const();
+		const tod_manager& tod = *tod_manager::get_singleton();
 		int turns_left = std::max<int>(0, tod.number_of_turns() - tod.turn());
 		for (team &t : teams)
 		{

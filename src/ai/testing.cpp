@@ -46,7 +46,7 @@ void ai_testing::log_turn(const char* msg, unsigned int side)
 	assert(side>=1);
 	team& current_team = resources::gameboard->teams()[side-1];
 
-	int _turn_number = resources::tod_manager->turn();
+	int _turn_number = tod_manager::get_singleton()->turn();
 	int _units = resources::gameboard->side_units(side);
 	int _units_cost = resources::gameboard->side_units_cost(side);
 	int _gold = current_team.gold();
@@ -101,9 +101,9 @@ void ai_testing::log_game_start()
 
 void ai_testing::log_game_end()
 {
-	LOG_AI_TESTING << "GAME_END_TURN: "<< resources::tod_manager->turn() <<std::endl;
+	LOG_AI_TESTING << "GAME_END_TURN: "<< tod_manager::get_singleton()->turn() <<std::endl;
 	resources::recorder->add_log_data("ai_log","end_turn",
-		std::to_string(resources::tod_manager->turn()));
+		std::to_string(tod_manager::get_singleton()->turn()));
 	for (std::vector<team>::const_iterator tm = resources::gameboard->teams().begin(); tm != resources::gameboard->teams().end(); ++tm) {
 		int side = tm-resources::gameboard->teams().begin()+1;
 		resources::recorder->add_log_data("ai_log","end_gold"+std::to_string(side),std::to_string(tm->gold()));

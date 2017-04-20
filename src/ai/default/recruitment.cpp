@@ -151,10 +151,10 @@ double recruitment::evaluate() {
 
 	// When evaluate() is called the first time this turn,
 	// we'll retrieve the recruitment-instruction aspect.
-	if (resources::tod_manager->turn() != recruitment_instructions_turn_) {
+	if (tod_manager::get_singleton()->turn() != recruitment_instructions_turn_) {
 		recruitment_instructions_ = get_recruitment_instructions();
 		integrate_recruitment_pattern_in_recruitment_instructions();
-		recruitment_instructions_turn_ = resources::tod_manager->turn();
+		recruitment_instructions_turn_ = tod_manager::get_singleton()->turn();
 		LOG_AI_RECRUITMENT << "Recruitment-instructions updated:\n";
 		LOG_AI_RECRUITMENT << recruitment_instructions_ << "\n";
 	}
@@ -190,7 +190,7 @@ double recruitment::evaluate() {
 
 void recruitment::execute() {
 	LOG_AI_RECRUITMENT << "\n\n\n------------AI RECRUITMENT BEGIN---------------\n\n";
-	LOG_AI_RECRUITMENT << "TURN: " << resources::tod_manager->turn() <<
+	LOG_AI_RECRUITMENT << "TURN: " << tod_manager::get_singleton()->turn() <<
 			" SIDE: " << current_team().side() << "\n";
 
 	/*
@@ -336,7 +336,7 @@ void recruitment::execute() {
 		// Check if we may want to save gold by not recruiting.
 		update_state();
 		int save_gold_turn = get_recruitment_save_gold()["active"].to_int(2);  // From aspect.
-		int current_turn = resources::tod_manager->turn();
+		int current_turn = tod_manager::get_singleton()->turn();
 		bool save_gold_active = save_gold_turn > 0 && save_gold_turn <= current_turn;
 		if (state_ == SAVE_GOLD && save_gold_active) {
 			break;
@@ -732,7 +732,7 @@ void recruitment::show_important_hexes() const {
 void recruitment::update_average_lawful_bonus() {
 	int sum = 0;
 	int counter = 0;
-	for (const time_of_day& time : resources::tod_manager->times()) {
+	for (const time_of_day& time : tod_manager::get_singleton()->times()) {
 		sum += time.lawful_bonus;
 		++counter;
 	}

@@ -78,8 +78,6 @@ public:
 	void refresh() {
 		context_manager_.gui().change_display_context(&context_manager_.get_map_context());
 
-		// TODO register the tod_manager with the gui?
-		resources::tod_manager = context_manager_.get_map_context().get_time_manager();
 		resources::units = &context_manager_.get_map_context().get_units();
 		resources::filter_con = &context_manager_.gui();
 
@@ -234,7 +232,7 @@ void context_manager::edit_scenario_dialog()
 	std::string name = get_map_context().get_name();
 	std::string description = get_map_context().get_description();
 
-	int turns = get_map_context().get_time_manager()->number_of_turns();
+	int turns = get_map_context().get_time_manager().number_of_turns();
 	int xp_mod = get_map_context().get_xp_mod();
 
 	bool victory = get_map_context().victory_defeated();
@@ -333,17 +331,15 @@ void context_manager::expand_load_mru_menu(std::vector<std::string>& items)
 
 void context_manager::expand_areas_menu(std::vector<std::string>& items)
 {
-	tod_manager* tod = get_map_context().get_time_manager();
+	tod_manager& tod = get_map_context().get_time_manager();
 
-	if (!tod)
-		return;
 	for (unsigned int i = 0; i < items.size(); ++i) {
 		if (items[i] == "editor-switch-area") {
 			items.erase(items.begin() + i);
 			std::vector<std::string> area_entries;
 
 			std::vector<std::string> area_ids =
-					tod->get_area_ids();
+					tod.get_area_ids();
 
 			for (size_t mci = 0; mci < area_ids.size(); ++mci) {
 
@@ -353,7 +349,7 @@ void context_manager::expand_areas_menu(std::vector<std::string>& items)
 				label << (area.empty() ? _("(Unnamed Area)") : area);
 
 				if (mci == static_cast<size_t>(get_map_context().get_active_area())
-						&& tod->get_area_by_index(mci) != get_map_context().get_map().selection())
+						&& tod.get_area_by_index(mci) != get_map_context().get_map().selection())
 					label << " [*]";
 
 				area_entries.push_back(label.str());
@@ -396,11 +392,9 @@ void context_manager::expand_time_menu(std::vector<std::string>& items)
 			items.erase(items.begin() + i);
 			std::vector<std::string> times;
 
-			tod_manager* tod_m = get_map_context().get_time_manager();
+			tod_manager& tod_m = get_map_context().get_time_manager();
 
-			assert(tod_m != nullptr);
-
-			for (const time_of_day& time : tod_m->times()) {
+			for (const time_of_day& time : tod_m.times()) {
 
 				std::stringstream label;
 				if (!time.image.empty())
@@ -422,9 +416,9 @@ void context_manager::expand_local_time_menu(std::vector<std::string>& items)
 			items.erase(items.begin() + i);
 			std::vector<std::string> times;
 
-			tod_manager* tod_m = get_map_context().get_time_manager();
+			tod_manager& tod_m = get_map_context().get_time_manager();
 
-			for (const time_of_day& time : tod_m->times(get_map_context().get_active_area())) {
+			for (const time_of_day& time : tod_m.times(get_map_context().get_active_area())) {
 
 				std::stringstream label;
 				if (!time.image.empty())
@@ -475,9 +469,9 @@ void context_manager::perform_refresh(const editor_action& action, bool drag_par
 void context_manager::rename_area_dialog()
 {
 	int active_area = get_map_context().get_active_area();
-	std::string name = get_map_context().get_time_manager()->get_area_ids()[active_area];
+	std::string name = get_map_context().get_time_manager().get_area_ids()[active_area];
 	if (gui2::dialogs::edit_text::execute(N_("Rename Area"), N_("Identifier:"), name, gui_.video())) {
-		get_map_context().get_time_manager()->set_area_id(active_area, name);
+		get_map_context().get_time_manager().set_area_id(active_area, name);
 	}
 }
 

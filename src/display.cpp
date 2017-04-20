@@ -407,16 +407,6 @@ const time_of_day & display::get_time_of_day(const map_location& /*loc*/) const
 	return tod;
 }
 
-/**
- * Display objects don't hold a tod maanger, instead game_display objects do. If the base version of this method is called,
- * try to get it from resources and use an assert to check for failure.
- */
-const tod_manager & display::get_tod_man() const
-{
-	assert(resources::tod_manager);
-	return *resources::tod_manager;
-}
-
 void display::update_tod() {
 	const time_of_day& tod = get_time_of_day();
 	tod_color col = color_adjust_ + tod.color;
@@ -2803,7 +2793,7 @@ void display::refresh_report(const std::string& report_name, const config * new_
 		mhb = resources::controller->get_mouse_handler_base();
 	}
 
-	reports::context temp_context = reports::context(*dc_, *this, *resources::tod_manager, wb_.lock(), mhb);
+	reports::context temp_context = reports::context(*dc_, *this, *tod_manager::get_singleton(), wb_.lock(), mhb);
 
 	const config generated_cfg = new_cfg ? config() : reports_object_->generate_report(report_name, temp_context);
 	if ( new_cfg == nullptr )

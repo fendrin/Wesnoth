@@ -83,11 +83,12 @@ map_context::map_context(const editor_map& map, const display& disp, bool pure_m
 	, labels_(disp, nullptr)
 	, units_()
 	, teams_()
-	, tod_manager_(new tod_manager(schedule))
 	, mp_settings_()
 	, game_classification_()
 	, music_tracks_()
 {
+	tod_manager::reset_manager(schedule);
+	assert(tod_manager::get_singleton());
 }
 
 map_context::map_context(const config& game_config, const std::string& filename, const display& disp)
@@ -115,11 +116,13 @@ map_context::map_context(const config& game_config, const std::string& filename,
 	, labels_(disp, nullptr)
 	, units_()
 	, teams_()
-	, tod_manager_(new tod_manager(game_config.find_child("editor_times", "id", "default")))
 	, mp_settings_()
 	, game_classification_()
 	, music_tracks_()
 {
+	tod_manager::reset_manager(game_config.find_child("editor_times", "id", "default"));
+	assert(tod_manager::get_singleton());
+
 	/*
 	 * Overview of situations possibly found in the file:
 	 *
@@ -244,35 +247,35 @@ void map_context::set_scenario_setup(const std::string& id, const std::string& n
 	scenario_description_ = description;
 	random_time_ = random_time;
 	victory_defeated_ = victory_defeated;
-	tod_manager_->set_number_of_turns(turns);
+	get_time_manager().set_number_of_turns(turns);
 	xp_mod_ = xp_mod;
 	actions_since_save_++;
 }
 
 void map_context::set_starting_time(int time)
 {
-	tod_manager_->set_current_time(time);
+	get_time_manager().set_current_time(time);
 	if (!pure_map_)
 		actions_since_save_++;
 }
 
 void map_context::remove_area(int index)
 {
-	tod_manager_->remove_time_area(index);
+	get_time_manager().remove_time_area(index);
 	active_area_--;
 	actions_since_save_++;
 }
 
 void map_context::replace_schedule(const std::vector<time_of_day>& schedule)
 {
-	tod_manager_->replace_schedule(schedule);
+	get_time_manager().replace_schedule(schedule);
 	if (!pure_map_)
 		actions_since_save_++;
 }
 
 void map_context::replace_local_schedule(const std::vector<time_of_day>& schedule)
 {
-	tod_manager_->replace_local_schedule(schedule, active_area_);
+	get_time_manager().replace_local_schedule(schedule, active_area_);
 	if (!pure_map_)
 		actions_since_save_++;
 }
@@ -301,9 +304,9 @@ void map_context::load_scenario(const config& game_config)
 
 	labels_.read(scenario);
 
-	tod_manager_.reset(new tod_manager(scenario));
+	tod_manager::reset_manager(scenario);
 	for(const config &time_area : scenario.child_range("time_area")) {
-		tod_manager_->add_time_area(map_,time_area);
+		get_time_manager().add_time_area(map_,time_area);
 	}
 
 	for(const config& item : scenario.child_range("item")) {
@@ -334,13 +337,15 @@ void map_context::load_scenario(const config& game_config)
 
 map_context::~map_context()
 {
+	tod_manager::clear_manager();
+
 	clear_stack(undo_stack_);
 	clear_stack(redo_stack_);
 }
 
 bool map_context::select_area(int index)
 {
-	return map_.set_selection(tod_manager_->get_area_by_index(index));
+	return map_.set_selection(get_time_manager().get_area_by_index(index));
 }
 
 void map_context::draw_terrain(const t_translation::terrain_code & terrain,
@@ -444,7 +449,7 @@ config map_context::to_config()
 	scenario["victory_when_enemies_defeated"] = victory_defeated_;
 	scenario["random_starting_time"] = random_time_;
 
-	scenario.append(tod_manager_->to_config());
+	scenario.append(get_time_manager().to_config());
 	scenario.remove_attribute("turn_at");
 
 	scenario["map_data"] = map_.write();

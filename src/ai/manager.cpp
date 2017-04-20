@@ -769,7 +769,7 @@ void manager::play_turn( side_number side ){
 	ai_composite& ai_obj = get_active_ai_for_side(side);
 	resources::game_events->pump().fire("ai_turn");
 	raise_turn_started();
-	if (resources::tod_manager->has_tod_bonus_changed()) {
+	if (tod_manager::get_singleton()->has_tod_bonus_changed()) {
 		raise_tod_changed();
 	}
 	ai_obj.new_turn();

@@ -239,5 +239,30 @@ class tod_manager
 		bool has_tod_bonus_changed_;
 		//
 		config::attribute_value random_tod_;
+
+	public:
+		static tod_manager* get_singleton()
+		{
+			return manager_.get();
+		}
+
+		static const tod_manager* get_const_singleton()
+		{
+			return manager_.get();
+		}
+
+		static void reset_manager(const config& cfg)
+		{
+			manager_.reset(new tod_manager(cfg));
+		}
+
+		static void clear_manager()
+		{
+			manager_.reset(nullptr);
+		}
+
+	private:
+		static std::unique_ptr<tod_manager> manager_;
 };
+
 #endif

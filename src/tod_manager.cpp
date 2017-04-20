@@ -520,3 +520,5 @@ bool tod_manager::is_time_left() const
 {
 	return num_turns_ == -1 || turn_ <= num_turns_;
 }
+
+std::unique_ptr<tod_manager> tod_manager::manager_(nullptr);

@@ -361,11 +361,11 @@ variant formula_ai::get_value(const std::string& key) const
 
 	} else if(key == "turn")
 	{
-		return variant(resources::tod_manager->turn());
+		return variant(tod_manager::get_singleton()->turn());
 
 	} else if(key == "time_of_day")
 	{
-		return variant(resources::tod_manager->get_time_of_day().id);
+		return variant(tod_manager::get_singleton()->get_time_of_day().id);
 
 	} else if(key == "my_side")
 	{

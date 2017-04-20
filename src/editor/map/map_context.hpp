@@ -112,12 +112,12 @@ public:
 	}
 
 	void save_area(const std::set<map_location>& area) {
-		tod_manager_->replace_area_locations(active_area_, area);
+		get_time_manager().replace_area_locations(active_area_, area);
 	}
 
 	void new_area(const std::set<map_location>& area) {
-		tod_manager_->add_time_area("", area, config());
-		active_area_ = tod_manager_->get_area_ids().size() -1;
+		get_time_manager().add_time_area("", area, config());
+		active_area_ = get_time_manager().get_area_ids().size() -1;
 		actions_since_save_++;
 	}
 
@@ -173,12 +173,19 @@ public:
 	 * TODO
 	 */
 	void set_local_starting_time(int time) {
-		tod_manager_->set_current_time(time, active_area_);
+		get_time_manager().set_current_time(time, active_area_);
 		actions_since_save_++;
 	}
 
-	tod_manager* get_time_manager() {
-		return tod_manager_.get();
+	// The ToD manager singleton is valid (non-null) within the lifetime of `this`.
+	tod_manager& get_time_manager()
+	{
+		return *tod_manager::get_singleton();
+	}
+
+	const tod_manager& get_time_manager() const
+	{
+		return *tod_manager::get_const_singleton();
 	}
 
 	mp_game_settings & get_mp_settings() {
@@ -501,7 +508,6 @@ private:
 	unit_map units_;
 	std::vector<team> teams_;
 	std::vector<std::string> lbl_categories_;
-	std::unique_ptr<tod_manager> tod_manager_;
 	mp_game_settings mp_settings_;
 	game_classification game_classification_;
 

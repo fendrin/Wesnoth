@@ -27,7 +27,6 @@ namespace resources
 	game_display         *screen = nullptr;
 	soundsource::manager *soundsources = nullptr;
 	replay               *recorder = nullptr;
-	::tod_manager        *tod_manager = nullptr;
 	fake_unit_manager    *fake_units = nullptr;
 	pathfind::manager    *tunnels = nullptr;
 	actions::undo_list   *undo_stack = nullptr;

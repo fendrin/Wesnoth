@@ -150,9 +150,6 @@ public:
 	const gamemap& get_map_const() const{
 		return gamestate().board_.map();
 	}
-	const tod_manager& get_tod_manager_const() const{
-			return gamestate().tod_manager_;
-		}
 
 	bool is_observer() const {
 		return gamestate().board_.is_observer();
@@ -172,7 +169,7 @@ public:
 	 */
 	void check_victory();
 
-	size_t turn() const {return gamestate().tod_manager_.turn();}
+	size_t turn() const {return gamestate().get_tod_man().turn();}
 
 	/**
 	 * Returns the number of the side whose turn it is.

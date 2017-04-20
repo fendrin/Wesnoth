@@ -362,12 +362,12 @@ std::vector<topic> generate_time_of_day_topics(const bool /*sort_generated*/)
 	std::vector<topic> topics;
 	std::stringstream toplevel;
 
-	if (! resources::tod_manager) {
+	if (!tod_manager::get_singleton()) {
 		toplevel << N_("Only available during a scenario.");
 		topics.push_back( topic("Time of Day Schedule", "..schedule", toplevel.str()) );
 		return topics;
 	}
-	const std::vector<time_of_day>& times = resources::tod_manager->times();
+	const std::vector<time_of_day>& times = tod_manager::get_singleton()->times();
 	for (const time_of_day& time : times)
 	{
 		const std::string id = "time_of_day_" + time.id;

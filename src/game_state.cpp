@@ -45,7 +45,6 @@ static lg::log_domain log_engine("engine");
 game_state::game_state(const config & level, play_controller & pc, const ter_data_cache & tdata) :
 	gamedata_(level),
 	board_(tdata, level),
-	tod_manager_(level),
 	pathfind_manager_(new pathfind::manager(level)),
 	reports_(new reports()),
 	lua_kernel_(new game_lua_kernel(*this, pc, *reports_)),
@@ -59,6 +58,9 @@ game_state::game_state(const config & level, play_controller & pc, const ter_dat
 	server_request_number_(level["server_request_number"].to_int()),
 	first_human_team_(-1)
 {
+	tod_manager::reset_manager(level);
+	assert(tod_manager::get_singleton());
+
 	if(const config& endlevel_cfg = level.child("end_level_data")) {
 		end_level_data el_data;
 		el_data.read(endlevel_cfg);
@@ -70,7 +72,6 @@ game_state::game_state(const config & level, play_controller & pc, const ter_dat
 game_state::game_state(const config & level, play_controller & pc, game_board& board) :
 	gamedata_(level),
 	board_(board),
-	tod_manager_(level),
 	pathfind_manager_(new pathfind::manager(level)),
 	reports_(new reports()),
 	lua_kernel_(new game_lua_kernel(*this, pc, *reports_)),
@@ -80,6 +81,9 @@ game_state::game_state(const config & level, play_controller & pc, game_board& b
 	init_side_done_(level["init_side_done"].to_bool(false)),
 	first_human_team_(-1)
 {
+	tod_manager::reset_manager(level);
+	assert(tod_manager::get_singleton());
+
 	events_manager_->read_scenario(level);
 	if(const config& endlevel_cfg = level.child("end_level_data")) {
 		end_level_data el_data;
@@ -89,8 +93,10 @@ game_state::game_state(const config & level, play_controller & pc, game_board& b
 	}
 }
 
-
-game_state::~game_state() {}
+game_state::~game_state()
+{
+	tod_manager::clear_manager();
+}
 
 static int placing_score(const config& side, const gamemap& map, const map_location& pos)
 {
@@ -174,7 +180,7 @@ void game_state::init(const config& level, play_controller & pc)
 
 	LOG_NG << "initialized time of day regions... "    << (SDL_GetTicks() - pc.ticks()) << std::endl;
 	for (const config &t : level.child_range("time_area")) {
-		tod_manager_.add_time_area(board_.map(),t);
+		tod_manager::get_singleton()->add_time_area(board_.map(),t);
 	}
 
 	LOG_NG << "initialized teams... "    << (SDL_GetTicks() - pc.ticks()) << std::endl;
@@ -205,7 +211,7 @@ void game_state::init(const config& level, play_controller & pc)
 		//sync traits of start units and the random start time.
 		random::set_random_determinstic deterministic(gamedata_.rng());
 
-		tod_manager_.resolve_random(*random::generator);
+		tod_manager::get_singleton()->resolve_random(*random::generator);
 
 		for(team_builder_ptr tb_ptr : team_builders)
 		{
@@ -243,7 +249,7 @@ void game_state::write(config& cfg) const
 	board_.write_config(cfg);
 
 	//Write the tod manager, and time areas
-	cfg.merge_with(tod_manager_.to_config());
+	cfg.merge_with(tod_manager::get_singleton()->to_config());
 
 	//write out the current state of the map
 	cfg.merge_with(pathfind_manager_->to_config());

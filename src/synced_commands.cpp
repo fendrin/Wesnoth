@@ -572,7 +572,7 @@ SYNCED_COMMAND_HANDLER_FUNCTION(debug_turn_limit, child, use_undo, /*show*/, /*e
 
 	debug_notification(":turn_limit debug command was used during turn of $player");
 
-	resources::tod_manager->set_number_of_turns(child["turn_limit"].to_int(-1));
+	tod_manager::get_singleton()->set_number_of_turns(child["turn_limit"].to_int(-1));
 	resources::screen->redraw_everything();
 	return true;
 }
@@ -585,7 +585,7 @@ SYNCED_COMMAND_HANDLER_FUNCTION(debug_turn, child, use_undo, /*show*/, /*error_h
 
 	debug_notification(":turn debug command was used during turn of $player");
 
-	resources::tod_manager->set_turn(child["turn"].to_int(1), resources::gamedata);
+	tod_manager::get_singleton()->set_turn(child["turn"].to_int(1), resources::gamedata);
 
 	resources::screen->new_turn();
 	resources::screen->redraw_everything();

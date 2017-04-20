@@ -1429,7 +1429,7 @@ std::pair<int, map_location> under_leadership(const unit_map& units, const map_l
 int combat_modifier(const unit_map & units, const gamemap & map, const map_location &loc, unit_type::ALIGNMENT alignment,
                     bool is_fearless)
 {
-	const tod_manager & tod_m = *resources::tod_manager;
+	const tod_manager & tod_m = *tod_manager::get_singleton();
 	int lawful_bonus = tod_m.get_illuminated_time_of_day(units, map, loc).lawful_bonus;
 	return generic_combat_modifier(lawful_bonus, alignment, is_fearless);
 }

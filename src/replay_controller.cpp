@@ -243,7 +243,7 @@ void replay_controller::stop_replay()
 
 void replay_controller::replay_next_turn()
 {
-	stop_condition_.reset(new replay_play_turn(controller_.gamestate().tod_manager_.turn()));
+	stop_condition_.reset(new replay_play_turn(controller_.gamestate().get_tod_man().turn()));
 }
 
 void replay_controller::replay_next_side()
@@ -312,7 +312,7 @@ REPLAY_RETURN replay_controller::play_side_impl()
 				}
 				if(res == REPLAY_FOUND_INIT_TURN)
 				{
-					stop_condition_->new_side_turn(controller_.current_side(), controller_.gamestate().tod_manager_.turn());
+					stop_condition_->new_side_turn(controller_.current_side(), controller_.gamestate().get_tod_man().turn());
 				}
 			}
 			controller_.play_slice(false);

@@ -1574,7 +1574,7 @@ void console_handler::do_choose_level() {
 
 void console_handler::do_turn()
 {
-	tod_manager& tod_man = menu_handler_.gamestate().tod_manager_;
+	tod_manager& tod_man = menu_handler_.gamestate().get_tod_man();
 
 	int turn = tod_man.turn() + 1;
 	const std::string& data = get_data();

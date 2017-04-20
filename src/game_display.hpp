@@ -41,7 +41,6 @@ public:
 	game_display(game_board& board, CVideo& video,
 			std::weak_ptr<wb::manager> wb,
 			reports & reports_object,
-			const tod_manager& tod_manager,
 			const config& theme_cfg,
 			const config& level,
 			bool dummy=false);
@@ -132,8 +131,6 @@ public:
 
 	bool has_time_area() const;
 
-	const tod_manager & get_tod_man() const { return *tod_manager_; } /**< Allows this class to properly implement filter context, used for animations */
-
 protected:
 	/**
 	 * game_display pre_draw does specific things related e.g. to unit rendering
@@ -223,10 +220,7 @@ public:
 
 	/// Rebuilds the screen if needs_rebuild(true) was previously called, and resets the flag.
 	bool maybe_rebuild();
-	void reset_tod_manager(const tod_manager& tod_manager)
-	{
-		tod_manager_ = &tod_manager;
-	}
+
 private:
 	game_display(const game_display&);
 	void operator=(const game_display&);
@@ -239,11 +233,7 @@ private:
 	map_location attack_indicator_src_;
 	map_location attack_indicator_dst_;
 
-
-
 	pathfind::marked_route route_;
-
-	const tod_manager* tod_manager_;
 
 	void invalidate_route();
 
