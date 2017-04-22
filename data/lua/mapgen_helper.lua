@@ -16,11 +16,19 @@ function mapgen_helper.random_location(x_list, y_list)
 	if type(x_list) == "number" then
 		x = x_list
 	elseif type(x_list) == "string" then
+		local hyphen = x_list:find('-')
+		if hyphen then
+			x_list = x_list:sub(1, hyphen - 1) .. '..' .. x_list:sub(hyphen + 1)
+		end
 		x = tonumber(helper.rand(x_list))
 	end
 	if type(y_list) == "number" then
 		y = y_list
 	elseif type(y_list) == "string" then
+		local hyphen = y_list:find('-')
+		if hyphen then
+			y_list = y_list:sub(1, hyphen - 1) .. '..' .. y_list:sub(hyphen + 1)
+		end
 		y = tonumber(helper.rand(y_list))
 	end
 	return x or 0, y or 0
