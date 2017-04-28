@@ -17,6 +17,7 @@
 
 #include "scripting/lua_kernel_base.hpp" // for lua_kernel_base
 
+#include "display_context.hpp"
 #include "game_events/action_wml.hpp"   // for wml_action, etc
 
 #include <stack>
@@ -45,7 +46,7 @@ class reports;
 struct map_location;
 typedef int (*lua_CFunction) (lua_State *L);
 
-class game_lua_kernel : public lua_kernel_base
+class game_lua_kernel : public lua_kernel_base, public display_context_proxy<game_board>
 {
 	game_display * game_display_;
 	game_state & game_state_;
@@ -53,7 +54,6 @@ class game_lua_kernel : public lua_kernel_base
 	reports & reports_;
 
 	// Private functions to ease access to parts of game_state
-	unit_map & units();
 	game_data & gamedata();
 	tod_manager & tod_man();
 
@@ -180,8 +180,6 @@ class game_lua_kernel : public lua_kernel_base
 
 public:
 	game_board & board();
-	std::vector<team> & teams();
-	const gamemap & map() const;
 	/**
 		A value != 0 means that the shouldn't remove any units from the map, usually because
 		we are currently operating on a unit& and removing it might cause memory corruptions

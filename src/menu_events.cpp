@@ -89,15 +89,16 @@ static lg::log_domain log_engine("engine");
 #define ERR_NG LOG_STREAM(err, log_engine)
 #define LOG_NG LOG_STREAM(info, log_engine)
 
-namespace events{
-
-menu_handler::menu_handler(game_display* gui, play_controller & pc,	const config& game_config) :
-	gui_(gui),
-	pc_(pc),
-	game_config_(game_config),
-	textbox_info_(),
-	last_search_(),
-	last_search_hit_()
+namespace events
+{
+menu_handler::menu_handler(game_display* gui, play_controller& pc, const config& game_config)
+	: display_context_proxy<game_board>(pc.gamestate().board_)
+	, gui_(gui)
+	, pc_(pc)
+	, game_config_(game_config)
+	, textbox_info_()
+	, last_search_()
+	, last_search_hit_()
 {
 }
 
@@ -108,10 +109,6 @@ menu_handler::~menu_handler()
 game_state & menu_handler::gamestate() const { return pc_.gamestate(); }
 game_data & menu_handler::gamedata() { return gamestate().gamedata_; }
 game_board & menu_handler::board() const { return gamestate().board_; }
-unit_map& menu_handler::units() { return gamestate().board_.units_; }
-std::vector<team>& menu_handler::teams() const { return gamestate().board_.teams_; }
-const gamemap& menu_handler::map() const { return gamestate().board_.map(); }
-
 gui::floating_textbox& menu_handler::get_textbox(){
 	return textbox_info_;
 }

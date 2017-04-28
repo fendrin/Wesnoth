@@ -43,14 +43,17 @@ class reports
 {
 public:
 
-	class context
+	class context : public display_context_proxy<const display_context>
 	{
 	public:
-		context(const display_context & dc, display & disp, const tod_manager & tod, std::shared_ptr<wb::manager> wb, boost::optional<events::mouse_handler &> mhb) : dc_(dc), disp_(disp), tod_(tod), wb_(wb), mhb_(mhb) {}
-
-		const std::vector<team> & teams() { return dc_.teams(); }
-		const unit_map & units() { return dc_.units(); }
-		const gamemap & map() { return dc_.map(); }
+		context(const display_context& dc, display& disp, const tod_manager& tod, std::shared_ptr<wb::manager> wb, boost::optional<events::mouse_handler &> mhb)
+			: display_context_proxy<const display_context>(dc)
+			, dc_(dc)
+			, disp_(disp)
+			, tod_(tod)
+			, wb_(wb)
+			, mhb_(mhb)
+		{}
 
 		const display_context & dc() { return dc_; }
 		display & screen() { return disp_; }

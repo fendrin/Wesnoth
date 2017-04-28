@@ -22,6 +22,9 @@
 #ifndef DISPLAY_CONTEXT_HPP_INCLUDED
 #define DISPLAY_CONTEXT_HPP_INCLUDED
 
+#include "utils/const_clone.hpp"
+
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -49,14 +52,28 @@ struct team_data
 	std::string teamname;
 };
 
-class display_context {
+class display_context
+{
 public:
-	virtual const std::vector<team> & teams() const = 0;
-	virtual const gamemap & map() const = 0;
-	virtual const unit_map & units() const = 0;
-	virtual const std::vector<std::string> & hidden_label_categories() const = 0;
-	std::vector<std::string> & hidden_label_categories_ref();
+	/* Note on the getter functions: the const version of each function is virtual and should be
+	 * overriden by derived classes. Each non-const version calls const_cast on the result of the
+	 * const one. Do not reverse this.
+	 */
+
+	virtual const std::vector<team>& teams() const = 0;
+	std::vector<team>& teams();
+
 	const team& get_team(int side) const;
+	//team& get_team(int side); TODO: needed?
+
+	virtual const gamemap& map() const = 0;
+	gamemap& map();
+
+	virtual const unit_map& units() const = 0;
+	unit_map& units();
+
+	virtual const std::vector<std::string>& hidden_label_categories() const = 0;
+	std::vector<std::string>& hidden_label_categories_ref(); // TODO: rename
 
 	// Helper for is_visible_to_team
 
@@ -105,5 +122,62 @@ public:
 	virtual ~display_context() {}
 };
 
+
+/**
+ * Handy wrapper class to provided an interface to access a display_context's data members.
+ * This avoids different classes having to implement their own wrappers.
+ *
+ * This should not be inherited from by classes that already derive from display_context
+ * itself; use that class's getters directly.
+ *
+ * If display_context is updated, evaluate whether a corresponding data getter should be
+ * added here.
+ *
+ * TODO: see if this can supplant filter_context
+ */
+template<typename T>
+class display_context_proxy
+{
+private:
+	/**
+	 * Intermediate type to specialize getter return values as possibly const-qualified, based
+	 * on the state of T.
+	 *
+	 * If T is const, a const object of type S will also be returned. Similarly. if T is not
+	 * const, the getter will return     a non-const object of type S.s
+	 */
+	template<typename S>
+	using getter_t = typename utils::const_clone<S, T>::type;
+
+public:
+	explicit display_context_proxy(T& context) : context_(context)
+	{
+		static_assert(std::is_base_of<display_context, typename std::remove_const<T>::type>::value,
+			"Type is not derived from display_context.");
+	}
+
+	getter_t<std::vector<team>>& teams() const
+	{
+		return context_.teams();
+	}
+
+	getter_t<gamemap>& map() const
+	{
+		return context_.map();
+	}
+
+	getter_t<unit_map>& units() const
+	{
+		return context_.units();
+	}
+
+	const team& get_team(int side) const
+	{
+		return context_.get_team(side);
+	}
+
+private:
+	T& context_;
+};
 
 #endif

@@ -106,7 +106,7 @@ public:
 	{
 		return tiles_.get(loc.x + border_size(), loc.y + border_size());
 	}
-private:
+//private:
 	//private method, use set_terrain instead which also updates villages_.
 	t_translation::terrain_code& operator[](const map_location& loc)
 	{

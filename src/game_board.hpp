@@ -90,14 +90,19 @@ public:
 	game_board(const ter_data_cache & tdata, const config & level);
 	virtual ~game_board();
 
-	virtual const std::vector<team> & teams() const { return teams_; }
+	virtual const std::vector<team> & teams() const override { return teams_; }
+	using display_context::teams; // so as not to hide the non-const version
+
 	using display_context::get_team; // so as not to hide the const version
 	team& get_team(int i) {return teams_[i - 1];}
-	virtual std::vector<team> & teams() { return teams_; }
-	virtual const gamemap & map() const { return *map_; }
-	virtual const unit_map & units() const { return units_; }
-	unit_map & units() { return units_; }
-	virtual const std::vector<std::string> & hidden_label_categories() const { return labels_; }
+
+	virtual const gamemap & map() const override { return *map_; }
+	using display_context::map; // so as not to hide the non-const version
+
+	virtual const unit_map & units() const override { return units_; }
+	using display_context::units; // so as not to hide the non-const version
+
+	virtual const std::vector<std::string> & hidden_label_categories() const override { return labels_; }
 
 	// Copy and swap idiom, because we have a scoped pointer.
 

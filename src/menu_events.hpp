@@ -17,6 +17,7 @@
 #define MENU_EVENTS_H_INCLUDED
 
 #include "chat_events.hpp"
+#include "display_context.hpp"
 #include "floating_textbox.hpp"
 #include "units/map.hpp"
 #include "lua_jailbreak_exception.hpp"
@@ -40,7 +41,8 @@ struct fallback_ai_to_human_exception : public lua_jailbreak_exception {IMPLEMEN
 
 namespace events {
 
-class menu_handler : private chat_handler {
+class menu_handler : private chat_handler, private display_context_proxy<game_board>
+{
 public:
 	menu_handler(game_display* gui, play_controller & pc,
 		const config& game_config);
@@ -123,10 +125,6 @@ private:
 	game_state & gamestate() const;
 	game_data & gamedata();
 	game_board & board() const;
-	unit_map& units();
-	std::vector<team>& teams() const;
-	const gamemap& map() const;
-
 	const config& game_config_;
 
 	gui::floating_textbox textbox_info_;

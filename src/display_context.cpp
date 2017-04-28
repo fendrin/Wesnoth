@@ -20,12 +20,32 @@
 #include "units/unit.hpp"
 #include "units/map.hpp"
 
-std::vector<std::string>& display_context::hidden_label_categories_ref() {
-	return const_cast<std::vector<std::string>&>(this->hidden_label_categories());
+std::vector<team>& display_context::teams()
+{
+	std::cerr << "calling non-const teams getter" << std::endl;
+	return const_cast<std::vector<team>&>(static_cast<const display_context&>(*this).teams());
 }
 
-const team& display_context::get_team(int side) const {
-	return teams()[side-1];
+const team& display_context::get_team(int side) const
+{
+	return teams()[side - 1];
+}
+
+gamemap& display_context::map()
+{
+	std::cerr << "calling non-const map getter" << std::endl;
+	return const_cast<gamemap&>(static_cast<const display_context&>(*this).map());
+}
+
+unit_map& display_context::units()
+{
+	std::cerr << "calling non-const units getter" << std::endl;
+	return const_cast<unit_map&>(static_cast<const display_context&>(*this).units());
+}
+
+std::vector<std::string>& display_context::hidden_label_categories_ref()
+{
+	return const_cast<std::vector<std::string>&>(this->hidden_label_categories());
 }
 
 bool display_context::would_be_discovered(const map_location & loc, int side_num, bool see_all)

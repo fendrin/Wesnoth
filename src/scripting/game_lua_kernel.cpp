@@ -4049,17 +4049,6 @@ game_board & game_lua_kernel::board() {
 	return game_state_.board_;
 }
 
-unit_map & game_lua_kernel::units() {
-	return game_state_.board_.units_;
-}
-
-std::vector<team> & game_lua_kernel::teams() {
-	return game_state_.board_.teams_;
-}
-
-const gamemap & game_lua_kernel::map() const {
-	return game_state_.board_.map();
-}
 
 game_data & game_lua_kernel::gamedata() {
 	return game_state_.gamedata_;
@@ -4074,8 +4063,9 @@ const game_events::queued_event & game_lua_kernel::get_event_info() {
 }
 
 
-game_lua_kernel::game_lua_kernel(game_state & gs, play_controller & pc, reports & reports_object)
+game_lua_kernel::game_lua_kernel(game_state& gs, play_controller& pc, reports& reports_object)
 	: lua_kernel_base()
+	, display_context_proxy<game_board>(gs.board_)
 	, game_display_(nullptr)
 	, game_state_(gs)
 	, play_controller_(pc)
