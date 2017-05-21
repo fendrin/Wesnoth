@@ -819,7 +819,7 @@ namespace detail {
 		//static_assert(!std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the attribute value specialization.");
 		void visit(config& cfg, pair_type&& p, Rest... fwd)
 		{
-			boost::fusion::invoke(&config::insert, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
+			boost::fusion::invoke(&config::insert<V>, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
 			//cfg[std::forward<config_key_type>(p.first)] = std::forward<V>(p.second);
 			detail::config_construct_unpacker<Rest...> unpack;
 			unpack.visit(cfg, std::forward<Rest>(fwd)...);
@@ -833,7 +833,9 @@ namespace detail {
 		//static_assert(std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the config child specialization.");
 		void visit(config& cfg, pair_type&& p, Rest... fwd)
 		{
-			boost::fusion::invoke(&config::add_child, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
+			using arg_type = typename std::conditional<std::is_lvalue_reference<pair_type>::value, const config&, config&&>::type;
+			auto add_child = static_cast<config& (config::*)(config_key_type, arg_type)>(&config::add_child);
+			boost::fusion::invoke(add_child, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
 			//cfg.add_child(std::forward<config_key_type>(p.first), std::forward<config>(p.second));
 			detail::config_construct_unpacker<Rest...> unpack;
 			unpack.visit(cfg, std::forward<Rest>(fwd)...);
