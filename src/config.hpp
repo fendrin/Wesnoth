@@ -45,6 +45,7 @@
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/variant.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/fusion/functional/invocation/invoke.hpp>
 
 #include "config_attribute_value.hpp"
 #include "exceptions.hpp"
@@ -108,9 +109,6 @@ class config
 	void check_valid(const config &cfg) const;
 
 public:
-	// Create an empty node.
-	config();
-
 	config(const config &);
 	config &operator=(const config &);
 
@@ -157,10 +155,11 @@ public:
 	/**
 	 * Creates a config with several attributes and children.
 	 * Pass the keys/tags and values/children alternately.
+	 * @note This also doubles as the default constructor.
 	 * @example config("key", 42, "value", config())
 	 */
 	template<typename... T>
-	explicit config(config_key_type first, T&&... args);
+	explicit config(std::pair<config_key_type, T>&&... args);
 
 	~config();
 
@@ -485,6 +484,16 @@ public:
 	 * and log msg as a WML error (if not empty)
 	*/
 	const attribute_value &get_old_attribute(config_key_type key, const std::string &old_key, const std::string& msg = "") const;
+
+	/**
+	 * Insert a new attribute into the config
+	 */
+	template<typename T>
+	void insert(config_key_type key, T&& value)
+	{
+		operator[](key) = std::forward<T>(value);
+	}
+
 	/**
 	 * Returns a reference to the first child with the given @a key.
 	 * Creates the child if it does not yet exist.
@@ -803,25 +812,29 @@ namespace detail {
 		void visit(config&) {}
 	};
 
-	template<typename K, typename V, typename... Rest>
-	struct config_construct_unpacker<K, V, Rest...>
+	template<typename V, typename... Rest>
+	struct config_construct_unpacker<V, Rest...>
 	{
+		using pair_type = std::pair<config_key_type, V>;
 		//static_assert(!std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the attribute value specialization.");
-		void visit(config& cfg, K&& key, V&& val, Rest... fwd)
+		void visit(config& cfg, pair_type&& p, Rest... fwd)
 		{
-			cfg[std::forward<K>(key)] = std::forward<V>(val);
+			boost::fusion::invoke(&config::insert, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
+			//cfg[std::forward<config_key_type>(p.first)] = std::forward<V>(p.second);
 			detail::config_construct_unpacker<Rest...> unpack;
 			unpack.visit(cfg, std::forward<Rest>(fwd)...);
 		}
 	};
 
-	template<typename T, typename... Rest>
-	struct config_construct_unpacker<T, config, Rest...>
+	template<typename... Rest>
+	struct config_construct_unpacker<config, Rest...>
 	{
+		using pair_type = std::pair<config_key_type, config>;
 		//static_assert(std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the config child specialization.");
-		void visit(config& cfg, T&& tag, config&& child, Rest... fwd)
+		void visit(config& cfg, pair_type&& p, Rest... fwd)
 		{
-			cfg.add_child(std::forward<T>(tag), std::forward<config>(child));
+			boost::fusion::invoke(&config::add_child, std::tuple_cat(std::make_tuple(&cfg), std::forward<pair_type>(p)));
+			//cfg.add_child(std::forward<config_key_type>(p.first), std::forward<config>(p.second));
 			detail::config_construct_unpacker<Rest...> unpack;
 			unpack.visit(cfg, std::forward<Rest>(fwd)...);
 		}
@@ -829,12 +842,12 @@ namespace detail {
 }
 
 template<typename... T>
-inline config::config(config_key_type first, T&&... args)
+inline config::config(std::pair<config_key_type, T>&&... args)
 //	: config(detail::config_construct_unpacker(args...))
 {
 	//static_assert((sizeof...(T) & 1) == 0, "General config constructor requires an even number of arguments");
 	detail::config_construct_unpacker<config_key_type, T...> unpack;
-	unpack.visit(*this, first, std::forward<T>(args)...);
+	unpack.visit(*this, std::forward<T>(args)...);
 }
 
 class variable_set

@@ -41,13 +41,13 @@ static lg::log_domain log_config("config");
 
 // Quick tests of config initializer list syntax
 
-config cfg1 {"key", 5};
-config cfg2 {"key", true};
-config cfg3 {"key", "value"};
-config cfg4 {"key1", "value", "key2", true, "key3", 42};
+config cfg1 {{"key", 5}};
+config cfg2 {{"key", true}};
+config cfg3 {{"key", "value"}};
+config cfg4 {{"key1", "value"}, {"key2", true}, {"key3", 42}};
 
-config cfg5 {"tag", config{}};
-config cfg6 {"tag", config{"value", 42}, "tag", config{"value", "fifty"}};
+config cfg5 {{"tag", config{}}};
+config cfg6 {{"tag", config{{"value", 42}}}, {"tag", config{{"value", "fifty"}}}};
 
 namespace {
 //std::map::operator[] does not support heterogenous lookup so we need this to work around.
@@ -134,10 +134,6 @@ void config::check_valid(const config &cfg) const
 {
 	if (!*this || !cfg)
 		throw error("Mandatory WML child missing yet untested for. Please report.");
-}
-
-config::config() : values_(), children_(), ordered_children()
-{
 }
 
 config::config(const config& cfg) : values_(cfg.values_), children_(), ordered_children()
