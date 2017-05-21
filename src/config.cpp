@@ -39,6 +39,16 @@ static lg::log_domain log_config("config");
 #define ERR_CF LOG_STREAM(err, log_config)
 #define DBG_CF LOG_STREAM(debug, log_config)
 
+// Quick tests of config initializer list syntax
+
+config cfg1 {"key", 5};
+config cfg2 {"key", true};
+config cfg3 {"key", "value"};
+config cfg4 {"key1", "value", "key2", true, "key3", 42};
+
+config cfg5 {"tag", config{}};
+config cfg6 {"tag", config{"value", 42}, "tag", config{"value", "fifty"}};
+
 namespace {
 //std::map::operator[] does not support heterogenous lookup so we need this to work around.
 template<typename Map, typename Key>

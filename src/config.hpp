@@ -39,6 +39,7 @@
 #include <vector>
 #include <type_traits>
 #include <memory>
+#include <tuple>
 
 #include <boost/exception/exception.hpp>
 #include <boost/variant/apply_visitor.hpp>
@@ -120,6 +121,46 @@ public:
 	 * Creates a config object with an empty child of name @a child.
 	 */
 	explicit config(config_key_type child);
+#if 0
+	/**
+	 * Creates a config with a single key.
+	 * @param key The name of the key
+	 * @param value The key value, or the subchild config
+	 */
+	template<typename T>
+	config(config_key_type key, T&& val)
+	{
+		operator[](key) = std::forward<T>(val);
+	}
+
+	/**
+	 * Creates a config with a single subchild.
+	 * @param key The name of the subchild
+	 * @param value The subchild config
+	 */
+	config(config_key_type tag, const config& val)
+	{
+		this->add_child(key, val);
+	}
+
+	/**
+	 * Creates a config with a single subchild.
+	 * @param key The name of the subchild
+	 * @param value The subchild config
+	 */
+	config(config_key_type tag, config&& val)
+	{
+		this->add_child(key, val);
+	}
+#endif
+
+	/**
+	 * Creates a config with several attributes and children.
+	 * Pass the keys/tags and values/children alternately.
+	 * @example config("key", 42, "value", config())
+	 */
+	template<typename... T>
+	explicit config(config_key_type first, T&&... args);
 
 	~config();
 
@@ -743,6 +784,58 @@ private:
 
 	std::vector<child_pos> ordered_children;
 };
+
+namespace detail {
+	template<typename... T>
+	struct config_construct_unpacker;
+
+	// A few dummy specializations to trigger SFINAE...
+	template<> struct config_construct_unpacker<config> {};
+	template<> struct config_construct_unpacker<config&> {};
+	template<> struct config_construct_unpacker<config&&> {};
+	template<> struct config_construct_unpacker<const config> {};
+	template<> struct config_construct_unpacker<const config&> {};
+	template<> struct config_construct_unpacker<const config&&> {};
+
+	template<>
+	struct config_construct_unpacker<>
+	{
+		void visit(config&) {}
+	};
+
+	template<typename K, typename V, typename... Rest>
+	struct config_construct_unpacker<K, V, Rest...>
+	{
+		//static_assert(!std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the attribute value specialization.");
+		void visit(config& cfg, K&& key, V&& val, Rest... fwd)
+		{
+			cfg[std::forward<K>(key)] = std::forward<V>(val);
+			detail::config_construct_unpacker<Rest...> unpack;
+			unpack.visit(cfg, std::forward<Rest>(fwd)...);
+		}
+	};
+
+	template<typename T, typename... Rest>
+	struct config_construct_unpacker<T, config, Rest...>
+	{
+		//static_assert(std::is_same<config, typename std::remove_const<typename std::remove_reference<V>>>::value, "This is the config child specialization.");
+		void visit(config& cfg, T&& tag, config&& child, Rest... fwd)
+		{
+			cfg.add_child(std::forward<T>(tag), std::forward<config>(child));
+			detail::config_construct_unpacker<Rest...> unpack;
+			unpack.visit(cfg, std::forward<Rest>(fwd)...);
+		}
+	};
+}
+
+template<typename... T>
+inline config::config(config_key_type first, T&&... args)
+//	: config(detail::config_construct_unpacker(args...))
+{
+	//static_assert((sizeof...(T) & 1) == 0, "General config constructor requires an even number of arguments");
+	detail::config_construct_unpacker<config_key_type, T...> unpack;
+	unpack.visit(*this, first, std::forward<T>(args)...);
+}
 
 class variable_set
 {
