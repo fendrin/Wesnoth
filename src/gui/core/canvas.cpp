@@ -1123,8 +1123,10 @@ void image_shape::draw(
 				DBG_GUI_D << "Image: vertical stretch from " << image_->w << ','
 						  << image_->h << " to a height of " << h << ".\n";
 
-				// TODO: convert to texture handling.
+				// Textures are automatically scaled to size.
+#ifdef SW_RENDERING_LEGACY_MODE
 				surf = stretch_surface_vertical(image_, h);
+#endif
 				done = true;
 			}
 			w = image_->w;
@@ -1136,8 +1138,10 @@ void image_shape::draw(
 						  << ',' << image_->h << " to a width of " << w
 						  << ".\n";
 
-				// TODO: convert to texture handling.
+				// Textures are automatically scaled to size.
+#ifdef SW_RENDERING_LEGACY_MODE
 				surf = stretch_surface_horizontal(image_, w);
+#endif
 				done = true;
 			}
 			h = image_->h;
