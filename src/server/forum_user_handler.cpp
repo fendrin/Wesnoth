@@ -74,13 +74,16 @@ bool fuh::login(const std::string& name, const std::string& password, const std:
 		return false;
 	}
 
-	// Check hash prefix, if different than $H$ hash is invalid
-	if(!utils::md5::is_valid_hash(hash)) {
+	std::string valid_hash;
+
+	if(utils::md5::is_valid_hash(hash)) { // md5 hash
+		valid_hash = utils::md5(hash.substr(12,34), seed).hex_digest();
+	} else if(hash.substr(0, 4).compare("$2y$") == 0) { // bcrypt hash
+		valid_hash = utils::md5(hash, seed).hex_digest();
+	} else {
 		ERR_UH << "Invalid hash for user '" << name << "'" << std::endl;
 		return false;
 	}
-
-	std::string valid_hash = utils::md5(hash.substr(12,34), seed).hex_digest();
 
 	if(password == valid_hash) return true;
 
@@ -103,9 +106,18 @@ std::string fuh::create_pepper(const std::string& name) {
 		return "";
 	}
 
-	if(!utils::md5::is_valid_hash(hash)) return "";
+	if(utils::md5::is_valid_hash(hash))
+		return hash.substr(0,12);
 
-	return hash.substr(0,12);
+	if(hash.size() > 59 && hash.substr(0,4).compare("$2y$") == 0) {
+		std::size_t iteration_count_delim_pos = hash.find('$', 4);
+		if(iteration_count_delim_pos == std::string::npos)
+			return "";
+		std::size_t seed_pos = iteration_count_delim_pos + 23;
+		return hash.substr(0, seed_pos);
+	}
+
+	return "";
 }
 
 void fuh::user_logged_in(const std::string& name) {

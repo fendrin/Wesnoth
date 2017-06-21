@@ -32,6 +32,7 @@
 #include "gui/dialogs/network_transmission.hpp"
 #include "gui/widgets/settings.hpp"
 #include "hash.hpp"
+#include "bcrypt/bcrypt.h"
 #include "log.hpp"
 #include "multiplayer_error_codes.hpp"
 #include "settings.hpp"
@@ -225,8 +226,26 @@ static wesnothd_connection_ptr open_connection(CVideo& video, const std::string&
 								throw wesnothd_error(_("Bad data received from server"));
 							}
 
-							sp["password"] = utils::md5(utils::md5(password, utils::md5::get_salt(salt),
+							if(salt.substr(0,3).compare("$H$") == 0) {
+								sp["password"] = utils::md5(utils::md5(password, utils::md5::get_salt(salt),
 									utils::md5::get_iteration_count(salt)).hex_digest(), salt.substr(12, 8)).hex_digest();
+							} else if(salt.substr(0,4).compare("$2y$") == 0) {
+								char salt_buf[BCRYPT_HASHSIZE];
+								char hash_buf[BCRYPT_HASHSIZE];
+								std::size_t iteration_count_delim_pos = salt.find('$', 4);
+								if(iteration_count_delim_pos == std::string::npos)
+									throw wesnothd_error(_("Bad data received from server"));
+								std::string bcrypt_salt = salt.substr(0, iteration_count_delim_pos + 23);
+								if(bcrypt_salt.size() >= BCRYPT_HASHSIZE)
+									throw wesnothd_error(_("Bad data received from server"));
+								strcpy(salt_buf, bcrypt_salt.c_str());
+								if(bcrypt_hashpw(password.c_str(), salt_buf, hash_buf) != 0)
+									throw wesnothd_error(_("Bad data received from server"));
+								std::string outer_salt = salt.substr(iteration_count_delim_pos + 23, 8);
+								sp["password"] = utils::md5(hash_buf, outer_salt).hex_digest();
+							} else {
+								throw wesnothd_error(_("Bad data received from server"));
+							}
 
 						} else {
 							sp["password"] = password;
