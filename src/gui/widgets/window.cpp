@@ -643,11 +643,6 @@ void window::draw()
 	}
 }
 
-void window::undraw()
-{
-	// TODO: remove
-}
-
 window::invalidate_layout_blocker::invalidate_layout_blocker(window& window)
 	: window_(window)
 {
