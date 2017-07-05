@@ -78,7 +78,7 @@ bool fuh::login(const std::string& name, const std::string& password, const std:
 
 	if(utils::md5::is_valid_hash(hash)) { // md5 hash
 		valid_hash = utils::md5(hash.substr(12,34), seed).hex_digest();
-	} else if(hash.compare(0, 4, "$2y$") == 0) { // bcrypt hash
+	} else if(utils::bcrypt::is_valid_prefix(hash)) { // bcrypt hash
 		valid_hash = utils::md5(hash, seed).hex_digest();
 	} else {
 		ERR_UH << "Invalid hash for user '" << name << "'" << std::endl;
@@ -109,12 +109,13 @@ std::string fuh::create_pepper(const std::string& name) {
 	if(utils::md5::is_valid_hash(hash))
 		return hash.substr(0,12);
 
-	if(hash.size() > 59 && hash.compare(0, 4, "$2y$") == 0) {
-		std::size_t iteration_count_delim_pos = hash.find('$', 4);
-		if(iteration_count_delim_pos == std::string::npos)
+	if(utils::bcrypt::is_valid_prefix(hash)) {
+		try {
+			return utils::bcrypt::from_hash_string(hash).get_salt();
+		} catch(utils::hash_error& err) {
+			ERR_UH << "Error getting salt from hash of user '" << name << "': " << err.what() << std::endl;
 			return "";
-		std::size_t seed_pos = iteration_count_delim_pos + 23;
-		return hash.substr(0, seed_pos);
+		}
 	}
 
 	return "";
