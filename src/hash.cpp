@@ -123,9 +123,6 @@ bcrypt::bcrypt(const std::string& input)
 bcrypt bcrypt::from_salted_salt(const std::string& input)
 {
 	bcrypt hash { input };
-	hash.iteration_count_delim_pos = input.find('$', 4);
-	if(hash.iteration_count_delim_pos == std::string::npos)
-		throw hash_error("hash string malformed");
 	std::string bcrypt_salt = input.substr(0, hash.iteration_count_delim_pos + 23);
 	if(bcrypt_salt.size() >= BCRYPT_HASHSIZE)
 		throw hash_error("hash string too large");
