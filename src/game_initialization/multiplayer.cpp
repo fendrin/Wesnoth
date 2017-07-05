@@ -231,8 +231,8 @@ static wesnothd_connection_ptr open_connection(CVideo& video, const std::string&
 									utils::md5::get_iteration_count(salt)).hex_digest(), salt.substr(12, 8)).hex_digest();
 							} else if(utils::bcrypt::is_valid_prefix(salt)) {
 								try {
-									auto bcrypt_salt { utils::bcrypt::from_salted_salt(salt) };
-									auto hash { utils::bcrypt::hash_pw(password, bcrypt_salt) };
+									auto bcrypt_salt = utils::bcrypt::from_salted_salt(salt);
+									auto hash = utils::bcrypt::hash_pw(password, bcrypt_salt);
 									std::string outer_salt = salt.substr(bcrypt_salt.iteration_count_delim_pos + 23, 8);
 									if(outer_salt.size() != 8)
 										throw utils::hash_error("salt too small");
