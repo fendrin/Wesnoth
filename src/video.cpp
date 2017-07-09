@@ -507,10 +507,6 @@ void CVideo::set_fullscreen(bool ison)
 		}
 
 		setMode(res.first, res.second, mode);
-
-		if(display::get_singleton()) {
-			display::get_singleton()->redraw_everything();
-		}
 	}
 
 	// Change the config value.
@@ -531,10 +527,6 @@ void CVideo::set_resolution(const unsigned width, const unsigned height)
 	}
 
 	setMode(width, height, TO_RES);
-
-	if(display::get_singleton()) {
-		display::get_singleton()->redraw_everything();
-	}
 
 	// Change the config values.
 	preferences::_set_resolution(std::make_pair(width, height));
