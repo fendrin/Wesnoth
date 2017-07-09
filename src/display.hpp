@@ -67,6 +67,9 @@ namespace wb {
 #include <boost/circular_buffer.hpp>
 
 #include "utils/functional.hpp"
+
+#include <SDL_rect.h>
+
 #include <cstdint>
 #include <deque>
 #include <list>
@@ -290,6 +293,14 @@ public:
 	int get_location_y(const map_location& loc) const;
 
 	/**
+	 * Wrapper to return the drawing origin for the specified location in screen coordinates.
+	 * Combines @ref get_location_x and @ref get_location_y.
+	 *
+	 * @param loc                   The map location to look up.
+	 */
+	SDL_Point get_loc_drawing_origin(const map_location& loc) const;
+
+	/**
 	 * Rectangular area of hexes, allowing to decide how the top and bottom
 	 * edges handles the vertical shift for each parity of the x coordinate
 	 */
@@ -330,7 +341,10 @@ public:
 	const rect_of_hexes hexes_under_rect(const SDL_Rect& r) const;
 
 	/** Returns the rectangular area of visible hexes */
-	const rect_of_hexes get_visible_hexes() const {return hexes_under_rect(map_area());}
+	const rect_of_hexes get_visible_hexes() const
+	{
+		return hexes_under_rect(map_area());
+	}
 
 	/** Returns true if location (x,y) is covered in shroud. */
 	bool shrouded(const map_location& loc) const;
@@ -549,6 +563,14 @@ public:
 	 */
 	virtual void draw() override;
 
+	enum TERRAIN_TYPE { BACKGROUND, FOREGROUND};
+
+private:
+	void draw_visible_hexes(const rect_of_hexes& visible_hexes, TERRAIN_TYPE terrain_type);
+
+	void draw_gamemap();
+
+public:
 	map_labels& labels();
 	const map_labels& labels() const;
 
@@ -622,6 +644,23 @@ public:
 		video_.render_copy(tex, nullptr, &dst, std::forward<T>(extra_args)...);
 	}
 
+	/**
+	 * Renders a texture directly to the screen (or current rendering target) scaled to the
+	 * current zoom factor.
+	 *
+	 * @param tex              The texture to render.
+	 * @param loc              The map location to render at.
+	 * @param extra_args       Any additional arguments to pass to @ref CVideo::render_copy.
+	 *                         This should not contain the texture or source/destination rects.
+	 */
+	template<typename... T>
+	void render_scaled_to_zoom(const texture& tex, const map_location& loc, T&&... extra_args)
+	{
+		SDL_Point origin = get_loc_drawing_origin(loc);
+
+		render_scaled_to_zoom(tex, origin.x, origin.y, std::forward<T>(extra_args)...);
+	}
+
 private:
 	void init_flags_for_side_internal(size_t side, const std::string& side_color);
 
@@ -671,6 +710,8 @@ protected:
 
 	virtual void draw_hex_cursor(const map_location& loc);
 
+	virtual void draw_hex_overlays();
+
 	/**
 	 * @returns the image type to be used for the passed hex
 	 */
@@ -683,8 +724,6 @@ protected:
 	virtual void draw_sidebar() {}
 
 	void draw_minimap();
-
-	enum TERRAIN_TYPE { BACKGROUND, FOREGROUND};
 
 	std::vector<texture> get_terrain_images(const map_location &loc,
 					const std::string& timeid,
@@ -705,6 +744,7 @@ protected:
 	size_t currentTeam_;
 	bool dont_show_all_; //const team *viewpoint_;
 	int xpos_, ypos_;
+	//camera_controller camera_controller_;
 	bool view_locked_;
 	theme theme_;
 	static unsigned int zoom_;
