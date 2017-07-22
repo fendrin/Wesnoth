@@ -15,8 +15,9 @@
 #include "sdl/window.hpp"
 
 #include "ogl/utils.hpp"
-#include "sdl/surface.hpp"
 #include "sdl/exception.hpp"
+#include "sdl/render_utils.hpp"
+#include "sdl/surface.hpp"
 
 namespace sdl
 {
@@ -122,7 +123,7 @@ void window::full_screen()
 
 void window::fill(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-	SDL_SetRenderDrawColor(*this, r, g, b, a);
+	set_draw_color(*this, r, g, b, a);
 	if(SDL_RenderClear(*this) != 0) {
 		throw exception("Failed to clear the SDL_Renderer object.",
 						 true);
