@@ -1385,6 +1385,20 @@ canvas::~canvas()
 	SDL_SetRenderTarget(renderer_, nullptr);
 }
 
+canvas::canvas(canvas&& c)
+{
+	shapes_ = std::move(c.shapes_);
+	blur_depth_ = c.blur_depth_;
+	w_ = c.w_;
+	h_ = c.h_;
+	texture_ = std::move(c.texture_);
+	renderer_ = c.renderer_; c.renderer_ = nullptr;
+	variables_ = c.variables_;
+	functions_ = c.functions_;
+	is_dirty_ = c.is_dirty_;
+	size_changed_ = c.size_changed_;
+}
+
 void canvas::draw(const bool force)
 {
 	log_scope2(log_gui_draw, "Canvas: drawing.");
