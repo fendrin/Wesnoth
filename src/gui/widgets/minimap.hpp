@@ -20,6 +20,7 @@
 #include "gui/core/window_builder.hpp"
 
 class config;
+class gamemap;
 
 namespace gui2
 {
@@ -35,9 +36,7 @@ namespace gui2
 class minimap : public styled_widget
 {
 public:
-	minimap() : styled_widget(), map_data_(), terrain_(nullptr)
-	{
-	}
+	minimap();
 
 	/***** ***** ***** ***** Inherited ***** ***** ***** *****/
 
@@ -55,12 +54,7 @@ public:
 
 	/***** ***** ***** setters / getters for members ***** ****** *****/
 
-	void set_map_data(const std::string& map_data)
-	{
-		if(map_data != map_data_) {
-			map_data_ = map_data;
-		}
-	}
+	void set_map_data(const std::string& map_data);
 
 	std::string get_map_data() const
 	{
@@ -88,18 +82,14 @@ private:
 	 */
 	const ::config* terrain_;
 
-	/**
-	 * Gets the image for the minimap.
-	 *
-	 * @param w                   The wanted width of the image.
-	 * @param h                   The wanted height of the image.
-	 *
-	 * @returns                   The image, nullptr upon error.
-	 */
-	const surface get_image(const int w, const int h) const;
+	/** Game map generated from the provided data. */
+	std::unique_ptr<gamemap> map_;
 
-	/** See @ref widget::impl_draw_background. */
-	virtual void impl_draw_background(int x_offset, int y_offset) override;
+	/** Inherited from @ref styled_widget. */
+	virtual void init() override;
+
+	/** Drawing function passed to the background canvas. */
+	void canvas_draw_background(texture& tex);
 
 	/** See @ref styled_widget::get_control_type. */
 	virtual const std::string& get_control_type() const override;
