@@ -50,11 +50,6 @@ public:
 
 	command_console(const std::string& prompt, callback_t callback);
 
-	~command_console()
-	{
-		//hide();
-	}
-
 	//enum CONSOLE_MODE { MODE_NONE, MODE_SEARCH, MODE_MESSAGE, MODE_COMMAND, MODE_AI };
 
 	/**
@@ -67,8 +62,10 @@ public:
 	 */
 	static void display(CVideo& video, const std::string& prompt, callback_t callback = nullptr)
 	{
-		singleton_.reset(new command_console(prompt, callback));
-		singleton_->show(video, true); // allow interaction
+		if(!singleton_) {
+			singleton_.reset(new command_console(prompt, callback));
+			singleton_->show(video, true); // allow interaction
+		}
 	}
 
 private:

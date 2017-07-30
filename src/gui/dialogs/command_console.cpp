@@ -81,7 +81,7 @@ void command_console::input_key_press_callback(const SDL_Keycode key)
 
 void command_console::close()
 {
-	hide();
+	// The modeless_dialog dtor will close the dialog.
 	singleton_.reset();
 }
 
