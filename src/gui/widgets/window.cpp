@@ -280,7 +280,6 @@ window::window(CVideo& video,
 	, variables_()
 	, invalidate_layout_blocked_(false)
 	, suspend_drawing_(true)
-	, is_toplevel_(!is_in_dialog())
 	, automatic_placement_(automatic_placement)
 	, horizontal_placement_(horizontal_placement)
 	, vertical_placement_(vertical_placement)
@@ -299,7 +298,6 @@ window::window(CVideo& video,
 	, escape_disabled_(false)
 	, linked_size_()
 	, mouse_button_state_(0) /**< Needs to be initialized in @ref show. */
-	, dirty_list_()
 #ifdef DEBUG_WINDOW_LAYOUT_GRAPHS
 	, debug_layout_(new debug_layout_graph(this))
 #endif

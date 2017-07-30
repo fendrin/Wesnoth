@@ -199,17 +199,6 @@ public:
 	 */
 	void draw();
 
-	/**
-	 * Adds an item to the dirty_list_.
-	 *
-	 * @param call_stack          The list of widgets traversed to get to the
-	 *                            dirty widget.
-	 */
-	void add_to_dirty_list(const std::vector<widget*>& call_stack)
-	{
-		dirty_list_.push_back(call_stack);
-	}
-
 	/** The status of the window. */
 	enum status {
 		NEW,		   /**< The window is new and not yet shown. */
@@ -522,9 +511,6 @@ private:
 	/** Avoid drawing the window.  */
 	bool suspend_drawing_;
 
-	/** Whether the window has other windows behind it */
-	bool is_toplevel_;
-
 	/** Do we wish to place the widget automatically? */
 	const bool automatic_placement_;
 
@@ -678,14 +664,6 @@ private:
 
 	/** See @ref styled_widget::get_control_type. */
 	virtual const std::string& get_control_type() const override;
-
-	/**
-	 * The list with dirty items in the window.
-	 *
-	 * When drawing only the widgets that are dirty are updated. The draw()
-	 * function has more information about the dirty_list_.
-	 */
-	std::vector<std::vector<widget*> > dirty_list_;
 
 	/**
 	 * Finishes the initialization of the grid.
