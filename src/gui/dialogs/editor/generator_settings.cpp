@@ -21,6 +21,7 @@
 #include "gui/widgets/slider.hpp"
 #include "gui/widgets/status_label_helper.hpp"
 #include "gettext.hpp"
+#include "formula/string_utils.hpp"
 
 #include "utils/functional.hpp"
 
@@ -64,7 +65,12 @@ void generator_settings::pre_show(window& window)
 	update_width_label_  = gui2::bind_status_label<slider>(&window, "width");
 	update_height_label_ = gui2::bind_status_label<slider>(&window, "height");
 
-	gui2::bind_status_label<slider>(&window, "villages", [](slider& s)->std::string { return formatter() << s.get_value() << _("/1000 tiles"); });
+	gui2::bind_status_label<slider>(&window, "villages", [](slider& s)->std::string {
+		std::string val = std::to_string(s.get_value());
+		utils::string_map args;
+		args["villages"] = val;
+		return VGETTEXT("$villages/1000 tiles", args);
+	});
 	gui2::bind_status_label<slider>(&window, "castle_size");
 	gui2::bind_status_label<slider>(&window, "landform", [](slider& s)->std::string {
 		return s.get_value() == 0 ? _("Inland") : (s.get_value() < max_coastal ? _("Coastal") : _("Island")); });
