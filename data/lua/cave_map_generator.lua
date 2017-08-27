@@ -50,7 +50,7 @@ function callbacks.generate_map(params)
 				for elem in tile_op.convert_to_bridge:gmatch("[^%s,][^,]*") do
 					table.insert(bridges, elem)
 				end
-				local dir = wesnoth.map_location.get_relative_dir(from_x, from_y, to_x, to_y)
+				local dir = wesnoth.map.get_relative_dir(from_x, from_y, to_x, to_y)
 				if dir == 'n' or dir == 's' then
 					map:set_tile(to_x, to_y, bridges[1])
 				elseif dir == 'sw' or dir == 'ne' then
