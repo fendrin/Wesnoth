@@ -1,3 +1,8 @@
+Version 1.90.0+dev:
+ * Git repository cleanup
+   * Purged most binary files like png or ogg
+   * Purged "resources", "website" and more obsolete folders
+
 Version 1.13.10+dev:
  * Campaigns:
    * The Cutscene_Minimal theme is now used in all dialog only scenarios that
