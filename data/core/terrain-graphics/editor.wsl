@@ -1,0 +1,17 @@
+-- Macros for terrains that appear differently (or only) in the editor
+
+EDITOR_OVERLAY = (TERRAIN, IMAGE_NAME) -> {
+    <if EDITOR then {
+        terrain_graphics: {
+            tile: {
+                x: 0, y: 0
+                type: TERRAIN
+
+                image: {
+                    name: "{IMAGE_NAME}.png~O(0.5)"
+                    layer: 1000
+                }
+            }
+        }
+    }
+}

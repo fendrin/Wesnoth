@@ -1,0 +1,76 @@
+--textdomain wesnoth
+
+--macros with complex behaviours, mainly build by assembling the basics from internal-generics
+
+-------------------------------------------
+------------- GENERIC ---------------------
+-------------------------------------------
+
+-- take one of the images IMAGESTEM-
+-- the chances are the same for all available images, even if the last ones are missing
+GENERIC_SINGLE_RANDOM_LFB = (TERRAIN, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 12:     {GENERIC_SINGLE_PLFB ({TERRAIN}) 100  {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+GENERIC_RESTRICTED_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM, ROTATION) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 16:     {GENERIC_RESTRICTED_PLFB ({TERRAIN}) ({ADJACENT}) 100  {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V {ROTATION}}
+}
+
+GENERIC_RESTRICTED2_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM, ROTATION) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 20:     {GENERIC_RESTRICTED2_PLFB ({TERRAIN}) ({ADJACENT}) 100  {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V {ROTATION}}
+}
+
+GENERIC_RESTRICTED3_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM, ROTATION) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 24:     {GENERIC_RESTRICTED3_PLFB ({TERRAIN}) ({ADJACENT}) 100  {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V {ROTATION}}
+}
+
+GENERIC_COMPLETE_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 28:     {GENERIC_RESTRICTED3_RANDOM_LFB  ({TERRAIN})  ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small (-@R0-@R1-@R2)}
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 29:     {GENERIC_RESTRICTED3_RANDOM_LFB   ({TERRAIN}) ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small ()}
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 30:     {GENERIC_RESTRICTED2_RANDOM_LFB  ({TERRAIN})  ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small (-@R0-@R1)}
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 31:     {GENERIC_RESTRICTED2_RANDOM_LFB   ({TERRAIN}) ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small ()}
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 32:     {GENERIC_RESTRICTED_RANDOM_LFB   ({TERRAIN})  ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small (-@R0)}
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 33:     {GENERIC_RESTRICTED_RANDOM_LFB   ({TERRAIN})  ({ADJACENT}) {LAYER} {FLAG} {BUILDER} {IMAGESTEM}-small ()}
+    <GENERIC_SINGLE_RANDOM_LFB(TERRAIN, LAYER, FLAG, BUILDER, IMAGESTEM)
+}
+
+-------------------------------------------
+------------- BORDER ----------------------
+-------------------------------------------
+
+-- take one of the images IMAGESTEM-
+-- the chances are the same for all available images, even if the last ones are missing
+
+BORDER_RESTRICTED_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 45:     {BORDER_RESTRICTED_PLFB ({TERRAIN}) ({ADJACENT}) 100  {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_RESTRICTED2_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 49:     {BORDER_RESTRICTED2_PLFB ({TERRAIN}) ({ADJACENT}) 100 {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_RESTRICTED3_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 53:     {BORDER_RESTRICTED3_PLFB ({TERRAIN}) ({ADJACENT}) 100 {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_RESTRICTED4_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 57:     {BORDER_RESTRICTED4_PLFB ({TERRAIN}) ({ADJACENT}) 100 {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_RESTRICTED5_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 61:     {BORDER_RESTRICTED5_PLFB ({TERRAIN}) ({ADJACENT}) 100 {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_RESTRICTED6_RANDOM_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/internal-complex.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 65:     {BORDER_RESTRICTED6_PLFB ({TERRAIN}) ({ADJACENT}) 100 {LAYER} {FLAG} {BUILDER} {IMAGESTEM}@V}
+}
+
+BORDER_COMPLETE_LFB = (TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM) -> {
+    <BORDER_RESTRICTED6_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED5_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED4_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED3_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED2_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+    <BORDER_RESTRICTED_RANDOM_LFB(TERRAIN, ADJACENT, LAYER, FLAG, BUILDER, IMAGESTEM)
+}

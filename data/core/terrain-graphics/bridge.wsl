@@ -1,0 +1,190 @@
+
+BRIDGE.NEXUS = (C_TERRAIN_VALUE, NW_TERRAIN_VALUE, N_TERRAIN_VALUE, NE_TERRAIN_VALUE, SW_TERRAIN_VALUE, S_TERRAIN_VALUE, SE_TERRAIN_VALUE, C_FLAGS, NW_FLAGS, N_FLAGS, NE_FLAGS, SW_FLAGS, S_FLAGS, SE_FLAGS, LAYER, IMAGE) -> {
+    terrain_graphics: {
+        map: "
+, 3
+2,  4
+, 1
+5,  7
+, 6"
+        tile: {
+            pos: 1
+            type: C_TERRAIN_VALUE
+            set_no_flag: C_FLAGS
+        }
+        tile: {
+            pos: 2
+            type: NW_TERRAIN_VALUE
+            set_no_flag: NW_FLAGS
+        }
+        tile: {
+            pos: 3
+            type: N_TERRAIN_VALUE
+            set_no_flag: N_FLAGS
+        }
+        tile: {
+            pos: 4
+            type: NE_TERRAIN_VALUE
+            set_no_flag: NE_FLAGS
+        }
+        tile: {
+            pos: 5
+            type: SW_TERRAIN_VALUE
+            set_no_flag: SW_FLAGS
+        }
+        tile: {
+            pos: 6
+            type: S_TERRAIN_VALUE
+            set_no_flag: S_FLAGS
+        }
+        tile: {
+            pos: 7
+            type: SE_TERRAIN_VALUE
+            set_no_flag: SE_FLAGS
+        }
+        image: {
+            center: {90, 144}
+            base: {90, 144}
+            layer: LAYER
+            name: "#{IMAGE}.png"
+        }
+    }
+}
+
+BRIDGE.STRAIGHT_SE_NW = (NW_TERRAIN_VALUE, SE_TERRAIN_VALUE, N_TERRAIN_VALUE, S_TERRAIN_VALUE, NW_FLAGS, SE_FLAGS, LAYER, IMAGE) -> {
+    terrain_graphics: {
+        map: "
+, 3
+1
+, 2
+4"
+        tile: {
+            pos: 1
+            type: NW_TERRAIN_VALUE
+            set_no_flag: NW_FLAGS
+        }
+        tile: {
+            pos: 2
+            type: SE_TERRAIN_VALUE
+            set_no_flag: SE_FLAGS
+        }
+        tile: {
+            pos: 3
+            type: N_TERRAIN_VALUE
+        }
+        tile: {
+            pos: 4
+            type: S_TERRAIN_VALUE
+        }
+        image: {
+            center: {63, 126}
+            base: {63, 126}
+            layer: LAYER
+            name: "#{IMAGE}.png"
+        }
+    }
+}
+
+BRIDGE.STRAIGHT_SW_NE = (NE_TERRAIN_VALUE, SW_TERRAIN_VALUE, N_TERRAIN_VALUE, S_TERRAIN_VALUE, NE_FLAGS, SW_FLAGS, LAYER, IMAGE) -> {
+    terrain_graphics: {
+        map: "
+3
+, 1
+2
+, 4"
+        tile: {
+            pos: 1
+            type: NE_TERRAIN_VALUE
+            set_no_flag: NE_FLAGS
+        }
+        tile: {
+            pos: 2
+            type: SW_TERRAIN_VALUE
+            set_no_flag: SW_FLAGS
+        }
+        tile: {
+            pos: 3
+            type: N_TERRAIN_VALUE
+        }
+        tile: {
+            pos: 4
+            type: S_TERRAIN_VALUE
+        }
+        image: {
+            center: {63, 90}
+            base: {63, 90}
+            layer: LAYER
+            name: "#{IMAGE}.png"
+        }
+    }
+}
+
+BRIDGE.STRAIGHT_S_N = (N_TERRAIN_VALUE, S_TERRAIN_VALUE, W_TERRAIN_VALUE, E_TERRAIN_VALUE, N_FLAGS, S_FLAGS, LAYER, IMAGE) -> {
+    terrain_graphics: {
+        map: "
+, 1
+3, 4
+, 2"
+        tile: {
+            pos: 1
+            type: N_TERRAIN_VALUE
+            set_no_flag: N_FLAGS
+        }
+        tile: {
+            pos: 2
+            type: S_TERRAIN_VALUE
+            set_no_flag: S_FLAGS
+        }
+        tile: {
+            pos: 3
+            type: W_TERRAIN_VALUE
+        }
+        tile: {
+            pos: 4
+            type: E_TERRAIN_VALUE
+        }
+        image: {
+            center: {90, 108}
+            base: {90, 108}
+            layer: LAYER
+            name: "#{IMAGE}.png"
+        }
+    }
+}
+
+BRIDGE.JOINTS = (NW_SE_OVERLAY, N_S_OVERLAY, NE_SW_OVERLAY, B_TERRAIN_NAME, S_TERRAIN_NAME, NAME, LAYER, IMAGE_GROUP_NAME) -> {
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 156:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) * *^{N_S_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME} *^{NW_SE_OVERLAY}           ({NAME}-[n,se,sw,ne,s,nw]) () {NAME}-s () {NAME}-ne () {NAME}-nw {LAYER} {IMAGE_GROUP_NAME}-n-se-sw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 157:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME} *^{N_S_OVERLAY} {S_TERRAIN_NAME} ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () {NAME}-n () {LAYER} {IMAGE_GROUP_NAME}-ne-s-nw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 158:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME} *^{N_S_OVERLAY} *           ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () {NAME}-n () {LAYER} {IMAGE_GROUP_NAME}-ne-s-nw-l}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 159:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} *           *^{N_S_OVERLAY} {S_TERRAIN_NAME} ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () {NAME}-n () {LAYER} {IMAGE_GROUP_NAME}-ne-s-nw-r}
+}
+
+BRIDGE.CORNERS = (NW_SE_OVERLAY, N_S_OVERLAY, NE_SW_OVERLAY, B_TERRAIN_NAME, S_TERRAIN_NAME, NAME, LAYER, IMAGE_GROUP_NAME) -> {
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 163:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY})   *^{NW_SE_OVERLAY} * *                 {S_TERRAIN_NAME}       *^{N_S_OVERLAY}   *                 ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () () () {NAME}-n ()  {LAYER} {IMAGE_GROUP_NAME}-s-nw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 164:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY})   *                 *^{N_S_OVERLAY}   * *                 {S_TERRAIN_NAME}       *^{NW_SE_OVERLAY} ({NAME}-[n,se,sw,ne,s,nw]) () {NAME}-s () () () {NAME}-nw  {LAYER} {IMAGE_GROUP_NAME}-n-se}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 165:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NE_SW_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY})   *                 * *^{NE_SW_OVERLAY} *                 *^{N_S_OVERLAY}   {S_TERRAIN_NAME}       ({NAME}-[n,se,sw,ne,s,nw]) () () {NAME}-sw () {NAME}-n ()  {LAYER} {IMAGE_GROUP_NAME}-ne-s}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 166:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NE_SW_OVERLAY},{B_TERRAIN_NAME}^{N_S_OVERLAY})   *                 *^{N_S_OVERLAY}   * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       *                 ({NAME}-[n,se,sw,ne,s,nw]) () {NAME}-s () {NAME}-ne () ()  {LAYER} {IMAGE_GROUP_NAME}-sw-n}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 167:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *                 * *                 *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       *^{NW_SE_OVERLAY} ({NAME}-[n,se,sw,ne,s,nw]) () () () {NAME}-ne () {NAME}-nw {LAYER} {IMAGE_GROUP_NAME}-sw-se}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 168:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       {S_TERRAIN_NAME}       {S_TERRAIN_NAME}       ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 169:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       {S_TERRAIN_NAME}       *                 ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-lc}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 170:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       *                 {S_TERRAIN_NAME}       ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-lr}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 171:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} *                 {S_TERRAIN_NAME}       {S_TERRAIN_NAME}       ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-cr}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 172:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} {S_TERRAIN_NAME}       *                 *                 ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-l}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 173:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} *                 {S_TERRAIN_NAME}       *                 ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-c}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 174:     {BRIDGE:NEXUS ({B_TERRAIN_NAME}^{NW_SE_OVERLAY},{B_TERRAIN_NAME}^{NE_SW_OVERLAY}) *^{NW_SE_OVERLAY} * *^{NE_SW_OVERLAY} *                 *                 {S_TERRAIN_NAME}       ({NAME}-[n,se,sw,ne,s,nw]) {NAME}-se () {NAME}-sw () () () {LAYER} {IMAGE_GROUP_NAME}-ne-nw-r}
+}
+
+BRIDGE.STRAIGHTS = (NW_SE_OVERLAY, N_S_OVERLAY, NE_SW_OVERLAY, BN_TERRAIN_NAME, BS_TERRAIN_NAME, S_TERRAIN_NAME, NAME, LAYER, IMAGE_GROUP_NAME) -> {
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 178:     {BRIDGE:STRAIGHT_SE_NW {BN_TERRAIN_NAME}^{NW_SE_OVERLAY} {BS_TERRAIN_NAME}^{NW_SE_OVERLAY} * {S_TERRAIN_NAME} {NAME}-se {NAME}-nw {LAYER} {IMAGE_GROUP_NAME}-se-nw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 179:     {BRIDGE:STRAIGHT_S_N   {BN_TERRAIN_NAME}^{N_S_OVERLAY}   {BS_TERRAIN_NAME}^{N_S_OVERLAY}   * *           {NAME}-s  {NAME}-n  {LAYER} {IMAGE_GROUP_NAME}-s-n}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 180:     {BRIDGE:STRAIGHT_SW_NE {BN_TERRAIN_NAME}^{NE_SW_OVERLAY} {BS_TERRAIN_NAME}^{NE_SW_OVERLAY} * {S_TERRAIN_NAME} {NAME}-sw {NAME}-ne {LAYER} {IMAGE_GROUP_NAME}-sw-ne}
+}
+
+BRIDGE.ENDS = (NW_SE_OVERLAY, N_S_OVERLAY, NE_SW_OVERLAY, B_TERRAIN_NAME, E_TERRAIN_NAME, S_TERRAIN_NAME, NAME, LAYER, IMAGE_GROUP_NAME) -> {
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 184:     {BRIDGE:STRAIGHT_SE_NW {B_TERRAIN_NAME}^{NW_SE_OVERLAY} {E_TERRAIN_NAME}                 * {S_TERRAIN_NAME} {NAME}-se () {LAYER} {IMAGE_GROUP_NAME}-nw}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 185:     {BRIDGE:STRAIGHT_SE_NW {E_TERRAIN_NAME}                 {B_TERRAIN_NAME}^{NW_SE_OVERLAY} * {S_TERRAIN_NAME} () {NAME}-nw {LAYER} {IMAGE_GROUP_NAME}-se}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 186:     {BRIDGE:STRAIGHT_S_N   {B_TERRAIN_NAME}^{N_S_OVERLAY}   {E_TERRAIN_NAME}                 * *           {NAME}-s  () {LAYER} {IMAGE_GROUP_NAME}-n}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 187:     {BRIDGE:STRAIGHT_S_N   {E_TERRAIN_NAME}                 {B_TERRAIN_NAME}^{N_S_OVERLAY}   * *           ()  {NAME}-n {LAYER} {IMAGE_GROUP_NAME}-s}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 188:     {BRIDGE:STRAIGHT_SW_NE {B_TERRAIN_NAME}^{NE_SW_OVERLAY} {E_TERRAIN_NAME}                 * {S_TERRAIN_NAME} {NAME}-sw () {LAYER} {IMAGE_GROUP_NAME}-ne}
+err: ../attic/data/core/terrain-graphics/bridge.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 189:     {BRIDGE:STRAIGHT_SW_NE {E_TERRAIN_NAME}                 {B_TERRAIN_NAME}^{NE_SW_OVERLAY} * {S_TERRAIN_NAME} () {NAME}-ne {LAYER} {IMAGE_GROUP_NAME}-sw}
+}

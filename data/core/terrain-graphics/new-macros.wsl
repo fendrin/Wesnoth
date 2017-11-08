@@ -1,0 +1,3068 @@
+-- This file contains a WIP set of terrain graphics macros, intended to be as
+-- short and simple as possible.
+
+NEW.BASE = (TERRAIN, IMAGESTEM) -> {
+-- Places {IMAGESTEM}[1-11].png as base tiles. Assumes 72x72 hex-shaped
+-- images.
+
+--arg FLAG
+    "base"
+--endarg
+
+--arg LAYER
+    -1000
+--endarg
+
+    terrain_graphics: {
+        tile: {
+            x: 0, y: 0
+            type: TERRAIN
+            set_no_flag: FLAG!
+
+            image: {
+                name: "#{IMAGESTEM}@V.png"
+                variations: ";2;3;4;5;6;7;8;9;10;11"
+                layer: LAYER!
+            }
+        }
+    }
+}
+
+NEW.BASE_P = (TERRAIN, PROB, IMAGESTEM) -> {
+    <NEW.BASE(TERRAIN, IMAGESTEM)
+    terrain_graphics: {
+        amend: true
+        probability: PROB
+
+-- No need to look for variations here...
+        tile: {
+            amend: true
+            image: {
+                amend: true
+                name: "#{IMAGESTEM}.png"
+                variations: ""
+            }
+        }
+    }
+}
+
+NEW.OVERLAY = (TERRAIN, IMAGESTEM) -> {
+-- Places {IMAGESTEM}[1-11].png as overlay tiles.
+
+--arg LAYER
+    "0"--endarg
+
+--arg FLAG
+    "overlay"--endarg
+
+--arg PROB
+    "100"--endarg
+
+--arg ANIM
+--endarg
+
+--arg TIME
+--endarg
+
+--arg CENTER
+    90, "144"--endarg
+
+    terrain_graphics: {
+        map: "
+, *
+* , *
+, 1
+* , *
+, *"
+        tile: {
+            pos: 1
+            type: TERRAIN
+            set_no_flag: FLAG!
+        }
+
+        probability: PROB!
+
+        image: {
+            name: "#{IMAGESTEM}@V#{ANIM}.png:#{TIME}"
+            variations: ";2;3;4;5;6;7;8;9;10;11"
+            layer: LAYER!
+            base: {90, 160}
+            center: CENTER!
+        }
+    }
+}
+
+-- this macro is to deal with the awkward crowding caused by the transitions of the I* terrains
+NEW.TRANSITION_CROWDED = (TERRAINLIST, ADJACENT, LAYER, IMAGESTEM) -> {
+
+--arg FLAG
+    "transition"--endarg
+
+--arg PATCH_LAYER
+    "-82"--endarg
+
+    terrain_graphics: {
+        map: "
+, 3
+2 , 4
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R5", "#{FLAG}-@R0", "#{FLAG}-@R1"}
+            set_flag: "crowded"
+            image: {
+                name: "#{IMAGESTEM}-@R5-gap-@R1.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+        tile: {
+            pos: 4
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+-- this rule is a hack to cover up the bad transitions, possible for some combinations of I*,Q*, and a third terrain
+    terrain_graphics: {
+        map: "
+, 2
+3 , 3
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "crowded_drawn-@R0"
+            has_flag: "crowded"
+            image: {
+                name: "#{IMAGESTEM}-crowded-patch-@R0.png"
+                layer: PATCH_LAYER!
+            }
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            no_flag: "crowded"
+            image: {
+                name: "#{IMAGESTEM}-crowded-patch-@R3.png"
+                layer: PATCH_LAYER!
+            }
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+}
+
+NEW.DISABLE_TRANSITION = (TERRAINLIST, ADJACENT) -> {
+
+--arg FLAG
+    "transition"--endarg
+
+    terrain_graphics: {
+        map: "
+, 2
+. , .
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_flag: "#{FLAG}-@R3"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+}
+
+NEW.TRANSITION = (TERRAINLIST, ADJACENT, LAYER, IMAGESTEM) -> {
+
+--arg FLAG
+    "transition"--endarg
+
+    terrain_graphics: {
+        map: "
+, 2
+7 , 3
+, 1
+6 , 4
+, 5"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R0", "#{FLAG}-@R1", "#{FLAG}-@R2", "#{FLAG}-@R3", "#{FLAG}-@R4", "#{FLAG}-@R5"}
+            image: {
+                name: "#{IMAGESTEM}-@R0-@R1-@R2-@R3-@R4-@R5.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+        tile: {
+            pos: 4
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R5"
+        }
+        tile: {
+            pos: 5
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 6
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R1"
+        }
+        tile: {
+            pos: 7
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R2"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+6 , 4
+, 5"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R0", "#{FLAG}-@R1", "#{FLAG}-@R2", "#{FLAG}-@R3", "#{FLAG}-@R4"}
+            image: {
+                name: "#{IMAGESTEM}-@R0-@R1-@R2-@R3-@R4.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+        tile: {
+            pos: 4
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R5"
+        }
+        tile: {
+            pos: 5
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 6
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R1"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+. , 4
+, 5"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R0", "#{FLAG}-@R1", "#{FLAG}-@R2", "#{FLAG}-@R3"}
+            image: {
+                name: "#{IMAGESTEM}-@R0-@R1-@R2-@R3.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+        tile: {
+            pos: 4
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R5"
+        }
+        tile: {
+            pos: 5
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+. , 4
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R0", "#{FLAG}-@R1", "#{FLAG}-@R2"}
+            image: {
+                name: "#{IMAGESTEM}-@R0-@R1-@R2.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+        tile: {
+            pos: 4
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R5"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-@R0", "#{FLAG}-@R1"}
+            image: {
+                name: "#{IMAGESTEM}-@R0-@R1.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+. , .
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+}
+
+-- This is added to deal with chasm-flat-interior transitions, but is probably useful for other cases.
+-- The cw/ccw were for interior-chasm with flanking flat.  The offcw/offccw were for interior-flat with flanking chasm.
+
+NEW.THREE_TERRAIN_TRANSITION = (TERRAINLIST, ADJACENT, ADJACENT2, LAYER, IMAGESTEM) -> {
+
+--arg FLAG
+    "transition"--endarg
+
+    terrain_graphics: {
+        map: "
+, 2
+3 , 3
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT2
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-off2-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-cw-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT2
+            image: {
+                name: "#{IMAGESTEM}-assist-cw-@R0.png"
+                layer: LAYER
+            }
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+3 , .
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-ccw-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT2
+            image: {
+                name: "#{IMAGESTEM}-assist-ccw-@R0.png"
+                layer: LAYER
+            }
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+
+    terrain_graphics: {
+        map: "
+, 2
+. , 3
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT2
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-offcw-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+, 2
+3 , .
+, 1
+. , .
+, ."
+        tile: {
+            pos: 1
+            type: ADJACENT2
+            set_no_flag: "#{FLAG}-@R0"
+            image: {
+                name: "#{IMAGESTEM}-offccw-@R0.png"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+}
+
+NEW.GENERIC_CORNER_TRANSITION = (TERRAINLIST, ADJACENT, LAYER, IMAGESTEM, MASKSTEM, MASKIPF) -> {
+
+--arg FLAG
+    "corner"--endarg
+
+    terrain_graphics: {
+        map: "
+,  2
+2,   2
+,  1
+2,   2
+,  2"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-concave-@R0", "#{FLAG}-concave-@R1", "#{FLAG}-concave-@R2", "#{FLAG}-concave-@R3", "#{FLAG}-concave-@R4", "#{FLAG}-concave-@R5"}
+            image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 601:                 name={IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-concave-2-@R0.png~BLIT(terrain/{MASKSTEM}-concave-2-@R1.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R2.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R3.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R4.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R5.png){MASKIPF})
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   2
+,  1
+2,   2
+,  2"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-concave-@R0", "#{FLAG}-concave-@R1", "#{FLAG}-concave-@R2", "#{FLAG}-concave-@R3"}
+            image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 624:                 name={IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-concave-2-@R0.png~BLIT(terrain/{MASKSTEM}-concave-2-@R1.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R2.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R3.png){MASKIPF})
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   2
+,  1
+.,   2
+,  2"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-concave-@R0", "#{FLAG}-concave-@R1", "#{FLAG}-concave-@R2"}
+            image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 647:                 name={IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-concave-2-@R0.png~BLIT(terrain/{MASKSTEM}-concave-2-@R1.png)~BLIT(terrain/{MASKSTEM}-concave-2-@R2.png){MASKIPF})
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   2
+,  1
+.,   2
+,  ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-concave-@R0", "#{FLAG}-concave-@R1"}
+            image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 670:                 name={IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-concave-2-@R0.png~BLIT(terrain/{MASKSTEM}-concave-2-@R1.png){MASKIPF})
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   2
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-concave-@R0"
+            image: {
+                name: "{IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-concave-2-@R0.png{MASKIPF})"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+3,   3
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: {"#{FLAG}-convex-@R0-@R5", "#{FLAG}-convex-@R5-@R0"}
+            image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 720:                 name={IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-convex-@R0-@R5.png~BLIT(terrain/{MASKSTEM}-convex-@R5-@R0.png){MASKIPF})
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST}
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   3
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-convex-@R0-@R5"
+            image: {
+                name: "{IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-convex-@R0-@R5.png{MASKIPF})"
+                layer: LAYER
+            }
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST}
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+    terrain_graphics: {
+        map: "
+,  2
+.,   3
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+        }
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST}
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-convex-@R0-@R1"
+            image: {
+                name: "{IMAGESTEM}.png~MASK(terrain/{MASKSTEM}-convex-@R0-@R1.png{MASKIPF})"
+                layer: LAYER
+            }
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+    }
+}
+
+NEW.FOREST = (TERRAINLIST, ADJACENT, IMAGESTEM) -> {
+-- This assumes centered images. Places the images named
+-- {IMAGESTEM}-small[1-11].png on all {TERRAIN} adjacent to {ADJACENT}, and
+-- {IMAGESTEM}[1-11].png on all others.
+
+-- Note: normally base= coordinates are affected by rotations, but here that
+-- causes problems; this is why the rules for setting the flag for a small
+-- forest and placing the actual image are separate.
+
+    terrain_graphics: {
+        map: "
+,  2
+.,   .
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "smallforest"
+        }
+
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+    }
+    terrain_graphics: {
+        map: "
+,  *
+*,   *
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            has_flag: "smallforest"
+            set_no_flag: "overlay"
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-small@V.png"
+            variations: ";2;3;4;5;6;7;8;9;10;11"
+            layer: 0
+            base: {90, 161}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  *
+*,   *
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "overlay"
+        }
+
+        image: {
+            name: "#{IMAGESTEM}@V.png"
+            variations: ";2;3;4;5;6;7;8;9;10;11"
+            layer: 0
+            base: {90, 161}
+            center: {90, 144}
+        }
+    }
+}
+
+NEW.FENCE = (TERRAINLIST, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+,  .
+2,   2
+,  1
+2,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "se", "sw", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-se-sw-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+2,   2
+,  1
+.,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "se", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-se-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+2,   .
+,  1
+2,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[se", "sw", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-se-sw-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+.,   2
+,  1
+2,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "se", "sw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-se-sw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+2,   2
+,  1
+2,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "sw", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-sw-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+.,   2
+,  1
+.,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "se]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-se.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+2,   .
+,  1
+2,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[sw", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-sw-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+.,   .
+,  1
+2,   2
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[se", "sw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-se-sw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  .
+2,   2
+,  1
+.,   .
+,  ."
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  *
+*,   2
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-@R4"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            has_flag: "fence-@R4"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-@R1-@R4-@V.png"
+-- wmlscope: stop ignoring
+            variations: "01;02"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  *
+*,   2
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-@R4"}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-@R1-@R4-@V.png"
+-- wmlscope: stop ignoring
+            variations: "01;02"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  *
+2,   2
+,  1
+2,   2
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_flag: "fence"
+            set_flag: {"fence", "fence-[ne", "se", "sw", "nw]"}
+        }
+
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST}
+        }
+
+        image: {
+            name: "#{IMAGESTEM}-ne-se-sw-nw.png"
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  *
+*,   2
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: {"!", TERRAINLIST}
+        }
+
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            has_flag: "fence-@R4"
+        }
+
+        rotations: {"n", "ne", "se", "s", "sw", "nw"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-@R1.png"
+-- wmlscope: stop ignoring
+            layer: -80
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+}
+
+NEW.WALL_CORNER = (TERRAINLIST, ADJACENT, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+,  4
+2,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: {"wall-[@R0", "@R5]"}
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "wall-@R1"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "wall-@R4"
+        }
+        tile: {
+            pos: 4
+            type: ADJACENT
+--            set_no_flag=wall-[@R4,@R1]
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: 100
+
+        image: {
+            layer: 0
+            center: {90, 148}
+            base: {125, 120}
+--            base=54,72
+            name: "#{IMAGESTEM}@V-corner-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+}
+
+NEW.WALL2_CORNER = (TERRAINLIST, ADJACENT1, ADJACENT2, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+,  4
+2,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: {"wall-[@R0", "@R5]"}
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "wall-@R1"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT1
+            set_no_flag: "wall-@R4"
+        }
+        tile: {
+            pos: 4
+            type: ADJACENT2
+--            set_no_flag=wall-[@R4,@R1]
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: 100
+
+        image: {
+            layer: 0
+            center: {90, 148}
+            base: {125, 120}
+--            base=54,72
+            name: "#{IMAGESTEM}@V-corner-ccw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+,  4
+2,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: {"wall-[@R0", "@R5]"}
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT1
+            set_no_flag: "wall-@R1"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "wall-@R4"
+        }
+        tile: {
+            pos: 4
+            type: ADJACENT2
+--            set_no_flag=wall-[@R4,@R1]
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: 100
+
+        image: {
+            layer: 0
+            center: {90, 148}
+            base: {125, 120}
+--            base=54,72
+            name: "#{IMAGESTEM}@V-corner-cw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+}
+
+-- this macro may need revision
+NEW.WALL_A10 = (TERRAINLIST, ADJACENT, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "wall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "wall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "wall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: 100
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-A[01~10]-convex-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "wall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "wall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "wall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: 100
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-A[01~10]-concave-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.WALL = (TERRAINLIST, ADJACENT, IMAGESTEM) -> {
+
+--arg PROB
+    "100"--endarg
+
+--arg LAYER
+    "0"--endarg
+
+--arg FLAG
+    "wall"--endarg
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB!
+
+        image: {
+            layer: LAYER!
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-convex-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R2"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB!
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-concave-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.WALL_PL = (TERRAINLIST, ADJACENT, PROB, LAYER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1501:     {NEW:WALL {TERRAINLIST} {ADJACENT1} {IMAGESTEM} PROB={PROB} LAYER={LAYER}}
+}
+
+NEW.WALL2 = (TERRAINLIST, ADJACENT1, ADJACENT2, IMAGESTEM) -> {
+
+--arg PROB
+    "100"--endarg
+
+--arg LAYER
+    "0"--endarg
+
+--arg FLAG
+    "wall"--endarg
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1515:     {NEW:WALL {TERRAINLIST} {ADJACENT1} {IMAGESTEM} PROB={PROB} LAYER={LAYER}}
+
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT1
+            set_no_flag: "#{FLAG}-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT2
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB!
+
+        image: {
+            layer: LAYER!
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-cw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT2
+            set_no_flag: "#{FLAG}-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT1
+            set_no_flag: "#{FLAG}-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB!
+
+        image: {
+            layer: LAYER!
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-ccw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.WALL2_P = (TERRAINLIST, ADJACENT1, ADJACENT2, PROB, LAYER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1583:     {NEW:WALL2 {TERRAINLIST} {ADJACENT1} {ADJACENT2} {IMAGESTEM} PROB={PROB} LAYER={LAYER}}
+}
+
+NEW.WALL2_L = (TERRAINLIST, ADJACENT1, ADJACENT2, LAYER, IMAGESTEM) -> {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1587:     {NEW:WALL2 {TERRAINLIST} {ADJACENT1} {ADJACENT2} {IMAGESTEM} LAYER={LAYER}}
+}
+
+NEW.CASTLEWALL_INTERNAL_P = (TERRAINLIST, ADJACENT, PROB, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "castlewall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "castlewall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "castlewall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-convex-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: "castlewall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "castlewall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "castlewall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-concave-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.CASTLEWALL_P = (TERRAINLIST, ADJACENT, ADJACENT_OPEN, PROB, IMAGESTEM) -> {
+    <NEW.CASTLEWALL_INTERNAL_P(TERRAINLIST, ADJACENT, PROB, IMAGESTEM)
+}
+
+NEW.CASTLEWALL = (TERRAINLIST, ADJACENT, ADJACENT_JOIN, IMAGESTEM) -> {
+
+--arg PROB
+    "100"--endarg
+
+--arg FLAG
+    "castlewall"--endarg
+
+--arg ADJACENT_OPEN
+    "X*"--endarg
+
+    <NEW.CASTLEWALL_INTERNAL_P(TERRAINLIST, ADJACENT, PROB!, IMAGESTEM)
+
+-- These two rules place suitable connecting tiles at corners where the wall
+-- meets another castle type's wall.
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST, "!", ADJACENT_JOIN}
+        }
+
+        rotations: {"concave-br", "skip", "skip", "concave-tl", "skip", "concave-r"}
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-@R0"
+        }
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST, "!", ADJACENT_JOIN}
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"concave-l", "skip", "concave-tr", "skip", "skip", "concave-bl"}
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+-- These rules place towers to fill gaps between the rest of the castle and
+-- ADJACENT_OPEN neighbours. It didn't seem to be possible to do this in a
+-- less hacky and verbose manner due to layering problems.
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT_OPEN!
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"concave-l", "convex-r", "skip", "skip", "concave-br", "concave-bl"}
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT_OPEN!
+        }
+
+        rotations: {"concave-br", "skip", "convex-br", "skip", "skip", "concave-r"}
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT_OPEN!
+        }
+
+        rotations: {"skip", "concave-bl", "skip", "convex-bl", "skip", "skip"}
+
+        image: {
+            layer: 0
+            base: {54, 71}
+            name: "#{IMAGESTEM}@V-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: ADJACENT
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT_OPEN!
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-convex-l"
+        }
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-convex-l.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: ADJACENT
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-convex-br"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT_OPEN!
+        }
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-convex-br.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+    terrain_graphics: {
+        map: "
+,  2
+1
+,  3"
+        tile: {
+            pos: 1
+            type: ADJACENT
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "#{FLAG}-end-convex-bl"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT_OPEN!
+        }
+
+        image: {
+            layer: 0
+            base: {54, 107}
+            name: "#{IMAGESTEM}@V-convex-bl.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.CASTLEWALL2_P = (TERRAINLIST, ADJACENT1, ADJACENT2, PROB, IMAGESTEM) -> {
+    <NEW.CASTLEWALL_INTERNAL_P(TERRAINLIST, ADJACENT1, PROB, IMAGESTEM)
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "castlewall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT1
+            set_no_flag: "castlewall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT2
+            set_no_flag: "castlewall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-cw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+2
+,  3
+1"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "castlewall-@R0"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT2
+            set_no_flag: "castlewall-@R2"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT1
+            set_no_flag: "castlewall-@R4"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+        probability: PROB
+
+        image: {
+            layer: 0
+            base: {54, 72}
+            name: "#{IMAGESTEM}@V-ccw-@R0.png"
+            variations: ";2;3;4;5;6"
+        }
+    }
+}
+
+NEW.CASTLEWALL2 = (TERRAINLIST, ADJACENT1, ADJACENT2, IMAGESTEM) -> {
+    <NEW.CASTLEWALL2_P(TERRAINLIST, ADJACENT1, ADJACENT2, 100, IMAGESTEM)
+}
+
+NEW.WAVES = (TERRAINLIST, ADJACENT, LAYER, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+,  2
+*,   2
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: {"waves_convex-@R0-@R5", "waves_convex-@R0-@R1"}
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1991:             name={IMAGESTEM}-convex-A[01~13].png~MASK(terrain/masks/7hex-@R0.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  2
+*,   2
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"waves_concave-@R0-@R5", "waves_concave-@R0-@R1"}
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2020:             name={IMAGESTEM}-concave-A[01~13].png~MASK(terrain/masks/7hex-@R0.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+
+-- These 4 rules draw very special convex-concave combination rules in 3-way
+-- sand-water-other corners
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_draw: true
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST, ADJACENT}
+            no_draw: true
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2056:             name={IMAGESTEM}-convex-A[01~13].png~MASK(terrain/masks/7hex-@R0.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            no_draw: true
+        }
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST, ADJACENT}
+            no_draw: true
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2089:             name={IMAGESTEM}-concave-A[01~13].png~MASK(terrain/masks/7hex-@R0-@R1.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            no_draw: true
+        }
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST, ADJACENT}
+            no_draw: true
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2122:             name={IMAGESTEM}-convex-A[01~13].png~MASK(terrain/masks/7hex-@R0.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            no_draw: true
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST, ADJACENT}
+            no_draw: true
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2155:             name={IMAGESTEM}-concave-A[01~13].png~MASK(terrain/masks/7hex-@R0-@R5.png):200
+            random_start: false
+            layer: LAYER
+            center: {90, 144}
+            base: {90, 144}
+            is_water: true
+        }
+    }
+}
+
+NEW.BEACH = (TERRAINLIST, ADJACENT, IMAGESTEM) -> {
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: ADJACENT
+            set_no_flag: {"beach-@R0-[@R5", "@R1]"}
+        }
+        tile: {
+            pos: 2
+            type: TERRAINLIST
+            set_no_flag: "beach-@R2-@R3"
+        }
+        tile: {
+            pos: 3
+            type: TERRAINLIST
+            set_no_flag: "beach-@R4-@R3"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-concave-@R0-@R5.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-concave-@R0-@R1.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: {"beach-@R0-[@R5", "@R1]"}
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "beach-@R2-@R3"
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "beach-@R4-@R3"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-convex-@R0-@R5.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-convex-@R0-@R1.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "beach-@R0-@R5"
+        }
+        tile: {
+            pos: 2
+            type: ADJACENT
+            set_no_flag: "beach-@R2-@R3"
+        }
+        tile: {
+            pos: 3
+            type: {"!", TERRAINLIST, ADJACENT}
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-convex-@R0-@R5.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+    }
+
+    terrain_graphics: {
+        map: "
+,  2
+*,   3
+,  1
+*,   *
+,  *"
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "beach-@R0-@R1"
+        }
+        tile: {
+            pos: 2
+            type: {"!", TERRAINLIST, ADJACENT}
+        }
+        tile: {
+            pos: 3
+            type: ADJACENT
+            set_no_flag: "beach-@R4-@R3"
+        }
+
+        rotations: {"tr", "r", "br", "bl", "l", "tl"}
+
+        image: {
+-- wmlscope: start ignoring
+            name: "#{IMAGESTEM}-convex-@R0-@R1.png"
+-- wmlscope: stop ignoring
+            layer: -500
+            center: {90, 144}
+            base: {90, 144}
+        }
+    }
+}
+
+NEW.VILLAGE = (TERRAINLIST, IMAGESTEM) -> {
+
+--arg PROB
+    "100"--endarg
+
+--arg ANIM
+--endarg
+
+--arg TIME
+--endarg
+
+    terrain_graphics: {
+        map: "
+, *
+* , *
+, 1
+* , *
+, *"
+
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "village"
+        }
+
+        probability: PROB!
+
+        image: {
+            name: "#{IMAGESTEM}@V#{ANIM}.png:#{TIME}"
+            variations: ";2;3;4;5;6;7"
+            layer: 0
+            base: {90, 144}
+            center: {90, 144}
+        }
+    }
+}
+
+NEW.VILLAGE_A3 = (TERRAINLIST, TIME, IMAGESTEM) -> {
+    <NEW.VILLAGE(TERRAINLIST, IMAGESTEM, {ANIM: "[01~03]"}, {TIME: "#{TIME}"})
+}
+
+NEW.VILLAGE_TOD = (TERRAINLIST, IMAGESTEM) -> {
+
+--arg PROB
+    "25"--endarg
+
+--arg TIME
+    "first_watch", "dusk", "dusk1", "dusk2", "short_dark", "long_dark1", "underground"--endarg
+
+    terrain_graphics: {
+        map: "
+, *
+* , *
+, 1
+* , *
+, *"
+
+        tile: {
+            pos: 1
+            type: TERRAINLIST
+            set_no_flag: "village"
+        }
+        probability: PROB!
+
+        image: {
+            name: "#{IMAGESTEM}@V.png"
+            variations: ";2;3;4;5;6;7"
+            layer: 0
+            base: {90, 144}
+            center: {90, 144}
+            variant: {
+                tod: TIME!
+                name: "#{IMAGESTEM}@V-night.png"
+            }
+        }
+    }
+}
+
+NEW.VILLAGE_A4 = (TERRAINLIST, TIME, IMAGESTEM) -> {
+    <NEW.VILLAGE(TERRAINLIST, IMAGESTEM, {ANIM: "[01~04]"}, {TIME: "#{TIME}"})
+}
+
+-- This hacky macro will hopefully be replaced with a more elegant way of passing
+-- variation-specific probabilities sometime
+VILLAGE_PROBABILITY = (PROB) -> {
+    terrain_graphics: {
+        amend: true
+        probability: PROB
+    }
+}
+
+------------------- start of wall and torch flames --------------------------------------
+
+-------------------------
+-- wall sconces
+-------------------------
+
+FLAME_TORCH_IMAGE_INTERNAL = (IMAGESTEM, X_POS, Y_POS) -> {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2418: {IMAGESTEM}/base.png~BLIT(terrain/{IMAGESTEM}/flames.png,{X_POS},{Y_POS})~MASK(terrain/{IMAGESTEM}/mask@V.png):50#enddef
+
+    NEW.TORCH_FLAMES_OVERLAY: (TERRAINLIST, IMAGESTEM) -> {
+
+--arg PROB
+        "100"--endarg
+
+--arg LAYER
+        "4"--endarg
+
+--arg LAYER2
+        "2"--endarg
+
+--arg FLAG
+        "flames"--endarg
+
+--arg ADJACENT
+        "X*"--endarg
+
+-- set the flags to mark where the torches are
+        terrain_graphics: {
+            map: "
+1
+,
+2"
+            tile: {
+                pos: 1
+                type: {"!", ADJACENT!}
+            }
+            tile: {
+                pos: 2
+                type: TERRAINLIST
+                set_no_flag: FLAG!
+            }
+
+            probability: PROB!
+        }
+-- choose the correct post type
+        terrain_graphics: {
+            map: "
+*
+,
+1"
+            tile: {
+                pos: 1
+                type: "W*"
+                has_flag: FLAG!
+                set_no_flag: "post_drawn"
+            }
+
+            probability: PROB!
+
+            image: {
+                layer: LAYER2!
+                base: {24, 80}
+                name: "#{IMAGESTEM}/post-water.png"
+            }
+        }
+
+        terrain_graphics: {
+            map: "
+*
+,
+1"
+            tile: {
+                pos: 1
+                type: "Q*"
+                has_flag: FLAG!
+                set_no_flag: "post_drawn"
+            }
+
+            probability: PROB!
+
+            image: {
+                layer: LAYER2!
+                base: {24, 80}
+                name: "#{IMAGESTEM}/post-chasm.png"
+            }
+        }
+
+        terrain_graphics: {
+            map: "
+*
+,
+1"
+            tile: {
+                pos: 1
+                type: {"!", "Q*", "X*", "W*"}
+                has_flag: FLAG!
+                set_no_flag: "post_drawn"
+            }
+
+            probability: PROB!
+
+            image: {
+                layer: LAYER2!
+                base: {24, 80}
+                name: "#{IMAGESTEM}/post.png"
+            }
+        }
+
+-- draw the flames etc.
+        terrain_graphics: {
+            map: "
+*
+,
+1"
+            tile: {
+                pos: 1
+                has_flag: FLAG!
+                set_no_flag: "#{FLAG}_drawn"
+            }
+
+            probability: PROB!
+
+            image: {
+                layer: LAYER!
+                base: {24, 80}
+                name: {"#{IMAGESTEM}/glow[1", 2, 3, "2].png:[200", 160, 140, "170]"}
+            }
+
+            image: {
+                layer: LAYER!
+                base: {54, 72}
+                name: "#{FLAME_TORCH_IMAGE_INTERNAL #{IMAGESTEM} 24 39},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 38},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 37},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 36},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 35},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 34},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 33},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 32},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 31},
+        {FLAME_TORCH_IMAGE_INTERNAL {IMAGESTEM} 24 30}"
+                variations: ";2;3"
+            }
+        }
+
+    }
+
+-------------------------
+-- wall sconces
+-------------------------
+
+    FLAME_WALL_IMAGE_INTERNAL: (CONCON, IMAGESTEM, X_POS, Y_POS) -> {
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2563: {IMAGESTEM}/base-{CONCON}-@R0.png~BLIT(terrain/{IMAGESTEM}/flames.png,{X_POS},{Y_POS})~MASK(terrain/{IMAGESTEM}/mask@V-{CONCON}-@R0.png):50#enddef
+
+        NEW.WALL_FLAMES_OVERLAY: (TERRAINLIST, IMAGESTEM) -> {
+
+--arg PROB
+            "100"--endarg
+
+--arg LAYER
+            "4"--endarg
+
+--arg LAYER2
+            "2"--endarg
+
+--arg FLAG
+            "flame"--endarg
+
+--arg ADJACENT
+            "X*"--endarg
+
+--arg POST
+            "wall"--endarg
+
+-- these are the cases we know we want to quash, that are not covered by the rotations below
+            terrain_graphics: {
+-- this prevents the -convex-bl image from showing for Xo* SE of Xo*^Efs
+                map: "
+, *
+1 , *
+, 2
+* , 3
+, *"
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                }
+                tile: {
+                    pos: 2
+                    type: ADJACENT!
+                    set_flag: "#{FLAG}-bl"
+                }
+                tile: {
+                    pos: 3
+                    type: {TERRAINLIST, ADJACENT!}
+                }
+            }
+            terrain_graphics: {
+-- this keeps the convex-bl image from showing up on all SW facing diagonal images
+                map: "
+, *
+* , *
+, 1
+* , 2
+, *"
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                    set_flag: "#{FLAG}-bl"
+                }
+                tile: {
+                    pos: 2
+                    type: {TERRAINLIST, ADJACENT!}
+                }
+            }
+            terrain_graphics: {
+-- this keeps the fire overlays from showing up everywhere
+                map: "
+, *
+* , *
+, 1
+* , 2
+, *"
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                    set_flag: "#{FLAG}-bl"
+                }
+                tile: {
+                    pos: 2
+                    type: {TERRAINLIST, ADJACENT!}
+                }
+            }
+
+-- these are the real rules
+            terrain_graphics: {
+                map: "
+2
+,  3
+1"
+                tile: {
+                    pos: 1
+                    type: {"!", ADJACENT!}
+                    set_no_flag: "#{FLAG}-@R0"
+                }
+                tile: {
+                    pos: 2
+                    type: TERRAINLIST
+                }
+                tile: {
+                    pos: 3
+                    type: TERRAINLIST
+                }
+
+                rotations: {"tr", "r", "br", "bl", "l", "tl"}
+                probability: PROB!
+
+                image: {
+                    layer: LAYER2!
+                    base: {24, 80}
+                    name: "#{IMAGESTEM}/#{POST}-post-concave-@R0.png"
+                }
+
+                image: {
+                    layer: LAYER!
+                    base: {24, 80}
+                    name: {"#{IMAGESTEM}/glow[1", 2, 3, "2]-concave-@R0.png:[200", 160, 140, "170]"}
+                }
+
+                image: {
+                    layer: LAYER!
+                    base: {54, 72}
+                    name: "#{FLAME_WALL_IMAGE_INTERNAL concave #{IMAGESTEM} 20 41},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 40},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 39},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 38},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 37},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 36},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 35},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 34},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 33},
+        {FLAME_WALL_IMAGE_INTERNAL concave {IMAGESTEM} 20 32}"
+                    variations: ";2;3"
+                }
+            }
+
+            terrain_graphics: {
+                map: "
+2
+,  3
+1"
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                    set_no_flag: "#{FLAG}-@R0"
+                }
+                tile: {
+                    pos: 2
+                    type: {"!", ADJACENT!}
+                    set_no_flag: "#{FLAG}-@R2"
+                }
+                tile: {
+                    pos: 3
+                    type: {"!", ADJACENT!}
+                    set_no_flag: "#{FLAG}-@R4"
+                }
+
+                rotations: {"tr", "r", "br", "bl", "l", "tl"}
+                probability: PROB!
+
+                image: {
+                    layer: LAYER2!
+                    base: {24, 24}
+                    name: "#{IMAGESTEM}/#{POST}-post-convex-@R0.png"
+                }
+
+                image: {
+                    layer: LAYER!
+                    base: {24, 24}
+                    name: {"#{IMAGESTEM}/glow[1", 2, 3, "2]-convex-@R0.png:[200", 160, 140, "170]"}
+                }
+
+                image: {
+                    layer: LAYER!
+                    base: {54, 72}
+                    name: "#{FLAME_WALL_IMAGE_INTERNAL convex #{IMAGESTEM} 20 67},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 66},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 65},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 64},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 63},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 62},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 61},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 60},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 59},
+        {FLAME_WALL_IMAGE_INTERNAL convex {IMAGESTEM} 20 58}"
+                    variations: ";2;3"
+                }
+            }
+
+        }
+
+------------------- end of flames --------------------------------------
+
+-- This needs to be called only once, to set the flags used by all 12-hex 324x180
+-- water animations.
+        NEW.WATER_342_180_TILE_FLAGS: () -> {
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 0, y: 0
+                    set_no_flag: "342x180_water01"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 1, y: 0
+                    set_no_flag: "342x180_water02"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 2, y: 0
+                    set_no_flag: "342x180_water03"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 3, y: 0
+                    set_no_flag: "342x180_water04"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 4, y: 0
+                    set_no_flag: "342x180_water05"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 5, y: 0
+                    set_no_flag: "342x180_water06"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 0, y: 1
+                    set_no_flag: "342x180_water07"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 1, y: 1
+                    set_no_flag: "342x180_water08"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 2, y: 1
+                    set_no_flag: "342x180_water09"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 3, y: 1
+                    set_no_flag: "342x180_water10"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 4, y: 1
+                    set_no_flag: "342x180_water11"
+                }
+            }
+            terrain_graphics: {
+                mod_x: 6
+                mod_y: 2
+
+                tile: {
+                    x: 5, y: 1
+                    set_no_flag: "342x180_water12"
+                }
+            }
+        }
+
+        WATER_342_180_TILE_VARIANTS: (MASKIPF, LAYER, IPF, IMAGESTEM, FRAMES) -> {
+
+--arg DURATION
+            "100"--endarg
+
+--arg RANDOM_START
+            "no"--endarg
+
+            image: {
+                layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2877:         name={IMAGESTEM}[01~{FRAMES}].png~CROP(0,0,72,72){MASKIPF}{IPF}:{DURATION}
+                random_start: RANDOM_START!
+                is_water: true
+
+                variant: {
+                    has_flag: "342x180_water02"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2884:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(54,36,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water03"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2890:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(108,0,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water04"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2896:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(162,36,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water05"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2902:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(216,0,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water06"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2908:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(270,36,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water07"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2914:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(0,72,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water08"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2920:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(54,108,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water09"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2926:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(108,72,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water10"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2932:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(162,108,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water11"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2938:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(216,72,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+                variant: {
+                    has_flag: "342x180_water12"
+                    layer: LAYER
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2944:             name={IMAGESTEM}[01~{FRAMES}].png~CROP(270,108,72,72){MASKIPF}{IPF}:{DURATION}
+                    random_start: RANDOM_START!
+                }
+            }
+        }
+
+        NEW.WATER_342_180: (TERRAINLIST, IMAGESTEM, FRAMES) -> {
+
+--arg DURATION
+            "100"--endarg
+
+--arg RANDOM_START
+            "no"--endarg
+
+            terrain_graphics: {
+                tile: {
+                    x: 0, y: 0
+                    type: TERRAINLIST
+                    set_no_flag: "base"
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2964:             {WATER_342_180_TILE_VARIANTS "" -1000 "" {IMAGESTEM} {FRAMES} DURATION={DURATION} RANDOM_START={RANDOM_START}}
+
+                }
+            }
+        }
+
+        NEW.WATER_342_180_OVERLAY: (TERRAINLIST, COLOROVERLAY, LAYER) -> {
+            terrain_graphics: {
+                tile: {
+                    x: 0, y: 0
+                    type: TERRAINLIST
+                    image: {
+                        name: "#{COLOROVERLAY}.png"
+                        layer: LAYER
+                    }
+                }
+            }
+        }
+
+        NEW.WATER_342_180_OVERLAY_TRANSITION: (TERRAINLIST, ADJACENT, LAYER, IMAGESTEM, OPACITY) -> {
+            <NEW.GENERIC_CORNER_TRANSITION(TERRAINLIST, ADJACENT, LAYER, IMAGESTEM, "masks/long", "~O(#{OPACITY})")
+        }
+
+        NEW.WATER_342_180_TRANSITION: (TERRAINLIST, ADJACENT, LAYER, IPF, IMAGESTEM, FRAMES) -> {
+
+--arg DURATION
+            "100"--endarg
+
+--arg RANDOM_START
+            "no"--endarg
+
+            terrain_graphics: {
+                map: "
+,  2
+.,   2
+,  1
+.,   .
+,  ."
+                tile: {
+                    pos: 1
+                    type: ADJACENT
+                    set_no_flag: {"water_concave-@R0-@R5", "water_concave-@R0-@R1"}
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 3005:             {WATER_342_180_TILE_VARIANTS "~MASK(terrain/masks/long-concave-2-@R0.png)" {LAYER} {IPF} {IMAGESTEM} {FRAMES} DURATION={DURATION} RANDOM_START={RANDOM_START}}
+                }
+                tile: {
+                    pos: 2
+                    type: TERRAINLIST
+                }
+
+                rotations: {"tr", "r", "br", "bl", "l", "tl"}
+            }
+
+            terrain_graphics: {
+                map: "
+,  2
+.,   3
+,  1
+.,   .
+,  ."
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                }
+                tile: {
+                    pos: 2
+                    type: ADJACENT
+                    set_no_flag: "water_convex-@R0-@R5"
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 3030:             {WATER_342_180_TILE_VARIANTS "~MASK(terrain/masks/long-convex-@R0-@R5.png)" {LAYER} {IPF} {IMAGESTEM} {FRAMES} DURATION={DURATION} RANDOM_START={RANDOM_START}}
+                }
+                tile: {
+                    pos: 3
+                    type: {"!", TERRAINLIST}
+                }
+
+                rotations: {"tr", "r", "br", "bl", "l", "tl"}
+            }
+            terrain_graphics: {
+                map: "
+,  2
+.,   3
+,  1
+.,   .
+,  ."
+                tile: {
+                    pos: 1
+                    type: TERRAINLIST
+                }
+                tile: {
+                    pos: 2
+                    type: {"!", TERRAINLIST}
+                }
+                tile: {
+                    pos: 3
+                    type: ADJACENT
+                    set_no_flag: "water_convex-@R0-@R1"
+err: ../attic/data/core/terrain-graphics/new-macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 3058:             {WATER_342_180_TILE_VARIANTS "~MASK(terrain/masks/long-convex-@R0-@R1.png)" {LAYER} {IPF} {IMAGESTEM} {FRAMES} DURATION={DURATION} RANDOM_START={RANDOM_START}}
+                }
+
+                rotations: {"tr", "r", "br", "bl", "l", "tl"}
+            }
+        }
+}
