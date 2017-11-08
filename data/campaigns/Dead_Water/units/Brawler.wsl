@@ -1,0 +1,216 @@
+--textdomain wesnoth-dw
+Unit_Type{
+    id: "Merman Brawler"
+    name: _ "Merman Brawler"
+    profile: "portraits/brawler.png"
+    race: "merman"
+    image: "units/merfolk/brawler.png"
+    hitpoints: 38
+    movement_type: "swimmer"
+    movement: 6
+    level: 1
+    experience: 50
+    <AMLA_DEFAULT!
+    alignment: "lawful"
+    cost: 19
+    usage: "fighter"
+    description: _ "Exceptionally large and strong mermen are sometimes more comfortable with their own fists and tails than with other weapons." .. SPECIAL_NOTES! .. SPECIAL_NOTES_STUN!
+    die_sound: "mermen-die.ogg"
+    <DEFENSE_ANIM("units/merfolk/brawler-defend.png", "units/merfolk/brawler-defend.png", "mermen-hit.wav")
+    attack: {
+        name: "fist-merman"
+--textdomain wesnoth-units
+        description: _ "fist"
+        type: "impact"
+        range: "melee"
+        damage: 5
+        number: 4
+    }
+    attack: {
+        name: "tail-merman"
+        description: _ "tail"
+--textdomain wesnoth-dw
+        type: "impact"
+        range: "melee"
+        damage: 9
+        number: 2
+        specials: {
+            <WEAPON_SPECIAL_STUN!
+        }
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "fist-merman"
+        }
+        start_time: -300
+        frame: {
+            image: "units/merfolk/brawler.png:50"
+        }
+        frame: {
+            image: "units/merfolk/brawler-fist-[1~3].png:[200,100*2]"
+        }
+        <SOUND.HIT_AND_MISS("fist.ogg", "dagger-swish.wav", -50)
+        frame: {
+            image: "units/merfolk/brawler.png:50"
+        }
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "tail-merman"
+        }
+        start_time: -140
+        <SOUND.HIT_AND_MISS("fist.ogg", "dagger-swish.wav", -50)
+        frame: {
+            image: "units/merfolk/brawler-tail-land-[1,3,5~1].png:[30*2,80,30,80*3]"
+        }
+        frame: {
+            image: "units/merfolk/brawler.png:80"
+        }
+    }
+
+    event: {
+        name: "attacker_hits"
+        first_time_only: false
+
+        filter_attack: {
+            special: "tail_stun"
+        }
+
+        filter_second: {
+            not: {
+                level: 0
+                or: {
+                    status: "stunned"
+                }
+            }
+        }
+        do: ->
+            VARIABLE("second_unit.status.stunned", true)
+
+            Unstore_Unit{
+                variable: "second_unit"
+                find_vacant: false
+                text: _ "stunned"
+                female_text: _ "female^stunned"
+                red: 196, green: 196, blue: 128
+            }
+
+            Object{
+                silent: true
+                duration: "turn end"
+
+                filter: {
+                    x: x2, y: y2
+                }
+
+                effect: {
+                    apply_to: "image_mod"
+                    replace: "CS(50,50,0)"
+                }
+
+                effect: {
+                    apply_to: "zoc"
+                    value: false
+                }
+            }
+    }
+
+    event: {
+        name: "defender_hits"
+        first_time_only: false
+
+        filter_second_attack: {
+            special: "tail_stun"
+        }
+
+        filter: {
+            not: {
+                level: 0
+                or: {
+                    status: "stunned"
+                }
+            }
+        }
+        do: ->
+            VARIABLE("unit.status.stunned", true)
+
+            If{
+                variable: {
+                    name: "unit.gender"
+                    equals: "female"
+                }
+
+                then: ->
+                    Set_Variable{
+                        name: "tmp_stunned_text"
+                        value: _ "female^stunned"
+                    }
+                
+
+                else: ->
+                    Set_Variable{
+                        name: "tmp_stunned_text"
+                        value: _ "stunned"
+                    }
+                
+            }
+
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+                text: tmp_stunned_text
+                red: 196, green: 196, blue: 128
+            }
+
+            Object{
+                silent: true
+                duration: "turn end"
+
+                filter: {
+                    x: x1, y: y1
+                }
+
+                effect: {
+                    apply_to: "image_mod"
+                    replace: "CS(50,50,0)"
+                }
+
+                effect: {
+                    apply_to: "zoc"
+                    value: false
+                }
+            }
+
+            Clear_Variable{
+                name: "tmp_stunned_text"
+            }
+    }
+
+    event: {
+        name: "side turn end"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    side: side_number
+                    status: "stunned"
+                }
+                variable: "stunned"
+            }
+
+            Foreach{
+                array: "stunned"
+                do: ->
+                    CLEAR_VARIABLE("this_item.status.stunned")
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("stunned")
+    }
+}

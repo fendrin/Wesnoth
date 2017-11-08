@@ -1,0 +1,435 @@
+--textdomain wesnoth-dw
+
+-- This copy of OBJ_TRIDENT_STORM adds the new merman types to the allowed units, and is only the object. It doesn't include the event for picking it up. The trident in wolf_coast uses a more complicated event for picking it up.
+
+STORM_TRIDENT = (X, Y, ID) ->
+    Object{
+        id: ID
+        name: _ "Storm Trident"
+        image: "items/storm-trident.png"
+        duration: "forever"
+        description: _ "This weapon shoots powerful lightning bolts at your enemies."
+        silent: true
+        cannot_use_message: _ "Only a merman can use this item."
+        filter: {
+            type: {"Merman Citizen", "Merman Brawler", "Merman Child King", "Merman Young King", "Merman Soldier King", "Merman Warrior King", "Mermaid Diviner", "Mermaid Enchantress", "Mermaid Initiate", "Mermaid Priestess", "Mermaid Siren", "Merman Entangler", "Merman Fighter", "Merman Hoplite", "Merman Hunter", "Merman Javelineer", "Merman Netcaster", "Merman Spearman", "Merman Triton", "Merman Warrior"}
+            x: X
+            y: Y
+        }
+        then: ->
+            Unit_Overlay{
+                x: X
+                y: Y
+                image: "overlays/storm-trident-icon.png"
+            }
+            Remove_Item{
+                x: X
+                y: Y
+            }
+        
+        effect: {
+            apply_to: "new_attack"
+            name: "storm trident"
+            description: _ "storm trident"
+-- need a better attack image, but this will do for now, replaced fireball with lightingbolt
+            icon: "attacks/lightning.png"
+            type: "fire"
+            range: "ranged"
+            specials: {
+                <WEAPON_SPECIAL_MAGICAL!
+            }
+            damage: 14
+            number: 2
+        }
+
+        <LIGHTNING_ANIMATION("storm trident", 1)
+        <LIGHTNING_ANIMATION("storm trident", 2)
+        <LIGHTNING_ANIMATION("storm trident", 3)
+    }
+
+
+FLAMING_SWORD = (X, Y, ID) ->
+    Object{
+        id: ID
+        name: _ "Flaming Sword"
+        image: "items/flame-sword.png"
+        duration: "forever"
+        silent: true
+        filter: {
+            x: X
+            y: Y
+        }
+        then: ->
+            Unit_Overlay{
+                x: X
+                y: Y
+                image: "overlays/flame-sword-icon.png"
+            }
+            Remove_Item{
+                x: X
+                y: Y
+            }
+        
+        effect: {
+            apply_to: "new_attack"
+            name: "flaming sword"
+            description: _ "flaming sword"
+            icon: "attacks/sword-flaming.png"
+            type: "fire"
+            range: "melee"
+            specials: {
+                <WEAPON_SPECIAL_MAGICAL!
+            }
+            damage: 8
+            number: 4
+        }
+    }
+
+
+ANKH_NECKLACE = (X, Y, ID) ->
+    Object{
+        id: ID
+        name: _ "Ankh Necklace"
+        image: "items/ankh-necklace.png"
+        duration: "forever"
+        silent: true
+        filter: {
+            x: X
+            y: Y
+        }
+        then: ->
+            Unit_Overlay{
+                x: X
+                y: Y
+                image: "overlays/arcane-icon.png"
+            }
+            Remove_Item{
+                x: X
+                y: Y
+                image: "items/ankh-necklace.png"
+            }
+        
+        effect: {
+            apply_to: "resistance"
+            replace: true
+            resistance: {
+                arcane: 30
+            }
+        }
+    }
+
+
+-- The ring of strength belongs to Mal-Kevek who appears in the second
+-- scenario. If he lives through that scenario, he appears again in the
+-- last. All the associated events need to be in both scenarios, so a
+-- macro is called for.
+
+RING_OF_STRENGTH_EVENTS = () -> {
+    event: {
+        name: "prestart"
+        do: ->
+            If{
+                variable: {
+                    name: "MD_dead"
+                    not_equals: true
+                }
+
+                then: ->
+                    Object{
+                        id: "power_ring1"
+                        silent: true
+
+                        effect: {
+                            apply_to: "attack"
+                            increase_damage: 1
+                        }
+
+                        effect: {
+                            apply_to: "hitpoints"
+                            increase: 3
+                            increase_total: 3
+                        }
+
+                        filter: {
+                            id: "Mel Daveth"
+                        }
+                    }
+                
+            }
+
+            Set_Variable{
+                name: "ring_x"
+                value: 999
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            x: ring_x
+            y: ring_y
+            side: 1
+        }
+        do: ->
+            If{
+                have_unit: {
+                    x: x1, y: y1
+                    race: "bats"
+                }
+                then: ->
+                    If{
+                        variable: {
+                            name: "seen_ring_description"
+                            not_equals: true
+                        }
+                        then: ->
+                            Message{
+                                speaker: "narrator"
+                                message: _ "The bat slips the ring over a claw, and flies straight up, flapping powerfully."
+                                image: "wesnoth-icon.png"
+                            }
+
+                            Message{
+                                speaker: "narrator"
+                                message: _ "The ring of power increases the damage of all its owner’s attacks by one, and adds three hitpoints."
+                                image: "wesnoth-icon.png"
+                            }
+
+                            Set_Variable{
+                                name: "seen_ring_description"
+                                value: true
+                            }
+                        
+                    }
+
+                    Message{
+                        speaker: "Kai Krellis"
+                        option: {
+                            label: _ "We will let the bat have the ring. It will make him more helpful."
+                            command: ->
+                                Set_Variable{
+                                    name: "get_ring"
+                                    value: true
+                                }
+                            
+                        }
+                        option: {
+                            label: _ "Someone take that off him before he hurts himself."
+                        }
+                    }
+                
+
+                else: ->
+                    If{
+                        have_unit: {
+                            x: x1, y: y1
+                            race: "monster"
+                        }
+                        then: ->
+                            If{
+                                variable: {
+                                    name: "seen_ring_description"
+                                    not_equals: true
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Kai Krellis"
+                                        message: _ "Leave it."
+                                    }
+                                
+                            }
+                        
+
+                        else: ->
+                            If{
+                                variable: {
+                                    name: "seen_ring_description"
+                                    not_equals: true
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "unit"
+                                        message: _ "I’ll try on the ring."
+                                    }
+
+                                    Message{
+                                        speaker: "unit"
+                                        message: _ "I feel different, and all my weapons are lighter!"
+                                    }
+
+                                    Message{
+                                        speaker: "narrator"
+                                        message: _ "The ring of power increases the damage of all its owner’s attacks by one, and adds three hitpoints."
+                                        image: "wesnoth-icon.png"
+                                    }
+                                    Set_Variable{
+                                        name: "seen_ring_description"
+                                        value: true
+                                    }
+                                
+                            }
+
+                            Message{
+                                speaker: "unit"
+                                option: {
+                                    label: _ "I’ll take this ring, and you can rely on my strength."
+                                    command: ->
+                                        Set_Variable{
+                                            name: "get_ring"
+                                            value: true
+                                        }
+                                    
+                                }
+                                option: {
+                                    label: _ "This thing makes me dizzy. Someone else can have it."
+                                }
+                            }
+                        
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "get_ring"
+                    not_equals: true
+                }
+
+                then: ->
+                    Allow_Undo{}
+                
+
+                else: ->  -- Get the ring
+                    Object{
+                        id: "power_ring2"
+                        name: _ "Ring of Power"
+                        image: "items/ring-silver.png"
+                        duration: "forever"
+                        silent: true
+                        filter: {
+                            x: ring_x
+                            y: ring_y
+                        }
+                        then: ->
+                            Unit_Overlay{
+                                x: ring_x
+                                y: ring_y
+                                image: "overlays/silver-ring-icon.png"
+                            }
+                            Remove_Item{
+                                x: ring_x
+                                y: ring_y
+                            }
+                        
+                        effect: {
+                            apply_to: "attack"
+                            increase_damage: 1
+                        }
+                        effect: {
+                            apply_to: "hitpoints"
+                            increase_total: 3
+                            increase: 3
+                        }
+                    }
+                    CLEAR_VARIABLE("get_ring")
+                    CLEAR_VARIABLE("seen_ring_description")
+
+-- This keeps it from being picked up a second time.
+                    Set_Variable{
+                        name: "ring_x"
+                        value: 999
+                    }
+
+-- This [if] only applies to the second scenario. That is where this variable might be set to "yes".
+                    If{
+                        variable: {
+                            name: "end_level_when_ring_picked_up"
+                            equals: true
+                        }
+
+                        then: ->
+-- End level:
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "Killing these enemies was good, but there were many more on the way. I’m sure it is still unsafe here."
+                            }
+
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "I agree. I hate to leave our home, but we will return."
+                            }
+
+                            Clear_Variable{
+                                name: "ring_x"
+                            }
+                            Clear_Variable{
+                                name: "ring_y"
+                            }
+                            Clear_Variable{
+                                name: "KK"
+                            }
+                            Clear_Variable{
+                                name: "get_ring"
+                            }
+
+                            Endlevel{
+                                result: "victory"
+                                bonus: true
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+
+                            Clear_Variable{
+                                name: "end_level_when_ring_picked_up"
+                            }
+                        
+                    }
+                
+            }
+    }
+}
+
+RING_OF_STRENGTH_APPEARS = () ->
+    If{
+        variable: {
+            name: "MD_dead"
+            not_equals: true
+        }
+
+        then: ->
+            Set_Variable{
+                name: "ring_x"
+                value: x1
+            }
+            Set_Variable{
+                name: "ring_y"
+                value: y1
+            }
+
+            PLACE_IMAGE("items/ring-silver.png", ring_x, ring_y)
+            Delay{
+                time: 600
+-- Gives you half a second to see the ring before the message (possibly) covers it up.
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    race: {"monster", "bats"}
+                }
+                then: ->
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "The human wizard was wearing a ring! Maybe it is magic. Someone should try it on to see what it does."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "The human wizard was wearing a ring! Maybe it is magic. Someone should try it on to see what it does."
+                    }
+                
+            }
+        
+    }

@@ -1,0 +1,1657 @@
+--textdomain wesnoth
+
+About{
+    title: _ "Programming"
+    entry: {
+        name: "David White (Sirp)"
+        comment: "Founding Developer"
+        email: "dave_AT_whitevine.net"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Alexander van Gessel (AI/AI0867)"
+        email: "AI0867_AT_gmail.com"
+    }
+    entry: {
+        name: "Alfredo Beaumont (ziberpunk)"
+        comment: "autotools"
+    }
+    entry: {
+        name: "Ali El Gariani (alink)"
+        comment: "coder, bug fixes, optimizations, interface usability"
+        wikiuser: "Alink"
+    }
+    entry: {
+        name: "András Salamon (ott)"
+        comment: "QA, bug fixing, subediting, game mechanics"
+        wikiuser: "Ott"
+    }
+    entry: {
+        name: "Anonymissimus"
+        comment: "bug fixes and features mostly related to the wml engine or lua interface"
+    }
+    entry: {
+        name: "Bartek Waresiak (Dragonking)"
+        comment: "unit balancing, Formula AI"
+        email: "dragonking_AT_o2.pl"
+    }
+    entry: {
+        name: "Benoît Timbert (Noyga)"
+        wikiuser: "Noyga"
+    }
+    entry: {
+        name: "Bram Ridder (Morloth)"
+        comment: "editor improvements"
+    }
+    entry: {
+        name: "Bruno Wolff III"
+        comment: "campaign web interface, bug fixing, minor coder"
+        wikiuser: "bruno"
+        email: "bruno_AT_wolff.to"
+    }
+    entry: {
+        name: "Cameron Morland"
+    }
+    entry: {
+        name: "Cédric Duval"
+        comment: "coder, internationalization manager"
+    }
+    entry: {
+        name: "Charles Dang (vultraz)"
+        comment: "General fixes, cleanup and improvements to various areas."
+    }
+    entry: {
+        name: "Chris Beck (iceiceice/involution)"
+        comment: "Bug fixes and features esp. engine-related or multiplayer-related. Added WML unit testing system, improvements to travis-CI."
+    }
+    entry: {
+        name: "Daniel Franke (dfranke)"
+    }
+    entry: {
+        name: "Daniel (gfgtdf)"
+    }
+    entry: {
+        name: "David Hilton"
+    }
+    entry: {
+        name: "Dominic Bolin (Xan)"
+    }
+    entry: {
+        name: "Elias Pschernig (allefant)"
+    }
+    entry: {
+        name: "Elvish_Hunter"
+    }
+    entry: {
+        name: "Eric S. Raymond (ESR)"
+        comment: "Macro library reorganization, major UI makeover introducing lightweight transparent popups and linger mode, maintainance tools for WML, eight campaigns lifted from UMC, one all-original campaign, editor refactoring, many many code cleanups, and svn-to-git migration."
+    }
+    entry: {
+        name: "Eugen Jiresch (euschn)"
+        comment: "savegame improvements"
+    }
+    entry: {
+        name: "Fabian Müller (fabi/fendrin)"
+        ircuser: "fendrin, fabi"
+        wikiuser: "fabi"
+        email: "fabianmueller5_at_gmx.de"
+    }
+    entry: {
+        name: "Gabriel Morin (gabba)"
+        comment: "Whiteboard project, naming hotseat players, delay shroud updates on game start."
+        email: "gabrielmorin~_-AT-_~gmail.com"
+        ircuser: "gabba"
+    }
+    entry: {
+        name: "Greg Copeland (Oracle)"
+        comment: "coding; Server optimizations."
+        ircuser: "BlindOracle"
+    }
+    entry: {
+        name: "Gregory Shikhman (corn)"
+        comment: "coding; upload log maintenance/improvements"
+        email: "cornmander_AT_cornmander.com"
+    }
+    entry: {
+        name: "Guillaume Melquiond (silene)"
+        comment: "coding, bug fixes"
+    }
+    entry: {
+        name: "Guillermo Biset (billynux)"
+        comment: "Bug fixer, remover of upload stats, network module rewrite, ANA, boost::asio"
+        email: "billybiset_AT_gmail.com"
+    }
+    entry: {
+        name: "Ignacio R. Morelle (shadowm)"
+        comment: "Miscellaneous WML, i18n and UI features, improvements and bugfixes; refactoring and extension of add-ons management code; features and refactoring of image-path functions mechanism"
+        email: "shadowm2006_AT_gmail.com"
+        wikiuser: "Shadowmaster"
+    }
+    entry: {
+        name: "Jérémy Rosen (Boucman)"
+        comment: "coder"
+        wikiuser: "Boucman"
+    }
+    entry: {
+        name: "John W. C. McNabb (Darth Fool)"
+        comment: "coder, graphics"
+        email: "mcnabb_AT_gravity.psu.edu"
+    }
+    entry: {
+        name: "Jon Daniel (worduk)"
+        comment: "coder, bug fixes"
+    }
+    entry: {
+        name: "Jörg Hinrichs (Yogi Bear/YogiHH)"
+    }
+    entry: {
+        name: "Justin Zaun (jzaun)"
+        comment: "coder, scenario designer"
+        email: "justin.zaun_AT_gmail.com"
+    }
+    entry: {
+        name: "Jyrki Vesterinen"
+    }
+    entry: {
+        name: "Karol Nowak (grzywacz)"
+        comment: "bug fixes, sound sources, gp2x port"
+    }
+    entry: {
+        name: "Kristoffer Erlandsson (erl)"
+        comment: "help system, editor"
+        email: "erl_AT_erl.se"
+    }
+    entry: {
+        name: "Lao"
+        comment: "bug fixes and candidate to GSoC 2008"
+        email: "lao.geek_AT_gmail.com"
+        wikiuser: "lao"
+    }
+    entry: {
+        name: "Mark de Wever (Mordante/SkeletonCrew)"
+        comment: "coder, bug fixes, various features, multi-letter terrain system, gui system."
+        wikiuser: "SkeletonCrew"
+    }
+    entry: {
+        name: "Martin Renold (maxy/martinxyz)"
+        comment: "performance and gui bug fixes"
+    }
+    entry: {
+        name: "Matthias Kretz"
+        comment: "optimizations"
+    }
+    entry: {
+        name: "Moritz Göbelbecker (mog)"
+        comment: "Work on the terrain engine"
+    }
+    entry: {
+        name: "Nicolas Weeger (Ryo)"
+        comment: "Python API"
+    }
+    entry: {
+        name: "Patrick Parker (Sapient)"
+        comment: "improvements to user interface, WML engine, various features"
+        email: "patrick_x99_AT_hotmail.com"
+        wikiuser: "Sapient"
+    }
+    entry: {
+        name: "Pauli Nieminen (suokko)"
+        email: "paniemin_AT_cc.hut.fi"
+        comment: "Bug fixing; usualy targeting MP or WML engine"
+    }
+    entry: {
+        name: "Philippe Plantier (Ayin)"
+        comment: "several parts of the code, notably terrain graphics code"
+        email: "philippe.plantier_AT_naema.org"
+        wikiuser: "Ayin"
+    }
+    entry: {
+        name: "Rusty Russell (rusty)"
+    }
+    entry: {
+        name: "Sergey Popov (loonycyborg)"
+        comment: "scons"
+    }
+    entry: {
+        name: "Soliton"
+        comment: "bug fixes and various small features usually in multiplayer context"
+    }
+    entry: {
+        name: "Steven Oxley (xonev)"
+    }
+    entry: {
+        name: "Thomas Baumhauer (Baufo)"
+    }
+    entry: {
+        name: "Timotei Dolean (timotei)"
+        comment: "Eclipse UMC plugin"
+        email: "timotei21_AT_gmail.com"
+    }
+    entry: {
+        name: "Tomasz Śniatowski (ilor)"
+        comment: "Editor"
+    }
+    entry: {
+        name: "Yann Dirson"
+        comment: "gettext support, tinygui"
+        email: "ydirson_AT_altern.org"
+    }
+    entry: {
+        name: "Yurii Chernyi (Crab)"
+        comment: "AI"
+        email: "terraninfo_AT_terraninfo.net"
+    }
+}
+
+About{
+    title: _ "General Purpose Administration and Coordination"
+    entry: {
+        name: "Charles Dang (vultraz)"
+        comment: "Current release manager (1.13.3-present)"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Crossbow/Miyo"
+        comment: "Past release manager"
+    }
+    entry: {
+        name: "Ignacio R. Morelle (shadowm)"
+        comment: "Past release manager (1.12.1-1.12.6 / 1.13.0-1.13.2)"
+        email: "shadowm2006_AT_gmail.com"
+        wikiuser: "Shadowmaster"
+    }
+    entry: {
+        name: "Isaac Clerencia"
+        comment: "Past release manager, Debian packager"
+        email: "isaac_AT_sindominio.net"
+    }
+    entry: {
+        name: "Nils Kneuper (Ivanovic)"
+        comment: "Past release manager, internationalization manager, OpenPandora packager, A Tale of Two Brothers, German translation"
+        email: "Crazy-Ivanovic_AT_gmx.net"
+    }
+    entry: {
+        name: "Noy"
+        comment: "General purpose administration, unit balancing"
+    }
+}
+
+About{
+    title: _ "Internationalization Managers"
+    entry: {
+        name: "Cédric Duval"
+        comment: "coder, internationalization manager"
+    }
+    entry: {
+        name: "David Philippi (Torangan)"
+        comment: "internationalization manager, wescamp"
+    }
+    entry: {
+        name: "Mark Michelsen (skovbaer)"
+        comment: "Slackware packager"
+    }
+    entry: {
+        name: "Nils Kneuper (Ivanovic)"
+        comment: "administrator, release manager, internationalization manager, OpenPandora packager, A Tale of Two Brothers, german translation"
+        email: "Crazy-Ivanovic_AT_gmx.net"
+    }
+    entry: {
+        name: "Susanna Björverud (sanna)"
+        email: "susanna.bjorverud_AT_telia.com"
+    }
+}
+
+About{
+    title: _ "Artwork and Graphics"
+    entry: {
+        name: "Emilien Rotival (LordBob)"
+        comment: "portrait director - focus on loyalists, trolls, monsters"
+    }
+    entry: {
+        name: "Francisco Muñoz (fmunoz)"
+        comment: "founding artist and former lead artist, worked consistently on all aspects till around v0.7-0.9."
+    }
+    entry: {
+        name: "Hogne Håskjold (frame/freim)"
+        comment: "terrain art director, made much of the current terrains (esp. mountains)"
+    }
+    entry: {
+        name: "J.W. Bjerk (Eleazar)"
+        comment: "terrain art director (esp. Chasm, Cave, Water), sprite animations, various visual tweaks"
+        wikiuser: "Eleazar"
+    }
+    entry: {
+        name: "James Woo (Pickslide)"
+        comment: "portraits (major focus on orcs and campaigns, especially UtBS, TEI, TSoF)"
+    }
+    entry: {
+        name: "Kathrin Polikeit (Kitty)"
+        comment: "portrait director - focus on mages/necromancers, elvish, naga, merman, and troll unit trees"
+    }
+    entry: {
+        name: "Lari Nieminen (zookeeper)"
+        comment: "sprite animation, various visual tweaks, titlescreen and campaign maps (v1.11+), water animations (v1.13+)"
+    }
+    entry: {
+        name: "Neoriceisgood"
+        comment: "sprite creator and animator (major focus on drakes, dwarves, saurians)"
+    }
+    entry: {
+        name: "Pekka Aikio (pekka)"
+        comment: "tiles, esp. castles, and attack icons"
+    }
+    entry: {
+        name: "Phil Barber (thespaceinvader)"
+        comment: "Dwarf and Saurian portraits, most of the drake animations, and a large amount on other stuff, esp. the dwarves."
+    }
+    entry: {
+        name: "Richard Kettering (Jetrel)"
+        comment: "art director/slave, major focus on sprites, portraits, buildings, and icons"
+        wikiuser: "Jetryl"
+    }
+    entry: {
+        name: "Timo Honkasalo (Sgt. Groovy)"
+        comment: "New high-res logo for the game"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Alex Jarocha-Ernst (Jormungandr)"
+        comment: "portraits"
+    }
+    entry: {
+        name: "Christophe Anjard (Christophe33)"
+        comment: "made many of the old (c. v0.6) terrains, and some sprites for the dwarves"
+    }
+    entry: {
+        name: "Erkki Lonkainen (Eternal)"
+        comment: "created and animated many replacement sprites (esp. ogre, orc assassin & spear units, and cockatrice)"
+    }
+    entry: {
+        name: "Jason Lutes"
+        comment: "portraits (major focus on humans, some campaign portraits)"
+    }
+    entry: {
+        name: "Johann de Venecia (Johann)"
+        comment: "drew the new campaign story art for HttT"
+    }
+    entry: {
+        name: "Leonhard"
+        comment: "made several of the new attack icons"
+    }
+    entry: {
+        name: "Marcus Rosén (sleepwalker)"
+        comment: "Animations (esp. Saurians, Dwarves, Horseman), khalifate sprites, and portraits (Mermaid Initiate & Hakim)"
+    }
+    entry: {
+        name: "Mark Goodenough (Ranger M)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "Maximiliano Buis (Redeth)"
+        comment: "Made nearly all of the idle animations, and some death animations (as of 1.3.1)"
+    }
+    entry: {
+        name: "Michael Gil de Muro (grp21)"
+        comment: "portraits (for the campaign 'The Rise of Wesnoth')"
+    }
+    entry: {
+        name: "Moritz Göbelbecker (mog)"
+        comment: "tiles, esp. swamp, encampment, ice, and work with lava/chasm"
+    }
+    entry: {
+        name: "Peter Geinitz (Shadow/Wayfarer)"
+        comment: "sprite creator and animator"
+    }
+    entry: {
+        name: "Robert Bolin (Zebulon)"
+        comment: "tiles, sprite editing and animations"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Andrew James Patterson (Kamahawk)"
+        comment: "sprites"
+    }
+    entry: {
+        name: "antwerpz"
+        comment: "sprite creator/animator for old saurian units"
+    }
+    entry: {
+        name: "Diego Brea (Cobretti)"
+        comment: "sprite creator/animator"
+    }
+    entry: {
+        name: "EEL (EELuminatus)"
+        comment: "sprite animator, provided death animations for the woses, some of the orcs, and an attack animation for the revenant"
+    }
+    entry: {
+        name: "Eli Dupree (Elvish Pillager)"
+        comment: "sprites and animations"
+    }
+    entry: {
+        name: "Eric Holdos (Rev. V!)"
+    }
+    entry: {
+        name: "Gareth Miller (Gafgarion)"
+        comment: "made some early sprites/tiles"
+    }
+    entry: {
+        name: "Gerald Clears (Smok'em Jags)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "James Barton (Sangel)"
+        comment: "sprites"
+    }
+    entry: {
+        name: "Jami"
+        comment: "rogue death animation"
+    }
+    entry: {
+        name: "Jerzy Brzozowski (Mefisto)"
+        comment: "Various sprites and animations, tropical forests."
+    }
+    entry: {
+        name: "Jesse Holland (Kestenvarn)"
+        comment: "map illustrator of old titlescreen and campaign maps (v1.1 - v1.10)"
+    }
+    entry: {
+        name: "Johanna Manninen (lohari)"
+        comment: "edited tiles, ported freeciv tiles used in very early versions of wesnoth"
+    }
+    entry: {
+        name: "John Muccigrosso (Eponymous Archon)"
+        comment: "made some early sprites, such as the human bowmen"
+    }
+    entry: {
+        name: "Kuno Raffin (lurker)"
+        comment: "Various terrain artwork"
+    }
+    entry: {
+        name: "Michael Mielewczik (Mille)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "Mikko Kraft (Deserter)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "Musketaquid"
+        comment: "animated windmill / stone path"
+    }
+    entry: {
+        name: "Slainte"
+        comment: "made sprites for c. v0.6 mages, also made many of the old attack icons"
+    }
+    entry: {
+        name: "Simon Forsyth (Alarantalara)"
+        comment: "cave terrain"
+    }
+    entry: {
+        name: "Stephen Metcalf (Neoskel)"
+        comment: "major help with shadow standardization (over half the units), made some missing zombie variants"
+    }
+    entry: {
+        name: "Stephen Stone (Disto)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "Svetac"
+        comment: "made many of the old attack icons"
+    }
+    entry: {
+        name: "Tristan Millner (tatmf)"
+        comment: "made old portrait of dwarven fighter"
+    }
+    entry: {
+        name: "Zhukov"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Aaron Redfern (A-Red)"
+        comment: "Sprites and animations"
+    }
+    entry: {
+        name: "Adrian Sheehy (Major)"
+        comment: "various sprites animations"
+    }
+    entry: {
+        name: "Alexander Brown (Cloud)"
+        comment: "Sprite animations"
+    }
+    entry: {
+        name: "Anton Ecker (Kaldred)"
+        comment: "burnt villages"
+    }
+    entry: {
+        name: "battlestar"
+        comment: "- some scenery graphics including burnt tent."
+    }
+    entry: {
+        name: "Ben Wenzel (artisticdude)"
+        comment: "Sprite animations"
+    }
+    entry: {
+        name: "Blarumyrran"
+        comment: "New storm trident, staff and ankh item pictures, various attack icons, river ford tiles, drake and human city villages"
+    }
+    entry: {
+        name: "Bora Orcal (bera)"
+        comment: "Goblin portrait sketches"
+    }
+    entry: {
+        name: "Cernunnos"
+        comment: "merman villages"
+    }
+    entry: {
+        name: "Charles Dang (vultraz)"
+        comment: "Icons for new editor and updated terrain icons"
+    }
+    entry: {
+        name: "Chris Wilson (Valkier)"
+        comment: "portraits"
+    }
+    entry: {
+        name: "Christian Sirviö (Girgistian)"
+        comment: "portraits (sketches), and some attack animations for the orcs"
+    }
+    entry: {
+        name: "Clinton Bell"
+        comment: "various animations"
+    }
+    entry: {
+        name: "Dan Gerhards (beetlenaut)"
+        comment: "various sprites and animations"
+    }
+    entry: {
+        name: "Daniel Borgmann (dborg)"
+        comment: "semi-transparent map grid"
+    }
+    entry: {
+        name: "Daniel Foerster (pydsigner/pyndragon)"
+        comment: "Icon overlays for the About dialog button"
+    }
+    entry: {
+        name: "David Limbrock (Kwandulin)"
+        comment: "Cloned Dwarvish Guardsman standing animation for the Dwarvish Sentinel and Stalwart, minor fixes"
+    }
+    entry: {
+        name: "doofus-01"
+        comment: "orcish fort and villages, desert mountains, mine walls, sea forts, portraits for walking corpse and soulless"
+    }
+    entry: {
+        name: "Elena Astanina (ayona)"
+        comment: "log-cabin villages"
+    }
+    entry: {
+        name: "Eric Butler (Erk)"
+        comment: "desert and merman villages"
+    }
+    entry: {
+        name: "Evan Crook (Flametrooper)"
+        comment: "sprite animator (TC conversion)"
+    }
+    entry: {
+        name: "Garrett Wessner (Stilgar)"
+        comment: "gold coin pile"
+    }
+    entry: {
+        name: "Gideon Chia (Deonjo)"
+        comment: "new 'units' icon for general status bar"
+    }
+    entry: {
+        name: "Guangcong Luo (Zarel)"
+        comment: "Multiplayer status icons for 1.7.x"
+    }
+    entry: {
+        name: "Highhole"
+        comment: "revised storm trident"
+    }
+    entry: {
+        name: "Homunculus"
+        comment: "dead great tree terrain"
+    }
+    entry: {
+        name: "Ignacio R. Morelle (shadowm)"
+        comment: "Minor item/unit edits; animated lit brazier; ported gryphon rider animation to generic gryphon; Ancient Lich for 1.12.x"
+        email: "shadowm2006_AT_gmail.com"
+        wikiuser: "Shadowmaster"
+    }
+    entry: {
+        name: "Irrevenant"
+        comment: "Skeleton archer death and recruit animations, new ankh touch ups, new dark adept touch ups."
+    }
+    entry: {
+        name: "Irwin Ismail (Swordy)"
+        comment: "original projectile/attack icon for chakram"
+    }
+    entry: {
+        name: "Jason Frailey (Valdroni)"
+        comment: "scorpion portrait"
+    }
+    entry: {
+        name: "Jimmy Olsson (Azlan)"
+        comment: "made old icons for windows version"
+    }
+    entry: {
+        name: "Joakim Persson (JAP)"
+        comment: "Knalgan flag set"
+    }
+    entry: {
+        name: "John Mercer (Stern)"
+        comment: "Giant Rat graphics"
+    }
+    entry: {
+        name: "John-Robert Funck (XJaPaN)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "Jonatan Alamà (tin)"
+        comment: "made red logo used until before v1.0"
+    }
+    entry: {
+        name: "Justin Nichols (JustinOperable)"
+        comment: "Portrait artwork"
+    }
+    entry: {
+        name: "Kim Holm (DUHH)"
+        comment: "Portrait artwork"
+    }
+    entry: {
+        name: "Lukasz Wawrowski (inferno8)"
+        comment: "Drake attack icons with fmunoz"
+    }
+    entry: {
+        name: "Mattias Westlund (West)"
+        comment: "new color cursors"
+    }
+    entry: {
+        name: "Nicholas Kerpan (Thrawn)"
+        comment: "human thief portrait"
+    }
+    entry: {
+        name: "Pixelmind"
+        comment: "various animations"
+    }
+    entry: {
+        name: "Randall Walls (slightcrazed)"
+        comment: "sprite animator"
+    }
+    entry: {
+        name: "rhyging5"
+        comment: "various animations"
+    }
+    entry: {
+        name: "RusHHouR"
+        comment: "New signpost (1.4.1)"
+    }
+    entry: {
+        name: "Samuel Wilson (megane)"
+        comment: "random dice icon fix after 1.4.0"
+    }
+    entry: {
+        name: "Santiago Iborra (Quellion)"
+        comment: "Portrait artwork"
+    }
+    entry: {
+        name: "Simeon Dear (Trilby)"
+        comment: "Sprite animations"
+    }
+    entry: {
+        name: "Sonny T Yamada (SkyOne)"
+        comment: "shadow standardization of many campaign units"
+    }
+    entry: {
+        name: "Vincent Langner (Vyncyn)"
+        comment: "Walking Corpse and Soulless wolf variations"
+    }
+    entry: {
+        name: "ZygoUgo"
+        comment: "Giant Rat portrait"
+    }
+}
+
+About{
+    title: _ "Music"
+    entry: {
+        name: "Aleksi Aubry-Carlson (Aleksi)"
+    }
+    entry: {
+        name: "Doug Kaufman (dkaufman)"
+        comment: "http://dougkaufman.net/"
+    }
+    entry: {
+        name: "Gianmarco Leone (gmlion)"
+    }
+    entry: {
+        name: "Jeremy Nicoll (jeremy2/eltiare)"
+    }
+    entry: {
+        name: "Joseph Toscano (ZhayTee)"
+        comment: "zhaymusic.com"
+    }
+    entry: {
+        name: "Mattias Westlund (West)"
+        comment: "music coordinator/composer"
+    }
+    entry: {
+        name: "Ryan Reilly (Rain)"
+    }
+    entry: {
+        name: "Stephen Rozanc (TreizeCouleurs)"
+    }
+    entry: {
+        name: "Timothy Pinkham (TimothyP)"
+    }
+    entry: {
+        name: "Tyler Johnson"
+    }
+}
+
+About{
+    title: _ "Sound Effects"
+    entry: {
+        name: "Corey Woodworth (woodwizzle)"
+        comment: "hit and die sounds"
+    }
+    entry: {
+        name: "J.W. Bjerk (Eleazar)"
+        wikiuser: "Eleazar"
+    }
+    entry: {
+        name: "Lari Nieminen (zookeeper)"
+        comment: "focus on attack, weapon and user interface sounds"
+    }
+    entry: {
+        name: "Adam Rinsky (Action Jack)"
+        comment: "dwarf hit and die sounds"
+    }
+    entry: {
+        name: "Leonardo Magno Sampaio (leorock116)"
+        comment: "mace, staff and club sounds"
+    }
+}
+
+About{
+    title: _ "Campaign Design"
+    entry: {
+        name: "Asa Swain (quartex)"
+        comment: "Under the Burning Suns"
+    }
+    entry: {
+        name: "Bär Halberkamp (bumbadadabum)"
+        comment: "Campaign maintenance and various improvements"
+    }
+    entry: {
+        name: "Benjamin Drieu"
+    }
+    entry: {
+        name: "Charles Dang (vultraz)"
+        comment: "Campaign maintenance and various improvements"
+    }
+    entry: {
+        name: "Dacyn"
+    }
+    entry: {
+        name: "Dan Gerhards (beetlenaut)"
+        comment: "Dead Water, Secrets of the Ancients"
+    }
+    entry: {
+        name: "David White (Sirp)"
+        comment: "Heir to the Throne"
+    }
+    entry: {
+        name: "Eric J. Mesoy (Circon)"
+        comment: "A Tale of Two Brothers"
+    }
+    entry: {
+        name: "Eric S. Raymond (ESR)"
+        comment: "The Hammer of Thursagan"
+    }
+    entry: {
+        name: "esci"
+        comment: "Descent into Darkness"
+    }
+    entry: {
+        name: "Francisco Muñoz (fmunoz)"
+        comment: "founding artist and former lead artist, worked consistently on all aspects till around v0.7-0.9."
+    }
+    entry: {
+        name: "James Spencer (Shade)"
+        comment: "The Rise of Wesnoth"
+    }
+    entry: {
+        name: "Joseph Simmons (Turin)"
+        comment: "The Eastern Invasion, The Sceptre of Fire"
+    }
+    entry: {
+        name: "Justin Zaun (jzaun)"
+        comment: "coder, scenario designer"
+    }
+    entry: {
+        name: "Lari Nieminen (zookeeper)"
+        comment: "redesign of various scenarios and other enhancement"
+    }
+    entry: {
+        name: "Nils Kneuper (Ivanovic)"
+        comment: "A Tale of Two Brothers"
+        email: "Crazy-Ivanovic_AT_gmx.net"
+    }
+    entry: {
+        name: "Santi/fnaek"
+        comment: "The Legend of Wesmere"
+    }
+    entry: {
+        name: "Scott Klempner"
+        comment: "Heir to the Throne, The Rise of Wesnoth, Liberty"
+    }
+    entry: {
+        name: "Taurus"
+        comment: "Northern Rebirth, Son of the Black-Eye"
+    }
+    entry: {
+        name: "William Carey (aelius)"
+        comment: "The South Guard"
+    }
+}
+
+About{
+    title: _ "Multiplayer Maps and Balancing"
+    entry: {
+        name: "George Birthisel (happygrue/Wintermute)"
+        comment: "Unit balancing, Khalifate Era"
+    }
+    entry: {
+        name: "Jake Bailey (jb)"
+        comment: "multiplayer maps"
+    }
+    entry: {
+        name: "Joshua Northey (Becephalus)"
+        comment: "multiplayer maps (mostly 2vs2 and up)"
+    }
+    entry: {
+        name: "Mike Quiñones (Doc Paterson)"
+        comment: "multiplayer maps (mostly 1vs1)"
+    }
+    entry: {
+        name: "Noy"
+        comment: "general purpose administration, unit balancing"
+    }
+    entry: {
+        name: "Peter Groen (pg)"
+        comment: "multiplayer maps"
+    }
+    entry: {
+        name: "Ruben Philipp Wickenhäuser (The Very Uhu)"
+        comment: "multiplayer maps"
+    }
+    entry: {
+        name: "Soliton"
+        comment: "unit balancing"
+    }
+    entry: {
+        name: "Tom Chance (telex4)"
+        comment: "multiplayer maps"
+    }
+    entry: {
+        name: "Zack Kleinfeld"
+        comment: "multiplayer maps, unit balancing"
+        email: "kleinfel_AT_wpi.edu"
+    }
+}
+
+About{
+    title: _ "Packagers"
+    entry: {
+        name: "ancestral"
+        comment: "Apple OS X packager (1.12.1 and later)"
+    }
+    entry: {
+        name: "Matthias Schoeck (mattsc)"
+        comment: "Apple OS X packager (1.11.8 and later)"
+    }
+    entry: {
+        name: "Nils Kneuper (Ivanovic)"
+        comment: "OpenPandora packager"
+        email: "Crazy-Ivanovic_AT_gmx.net"
+    }
+    entry: {
+        name: "Rhonda D'Vine (Rhonda)"
+        comment: "Debian/Ubuntu packager"
+    }
+    entry: {
+        name: "Sebastian Kölle (aquileia)"
+        comment: "Visual Studio SDK maintainer"
+    }
+    entry: {
+        name: "Sergey Popov (loonycyborg)"
+        comment: "Microsoft Windows packager and MinGW SDK maintainer"
+    }
+    entry: {
+        name: "Torsten Zühlsdorff"
+        comment: "FreeBSD Packager"
+        email: "ports_AT_toco-domains.de"
+    }
+    entry: {
+        name: "Vincent Cheng (vincent_c)"
+        comment: "Debian/Ubuntu packager"
+    }
+    entry: {
+        name: "•"
+    }
+    entry: {
+        name: "Ben Anderman (crimson_penguin)"
+        comment: "Apple OS X packager (for 1.5.6 and later)"
+        email: "ben_AT_happyspork.com"
+    }
+    entry: {
+        name: "Cyril Bouthors (CyrilB)"
+        comment: "Debian packager, patron"
+    }
+    entry: {
+        name: "Darryl Dixon"
+    }
+    entry: {
+        name: "edge"
+    }
+    entry: {
+        name: "Isaac Clerencia"
+        comment: "Debian packager"
+    }
+    entry: {
+        name: "Jay Hopping"
+    }
+    entry: {
+        name: "Jörg Hinrichs (Yogi Bear/YogiHH)"
+        comment: "Microsoft Windows packager"
+    }
+    entry: {
+        name: "Laurent Wacrenier (lwa)"
+        comment: "Apple OS X packager (for v1.4 and before)"
+    }
+    entry: {
+        name: "Marcin Konicki (ahwayakchih)"
+        comment: "BeOS packager"
+    }
+    entry: {
+        name: "Marcus Phillips (Sithrandel)"
+        comment: "Apple OS X packager (for v1.0 and before)"
+    }
+    entry: {
+        name: "Mark Michelsen (skovbaer)"
+        comment: "Slackware packager"
+    }
+    entry: {
+        name: "Muhammad Amir Ayub (anakayub)"
+        comment: "Apple OS X packager"
+    }
+    entry: {
+        name: "Piotr Cychowski (Mist/cycholka)"
+        comment: "Microsoft Windows packager"
+    }
+    entry: {
+        name: "Simon Forsyth (Alarantalara)"
+        comment: "Apple OS X Packager (1.9.6 and later)"
+    }
+    entry: {
+        name: "Vlad Glagolev (Stealth)"
+        comment: "OpenBSD packager"
+    }
+}
+
+About{
+    title: _ "Miscellaneous Contributors"
+-- NOTE to new contributors: this section is listed alphabetically using the
+-- "name" attribute's first character. If you have to add yourself here,
+-- respect this rule.
+    entry: {
+        name: "Aaron Keisch-Walter (Exasperation)"
+    }
+    entry: {
+        name: "Adam Leffew"
+    }
+    entry: {
+        name: "Adrian Iosif (Zappaman)"
+    }
+    entry: {
+        name: "Aishiko"
+        comment: "Unit instance recall cost implementation"
+    }
+    entry: {
+        name: "Alek Bollig (binarycoder)"
+    }
+    entry: {
+        name: "Alesis Novik"
+    }
+    entry: {
+        name: "Aline Riss (akihara)"
+    }
+    entry: {
+        name: "André Knispel"
+    }
+    entry: {
+        name: "Andrea Palmatè (afxgroup)"
+    }
+    entry: {
+        name: "Andreas Löf (Aginor)"
+    }
+    entry: {
+        name: "Andrius Šilinskas (thunderstruck)"
+    }
+    entry: {
+        name: "Andrius Štikonas"
+    }
+    entry: {
+        name: "Anja Keicher (ayne)"
+    }
+    entry: {
+        name: "Bär Halberkamp (bumbadadabum)"
+    }
+    entry: {
+        name: "Ben Anderman (crimson_penguin)"
+        comment: "unit list"
+    }
+    entry: {
+        name: "Boldizsár Lipka (lipk)"
+    }
+    entry: {
+        name: "Brilliand"
+    }
+    entry: {
+        name: "Burkay Özdemir (Velory)"
+        comment: "Poisoning improvement for Formula AI"
+    }
+    entry: {
+        name: "Celtic Minstrel"
+    }
+    entry: {
+        name: "chisquare130"
+    }
+    entry: {
+        name: "Chris Carpenter (mordocai)"
+    }
+    entry: {
+        name: "Chris Hopman (cjhopman)"
+    }
+    entry: {
+        name: "Chris Mann (WildPenguin)"
+        comment: "Emacs WML-mode"
+    }
+    entry: {
+        name: "Chusslove Illich (caslav.ilic)"
+        comment: "wmlxgetext improvements"
+    }
+    entry: {
+        name: "Daniel Bruegmann"
+    }
+    entry: {
+        name: "David Mikos (Coffee)"
+        comment: "Coder, animation framework improvements."
+    }
+    entry: {
+        name: "Denny Vaccaro (endercoaster)"
+    }
+    entry: {
+        name: "Derek (Gambit)"
+    }
+    entry: {
+        name: "devnexen"
+    }
+    entry: {
+        name: "Dmitry K. (nephro)"
+    }
+    entry: {
+        name: "Doug Rosvick (dlr365)"
+        wikiuser: "dlr365"
+    }
+    entry: {
+        name: "dorng"
+    }
+    entry: {
+        name: "dreamer-88"
+    }
+    entry: {
+        name: "Dugi"
+        comment: "Context-free name generator"
+    }
+    entry: {
+        name: "Duthlet"
+    }
+    entry: {
+        name: "Ekdohibs"
+    }
+    entry: {
+        name: "elvish_sovereign"
+    }
+    entry: {
+        name: "Ely Levy (Nakee)"
+    }
+    entry: {
+        name: "Étienne Simon (ejls)"
+    }
+    entry: {
+        name: "Etkin Baris Ozgul (pokhbocee)"
+        comment: "Lua AI"
+        ircuser: "pokhbocee"
+    }
+    entry: {
+        name: "Eugene Kosov (kevg)"
+    }
+    entry: {
+        name: "Evgeniy Stepanov"
+        email: "eugeni.stepanov@gmail.com"
+        comment: "NativeClient port"
+    }
+    entry: {
+        name: "Evgeny Kapun"
+    }
+    entry: {
+        name: "FAAB"
+    }
+    entry: {
+        name: "Federico Pasco (neverEnough)"
+    }
+    entry: {
+        name: "Fedor Khod'kov (teddy/fkhodkov)"
+    }
+    entry: {
+        name: "Felix Bauer (flix)"
+    }
+    entry: {
+        name: "Floris Kint (Grimling)"
+    }
+    entry: {
+        name: "Francesco Gigli (Jaramir)"
+    }
+    entry: {
+        name: "Frank Richter (res)"
+    }
+    entry: {
+        name: "Frédéric Wagner"
+    }
+    entry: {
+        name: "Fredrik Wikstrom (salass00)"
+    }
+    entry: {
+        name: "galegosimpatico"
+    }
+    entry: {
+        name: "gh0st"
+        comment: "2012 Google Code-in Students' Micro AI development"
+    }
+    entry: {
+        name: "Gregory Gauthier (rjaguar3)"
+    }
+    entry: {
+        name: "Gregory Lundberg (tad)"
+        comment: "Cleanup of campaigns code"
+    }
+    entry: {
+        name: "Groggy Dice (groggydice)"
+        comment: "wmllint enhancements"
+    }
+    entry: {
+        name: "Guorui Xi (Kevin_Xi)"
+        email: "kevin_DOT_xgr_AT_gmail_DOT_com"
+    }
+    entry: {
+        name: "Hans-Joachim Gurt (HaJo)"
+    }
+    entry: {
+        name: "Herb Pah (haiz)"
+    }
+    entry: {
+        name: "iKevinY"
+    }
+    entry: {
+        name: "J. Tyne (JaMiT)"
+    }
+    entry: {
+        name: "J.R. Blain (Cowboy)"
+    }
+    entry: {
+        name: "jstitch"
+    }
+    entry: {
+        name: "Jacek Kominek (BroodKiller)"
+    }
+    entry: {
+        name: "Jan Polak (benetnash)"
+        comment: "Formula AI contributions"
+        email: "benetnash_AT_icpnet.pl"
+    }
+    entry: {
+        name: "Jan Zvánovec (jaz)"
+    }
+    entry: {
+        name: "Jean-Baptiste Poittevin (BBT)"
+        email: "babataz_AT_gmail.com"
+    }
+    entry: {
+        name: "Jeff Breidenbach (jab)"
+        comment: "Bilinear interpolation"
+    }
+    entry: {
+        name: "Jeffrey Eldridge (jleldridge)"
+        email: "jleldridge27_AT_gmail.com"
+    }
+    entry: {
+        name: "Jeffrey 'Sigurd' Westcoat (SigurdFireDragon)"
+    }
+    entry: {
+        name: "Jérôme (segfault)"
+    }
+    entry: {
+        name: "Jim Carroll (Jimm)"
+    }
+    entry: {
+        name: "Jody Northup (Upthorn)"
+        comment: "Prospective student (world persistence)"
+    }
+    entry: {
+        name: "Joeri Melis"
+    }
+    entry: {
+        name: "John Anthony"
+        email: "john@jo.hnanthony.com"
+        comment: "campaignd work, mainly security-based"
+    }
+    entry: {
+        name: "John B. Messerly (jbm)"
+    }
+    entry: {
+        name: "John Harvey (johndh)"
+        comment: "minor race descriptions; bats, goblins, mechanical, merman, monster, naga, ogre"
+    }
+    entry: {
+        name: "Jonathan Combs (ScegfOd)"
+        comment: "log activating dialog"
+    }
+    entry: {
+        name: "Jonas Lihnell (Roze)"
+    }
+    entry: {
+        name: "Jonas Kölker"
+    }
+    entry: {
+        name: "Jordà Polo (ettin)"
+        comment: "website, i18n, ui"
+        email: "jorda_AT_ettin.org"
+    }
+    entry: {
+        name: "Josef Reidinger (qk)"
+    }
+    entry: {
+        name: "Joshua Hudson"
+    }
+    entry: {
+        name: "josteph"
+    }
+    entry: {
+        name: "Jozrael"
+    }
+    entry: {
+        name: "Justin DiSabatino (Turuk)"
+    }
+    entry: {
+        name: "Kamil Kaczmarczyk (lampak)"
+    }
+    entry: {
+        name: "Karl Miller (karlm)"
+        email: "karl_DOT_miller_DOT_km_AT_gmail_DOT_com"
+    }
+    entry: {
+        name: "Karol Kozub (automagic)"
+    }
+    entry: {
+        name: "Kevin Montalva (Ryckes)"
+    }
+    entry: {
+        name: "Kristoffer Grönlund (kegie)"
+    }
+    entry: {
+        name: "Laurent Birtz"
+    }
+    entry: {
+        name: "legoktm"
+    }
+    entry: {
+        name: "Lovens Weche (LovCAPONE)"
+    }
+    entry: {
+        name: "Luiz Fernando de Faria Pereira (lfernando)"
+    }
+    entry: {
+        name: "Luther Thompson"
+        email: "lutheroto_AT_gmail.com"
+    }
+    entry: {
+        name: "lv-zheng"
+    }
+    entry: {
+        name: "Maksim Orlovich (SadEagle)"
+    }
+    entry: {
+        name: "Mark McGuire (TronPaul)"
+    }
+    entry: {
+        name: "Martin Bede"
+        comment: "2012 Google Code-in Students' Micro AI development"
+    }
+    entry: {
+        name: "Mateusz Kolaczek (PL_kolek)"
+    }
+    entry: {
+        name: "Matt Renfer (Des)"
+        comment: "Prose revision"
+    }
+    entry: {
+        name: "Matthias Schoeck (mattsc)"
+        comment: "AI improvements"
+    }
+    entry: {
+        name: "matthiaskrgr"
+        comment: "Running address sanitizer to catch leaks"
+    }
+    entry: {
+        name: "Maxim Biro (nurupo)"
+    }
+    entry: {
+        name: "Maximilian Fricke (madmax28)"
+    }
+    entry: {
+        name: "Maximilian Lupke (malumalu)"
+    }
+    entry: {
+        name: "Marius Spix (spixi)"
+    }
+    entry: {
+        name: "Michael Flowers (MJ)"
+    }
+    entry: {
+        name: "Michael Schmahl"
+    }
+    entry: {
+        name: "Michael Strebel (Nostromus)"
+    }
+    entry: {
+        name: "midzer"
+    }
+    entry: {
+        name: "Miguel Zapico (elricz)"
+    }
+    entry: {
+        name: "mstrebel"
+    }
+    entry: {
+        name: "Nathan Partlan (Greywhind)"
+        email: "greywhind_AT_users.sourceforge.net"
+        wikiuser: "Greywhind"
+    }
+    entry: {
+        name: "Nathan Walker (RiftWalker)"
+        email: "nathan.b.walker@vanderbilt.edu"
+    }
+    entry: {
+        name: "newfrenchy88"
+    }
+    entry: {
+        name: "niegenug"
+    }
+    entry: {
+        name: "Nobun"
+        comment: "wmlxgettext"
+    }
+    entry: {
+        name: "Oleg Tsarev"
+        email: "zabivator@gmail.com"
+    }
+    entry: {
+        name: "Olivier Faure (PoignardAzur)"
+    }
+    entry: {
+        name: "Pablo J. Urbano Santos (Lord Ork)"
+        wikiuser: "Lord Ork"
+        email: "asqueados_AT_gmail.com"
+    }
+    entry: {
+        name: "Patryk Obara (dreamer_)"
+    }
+    entry: {
+        name: "Paul Smedley (Creeping)"
+    }
+    entry: {
+        name: "Paŭlo Ebermann (Pauxlo)"
+        wikiuser: "Pauxlo"
+    }
+    entry: {
+        name: "PBechon"
+    }
+    entry: {
+        name: "Pentarctagon"
+    }
+    entry: {
+        name: "Peter Elmers"
+    }
+    entry: {
+        name: "Peter Mawhorter (solsword)"
+        wikiuser: "solsword"
+        comment: "Python TC script upgrade"
+    }
+    entry: {
+        name: "Petr Sobotka (Pietro)"
+    }
+    entry: {
+        name: "Pierre Bourdon (delroth)"
+        email: "root_AT_delroth.is-a-geek.org"
+    }
+    entry: {
+        name: "pquentin"
+    }
+    entry: {
+        name: "Pranav Deshpande (universecoder)"
+    }
+    entry: {
+        name: "Priit Laes (plaes)"
+    }
+    entry: {
+        name: "Pubudu Gunawardena (ugudu)"
+    }
+    entry: {
+        name: "Qi Mo (qmo2015)"
+    }
+    entry: {
+        name: "Quetzalcoatl"
+    }
+    entry: {
+        name: "Randy Kostiuk (Randypk)"
+        comment: "Bug fixes"
+    }
+    entry: {
+        name: "Richard Yao (srk9)"
+        comment: "Bug fixes"
+    }
+    entry: {
+        name: "Robert Spencer"
+        comment: "2012 Google Code-in Students' Micro AI development"
+    }
+    entry: {
+        name: "Robert Wallace (Robertdebrus)"
+    }
+    entry: {
+        name: "Rocco J Carello (rogue)"
+    }
+    entry: {
+        name: "Roland Hautz (duncan_shriek)"
+    }
+    entry: {
+        name: "Rolf Sievers (Lizard)"
+    }
+    entry: {
+        name: "Ronny Standtke"
+    }
+    entry: {
+        name: "Ryan Henszey"
+    }
+    entry: {
+        name: "Ryan Roden-Corrent (rcorre)"
+        comment: "Hotkey release and scroll key rebinding"
+    }
+    entry: {
+        name: "Sachith Seneviratne (sachith500)"
+        email: "sachith500@gmail.com"
+        comment: "Bug fixes at the moment. GSoC Aspirant"
+    }
+    entry: {
+        name: "Samuel Kim"
+        comment: "2012 Google Code-in Students' Micro AI development"
+    }
+    entry: {
+        name: "Sebastian Goll (afran)"
+    }
+    entry: {
+        name: "Sebastian Kölle (aquileia)"
+    }
+    entry: {
+        name: "Serge Martin (EdB)"
+    }
+    entry: {
+        name: "Sergio Tomás Ortiz"
+        email: "stomasortiz_AT_gmail.com"
+    }
+    entry: {
+        name: "Severin Glöckner (Shiki)"
+    }
+    entry: {
+        name: "Simon Forsyth (Alarantalara)"
+    }
+    entry: {
+        name: "Simon Smith (Simons Mith)"
+        comment: "Style guide, help with the application of the style guide, and some tips"
+        email: "simon_smith_AT_zen_DOT_co_DOT_uk"
+        wikiuser: "Simons_Mith"
+    }
+    entry: {
+        name: "starius"
+    }
+    entry: {
+        name: "Stéphane Gimenez (gim)"
+    }
+    entry: {
+        name: "Steven Panek (Espreon)"
+        email: "Majora700_AT_gmail_DOT_com"
+        wikiuser: "Espreon"
+    }
+    entry: {
+        name: "sylecn"
+        email: "sylecn_AT_gmail.com"
+    }
+    entry: {
+        name: "Sytyi Nick (Sytyi)"
+        comment: "WML validation"
+        email: "nsytyi_AT_gmail.com"
+    }
+    entry: {
+        name: "Talbot Pierre (Trademark)"
+        email: "ptablot@mopong.net"
+    }
+    entry: {
+        name: "Tamas K. (negusnyul)"
+    }
+    entry: {
+        name: "techtonik"
+    }
+    entry: {
+        name: "the_beagle"
+        comment: "Wose race description"
+    }
+    entry: {
+        name: "Thibault Févry (iwontbecreative)"
+        comment: "Some GCI tasks and utils/wiki_grabber.py cleanup."
+    }
+    entry: {
+        name: "Thomas Martinet (hankerspace)"
+        email: "hankerspace_AT_gmail.com"
+    }
+    entry: {
+        name: "Thomas Prevost (zancdar)"
+        email: "thomas.prevost_AT_gmail.com"
+    }
+    entry: {
+        name: "Thonsew"
+    }
+    entry: {
+        name: "Thorny23"
+    }
+    entry: {
+        name: "Tobias Frei (ToBeFree)"
+    }
+    entry: {
+        name: "Tomasz Sikorski (Tomsik)"
+    }
+    entry: {
+        name: "Tommy Schmitz"
+    }
+    entry: {
+        name: "Tommy (yobbo)"
+    }
+    entry: {
+        name: "Toom Lõhmus (Ravana)"
+    }
+    entry: {
+        name: "tsr"
+    }
+    entry: {
+        name: "Valentin Deschaintre (Zazweda, Epyde)"
+        comment: "Zone guardian Micro AI"
+    }
+    entry: {
+        name: "vitiv"
+        comment: "2012 Google Code-in Students' Micro AI development"
+    }
+    entry: {
+        name: "Vladimír Slávik"
+        comment: "Miscellanous text formating and translation engine related help"
+    }
+    entry: {
+        name: "vn971"
+    }
+    entry: {
+        name: "Wedge009"
+    }
+    entry: {
+        name: "Yang Yifan (Xara)"
+    }
+    entry: {
+        name: "Zas"
+    }
+}
+
+About{
+    title: _ "Bots"
+    entry: {
+        name: "CIA"
+    }
+    entry: {
+        name: "irker"
+    }
+    entry: {
+        name: "janebot"
+    }
+    entry: {
+        name: "shikadibot"
+    }
+    entry: {
+        name: "wesbot"
+    }
+}

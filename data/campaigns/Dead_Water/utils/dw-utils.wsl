@@ -1,0 +1,156 @@
+--textdomain wesnoth-dw
+
+-- Finds the nearest hex to (X,Y) within MAX_DISTANCE that matches the FILTER, and stores the location in VARIABLE with x, y, and terrain. If there is more than one location found, VARIABLE will be an array.
+NEAREST_HEX = (X, Y, MAX_DISTANCE_NUMBER, FILTER, VAR_NAME) -> {
+    set_variable: {
+        name: "distance"
+        value: 0
+    }
+
+    set_variable: {
+        name: "location_found"
+        value: false
+    }
+
+-- Store any matching locations within a radius of "distance". If nothing got stored, add one to "distance" and try again. Do this until a location is found, or "distance" goes over the MAX_DISTANCE_NUMBER.
+    while: {
+        variable: {
+            name: "location_found"
+            equals: false
+        }
+        and: {
+            variable: {
+                name: "distance"
+                less_than_equal_to: MAX_DISTANCE_NUMBER
+            }
+        }
+
+        do: ->
+            Store_Locations{
+                <FILTER
+                and: {
+                    x: X
+                    y: Y
+                    radius: distance
+                }
+                variable: VAR_NAME
+            }
+
+            If{
+                variable: {
+                    name: "#{VAR_NAME}.length"
+                    greater_than: 0
+                }
+                then: ->
+                    Set_Variable{
+                        name: "location_found"
+                        value: true
+                    }
+                
+            }
+
+            Set_Variable{
+                name: "distance"
+                add: 1
+            }
+        
+    }
+
+    clear_variable: {
+        name: "distance"
+    }
+
+    clear_variable: {
+        name: "location_found"
+    }
+}
+
+SIDE_1 = () -> {
+    side: 1
+    controller: "human"
+    team_name: "good guys"
+    user_team_name: _ "Merman Forces"
+
+    type: "Merman Child King"
+    id: "Kai Krellis"
+    name: _ "Kai Krellis"
+    canrecruit: true
+    unrenamable: true
+
+    recruit: {"Merman Citizen", "Merman Fighter", "Merman Hunter", "Mermaid Initiate"}
+}
+
+RECALL_LOYAL_UNITS = () -> {
+    recall: {
+        id: "Cylanna"
+    }
+    recall: {
+        id: "Gwabbo"
+    }
+    recall: {
+        id: "Teeloa"
+    }
+    recall: {
+        id: "Keshan"
+    }
+    recall: {
+        id: "Inky"
+    }
+    recall: {
+        id: "Tyegea"
+    }
+    recall: {
+        id: "Friendly Bat"
+    }
+    recall: {
+        id: "Undead Bat"
+    }
+    recall: {
+        id: "Fearsome Bat"
+    }
+}
+
+HOW_TO_LOSE = () -> {
+    objective: {
+        description: _ "Death of Kai Krellis"
+        condition: "lose"
+    }
+    objective: {
+        description: _ "Death of Cylanna"
+        condition: "lose"
+    }
+
+    <TURNS_RUN_OUT!
+}
+
+HERO_DEATHS = () -> {
+    event: {
+        name: "die"
+        filter: {
+            id: "Cylanna"
+        }
+        do: ->
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Cylanna! I need you!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Kai Krellis"
+        }
+        do: ->
+            Message{
+                speaker: "Cylanna"
+                message: _ "We are lost without our king!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

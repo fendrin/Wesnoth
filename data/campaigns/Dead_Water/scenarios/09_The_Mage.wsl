@@ -1,0 +1,515 @@
+--textdomain wesnoth-dw
+
+-- You need pierce and fire to take care of scorpions. Javelineers get
+-- one more level to shine. Diviners are also great. Hopefully you have
+-- Keshan and the storm trident because those will be very
+-- useful. Keshan is especially helpful in actually finding the
+-- mage. He can get there several turns ahead of even the fastest
+-- merman (after you take out most of the scorpions in the way), but of
+-- course you don't *need* him.
+
+Scenario{
+    name: _ "The Mage"
+    map: "campaigns/Dead_Water/maps/The_Mage.map"
+
+    id: "09_The_Mage"
+    next_scenario: "10_The_Flaming_Sword"
+
+    story: {
+        part: {
+            <DW_BIGMAP!
+            story: _ "The party traveled back to the mainland and followed the shore further north. Kai Krellis had much to think about. First, what Tyegëa had revealed about his ancestry gave him questions he could not answer. Second, he was nervous about the task ahead. He felt confidence in his people but feared paying too great a price in dead and wounded to pass Tyegëa’s test. He felt sometimes angry at Tyegëa for sending him on this extra journey, and sometimes grateful that she was willing to help at all."
+        }
+
+        part: {
+            <DW_BIGMAP!
+            story: _ "After several days, the smell of the swamp was just becoming noticeable when they found a small ruined castle in the right place to be the one Tyegëa had mentioned. Night was falling, and it was very dark beneath the trees, but Krellis was in a hurry, now that the end of their journey was in sight. He decided to go ashore and try to find the mage immediately."
+        }
+    }
+
+    <DW_TRACK(JOURNEY_09_NEW!)
+
+-- Don't change this order without modifying the turns on which the
+-- bats appear and disappear.
+    <DEFAULT_SCHEDULE_DUSK!
+    <TURNS4(16, 17, 18, 19)
+    victory_when_enemies_defeated: false
+
+-- wmllint: validate-off
+    side: {
+        <SIDE_1!
+        <GOLD4(120, 110, 100, 90)
+        shroud: true
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Hungry Creatures"
+        team_name: "bad guys"
+        no_leader: true
+        shroud: true
+        ai: {
+            village_value: 0
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: "revelation.ogg"
+            }
+
+            RECALL_LOYAL_UNITS!
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find Caladon the mage"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            PLACE_IMAGE("scenery/temple1.png", 8, 5)
+
+            Unit{
+                type: "Giant Spider"
+                x: 17
+                y: 4
+                side: 2
+            }
+            unless EASY!
+                Unit{
+                    type: "Giant Spider"
+                    x: 2
+                    y: 4
+                    side: 2
+                }
+            
+            if NIGHTMARE
+                Unit{
+                    type: "Giant Spider"
+                    x: 11
+                    y: 5
+                    side: 2
+                }
+            
+            Random_Placement{
+                <QUANTITY4("num_items", 10, 13, 16, 19)
+                variable: "scorp"
+                filter_location: {
+                    include_borders: false
+                    not: {
+-- In water or a chasm
+                        terrain: {"Qx*", "W*"}
+                    }
+                    not: {
+-- Too close to the player’s keep
+                        terrain: "K*"
+                        radius: 8
+                    }
+                    not: {
+-- Ocupied by spiders.
+                        filter: {
+                        }
+                    }
+                }
+                command: ->
+                    Unit{
+                        type: "Giant Scorpion"
+                        x: scorp.x
+                        y: scorp.y
+                        side: 2
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Cylanna"
+                message: _ "I do not much care for the look of this area. The darkness seems to hang beneath the trees, unnaturally dense."
+            }
+            Message{
+                speaker: "Teeloa"
+                message: _ "I just heard a splash. I think something’s out there."
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Let us find the mage quickly and leave."
+            }
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Music{
+                name: "the_city_falls.ogg"
+                append: true
+            }
+    }
+
+-- *****BEGIN BATS SECTION****************BEGIN BATS SECTION*****
+
+-- Puts bats in the southern chasm. Random bats will be chosen from
+-- the BAT_TYPES_VALUE. Chasm hexes are found rather than hard-coded
+-- so they can be moved or changed on the map without affecting
+-- this macro. (As long as they don't go too far.) Besides, it's
+-- easy to do.
+    BATS_EXIT_CAVE: (BAT_TYPES_VALUE) -> {
+--find chasm hexes, and put them in an array
+        store_locations: {
+            variable: "chasm_hexes"
+            terrain: "Qx*" --Chasm
+            and: {
+                x: 10
+                y: 21
+                radius: 5
+            }
+        }
+
+-- Put a bat into each chasm hex.
+        foreach: {
+            array: "chasm_hexes"
+            do: ->
+                RANDOM(BAT_TYPES_VALUE)
+                Unit{
+                    type: random
+                    x: this_item.x
+                    y: this_item.y
+                    side: 2
+                    animate: true  -- The animation fades in, which looks good. If the animation is ever changed to something else, this might have to be changed.
+                }
+            
+        }
+
+        <CLEAR_VARIABLE("chasm_hexes")
+    }
+
+    BATS_ENTER_CAVE: () -> {
+        }true
+
+        event: {
+            name: "side 2 turn"
+            first_time_only: false
+            do: ->
+                Set_Variable{
+                    name: "time_of_day"
+                    value: turn_number
+                }
+                Set_Variable{
+                    name: "time_of_day"
+                    modulo: 6
+                }
+
+-- The bats go in at dawn.
+                If{
+                    variable: {
+                        name: "time_of_day"
+                        equals: 4
+                    }
+                    then: ->
+-- Each bat will move back to the nearest chasm hex and disappear.
+                        Store_Unit{
+                            filter: {
+                                race: "bats"
+                                not: {
+                                    side: 1
+                                }
+                            }
+                            variable: "bats"
+                        }
+
+                        Foreach{
+                            array: "bats"
+                            do: ->
+                                NEAREST_HEX(this_item.x, this_item.y, 99, {terrain: "Qx*"}, "chasm_hex")
+                                Kill{
+                                    id: this_item.id
+                                    animate: false
+                                }
+                                Move_Unit_Fake{
+                                    type: this_item.type
+                                    x: {this_item.x, chasm_hex.x}
+                                    y: {this_item.y, chasm_hex.y}
+                                    side: 2
+                                }
+                            
+                        }
+
+                        CLEAR_VARIABLE("bats")
+                        CLEAR_VARIABLE("chasm_hex")
+                    
+                }
+
+-- The bats start coming out at dusk. The number of turns they keep coming out is determined by the difficulty. So is the type of bat:
+                if EASY
+                    If{
+                        variable: {
+                            name: "time_of_day"
+                            equals: 1
+                        }
+                        then: ->
+                            BATS_EXIT_CAVE("Vampire Bat")
+                        
+                    }
+                
+                if NORMAL
+                    If{
+                        variable: {
+                            name: "time_of_day"
+                            equals: 1
+                        }
+                        or: {
+                            variable: {
+                                name: "time_of_day"
+                                equals: 2
+                            }
+                        }
+                        then: ->
+                            BATS_EXIT_CAVE("Vampire Bat")
+                        
+                    }
+                
+                if HARD
+                    If{
+                        variable: {
+                            name: "time_of_day"
+                            equals: 1
+                        }
+                        or: {
+                            variable: {
+                                name: "time_of_day"
+                                equals: 2
+                            }
+                            or: {
+                                variable: {
+                                    name: "time_of_day"
+                                    equals: 3
+                                }
+                            }
+                        }
+                        then: ->
+                            BATS_EXIT_CAVE("Vampire Bat")
+                        
+                    }
+                
+                if NIGHTMARE
+                    If{
+                        variable: {
+                            name: "time_of_day"
+                            equals: 1
+                        }
+                        or: {
+                            variable: {
+                                name: "time_of_day"
+                                equals: 2
+                            }
+                            or: {
+                                variable: {
+                                    name: "time_of_day"
+                                    equals: 3
+                                }
+                            }
+                        }
+                        then: ->
+                            BATS_EXIT_CAVE({"Vampire Bat", "Blood Bat"})
+                        
+                    }
+                
+
+-- Dialog the first time bats appear:
+                If{
+                    variable: {
+                        name: "turn_number"
+                        equals: 1
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Teeloa"
+                            message: _ "Hey, that cavern is full of bats! I HATE those things."
+                        }
+                        Message{
+                            speaker: "Kai Krellis"
+                            message: _ "I hope there aren’t any more bats in there."
+                        }
+                        unless EASY!
+                            If{
+                                have_unit: {
+                                    id: "Gwabbo"
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Gwabbo"
+                                        message: _ "This is a good place for a large colony, so I think we will see more soon."
+                                    }
+                                
+                                else: ->
+                                    Message{
+                                        speaker: "Cylanna"
+                                        message: _ "This is a good place for a large colony, so I imagine we will see more soon."
+                                    }
+                                
+                            }
+                        
+                    
+                }
+        }
+-- ***** END BATS SECTION********************END BATS SECTION*****
+
+        event: {
+            name: "moveto"
+            filter: {
+                side: 1
+                x: 8
+                y: 5
+            }
+            do: ->
+                Unit{
+                    type: "Silver Mage"
+                    x: 8
+                    y: 5
+                    side: 1
+                    id: "Caladon"
+                    name: _ "Caladon"
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_QUICK!
+                    }
+                    <IS_HERO!
+                    profile: "portraits/caladon.png"
+                }
+
+                If{
+                    have_unit: {
+                        x: x1, y: y1
+                        id: {"Keshan", "Inky"}
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Keshan"
+                            message: _ "There is somebody here."
+                        }
+                        Message{
+                            speaker: "Caladon"
+                            message: _ "Whoa there! BACK off or else!"
+                        }
+                        Message{
+                            speaker: "Kai Krellis"
+                            message: _ "Do not worry about him. He is friendly."
+                        }
+                    
+                    else: ->
+                        If{
+                            variable: {
+                                name: "unit.id"
+                                contains: "Bat"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "unit"
+                                    message: _ "Neep, neep, neep!"
+                                }
+                            
+                            else: ->
+                                Message{
+                                    speaker: "unit"
+                                    message: _ "Hey, I found somebody!"
+                                }
+                            
+                        }
+                    
+                }
+                Message{
+                    speaker: "Kai Krellis"
+                    message: _ "You must be Caladon. We are glad to see you."
+                }
+                Message{
+                    speaker: "Caladon"
+                    message: _ "I am Caladon. Am I glad to see YOU?"
+                }
+                Message{
+                    speaker: "Kai Krellis"
+                    message: _ "I am Kai Krellis of Jotha. I am seeking a flaming sword, and I am told you know where to find it."
+                }
+                Message{
+                    speaker: "Caladon"
+                    message: _ "Ha! A MERman wants the Flaming Sword of AGNOVON! Why would YOU be able to get it when so many others could NOT? Although you do have an impressive collection of allies there."
+                }
+                Message{
+                    speaker: "Kai Krellis"
+                    message: _ "Whether I can succeed or not, I must try. Will you help me find it?"
+                }
+                Message{
+                    speaker: "Caladon"
+                    message: _ "I will show you EXACTLY where it is, but knowing where to FIND it isn’t the hard part. Oh, no! You will see, my fine merman, you will see."
+                }
+                Message{
+                    speaker: "Cylanna"
+                    message: _ "We would be very grateful if you would guide us."
+                }
+                Message{
+                    speaker: "Caladon"
+                    message: _ "I would be HAPPY to guide such a pretty mermaid AND her friends. Follow me everybody!"
+                }
+
+                Clear_Variable{
+                    name: "scorp"
+                }
+                Clear_Variable{
+                    name: "time_of_day"
+                }
+
+                Endlevel{
+                    result: "victory"
+                    bonus: true
+                    <NEW_GOLD_CARRYOVER(40)
+                }
+        }
+
+        event: {
+            name: "die"
+            filter: {
+                id: "Cylanna"
+            }
+            do: ->
+                Message{
+                    speaker: "Kai Krellis"
+                    message: _ "Cylanna! I need you!"
+                }
+                Message{
+                    speaker: "Kai Krellis"
+                    message: _ "Tyegëa will never forgive me. We are lost."
+                }
+                Endlevel{
+                    result: "defeat"
+                }
+        }
+
+        event: {
+            name: "die"
+            filter: {
+                id: "Kai Krellis"
+            }
+            do: ->
+                Message{
+                    speaker: "Cylanna"
+                    message: _ "We are lost without our king!"
+                }
+                Endlevel{
+                    result: "defeat"
+                }
+        }
+    }

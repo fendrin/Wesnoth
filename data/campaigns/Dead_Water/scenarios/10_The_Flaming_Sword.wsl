@@ -1,0 +1,1174 @@
+--textdomain wesnoth-dw
+
+-- You defeat the lich to try to get the sword, but as soon as the lich
+-- drops it, Caladon teleports in and picks it up. Now, you need to
+-- defeat Caladon to get the sword. He grants you time to leave, which
+-- is actually a turn to remove any very damaged units from the
+-- vicinity as Caladon is pretty dangerous. You can attack him now, or
+-- wait a turn for him to get impatient and attack you. When he
+-- attacks, or you attack him, he summons fire guardians (stolen from
+-- UtBS). He does not also recruit, because that would just be
+-- mean. (There is no reason he would have much gold anyway.)
+
+Scenario{
+    name: _ "The Flaming Sword"
+    map: "campaigns/Dead_Water/maps/The_Flaming_Sword.map"
+
+    id: "10_The_Flaming_Sword"
+    next_scenario: "11_Getting_Help"
+
+    story: {
+        part: {
+            <DW_BIGMAP!
+            story: _ "Caladon led them just a little way up the shore. Despite its name, the swamp was not actually desolate on the outskirts. A hardy population of humans coaxed a living out of the damp soil."
+        }
+    }
+
+    <DW_TRACK(JOURNEY_10_NEW!)
+
+    <DEFAULT_SCHEDULE!
+    <TURNS4(30, 28, 28, 28)
+    victory_when_enemies_defeated: false
+
+-- wmllint: validate-off
+    side: {
+        <SIDE_1!
+        fog: true
+        <GOLD4(120, 120, 120, 120)
+    }
+-- wmllint: validate-on
+
+    <STARTING_VILLAGES(1, 6)
+
+    side: {
+        side: 2
+        controller: "ai"
+        type: "Lich"
+        id: "Mal-Govon"
+        name: _ "Mal-Govon"
+        canrecruit: true
+        user_team_name: _ "Mal-Govon"
+        team_name: "bad guys"
+
+-- The first turn, I want the lich to recruit fairly weak
+-- scouts to get villages. That way he'll have more gold for
+-- strong units on the next turns--units to use to
+-- attack. There is an event that gives him all the rest of his
+-- recruits on a later turn. If I don't do this, he uses all
+-- his money for a few Spectres and has no income left. There
+-- aren't enough units to beat the player, even though they are
+-- strong ones.
+        recruit: "Blood Bat, Ghost"
+        ai: {
+            village_value: 5
+            recruitment_pattern: "scout"
+            scout_village_targeting: 5
+        }
+
+        <FLAG_VARIANT("undead")
+        <INCOME4(30, 35, 40, 45)
+        <GOLD4(500, 600, 700, 800)
+    }
+
+    <STARTING_VILLAGES(2, 5)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Blood Bat", 4)
+
+    side: {
+        side: 3
+        no_leader: true
+        team_name: "good guys"
+        user_team_name: _ "Villagers"
+-- I want Howyrth to stay out of the nearby castle so the
+-- player will always be able to use it.
+        ai: {
+            village_value: 0
+            avoid: {
+                x: {21, 20}
+                y: {18, 17}
+            }
+        }
+    }
+
+    side: {
+        side: 4
+        no_leader: true
+        id: "Caladon"
+        name: _ "Caladon"
+        team_name: "Caladon"
+        user_team_name: _ "Caladon"
+        income: -2
+        gold: 0
+        controller: "null"
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Allow_Recruit{
+                side: 2
+                <if EASY then {
+                    type: "Blood Bat, Ghost, Wraith, Spectre, Shadow, Bone Shooter, Deathblade, Revenant, Ghoul, Necrophage"
+                }
+
+                <if NORMAL then {
+                    type: "Blood Bat, Dread Bat, Ghost, Wraith, Spectre, Shadow, Bone Shooter, Deathblade, Ghoul, Necrophage, Chocobone"
+                }
+
+                <if HARD then {
+                    type: "Blood Bat, Dread Bat, Ghost, Wraith, Spectre, Shadow, Bone Shooter, Banebow, Deathblade, Ghoul, Necrophage, Chocobone"
+                }
+
+                <if NIGHTMARE then {
+                    type: "Blood Bat, Dread Bat, Ghost, Wraith, Spectre, Shadow, Bone Shooter, Banebow, Deathblade, Ghoul, Necrophage, Chocobone"
+                }
+            }
+
+            Modify_Side{
+                side: 2
+                ai: {
+                    recruitment_pattern: {"fighter", "fighter", "archer", "scout", "scout", "scout"} -- The scouts are to get more ghost variants.
+                    scout_village_targeting: 5
+                    goal: {
+                        name: "protect_location"
+                        criteria: {
+                            x: 36, y: 23
+                        }
+                        protect_radius: 8
+                        value: 200
+                    }
+                }
+            }
+
+            if EASY
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+            
+            if NORMAL
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Dread Bat", 2)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Bone Shooter", 3)
+            
+            if HARD
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Dread Bat", 3)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Bone Shooter", 3)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Banebow", 1)
+            
+            if NIGHTMARE
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Dread Bat", 3)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 5)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 4)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Bone Shooter", 3)
+                LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Banebow", 2)
+            
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: "the_city_falls.ogg"
+            }
+
+            RECALL_LOYAL_UNITS!
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Pry the flaming sword from the dead hand of its owner"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kai Krellis"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Cylanna"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Caladon"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Role{
+                side: 1
+                race: "merman"
+                filter_wml: {
+                    upkeep: "full"
+                }
+                type: {"Mermaid Siren", "Mermaid Diviner", "Merman Entangler", "Mermaid Enchantress", "Mermaid Priestess", "Merman Netcaster", "Merman Brawler", "Mermaid Initiate", "Merman Javelineer", "Merman Spearman", "Merman Hunter", "Merman Citizen"}
+                role: "spy"
+            }
+            Recall{
+                role: "spy"
+            }
+            Store_Unit{
+                filter: {
+                    role: "spy"
+                }
+                variable: "spy_unit"
+            }
+            Modify_Side{
+                side: 1
+                income: spy_unit.level -- Since you have little gold, and maybe didn't plan to recall this unit, it is free. You're welcome.
+            }
+
+            VARIABLE("sword_x", 999)
+            VARIABLE("sword_y", 999)
+
+-- This is where the lich starts, so he will pick up this
+-- object immediately:
+            FLAMING_SWORD(37, 3, "flaming_sword1")
+
+            Recall{
+                id: "Caladon"
+                x: 8, y: 27
+            }
+    }
+
+    event: {
+        name: "start"
+-- The player gets gold more slowly without Siddry and friends, so we'll
+-- compensate a little:
+        do: ->
+            If{
+                variable: {
+                    name: "Siddry_stored"
+                    equals: false
+                }
+                then: ->
+                    Gold{
+                        amount: 20
+                        side: 1
+                    }
+                
+            }
+
+            Message{
+                speaker: spy_unit.id
+                message: WHISPER(_ "(whisper) Kai, I heard Caladon muttering about the sword. I think he may try to take it for himself.")
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: WHISPER(_ "Thank you, #{spy_unit.name}. I will keep that in mind, but it may be hard for us to stop him with that teleporting trick he has.")
+            }
+
+            Clear_Variable{
+                name: "spy_unit"
+            }
+
+            Message{
+                speaker: "Caladon"
+                message: _ "Here we are. There’s a castle up ahead in the fog. That’s where Agnovon has the sword."
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "The lich is Agnovon?"
+            }
+            Message{
+                speaker: "Caladon"
+                message: _ "Well, he calls himself Mal-Govon now, but yes. He called this land the KINGDOM of Agnovon. He was its first king. And its last, and every one in between, too! He kept getting older and older, but he never died. Well, NOW he’s dead of course. He still putters around in that castle over there, but he hasn’t really cared about keeping his kingdom under control for a good long while. I bet I can wake him up, though. Watch THIS!"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "Suddenly, Caladon’s strident voice shrieked out louder than seemed possible, as if there were dozens of men shouting at once."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Caladon"
+                message: _ "AGNOVON, I’VE COME FOR YOUR SWORD! TODAY YOU WILL REMEMBER FEAR! Heh heh. Nice trick, huh?"
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "A voice came back like wind moaning through dry leaves. Though it was only whispered, all heard it better than they wanted."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Mal-Govon"
+                message: _ "What I remember, you old fool, is you leaving behind the smoldering bodies of the orcs you had hired to steal my sword. Now, you bring mermen. When they lay expiring like gasping fish on the shore, will you not flee again? Do not speak to <i>me</i> of fear."
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "We are here of our own accord, and we will take that sword."
+            }
+            Message{
+                speaker: "Mal-Govon"
+                message: _ "The merman speaks. Tell it to go away, Caladon, if it doesn’t want to get hurt."
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "That does it. Attack!"
+            }
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Message{
+                speaker: "Caladon"
+                message: _ "A word of warning, young Kai. I carry a staff of righteous FLAME. If you let me die, I will take YOU all with me!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            filter_location: {
+                x: 17
+                y: 19
+                radius: 3
+            }
+            side: 1
+        }
+        do: ->
+            Unit{
+                type: "Outlaw"
+                side: 3
+                x: 18
+                y: 18
+                id: "Howyrth"
+                name: _ "Howyrth"
+                unrenamable: true
+                ai_special: "guardian"
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_RESILIENT!
+                }
+            }
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Howyrth"
+                message: _ "Hello there! Who are you? Were you the ones shouting about taking a sword?"
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "I am Kai Krellis of Jotha. I am attempting to defeat Mal-Govon and take his sword. Will you to join us in battle against a common enemy?"
+            }
+
+            Message{
+                speaker: "Howyrth"
+                message: _ "I don’t know if that creature really is our enemy. He has never bothered us, and I should stay at my post anyway. However, I’m sure many townsfolk would welcome the extra income if you want to hire them. I guess we would be happy to get rid of the monster just in case."
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "You can now recruit human villagers, but you will not be able to recall them in future scenarios."
+                image: "wesnoth-icon.png"
+            }
+
+            Allow_Recruit{
+                type: {"Trapper", "Bandit", "Poacher", "Thug", "Footpad", "Peasant", "Woodsman", "Ruffian"}
+                side: 1
+            }
+
+            If{
+                variable: {
+                    name: "Siddry_stored"
+                    not_equals: false
+                }
+                then: ->
+                    Move_Unit_Fake{
+                        type: Siddry_stored.type
+                        side: 1
+                        x: {23, 19}
+                        y: {14, 19}
+                    }
+                    Set_Variable{
+                        name: "Siddry_stored.x"
+                        value: 19
+                    }
+                    Set_Variable{
+                        name: "Siddry_stored.y"
+                        value: 19
+                    }
+-- Siddry may have been stored low on hitpoints, and
+-- after he had moved or attacked, so we'll fix all
+-- that now:
+                    Set_Variable{
+                        name: "Siddry_stored.hitpoints"
+                        value: 37    --Hard coded because he is resillient so max_hitpoints is too low
+                    }
+                    Set_Variable{
+                        name: "Siddry_stored.moves"
+                        value: Siddry_stored.max_moves
+                    }
+                    Set_Variable{
+                        name: "Siddry_stored.attacks_left"
+                        value: Siddry_stored.max_attacks
+                    }
+                    Unstore_Unit{
+                        variable: "Siddry_stored"
+                    }
+                    Message{
+                        speaker: "Siddry"
+                        message: _ "Kai Krellis! What are you doing here? I thought you were traveling south when I met you."
+                    }
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "Friend Siddry!"
+                    }
+                    Message{
+                        speaker: "Howyrth"
+                        message: _ "You know each other?!"
+                    }
+                    Message{
+                        speaker: "Siddry"
+                        message: _ "Kai Krellis is the one who saved me from slavery, Howyrth. I told him I would repay him if I could, and here is my chance. My friends and I will join you in your fight, Kai Krellis. We are yours to command, and we refuse to be paid."
+                    }
+                    Unit{
+                        type: "Footpad"
+                        x: 18
+                        y: 18
+                        side: 1
+                        gender: "female"
+                        id: "Lyllan"
+                        name: "Lyllan"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_DEXTROUS!
+                        }
+                        <IS_LOYAL!
+                    }
+                    Unit{
+                        type: "Thug"
+                        x: 18
+                        y: 18
+                        side: 1
+                        id: "Trudd"
+                        name: "Trudd"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_RESILIENT!
+                        }
+                        <IS_LOYAL!
+                    }
+                    Unit{
+                        type: "Thug"
+                        x: 20
+                        y: 18
+                        side: 1
+                        id: "Dorcyn"
+                        name: "Dorcyn"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_QUICK!
+                        }
+                        <IS_LOYAL!
+                    }
+
+                    CLEAR_VARIABLE("Siddry_stored")
+                
+                else: ->
+                    Unit{
+                        type: "Footpad"
+                        x: 18
+                        y: 18
+                        side: 1
+                        gender: "male"
+                        id: "Dorcyn"
+                        name: "Dorcyn"
+                        modifications: {
+                            <TRAIT_RESILIENT!
+                            <TRAIT_DEXTROUS!
+                        }
+                    }
+                    Message{
+                        speaker: "Dorcyn"
+                        message: _ "I’ll join you right now! That monster is just unnatural."
+                    }
+                
+            }
+    }
+
+-- The variable "Caladon_leader_status" can be one of several values:
+-- <empty>:   Caladon is not a leader. He is still a unit on side 1
+--
+-- "passive": His side still has "controller=null" set. (He is
+-- giving the mermen time to leave before attacking them.)
+--
+-- "impatient": Caladon’s side now has "controller=ai" set. (He's
+-- tired of waiting for the mermen to leave.) This is actually
+-- *set* on the players turn, because Caladon’s side doesn't *get*
+-- a turn until it is set. On his first turn after "impatient" is
+-- set, he will say something and summon fire guardians.
+--
+-- "angry": Player attacked Caladon. (...and Caladon summoned the
+-- first fire guardians immediately, so he no longer has to on his
+-- turn.)
+--
+-- "leader": He is a normal leader now. He has started his turns,
+-- and is summoning two fire guardians per turn.
+--
+-- "dead":     Keeps any of the other events from happening.
+
+    ACTIVATE_CALADON: () -> {
+        modify_side: {
+            side: 4
+            controller: "ai"
+        }
+    }
+
+    SUMMON_FIRE_GUARDIANS: (NUMBER) -> {
+        store_unit: {
+            filter: {
+                id: "Caladon"
+            }
+            variable: "Caladon_stored"
+        }
+
+        <REPEAT(NUMBER, {
+                unit: {
+                    type: "Fire Guardian"
+-- The guardians are summoned on Caladon’s position, so they
+-- will surround him or surround his attackers if there are
+-- any:
+                    x: Caladon_stored.x
+                    y: Caladon_stored.y
+                    side: 4
+                    animate: true
+                    generate_name: true
+                }
+        })
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal-Govon"
+        }
+
+-- It seems strange to have to kill him in a "die" event, but
+-- he's only *mostly* dead otherwise, and Caladon can't
+-- teleport to his location:
+        do: ->
+            Kill{
+                id: "Mal-Govon"
+            }
+
+            PLACE_IMAGE("items/flame-sword.png", x1, y1)
+
+            Message{
+                speaker: "narrator"
+                message: _ "The mermen clapped their hands over their ears as a terrible wail echoed off the castle walls."
+                image: "wesnoth-icon.png"
+            }
+
+            Delay{
+                time: 600
+-- Gives you half a second to see the sword before the
+-- message (probably) covers it up.
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    type_adv_tree: {"Merman Child King", "Cuttle Fish", "Vampire Bat"}
+                }
+                then: ->
+                    VARIABLE("staff_tip_off", "Cylanna")
+                
+                else: ->
+                    VARIABLE("staff_tip_off", "second_unit")
+                
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    type_adv_tree: {"Cuttle Fish", "Vampire Bat"}
+                }
+                then: ->
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "Now we have the sword!"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Now we have the sword!"
+                    }
+                
+            }
+
+            Message{
+                speaker: "Caladon"
+                message: _ "Correction. Now I have the sword!"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Caladon"
+                }
+                variable: "Caladon_stored"
+            }
+
+            Remove_Unit_Overlay{
+                x: Caladon_stored.x
+                y: Caladon_stored.y
+                image: "misc/hero-icon.png"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Caladon"
+                }
+                kill: true
+                variable: "Caladon_stored"
+            }
+
+            VARIABLE("Caladon_stored.side", 4)
+            VARIABLE("Caladon_stored.canrecruit", true)
+            VARIABLE("Caladon_stored.ellipse", "")
+-- He is not going to recruit, but summon guardians each
+-- turn. Still, he needs this variable set to get a crown icon,
+-- and to show up in the status table.
+
+            Unstore_Unit{
+                variable: "Caladon_stored"
+            }
+
+            Animate_Unit{
+                flag: "pre_teleport"
+            }
+
+            Teleport{
+                filter: {
+                    id: "Caladon"
+                }
+                x: x1
+                y: y1
+            }
+
+            Animate_Unit{
+                flag: "post_teleport"
+            }
+
+-- Remove the death of Caladon from a the loss conditions, but
+-- we probably don't need to make a point of it, so silent=yes.
+            Objectives{
+                silent: true
+                side: 1
+                objective: {
+                    description: _ "Pry the flaming sword from the dead hand of its owner"
+                    condition: "win"
+                }
+                <HOW_TO_LOSE!
+            }
+
+            Delay{
+                time: 700
+-- Gives you time to see that Caladon teleported to the
+-- sword before the message (probably) covers him up
+-- (because he will be near the top of the screen).
+            }
+
+            FLAMING_SWORD(x1, y1, "flaming_sword2")
+            Object{
+                id: "drop_staff"
+                silent: true
+                filter: {
+                    x: x1
+                    y: y1
+                }
+                effect: {
+                    apply_to: "remove_attacks"
+                    name: "staff"
+                }
+            }
+
+            Message{
+                speaker: "Caladon"
+                message: _ "It’s MINE! The Flaming Sword of Agnovon IS ALL MINE! I can feel warmth SPREADING through me!"
+            }
+
+            Object{
+                id: "healer"
+                silent: true
+                filter: {
+                    x: x1
+                    y: y1
+                }
+                effect: {
+                    apply_to: "hitpoints"
+                    heal_full: true
+                }
+            }
+            Sound{
+                name: "heal.wav"
+            }
+            Delay{
+                time: 400
+-- Wait for the sound to play (mostly) until scrolling to Kai Krellis
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "What? We won that sword!"
+            }
+
+            Message{
+                speaker: "Caladon"
+                message: _ "Well, it’s true that you helped, so I won’t kill you. But I don’t trust you, so leave my realm. Go on. I will grant you some time. The benevolence of Caladon will be LEGENDARY! Heh heh, HA!"
+            }
+
+            Message{
+                speaker: staff_tip_off
+                message: WHISPER(_ "Kai! He dropped his staff! We can attack him whenever we want now!")
+            }
+            Message{
+                speaker: "Cylanna"
+                message: WHISPER(_ "We can pretend we are going to leave though. That would buy me some time to heal the wounded.")
+            }
+            VARIABLE("Caladon_leader_status", "passive")
+-- see note above on this variable
+
+            Clear_Variable{
+                name: "staff_tip_off"
+            }
+    }
+
+    event: {
+        name: "attack"
+        first_time_only: false
+
+        filter: {
+            side: 1
+        }
+        filter_second: {
+            side: 4
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "Caladon_leader_status"  -- see note above
+                    equals: "passive"
+                }
+                or: {
+                    variable: {
+                        name: "Caladon_leader_status"
+                        equals: "impatient"
+                    }
+                }
+                then: ->
+                    ACTIVATE_CALADON!
+                    Message{
+                        speaker: "Caladon"
+                        message: _ "You DARE attack ME! You will regret that. Witness the POWER of the Flaming Sword of Caladon! I call on the ELEMENT OF FIRE to DO MY BIDDING!"
+                    }
+                    SUMMON_FIRE_GUARDIANS(6)
+                    VARIABLE("Caladon_leader_status", "leader")
+                
+            }
+    }
+
+    event: {
+        name: "side turn"
+        first_time_only: false
+        do: ->
+            If{
+                variable: {
+                    name: "side_number"
+                    equals: 1
+                }
+                and: {
+                    variable: {
+                        name: "Caladon_leader_status"  -- see note above
+                        equals: "passive"
+                    }
+                }
+
+                then: ->
+                    ACTIVATE_CALADON!
+                    VARIABLE("Caladon_leader_status", "impatient")
+                
+            }
+    }
+
+    event: {
+        name: "side turn"
+        first_time_only: false
+        do: ->
+            If{
+                variable: {
+                    name: "side_number"
+                    equals: 4
+                }
+                and: {
+                    variable: {
+                        name: "Caladon_leader_status"  -- see note above
+                        not_equals: "dead"
+                    }
+                }
+                then: ->
+                    If{
+                        variable: {
+                            name: "Caladon_leader_status"
+                            equals: "leader"
+                        }
+
+                        then: ->
+                            SUMMON_FIRE_GUARDIANS(2)
+                        
+                    }
+
+                    If{
+                        variable: {
+                            name: "Caladon_leader_status"
+                            equals: "impatient"
+                        }
+
+                        then: ->
+                            Message{
+                                speaker: "Caladon"
+                                message: _ "You haven’t left yet? My patience is at an END! Witness the POWER of the Flaming Sword of Caladon! I call on the ELEMENT OF FIRE to DO MY BIDDING!"
+                            }
+                            SUMMON_FIRE_GUARDIANS(6)
+                            VARIABLE("Caladon_leader_status", "leader")
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Caladon"
+            side: 1
+        }
+        do: ->
+            Sound{
+                name: "lightning.ogg"
+            }
+            Sound{
+                name: "rumble.ogg"
+            }
+
+            Kill{
+                filter: {
+                }
+            }
+
+            VARIABLE("color", 250)
+            VARIABLE("delta", 8)
+            REPEAT(14, {
+                    set_variable: {
+                        name: "delta"
+                        sub: 3
+                    }
+
+                    set_variable: {
+                        name: "color"
+                        add: delta
+                    }
+
+                    color_adjust: {
+                        red: color, green: color, blue: color
+                    }
+
+                    delay: {
+                        time: 100
+                    }
+            })
+
+            Color_Adjust{
+                red: 0, green: 0, blue: 0
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Caladon"
+            side: 4
+        }
+        do: ->
+            Set_Variable{
+                name: "sword_x"
+                value: x1
+            }
+            Set_Variable{
+                name: "sword_y"
+                value: y1
+            }
+
+            PLACE_IMAGE("items/flame-sword.png", sword_x, sword_y)
+            Delay{
+                time: 600
+-- Gives you half a second to see the sword before the
+-- message (probably) covers it up (because it will be near
+-- the top of the screen).
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Now we can finally grab that sword."
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: sword_x
+            y: sword_y
+            side: 1
+            race: "human"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I am not going with you. One of your people should take the sword."
+            }
+
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: sword_x
+            y: sword_y
+            side: 1
+            race: {"monster", "bats"}
+        }
+        do: ->
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "This is not food. And it is definitely not a toy. Leave it."
+            }
+
+            Allow_Undo{}
+    }
+
+-- The first_time_only moveto causes the sword's attacks to be
+-- explained. The moved unit gets the option to take it.
+-- If the unit takes it, a sword *object* is put on the hex, and
+-- the unit gets it because he is standing there already.
+-- If the unit does not take it, another moveto event is
+-- added. This one is *not* first_time_only, but it does the same
+-- thing without the explanation.  If a unit does not take the
+-- sword, an [allow_undo] is added to the event.
+    event: {
+        name: "moveto"
+        first_time_only: true
+
+        filter: {
+            x: sword_x
+            y: sword_y
+            side: 1
+            not: {
+                race: {"human", "bats", "monster"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "This sword is 8×4, magical, with <i>fire</i> damage."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "unit"
+                option: {
+                    label: _ "I’ll carry this sword and destroy undead with blasts of flame."
+                    command: ->
+                        Set_Variable{
+                            name: "get_sword"
+                            value: true
+                        }
+                    
+                }
+                option: {
+                    label: _ "This sword is not right for me. Let someone else have it."
+                }
+            }
+
+            If{
+                variable: {
+                    name: "get_sword"
+                    equals: true
+                }
+                then: ->
+                    FLAMING_SWORD(sword_x, sword_y, "flaming_sword3")
+                    CLEAR_VARIABLE("get_sword")
+                    CLEAR_VARIABLE("sword_x")
+                    CLEAR_VARIABLE("sword_y")
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+                else: ->
+                    Allow_Undo{}
+                    Event{
+                        name: "moveto"
+                        first_time_only: false
+
+                        filter: {
+                            x: sword_x
+                            y: sword_y
+                            side: 1
+                        }
+                        do: ->
+                            Message{
+                                speaker: "unit"
+                                option: {
+                                    label: _ "I’ll carry the sword."
+                                    command: ->
+                                        Set_Variable{
+                                            name: "get_sword"
+                                            value: true
+                                        }
+                                    
+                                }
+                                option: {
+                                    label: _ "Let someone else have it."
+                                }
+                            }
+                            If{
+                                variable: {
+                                    name: "get_sword"
+                                    equals: true
+                                }
+                                then: ->
+                                    FLAMING_SWORD(sword_x, sword_y, "flaming_sword3")
+                                    CLEAR_VARIABLE("get_sword")
+                                    CLEAR_VARIABLE("sword_x")
+                                    CLEAR_VARIABLE("sword_y")
+                                    Endlevel{
+                                        result: "victory"
+                                        bonus: true
+                                        <NEW_GOLD_CARRYOVER(40)
+                                    }
+                                
+                                else: ->
+                                    Allow_Undo{}
+                                
+                            }
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            If{
+                have_unit: {
+                    race: "human"
+                    side: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "We thank all you humans for your help, and release you from any farther obligations. Where we are going, you cannot easily follow."
+                    }
+                    Kill{
+                        race: "human"
+                        side: 1
+                    }
+                
+            }
+
+            Disallow_Recruit{
+                type: {"Trapper", "Bandit", "Poacher", "Thug", "Footpad", "Peasant", "Woodsman", "Ruffian"}
+                side: 1
+            }
+
+            CLEAR_VARIABLE("Caladon_stored")
+            CLEAR_VARIABLE("sword_x")
+            CLEAR_VARIABLE("sword_y")
+            CLEAR_VARIABLE("Caladon_leader_status")
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Cylanna"
+        }
+        do: ->
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Cylanna! I need you!"
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Tyegëa will never forgive me. We are lost."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Kai Krellis"
+        }
+        do: ->
+            Message{
+                speaker: "Cylanna"
+                message: _ "We are lost without our king!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Caladon"
+            side: 4
+        }
+        do: ->
+            Message{
+                speaker: "Caladon"
+                message: _ "CURSE you mermen!"
+            }
+
+            VARIABLE("Caladon_leader_status", "dead")
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Caladon"
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Caladon"
+                message: _ "Aghh! Die!"
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "He has that staff of..."
+            }
+    }
+}

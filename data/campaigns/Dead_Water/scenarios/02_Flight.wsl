@@ -1,0 +1,956 @@
+--textdomain wesnoth-dw
+
+-- Hopefully Kai Krellis is at least half leveled up
+-- already. Otherwise, this can be painful. Recruit a buch of citizens
+-- and brawlers, and send them east with Krellis. Use citizens to lure
+-- the skeleton archer types into the water. They are easy pickings
+-- there for other citizens, brawlers, and Krellis. One of those guys
+-- gets Krellis half way up to level one. A few citizens should also
+-- survive to become brawlers. About the time you get Krellis leveled
+-- up, and you are thinking about retreating everyone else, the bats
+-- will arrive. Use hunters and initiates to clear a path back
+-- west. Send three or four expendable units with Krellis. Their job is
+-- only to keep him from getting stuck in a ZOC. Krellis runs for the
+-- corner, while the rest of the troops gain experience doing a
+-- fighting retreat from the skeletons, and other bad guys arriving in
+-- the middle of the map. Ignore gold for now. You don't need much on
+-- the next level.
+
+-- Killing all the enemy leaders will end the level, but that won't be
+-- easy. Killing any enemy is good though. Each one gives you a
+-- different bonus: Cash, a loyal bat, or a ring of strength.
+
+-- If one of the named enemies is killed, a variable is stored. That
+-- way, the same names won't get used in the last level.
+
+Scenario{
+    name: _ "Flight"
+    map: "campaigns/Dead_Water/maps/Home_1.map"
+
+    id: "02_Flight"
+    next_scenario: "03_Wolf_Coast"
+
+    story: {
+        part: {
+            <DW_BIGMAP!
+            story: _ "Kai Krellis was concerned that the undead might return, so he determined to learn as much as possible about them. His only clue was the name the necromancer had spoken: <i>“Lord Ravanal”</i>. He sent his swiftest scouts north and south along the coast to learn what they might about this Ravanal. The news they brought him was not good."
+        }
+
+        part: {
+            <DW_BIGMAP!
+            story: _ "Mal-Ravanal, it seemed, was a great human wizard who had transformed himself into a lich. He had attacked the edges of the kingdom of Wesnoth, and was building a fearsome army of undead humans there. He had also sent necromancers to attack the orcs, and even the elves, in a quest for undead soldiers of different races. It seemed that he also lusted for merfolk slaves. Krellis’ scouts reported that more dark armies were heading north."
+        }
+
+        part: {
+            <DW_BIGMAP!
+            story: _ "As the weeks went by, the veterans of the last battle helped train new recruits. Krellis’ army did not yet match his father’s, but he now had many competent soldiers. As he had expected, their adversaries soon arrived."
+        }
+    }
+
+    <DW_TRACK(JOURNEY_02_NEW!)
+
+    <DEFAULT_SCHEDULE!
+    <TURNS4(21, 22, 23, 24)
+    victory_when_enemies_defeated: false
+
+    side: {
+        <SIDE_1!
+        <GOLD4(120, 120, 120, 120)
+    }
+
+    <STARTING_VILLAGES(1, 6)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: "nunc_dimittis.ogg"
+            }
+            Music{
+                name: "elvish-theme.ogg"
+                append: true
+            }
+
+-- wmllint: who RECALL_LOYAL_UNITS is Cylanna, Gwabbo
+            RECALL_LOYAL_UNITS!
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Kai Krellis to the north-west corner of the map. He must be level one or higher."
+                    condition: "win"
+                }
+                objective: {
+                    <ALTERNATIVE_OBJECTIVE_CAPTION!
+                    description: _ "Defeat all enemy leaders" .. OBJECTIVE_FOOTNOTE(_ "(different bonus for each)")
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Terrain_Mask{
+                x: 33, y: 3
+                mask: "_f, _f, _f, _f, _f, _f, _f
+_f, _f, Ce, Ce, 4 Ke, Ce, _f
+_f, _f, _f, Ce, Ce, _f, _f
+_f, _f, _f, _f, Ce, _f, _f
+_f, _f, _f, _f, _f, _f, _f
+"
+            }
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Mal-Ravanal’s Forces"
+        team_name: "bad guys"
+        color: "teal"
+        type: "Lich"
+        id: "Mal-Kevek"
+        name: _ "Mal-Kevek"
+        canrecruit: true
+        ai: {
+            villages_per_scout: 0
+            recruitment_pattern: {"scout", "scout", "scout", "fighter"}
+            avoid: {
+                x: {43, 43, 43, 43, 43, 42, 42, 41, 41, 41, 40, 39, 38, 37, 36, 35, 33, 32}
+                y: {13, 14, 15, 16, 17, 17, 18, 19, 20, 21, 22, 24, 25, 26, 26, 27, 27, 27}
+            }
+        }
+
+        <FLAG_VARIANT("undead")
+        <GOLD4(210, 240, 340, 450)
+        <INCOME4(4, 8, 10, 14)
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        user_team_name: _ "Mal-Ravanal’s Forces"
+        team_name: "bad guys"
+        color: "orange"
+        type: "Necromancer"
+        id: "Mel Daveth"
+        name: _ "Mel Daveth"
+        canrecruit: true
+        ai: {
+            villages_per_scout: 0
+        }
+
+        <FLAG_VARIANT("undead")
+        <GOLD4(120, 160, 190, 240)
+        <INCOME4(6, 8, 10, 14)
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        user_team_name: _ "Mal-Ravanal’s Forces"
+        team_name: "bad guys"
+        color: "white"
+        type: "Death Knight"
+        id: "Dead Knight"
+        canrecruit: true
+        ai: {
+            recruitment_pattern: {"fighter", "archer"}
+        }
+
+        <FLAG_VARIANT("undead")
+        <GOLD4(220, 240, 350, 450)
+        <INCOME4(4, 8, 10, 14)
+    }
+
+    <RING_OF_STRENGTH_EVENTS!
+    event: {
+        name: "prestart"
+
+-- I want more, not more powerful, units. Limit the level twos
+-- so the leaders have to buy more level ones
+
+-- The ifdefs are neccessary because this macro will allow
+-- recruits that weren't originally in the recruit lists.
+        <if EASY then {
+            set_recruit: {
+                side: 2
+                recruit: "Ghost, Ghoul, Wraith"
+            }
+            set_recruit: {
+                side: 3
+                recruit: "Walking Corpse, Vampire Bat, Blood Bat"
+            }
+            set_recruit: {
+                side: 4
+                recruit: "Vampire Bat, Skeleton Archer, Skeleton, Bone Shooter, Revenant"
+            }
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Blood Bat", 3)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Bone Shooter", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Revenant", 1)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 3)
+        }
+        <if NORMAL then {
+            set_recruit: {
+                side: 2
+                recruit: "Ghost, Ghoul, Wraith, Shadow"
+            }
+            set_recruit: {
+                side: 3
+                recruit: "Walking Corpse, Soulless, Vampire Bat, Blood Bat"
+            }
+            set_recruit: {
+                side: 4
+                recruit: "Vampire Bat, Skeleton Archer, Skeleton, Bone Shooter, Deathblade"
+            }
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Blood Bat", 4)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Soulless", 3)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Bone Shooter", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Deathblade", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 4)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 1)
+        }
+        <if HARD then {
+            set_recruit: {
+                side: 2
+                recruit: "Vampire Bat, Blood Bat, Ghost, Ghoul, Wraith, Shadow"
+            }
+            set_recruit: {
+                side: 3
+                recruit: "Walking Corpse, Soulless, Vampire Bat, Blood Bat"
+            }
+            set_recruit: {
+                side: 4
+                recruit: "Vampire Bat, Chocobone, Skeleton Archer, Skeleton, Bone Shooter, Deathblade"
+            }
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Blood Bat", 5)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Soulless", 4)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 3)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Chocobone", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Bone Shooter", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Deathblade", 2)
+        }
+        <if NIGHTMARE then {
+            set_recruit: {
+                side: 2
+                recruit: "Vampire Bat, Ghost, Ghoul, Wraith, Shadow, Spectre"
+            }
+            set_recruit: {
+                side: 3
+                recruit: "Walking Corpse, Soulless, Vampire Bat, Blood Bat"
+            }
+            set_recruit: {
+                side: 4
+                recruit: "Vampire Bat, Chocobone, Skeleton Archer, Skeleton, Bone Shooter, Deathblade, Banebow"
+            }
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Blood Bat", 5)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Soulless", 5)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Chocobone", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Bone Shooter", 3)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Deathblade", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Banebow", 2)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Spectre", 1)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 4)
+            <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Shadow", 3)
+        }
+        do: ->
+            RECRUIT_UNIT_VARIATIONS(3, "Walking Corpse", "swimmer")
+            RECRUIT_UNIT_VARIATIONS(3, "Soulless", "swimmer")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Mal-Kevek"
+                message: _ "You may have ended my first life, but you have only made me more powerful in death. Now I will teach you a lesson!"
+            }
+
+            Message{
+                speaker: "Mel Daveth"
+                message: _ "Leave some of them for me."
+            }
+
+            Message{
+-- wmllint: directory spellings Uhhh
+                speaker: "Dead Knight"
+                message: _ "Uhhh."
+            }
+
+            Message{
+                speaker: "Mel Daveth"
+                message: _ "And him."
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "We are surrounded. Look how many there are! How can we defeat them this time?"
+            }
+
+            Message{
+                speaker: "Cylanna"
+                message: _ "I am afraid we cannot. We need help. My old instructor, Tyegëa, teaches on an island to the north. She and her priestesses are powerful. With their help we could probably defeat these enemies. Our task is to convince her to leave her enclave."
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "You can do that, right?"
+            }
+
+            Message{
+                speaker: "Cylanna"
+                message: _ "I am not sure that I can. However, you could."
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Me? I’ve never even met Tyegëa. How can I convince her to help us if you cannot?"
+            }
+
+            Message{
+                speaker: "Cylanna"
+                message: _ "You will just have to trust me on this. She will listen to you. I will say no more on the matter."
+            }
+
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Very well. How do we get there?"
+            }
+
+            Message{
+                speaker: "Cylanna"
+                message: _ "We follow the coast north, then go west to Bilheld Island. Tyegëa lives on a small island to the west of Bilheld, which is over ocean to the west-southwest of Tirigaz. Everyone will have to go; it is now deadly perilous here, and the open ocean west of Tirigaz can be dangerous for small groups."
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Kai Krellis"
+                }
+                variable: "KK"
+            }
+
+-- We'll discuss why KK needs to level up, but only if he is
+-- currently at level 0.
+            If{
+                variable: {
+                    name: "KK.level"
+                    numerical_equals: 0
+                }
+                then: ->
+                    If{
+                        have_unit: {
+                            id: "Gwabbo"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Gwabbo"
+                                message: _ "Most of your citizens are not soldiers who will simply obey your orders. It will not be voiced aloud, but if you leave now, some of the people will think this mission is just an excuse to run away."
+                            }
+
+                        else: ->
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "However, I am afraid that not everyone will follow you on so perilous an adventure. First you must prove you are not afraid of danger. If you leave now, many will think the mission is but an excuse to flee."
+                            }
+
+                    }
+
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "I am not afraid! My people will see me fight the undead before we leave, even if defeating them all is impossible."
+                    }
+
+                else: ->
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "But will everyone follow me on so perilous an adventure? I am still a youth; it may be they will not trust me."
+                    }
+                    If{
+                        have_unit: {
+                            id: "Gwabbo"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Gwabbo"
+                                message: _ "They will follow. You proved your courage in our last battle. Your father, the Kai-that-was, would have been proud."
+                            }
+
+                        else: ->
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "You have proven your courage in battle, as tradition required of a kai; they will follow you now."
+                            }
+
+                    }
+
+            }
+
+            Clear_Variable{
+                name: "KK"
+            }
+
+            HIGHLIGHT_IMAGE(1, 1, "items/gohere.png", {})
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mal-Kevek"
+        }
+        do: ->
+            Message{
+                speaker: "Mal-Kevek"
+                message: _ "This is impossible!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal-Kevek"
+        }
+
+-- It seems strange to have to kill him in a "die" event, but
+-- he's only *mostly* dead otherwise, and the bat can't appear
+-- at his location:
+        do: ->
+            Kill{
+                id: "Mal-Kevek"
+            }
+
+            If{
+                have_unit: {
+                    side: 2
+                    race: "undead"
+                }
+                then: ->
+                    Kill{
+                        side: 2
+                        race: "undead"
+                        animate: true
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "With their master gone, the undead are vanishing!"
+                    }
+
+            }
+
+            Unit{
+                type: "Dread Bat"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                    <TRAIT_STRONG!
+                }
+                id: "Fearsome Bat"
+                name: _ "Fearsome Bat"
+                side: 1
+                x: x1
+                y: y1
+                <IS_LOYAL!
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    id: "Gwabbo"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "That is a mighty bat!"
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "It is no matter. I will destroy it immediately."
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "Hold a moment! Do you think, with its master gone, it might desire a new one?"
+                    }
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "If it does not attack, do not kill it. Let us see if it follows us."
+                    }
+
+
+                else: ->
+                    If{
+                        have_unit: {
+                            x: x2, y: y2
+                            race: "bats"
+                        }
+
+                        then: ->
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "That is a mighty bat!"
+                            }
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "Neep, neep!"
+                            }
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "Hold a moment! Do you think, with its master gone, it might desire a new one?"
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "If it does not attack, do not kill it. Let us see if it follows us."
+                            }
+
+
+                        else: ->
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "Look! There is a massive bat back here."
+                            }
+                            Message{
+                                speaker: "Gwabbo"
+                                message: _ "Be courageous, and attack it anyway!"
+                            }
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "But it isn’t attacking <i>me</i>. Do you think, with its master gone, it might desire a new one?"
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "If it does not attack, we shall not kill it. Let us see if it follows us."
+                            }
+
+                    }
+
+            }
+
+-- If either of the named characters is dead, we have to take
+-- note because they shouldn’t show up in the last
+-- scenario. (We'll just rename the bad guys in that case.)
+            Set_Variable{
+                name: "MK_dead"
+                value: true
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mel Daveth"
+        }
+        do: ->
+            Kill{
+                id: "Mel Daveth"
+            }
+
+            If{
+                have_unit: {
+                    side: 3
+                    race: "undead"
+                }
+                then: ->
+                    Kill{
+                        side: 3
+                        race: "undead"
+                        animate: true
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "With their master gone, the undead are fading away!"
+                    }
+
+            }
+
+            RING_OF_STRENGTH_APPEARS!
+
+            Unit{
+                type: "Vampire Bat"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                id: "Friendly Bat"
+                name: _ "Friendly Bat"
+                side: 1
+                x: x1
+                y: y1
+                <IS_LOYAL!
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    id: "Kai Krellis"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Look! There is a bat cowering in the corner here."
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "Aren’t you going to kill it? We need to keep moving."
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "I would feel bad about that. It is, uh, licking my hand."
+                    }
+                    Message{
+                        speaker: "Friendly Bat"
+                        message: _ "Neep?"
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "Apparently you have your own bat."
+                    }
+
+
+                else: ->
+                    If{
+                        have_unit: {
+                            x: x2, y: y2
+                            race: "bats"
+                        }
+
+                        then: ->
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "Neep, neep!"
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "Look! There is a bat."
+                            }
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "Aren’t you going to kill it? We need to keep moving."
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "It’s kind of cute."
+                            }
+                            Message{
+                                speaker: "Friendly Bat"
+                                message: _ "Neep?"
+                            }
+                            Message{
+                                speaker: "Cylanna"
+                                message: _ "Apparently you have your own bat."
+                            }
+
+
+                        else: ->
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "And look! There is a bat cowering in the corner here."
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "Well, kill it, and let’s keep moving."
+                            }
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "But look, it’s licking my hand."
+                            }
+                            Message{
+                                speaker: "Friendly Bat"
+--po: This should just be "translated" to whatever noise a bat makes in your language.
+                                message: _ "Neep?"
+                            }
+                            Message{
+                                speaker: "second_unit"
+                                message: _ "It’s kind of cute."
+                            }
+                            Message{
+                                speaker: "Kai Krellis"
+                                message: _ "Very well then. I suppose we have our own bat."
+                            }
+
+                    }
+
+            }
+
+            Set_Variable{
+                name: "MD_dead"
+                value: true
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Dead Knight"
+        }
+        do: ->
+            Kill{
+                id: "Dead Knight"
+            }
+
+            If{
+                have_unit: {
+                    side: 4
+                    race: "undead"
+                }
+                then: ->
+                    Kill{
+                        side: 4
+                        race: "undead"
+                        animate: true
+                    }
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "With their master gone, the skeletons are crumbling!"
+                    }
+
+            }
+
+            Unit{
+                type: "Walking Corpse"
+                variation: "bat"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                id: "Undead Bat"
+                name: _ "Undead Bat"
+                side: 1
+                x: x1
+                y: y1
+                <IS_LOYAL!
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    race: "bats"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Neep, neep!"
+                    }
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "Look! There is a bat. It is moving, but it looks half dead."
+                    }
+
+
+                else: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Look! There is a bat in the corner here. It is moving, but it looks half dead."
+                    }
+
+            }
+
+            If{
+                have_unit: {
+                    id: "Gwabbo"
+                }
+                then: ->
+                    Message{
+                        speaker: "Gwabbo"
+                        message: _ "No, that thing is all the way dead."
+                    }
+
+                else: ->
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "Actually, I believe it is truly dead."
+                    }
+
+            }
+            Message{
+                speaker: "Cylanna"
+                message: _ "I believe it is undead and has no will of its own, but the Kai may have the will power to direct it."
+            }
+            Message{
+                speaker: "Kai Krellis"
+                message: _ "Fascinating. I shall certainly try."
+            }
+
+-- The chest looks funny if it's floating on top of the Death
+-- Knight's tent, so we offset it a bit
+            Item{
+                x: x1, y: y1
+-- err: ../attic/data/campaigns/Dead_Water/scenarios/02_Flight.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 784:             image=misc/blank-hex.png~BLIT(items/chest-open.png~CROP(0,0,68,54),4,18)
+            }
+
+            If{
+                have_unit: {
+                    x: x2, y: y2
+                    race: "bats"
+                }
+                then: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Neep, neep!"
+                    }
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "He had a chest in his tent, too. It is filled with gold!"
+                    }
+
+                else: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "He had a chest in his tent, too. It is filled with gold!"
+                    }
+
+            }
+
+            Sound{
+                name: "gold.ogg"
+            }
+            Gold{
+                side: 1
+                amount: 120
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "You receive 120 gold."
+            }
+    }
+
+    SCENARIO_END: () -> {
+        message: {
+            speaker: "Kai Krellis"
+            message: _ "It galls me to flee from our home, but we will return."
+        }
+
+        clear_variable: {
+            name: "ring_x"
+        }
+        clear_variable: {
+            name: "ring_y"
+        }
+        clear_variable: {
+            name: "KK"
+        }
+        clear_variable: {
+            name: "get_ring"
+        }
+
+        endlevel: {
+            result: "victory"
+            bonus: true
+            <NEW_GOLD_CARRYOVER(40)
+        }
+    }
+
+-- Win if KK gets to the corner
+    event: {
+        name: "moveto"
+        first_time_only: false
+        do: ->
+            Allow_Undo{
+            }
+
+            Filter{
+                x: 1
+                y: 1
+                id: "Kai Krellis"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Kai Krellis"
+                }
+                variable: "KK"
+            }
+
+            If{
+                variable: {
+                    name: "KK.level"
+                    greater_than: 0
+                }
+                then: ->
+                    SCENARIO_END!
+
+            }
+    }
+
+-- This event triggers a win if Kai Krellis advances while already
+-- sitting on the target hex:
+    event: {
+        name: "post_advance"
+        first_time_only: false
+
+        filter: {
+            x: 1
+            y: 1
+            id: "Kai Krellis"
+        }
+        do: ->
+            SCENARIO_END!
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            If{
+-- If the ring is currently sitting on the map...
+                variable: {
+                    name: "ring_x"
+                    not_equals: 999
+                }
+
+--...then make the moveto event end the scenario
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "Have a unit pick up the ring to end the scenario."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Set_Variable{
+                        name: "end_level_when_ring_picked_up"
+                        value: true
+                    }
+
+                    Objectives{
+                        side: 1
+                        silent: true
+                        objective: {
+                            description: _ "Have a unit pick up the ring of power."
+                            condition: "win"
+                        }
+
+                        <HOW_TO_LOSE!
+
+                        gold_carryover: {
+                            bonus: true
+                            carryover_percentage: 40
+                        }
+                    }
+
+
+-- ...Otherwise, since the ring must have been picked up
+-- already, we'll end now.
+                else: ->
+                    Message{
+                        speaker: "Cylanna"
+                        message: _ "Killing these enemies was good, but there were many more on the way. It will take greater might than we have to defeat them."
+                    }
+                    Message{
+                        speaker: "Kai Krellis"
+                        message: _ "Onward to Tyegëa’s island, then."
+                    }
+                    SCENARIO_END!
+
+            }
+    }
+
+    <HERO_DEATHS!
+}

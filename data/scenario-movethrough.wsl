@@ -1,0 +1,268 @@
+-- wmllint: no translatables
+-- wmllint: markcheck off
+-- @file data/scenario-test.cfg
+
+Test{
+    name: "Test scenario"
+
+    victory_when_enemies_defeated: false
+
+    map_data: "
+Gg, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu
+Gg, Gg, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu
+Uu, Gg, 1 Gg, Gg^Vht, Gg, Gg^Vht, Gg, Gg^Vht, Gg, Gg^Vht, Gs^Vc, Gg, Gg
+Wo, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Gg, Ww
+Uu, Wo, Wo, Wo, Wo, Wo, Wo, Wo, Wo, Wo, Wo, Ww, Uu
+Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu
+Uu, Uu, Uu, Uu, Uu, Uu, Gg, Uu, Uu, Uu, Uu, Uu, Uu
+Uu, Uu, Uu, Uu, Uu, Gg, 2 Gg, Gg, Uu, Uu, Uu, Uu, Uu
+Uu, Uu, Uu, Uu, Uu, Gg, Gg, Gg, Uu, Uu, Uu, Uu, Uu
+Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu"
+
+    turns: -1
+    id: "movethrough"
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        side: 1
+        controller: "human"
+        suppress_end_turn_confirmation: true
+        fog: true
+        shroud: true
+        team_name: "us"
+
+        type: "Gryphon Rider"
+        canrecruit: true
+
+-- No traits to have more determinancy in these test cases.
+        <NOTRAIT_UNIT(1, "Dwarvish Guardsman", 4, 2)
+        <NOTRAIT_UNIT(1, "Dwarvish Fighter", 6, 2)
+        <NOTRAIT_UNIT(1, "Dwarvish Scout", 8, 2)
+        <NOTRAIT_UNIT(1, "Gryphon Rider", 11, 3)
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        team_name: "us"
+
+        type: "Spectre"
+        canrecruit: true
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        team_name: "them"
+        no_leader: true
+        unit: {
+            type: "Peasant"
+            x: 10, y: 1
+            abilities: {
+                hides: {
+                    id: "invisible"
+                    name: "invisible"
+                    female_name: "female^invisible"
+                    name_inactive: "invisible"
+                    female_name_inactive: "female^invisible"
+                    affect_self: true
+                }
+            }
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("items/gohere.png", 10, 2)
+    }
+
+-- Test of enter hex event.
+    event: {
+        name: "enter hex"
+        first_time_only: false
+
+        filter: {
+            x: 8, y: 2
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: "I triggered an enter hex event."
+            }
+
+            Allow_Undo{
+            }
+    }
+
+-- Test of exit hex event.
+    event: {
+        name: "exit hex"
+        first_time_only: false
+
+        filter: {
+            x: 8, y: 2
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: "I triggered an exit hex event."
+            }
+
+            Allow_Undo{
+            }
+    }
+
+-- Test of landing on occupied tiles.
+    event: {
+        name: "exit hex"
+        first_time_only: false
+
+        filter: {
+            race: "dwarf"
+        }
+        filter_second: {
+            race: "dwarf"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: "Get out of the way, #{second_unit.name}!"
+            }
+
+            Allow_Undo{
+            }
+            Event{
+                name: "enter hex"
+            }
+    }
+
+-- Changing terrain in an enter hex event
+    event: {
+        name: "enter hex"
+        first_time_only: false
+
+        filter: {
+            filter_location: {
+                x: 5, y: 5
+                radius: 1
+            }
+        }
+        do: ->
+            Terrain{
+                x: 5, y: 5
+                terrain: "Ww"
+            }
+    }
+
+-- Leaving a trail of changed terrain
+    event: {
+        name: "enter hex"
+        first_time_only: false
+
+        filter: {
+            canrecruit: true
+        }
+        do: ->
+            Allow_Undo{
+            }
+            Event{
+                name: "moveto"
+            }
+
+            Terrain{
+                x: x2, y: y2
+                terrain: "Qxu"
+            }
+            Message{
+                movement_cost: UNREACHABLE!
+                message: "The ground has collapsed beneath me!"
+            }
+            Kill{
+                movement_cost: UNREACHABLE!
+                fire_event: true
+            }
+    }
+
+-- Causing the death of a unit should interrupt movement
+    event: {
+        name: "die"
+        first_time_only: false
+    }
+
+-- Relocating the unit in an enter hex event
+    event: {
+        name: "enter hex"
+        first_time_only: false
+
+        filter: {
+            x: 6, y: 4
+        }
+        do: ->
+            Teleport{
+                filter: {
+                    x: 6, y: 4
+                }
+                x: 6, y: 5
+            }
+    }
+
+-- Obstructive movefrom
+    event: {
+        name: "exit hex"
+        first_time_only: false
+
+        filter: {
+            x: 6, y: 5
+        }
+        do: ->
+            Terrain{
+                x: 6, y: 5
+                radius: 1
+                terrain: "Xu"
+            }
+            Allow_Undo{
+            }
+    }
+
+-- Moveto test
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            x: 6
+            y: "1-4"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: "I triggered a moveto event."
+            }
+    }
+
+-- Test of sighted event.
+    event: {
+        name: "sighted"
+        first_time_only: false
+
+        filter: {
+            side: 2
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: "I spy, with my little eye, something that starts with 'f'.
+
+"
+            }
+            Message{
+                speaker: "unit"
+                message: "Um, \"friend\"? (Hopefully not \"foe\"....)
+" .. ASIDE("This is the second part of a sighted event.")
+
+            }
+            Allow_Undo{
+            }
+    }
+}
