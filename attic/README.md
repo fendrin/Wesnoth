@@ -1,25 +1,51 @@
-This directory contains old art and resources not currently used anywhere in
-the game.  It should not ship with the distribution tarball.
-Some notes on specific images and image groups follow:
+[![Build Status](https://travis-ci.org/wesnoth/wesnoth.svg?branch=master)](https://travis-ci.org/wesnoth/wesnoth) [![Build status](https://ci.appveyor.com/api/projects/status/nv5jnof3lk3j6kg6?svg=true)](https://ci.appveyor.com/project/wesnoth/wesnoth)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://img.shields.io/badge/License-GPL%20v2-blue.svg)
+[![Coverity Scan](https://img.shields.io/coverity/scan/1063.svg)](https://scan.coverity.com/projects/wesnoth)
 
-scepter_of_fire.png:
-   Old story image of the Scepter, quite large.
+About
+=====
 
-units/thain.png,units/thain2.png: 
-   Originally from SoF.  1.3-sized.
+**The Battle for Wesnoth** is a Free, turn-based tactical strategy game with a
+high fantasy theme, featuring both singleplayer and online/hotseat multiplayer
+combat. Fight a desperate battle to reclaim the throne of Wesnoth, or take
+hand in any number of other adventures.
 
-desert-elvish-druid-statue.png, desert-elvish-shyde-statue:
-   Used in older versions of UtBS. 1.3-sized.
 
-keratur.png:
-   The original image for the uncloaked assassin in UtBS.  1.3-sized.
+License
+-------
 
-spider-lich.png:
-   Old unit image from UtBS.
+The game's source code and artwork, sound, and music assets are provided under
+the terms of the GNU General Public License version 2, or (at your option) any
+later version. Note that for artwork, sound, and music, we interpret
+"preferred form of the work for making modifications" as the modifiable form
+that the author chooses to ship us for the source tree. For convenience, a
+reference copy of the GNU GPL version 2 is provided in the COPYING file in
+this distribution.
 
-clasher-attack-mace.png
-   Orphaned when the Drake Clasher lost this attack.
+Some portions of the source code can be used under different license terms,
+whenever stated as such in the source.
 
-units/fire-dragon-flying-*.png
-   Jetryl plans to finish these.  See FR #11041.
 
+Installing
+----------
+
+See INSTALL for instructions on how to build the game from source code.
+
+
+More Information
+----------------
+
+For extensive documentation about all aspects of the game, see the
+official Battle for Wesnoth web site.
+
+  <https://www.wesnoth.org/>
+
+A (translated) description of how to play the game can be found in
+doc/manual/manual.*.html, or online at:
+
+  <http://manual.wesnoth.org/>
+
+The official Battle for Wesnoth Forums (with over 400,000 posts from more than
+20,000 registered members) can be found at:
+
+  <https://forums.wesnoth.org/>
