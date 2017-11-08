@@ -1,0 +1,76 @@
+--textdomain wesnoth-units
+Unit_Type{
+    id: "Rami"
+    name: _ "Rami"
+    race: "khalifate"
+    image: "units/khalifate/rami.png"
+    hitpoints: 34
+    movement_type: "khalifatehorse"
+    movement: 7
+    experience: 39
+    level: 1
+    alignment: "liminal"
+    advances_to: {"Qanas", "Saree"}
+    cost: 16
+    usage: "archer"
+    undead_variation: "mounted"
+    description: _ "Rami are excellent horsemen, able to shoot from horseback better than most men can manage from foot. Disdaining the use of heavy armor, Rami use their superior speed and agility to circle and harass their foes, whittling down their numbers with relentless arrows."
+    die_sound: "horse-die.ogg"
+    <DEFENSE_ANIM("units/khalifate/rami.png", "units/khalifate/rami.png", SOUND_LIST.HORSE_HIT!)
+    attack: {
+        name: "mace"
+        description: _ "mace"
+        type: "impact"
+        range: "melee"
+        damage: 5
+        number: 2
+    }
+    attack: {
+        name: "composite bow"
+        description: _ "composite bow"
+        icon: "attacks/bow-elven.png"
+        type: "pierce"
+        range: "ranged"
+        damage: 7
+        number: 3
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "mace"
+        }
+
+        start_time: -250
+        horse_sound_start_time: -250
+
+        frame: {
+            image: "units/khalifate/rami.png:400"
+        }
+
+        horse_sound_frame: {
+            sound: "horse-canter.wav"
+        }
+
+        <SOUND.HIT_AND_MISS("mace.ogg", "mace-miss.ogg", -100)
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "composite bow"
+        }
+
+        start_time: -250
+        missile_start_time: -150
+
+        missile_frame: {
+            duration: 150
+            image: "projectiles/missile-n.png"
+            image_diagonal: "projectiles/missile-ne.png"
+        }
+
+        frame: {
+            image: "units/khalifate/rami.png:300"
+        }
+
+        <SOUND.HIT_AND_MISS("bow-puny.ogg", "bow-puny-miss.ogg", -225)
+    }
+}

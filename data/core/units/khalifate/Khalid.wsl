@@ -1,0 +1,77 @@
+--textdomain wesnoth-units
+Unit_Type{
+    id: "Khalid"
+    name: _ "Khalid"
+    race: "khalifate"
+    image: "units/khalifate/khalid.png"
+    hitpoints: 82
+    movement_type: "khalifatearmoredfoot"
+    movement: 5
+    experience: 200
+    level: 4
+    alignment: "lawful"
+    advances_to: "null"
+    <if ENABLE_KHALID then {
+        advancefrom: {
+            unit: "Shuja"
+            experience: 150
+        }
+    }
+    <AMLA_DEFAULT!
+    cost: 78
+    usage: "fighter"
+    description: _ "Among every generation, a warrior elevates himself above his peers and foes; They seem to be able to alter the destiny of the world themselves. Often given the name Khalid, after a legendary leader of old, these individuals are celebrated for the piety and skill. Their travels and travails are told endlessly around the campfire with the reverent tones of those that speak of living legends." .. SPECIAL_NOTES! .. SPECIAL_NOTES_MARKSMAN! .. SPECIAL_NOTES_SLOW!
+    die_sound: SOUND_LIST.ELF_HIT!
+    <DEFENSE_ANIM("units/khalifate/khalid.png", "units/khalifate/khalid.png", SOUND_LIST.ELF_HIT!)
+    attack: {
+        name: "sword"
+        description: _ "sword"
+        icon: "attacks/longsword.png"
+        type: "blade"
+        range: "melee"
+        damage: 13
+        number: 4
+        specials: {
+            <WEAPON_SPECIAL_MARKSMAN!
+        }
+    }
+    attack: {
+        name: "shield bash"
+        description: _ "shield bash"
+        icon: "attacks/heater-shield.png" --TODO: add "correct" shield form!
+        type: "impact"
+        range: "melee"
+        damage: 11
+        number: 3
+        specials: {
+            <WEAPON_SPECIAL_SLOW!
+        }
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "sword"
+        }
+
+        start_time: -200
+
+        frame: {
+            image: "units/khalifate/khalid.png:300"
+        }
+
+        <SOUND.HIT_AND_MISS(SOUND_LIST.SWORD_SWISH!, SOUND_LIST.MISS!, -100)
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "shield bash"
+        }
+
+        start_time: -200
+
+        frame: {
+            image: "units/khalifate/khalid.png:300"
+        }
+
+        <SOUND.HIT_AND_MISS("mace.ogg", "mace-miss.ogg", -100)
+    }
+}

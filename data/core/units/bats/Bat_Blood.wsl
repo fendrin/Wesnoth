@@ -1,0 +1,166 @@
+--textdomain wesnoth-units
+Unit_Type{
+    id: "Blood Bat"
+    name: _ "Blood Bat"
+    race: "bats"
+    image: "units/undead/bloodbat-se-3.png"
+    profile: "portraits/monsters/bat.png"
+    <TRAIT_FERAL_MUSTHAVE!
+    hitpoints: 27
+    movement_type: "smallfly"
+    movement: 9
+    experience: 70
+    level: 1
+    alignment: "chaotic"
+    advances_to: "Dread Bat"
+    cost: 21
+    usage: "scout"
+    description: _ "Blood Bats are so named because of their ruddy hue, which some mark as a symbol of their preferred diet. These creatures are fast and can drain the blood of those they attack, thereby gaining some of the health lost by their victims." .. SPECIAL_NOTES! .. SPECIAL_NOTES_DRAIN!
+    die_sound: "bat-flapping.wav"
+
+    resistance: {
+        cold: 70
+    }
+    defense: {
+        village: 50
+    }
+
+    defend: {
+        direction: {"s", "sw", "se"}
+        if: {
+            hits: "miss"
+            offset: {"0.0~-0.15", "-0.15~0.0"}
+        }
+        start_time: -126
+        frame: {
+            image: "units/undead/bloodbat-se-[3,4].png:[1,100]"
+        }
+        if: {
+            hits: "hit"
+            frame: {
+                image: "units/undead/bloodbat-se-4.png:150"
+                sound: SOUND_LIST.BAT_HIT!
+            }
+        }
+        else: ->
+            hits: {"miss", "kill"}
+            Frame{
+                image: "units/undead/bloodbat-se-4.png:150"
+            }
+        
+        frame: {
+            image: "units/undead/bloodbat-se-3.png:1"
+        }
+    }
+    defend: {
+        direction: {"n", "nw", "ne"}
+        if: {
+            hits: "miss"
+            offset: {"0.0~-0.15", "-0.15~0.0"}
+        }
+        start_time: -126
+        frame: {
+            image: "units/undead/bloodbat-ne-[3,4].png:[1,100]"
+        }
+        if: {
+            hits: "hit"
+            frame: {
+                image: "units/undead/bloodbat-ne-4.png:150"
+                sound: SOUND_LIST.BAT_HIT!
+            }
+        }
+        else: ->
+            hits: {"miss", "kill"}
+            Frame{
+                image: "units/undead/bloodbat-ne-4.png:150"
+            }
+        
+        frame: {
+            image: "units/undead/bloodbat-ne-3.png:1"
+        }
+    }
+
+    standing_anim: {
+        layer: 60
+        direction: {"s", "se", "sw"}
+        start_time: 0
+        frame: {
+            image: "units/undead/bloodbat-se-[3~1,2~5,4].png:[50,60,80,60,50,60,80,60]"
+        }
+    }
+    standing_anim: {
+        direction: {"n", "ne", "nw"}
+        layer: 60
+        start_time: 0
+        frame: {
+            image: "units/undead/bloodbat-ne-[3~1,2~5,4].png:[50,60,80,60,50,60,80,60]"
+        }
+    }
+    movement_anim: {
+        direction: {"s", "se", "sw"}
+        start_time: 0
+        frame: {
+            image: "units/undead/bloodbat-se-[3~1,2~5,4].png:[50,60,80,60,50,60,80,60]"
+        }
+    }
+    movement_anim: {
+        direction: {"n", "ne", "nw"}
+        start_time: 0
+        frame: {
+            image: "units/undead/bloodbat-ne-[3~1,2~5,4].png:[50,60,80,60,50,60,80,60]"
+        }
+    }
+
+    attack: {
+        name: "fangs"
+        description: _ "fangs"
+        icon: "attacks/fangs-animal.png"
+        type: "blade"
+        range: "melee"
+        damage: 5
+        number: 3
+        specials: {
+            <WEAPON_SPECIAL_DRAIN!
+        }
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "fangs"
+        }
+        direction: {"s", "se", "sw"}
+        offset: {"0.0~0.9:200", "0.9~0.0:160"}
+        start_time: -200
+        frame: {
+            image: "units/undead/bloodbat-se-[3,2].png:30"
+        }
+        frame: {
+            image: "units/undead/bloodbat-se-1.png:30"
+            sound: "bat-flapping.wav"
+        }
+        frame: {
+            image: "units/undead/bloodbat-se-[2~4,3,2,3].png:[30*2,70,50*2,40]"
+        }
+        <SOUND.HIT_AND_MISS("bite-small.ogg", SOUND_LIST.MISS!, -50)
+    }
+
+    attack_anim: {
+        filter_attack: {
+            name: "fangs"
+        }
+        direction: {"n", "ne", "nw"}
+        offset: {"0.0~0.9:200", "0.9~0.0:160"}
+        start_time: -200
+        frame: {
+            image: "units/undead/bloodbat-ne-[3,2].png:30"
+        }
+        frame: {
+            image: "units/undead/bloodbat-ne-1.png:30"
+            sound: "bat-flapping.wav"
+        }
+        frame: {
+            image: "units/undead/bloodbat-ne-[2~4,3,2,3].png:[30*2,70,50*2,40]"
+        }
+        <SOUND.HIT_AND_MISS("bite-small.ogg", SOUND_LIST.MISS!, -50)
+    }
+}
