@@ -203,3 +203,10 @@ config.h
 6not
 .kdev*
 callgrind.out.*
+
+# binary files
+*.png
+*.jpeg
+*.jpg
+*.ogg
+*.wav
