@@ -1,0 +1,2 @@
+# ignore lua files for being compiled in our case.
+*.lua
