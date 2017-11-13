@@ -1,0 +1,89 @@
+--textdomain wesnoth-utbs
+Unit_Type{
+    id: "Desert Captain"
+    name: _ "Desert Captain"
+    race: "elf"
+    image: "units/elves-desert/captain.png"
+    leading_anim: {
+        start_time: -150
+        frame: {
+            image: "units/elves-desert/captain-leading.png:300"
+        }
+    }
+    hitpoints: 47
+    abilities: {
+        <ABILITY_LEADERSHIP!
+    }
+    movement_type: "desert_elf"
+    movement: 5
+    experience: 90
+    level: 2
+    alignment: "lawful"
+    advances_to: "Desert Marshal"
+    cost: 40
+    usage: "fighter"
+    description: _ "Skilled in commanding other elves, Desert Captains provide a bonus to all level 1 units on adjacent hexes. Desert Captains prefer engaging the enemy in melee combat, but are trained in archery as well." .. SPECIAL_NOTES! .. SPECIAL_NOTES_LEADERSHIP!
+    die_sound: SOUND_LIST.ELF_HIT!
+    <DEFENSE_ANIM_RANGE("units/elves-desert/captain-defend.png", "units/elves-desert/captain.png", SOUND_LIST.ELF_HIT!, "melee")
+    <DEFENSE_ANIM_RANGE("units/elves-desert/captain-bow-defend.png", "units/elves-desert/captain-bow.png", SOUND_LIST.ELF_HIT!, "ranged")
+-- melee attack increased from 7-4 to 8-4
+-- ranged attack decreased from 5-3 to 4-3
+    attack: {
+        name: "sword"
+--textdomain wesnoth-units
+        description: _ "sword"
+        type: "blade"
+        range: "melee"
+        damage: 8
+        number: 4
+        icon: "attacks/sword-elven.png"
+    }
+    attack: {
+        name: "bow"
+        description: _ "bow"
+--textdomain wesnoth-utbs
+        type: "pierce"
+        range: "ranged"
+        damage: 4
+        number: 3
+        icon: "attacks/bow-elven.png"
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "bow"
+        }
+        missile_start_time: -150
+        missile_frame: {
+            duration: 150
+            image: "projectiles/missile-n.png"
+            image_diagonal: "projectiles/missile-ne.png"
+        }
+        start_time: -445
+        frame: {
+            image: "units/elves-desert/captain-bow.png:65"
+        }
+        <SOUND.HIT_AND_MISS("bow.ogg", "bow-miss.ogg", -380)
+        frame: {
+            image: "units/elves-desert/captain-bow-attack[1~4].png:[75*2,100,130]"
+        }
+        frame: {
+            image: "units/elves-desert/captain-bow.png:65"
+        }
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "sword"
+        }
+        start_time: -200
+        frame: {
+            image: "units/elves-desert/captain.png:25"
+        }
+        frame: {
+            image: "units/elves-desert/captain-melee-[2,1,2].png:[75,200,75]"
+        }
+        <SOUND.HIT_AND_MISS(SOUND_LIST.SWORD_SWISH!, SOUND_LIST.MISS!, -100)
+        frame: {
+            image: "units/elves-desert/captain.png:50"
+        }
+    }
+}

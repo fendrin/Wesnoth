@@ -1,0 +1,359 @@
+--textdomain wesnoth-sota
+
+-- There is lots of animation here, but nothing complicated.
+
+Scenario{
+    name: _ "Mortality"
+    map: "campaigns/Secrets_of_the_Ancients/maps/17_Mortality.map"
+    theme: "Cutscene_Minimal"
+
+    id: "17_Mortality"
+    next_scenario: "18_Abandoned_Outpost"
+    victory_when_enemies_defeated: false
+
+    story: {
+        part: {
+            story: _ "6 VI, 23 YW
+
+Not far inside the cave was a ruined castle built in a style I did not recognize. Ras-Tabahn said, “Dwarves.” It is infested with rats, and clearly, no dwarves have lived here for a long time."
+        }
+        <JOURNEY_PART(17)
+    }
+
+    <UNDERGROUND!
+    turns: -1
+
+    side: {
+        <SIDE_1_BOTH!
+        shroud: true
+        gold: 0
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Rats"
+        team_name: "bad"
+        no_leader: true
+        gold: 0
+        hidden: true
+    }
+
+    PLACE_RAT: (X, Y) -> {
+        unit: {
+            type: "Giant Rat"
+            x: X
+            y: Y
+            side: 2
+        }
+    }
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_RAT(4, 4)
+            PLACE_RAT(5, 4)
+            PLACE_RAT(14, 6)
+            PLACE_RAT(2, 7)
+            PLACE_RAT(11, 3)
+    }
+
+-- This inserts the event that allows units to turn into a lich. (See: sota-utils.cfg)
+    <TURN_INTO_A_LICH!
+
+-- *************************** ENDING / OPENING ***************************
+    DELAY: () -> {
+        delay: {
+            time: 400
+        }
+        redraw: {}
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Move_Unit{
+                id: "Ardonna"
+                to_x: 12
+                to_y: 4
+            }
+            Remove_Shroud{
+                x: 12, y: 4
+                radius: 4
+            }
+            Move_Unit{
+                id: "Ardonna"
+                to_x: 9
+                to_y: 6
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Ardonna"
+                }
+                facing: "ne"
+            }
+-- The shroud won't normally be cleared until all the animation is finished,
+-- even with [redraw]. We have to do it manually:
+            Remove_Shroud{
+                x: 9, y: 6
+                radius: 5
+            }
+            Remove_Shroud{
+                x: 5, y: 6
+                radius: 3
+            }
+            Remove_Shroud{
+                x: 8, y: 2
+                radius: 2
+            }
+
+            Recall{
+                id: "Ras-Tabahn"
+                x: 16, y: 1
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                hitpoints: 6
+            }
+            Move_Unit{
+                id: "Ras-Tabahn"
+                to_x: 14
+                to_y: 3
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Just a little farther."
+            }
+            Move_Unit{
+                id: "Ras-Tabahn"
+                to_x: 11
+                to_y: 5
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Ardryn-Na, I’m dying. (<i>Cough, cough</i>) I don’t think... I can stop it."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Nor should you! You must embrace it. Crelanu said as much. He also said your life force must depart, but he didn’t say it could not come back to you!"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "What are you... proposing?"
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "That you project your will into another object so that it is part of you — your staff for example. If you do this just as your body dies, your whole consciousness should follow the flow of your will, as it will have no other place to go."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Well, it could go to the... lands of the dead. But... if I had an altar... the stone would serve to anchor me (<i>cough, cough, cough</i>) to this plane... and stop the downward flow of my soul... for just a moment."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "And a moment is all you need! You only need project your will <i>back</i> into your body, animating it as you would anything else!"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "You seem... more sure than I, but  (<i>cough, cough</i>) I have no choice."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Crelanu said he wouldn’t do it. That implies that he <i>could</i>, so he also believed that it would work. And like you said, he should know. For now, you can rest. We’ll have an altar built soon."
+            }
+
+-- Skeletons are created, and some rock disappears. ("Collected" by the
+-- skeletons.)
+            Unit{
+                type: "Skeleton"
+                x: 8, y: 4
+                side: 1
+                animate: true
+                facing: "ne"
+            }
+            Unit{
+                type: "Skeleton"
+                x: 10, y: 5
+                side: 1
+                animate: true
+                facing: "nw"
+            }
+            Terrain{
+                x: 10, y: 4
+                terrain: "''"
+                layer: "overlay"
+            }
+            Terrain{
+                x: 9, y: 4
+                terrain: "''"
+                layer: "overlay"
+            }
+            DELAY!
+
+-- Skeletons face the eventual location of the altar, and rock appears there.
+            Modify_Unit{
+                filter: {
+                    x: 8, y: 4
+                }
+                facing: "se"
+            }
+            Modify_Unit{
+                filter: {
+                    x: 10, y: 5
+                }
+                facing: "nw"
+            }
+            Terrain{
+                x: 9, y: 5
+                terrain: "^Dr"
+                layer: "overlay"
+            }
+            DELAY!
+
+-- One skeleton turns around and more rock disappears.
+            Modify_Unit{
+                filter: {
+                    x: 10, y: 5
+                }
+                facing: "se"
+            }
+            Terrain{
+                x: 11, y: 6
+                terrain: "''"
+                layer: "overlay"
+            }
+            DELAY!
+
+-- Skeletons face the new pile of rock, and the altar appears.
+            Modify_Unit{
+                filter: {
+                    x: 10, y: 5
+                }
+                facing: "nw"
+            }
+            Terrain{
+                x: 9, y: 5
+                terrain: "''"
+                layer: "overlay"
+            }
+            Item{
+-- So color is the same as the Ras-Tabahn-on-the-altar.
+                image: "items/altar-sacrifice.png~NO_TOD_SHIFT()"
+                x: 9, y: 5
+            }
+            DELAY!
+
+-- Ras-Tabahn appears to move to the altar and lie on it.
+            Store_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                variable: "rastabahn_stored"
+            }
+            Hide_Unit{
+                id: "Ras-Tabahn"
+            }
+            Move_Unit_Fake{
+                type: "Necromancer"
+                side: 1
+                x: {11, 10, 9}
+                y: {5, 4, 5}
+            }
+            Remove_Item{
+                x: 9, y: 5
+            }
+-- Ras-Tabahn-on-the-altar is a unit so that he can retain his property bars
+-- and orb, and be drawn in the correct z-position.
+            Unit{
+                type: "Sacrifice"
+                x: 9, y: 5
+                side: 1
+                facing: "se"
+                experience: rastabahn_stored.experience
+                hitpoints: rastabahn_stored.hitpoints
+                max_hitpoints: rastabahn_stored.max_hitpoints
+                ellipse: "misc/ellipse-hero"
+                id: "necromancer_on_altar"
+                name: _ "Ras-Tabahn"
+                profile: rastabahn_stored.profile
+                modifications: {
+                    insert_tag: {
+                        name: "trait"
+                        variable: "rastabahn_stored.modifications.trait[0]"
+                    }
+                    insert_tag: {
+                        name: "trait"
+                        variable: "rastabahn_stored.modifications.trait[1]"
+                    }
+                }
+            }
+            Clear_Variable{
+                name: "rastabahn_stored"
+            }
+
+            DELAY!
+
+            Message{
+                speaker: "Ardonna"
+                message: _ "No need for you to wait to die. We can have done with it immediately. And although neither of us needs speak the incantations aloud anymore, you should this time, as any mistake would be disastrous."
+            }
+            Message{
+                speaker: "necromancer_on_altar"
+                message: _ "Yes. I’m ready. Do it."
+            }
+
+            Unit{
+                type: "Skeleton SotA"
+                side: 1
+                placement: "map_overwrite"
+                x: 8, y: 4
+                id: "skeleton"
+                facing: "se"
+            }
+            Animate_Unit{
+                filter: {
+                    id: "skeleton"
+                }
+                flag: "sacrifice"
+            }
+
+            Hide_Unit{
+-- All units.
+            }
+
+            FADE_TO_BLACK_HOLD(1000)
+
+            Fire_Event{
+                name: "lichify"  -- See: sota-utils.cfg
+                primary_unit: {
+                    id: "Ardonna"
+                }
+            }
+
+            Fire_Event{
+                name: "lichify"
+                primary_unit: {
+                    id: "Ras-Tabahn"
+                }
+            }
+
+-- New, lich versions of the two leaders are now on the recall list, so we
+-- need to remove the necromancer versions from the game:
+            Kill{
+                side: 1
+-- Since we don't want to include units on the recall list:
+                x: "1-16"
+                y: "1-7"
+            }
+
+            Endlevel{
+                result: "victory"
+                linger_mode: false
+                carryover_report: false
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+            }
+    }
+}

@@ -1,0 +1,58 @@
+--textdomain wesnoth-multiplayer
+
+-- created by Becephalus 04/07
+
+Multiplayer{
+    id: "multiplayer_Xanthe_Chaos"
+    name: _ "4p — Xanthe Chaos"
+    map: "multiplayer/maps/4p_Xanthe_Chaos.map"
+    description: _ "A 2 vs. 2 map with auxiliary keeps, and a large messy battle in the center common."
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 1
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 2
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 3
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 4
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+}

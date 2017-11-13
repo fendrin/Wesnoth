@@ -1,0 +1,288 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the lobby player info dialog
+----
+
+Window{
+    id: "lobby_player_info"
+    description: "Lobby player info dialog."
+
+    resolution: {
+        definition: "default"
+
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+            row: {
+                grow_factor: 0
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+                    grid: {
+                        row: {
+                            column: {
+                                label: {
+                                    definition: "title"
+                                    label: _ "Player Info — "
+                                }
+                            }
+                            column: {
+                                label: {
+                                    definition: "title"
+                                    id: "player_name"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            row: {
+                column: {
+                    horizontal_grow: true
+                    grid: {
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                label: {
+                                    definition: "default"
+                                    id: "location_info"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            row: {
+                column: {
+                    horizontal_grow: true
+                    border: "all"
+                    border_size: 5
+                    label: {
+                        definition: "default"
+                        id: "relation_info"
+                    }
+                }
+            }
+
+            row: {
+                column: {
+                    horizontal_grow: true
+                    grid: {
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                button: {
+                                    definition: "default"
+                                    id: "add_to_friends"
+                                    label: _ "Add Friend"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                button: {
+                                    definition: "default"
+                                    id: "add_to_ignores"
+                                    label: _ "Block"
+                                }
+                            }
+                        }
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                button: {
+                                    definition: "default"
+                                    id: "remove_from_list"
+                                    label: _ "Remove from List"
+                                }
+                            }
+
+                            column: {
+                                horizontal_grow: true
+                                border: "all"
+                                border_size: 5
+                                button: {
+                                    definition: "default"
+                                    id: "start_whisper"
+                                    label: _ "Send Private Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            row: {
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+                    grid: {
+                        id: "admin"
+
+                        <GUI_HORIZONTAL_SPACER_LINE!
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+                                label: {
+                                    definition: "default"
+                                    label: _ "Moderator Controls"
+                                }
+                            }
+                        }
+
+                        row: {
+                            column: {
+                                horizontal_grow: true
+
+                                grid: {
+
+                                    row: {
+
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "left"
+
+                                            label: {
+                                                label: _ "Kick / ban reason:"
+                                            }
+                                        }
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+
+                                            text_box: {
+                                                definition: "default"
+                                                id: "reason"
+                                            }
+                                        }
+
+                                    }
+
+                                    row: {
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "left"
+
+                                            label: {
+                                                label: _ "Ban time:"
+                                            }
+                                        }
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+
+                                            text_box: {
+                                                definition: "default"
+                                                id: "time"
+                                            }
+
+                                        }
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        row: {
+                            column: {
+                                horizontal_grow: true
+
+                                grid: {
+
+                                    row: {
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "left"
+
+                                            button: {
+                                                definition: "default"
+                                                id: "check_status"
+                                                label: _ "Check Status"
+                                            }
+                                        }
+
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+
+                                            button: {
+                                                definition: "default"
+                                                id: "kick"
+                                                label: _ "Kick"
+                                            }
+                                        }
+
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+
+                                            button: {
+                                                definition: "default"
+                                                id: "kick_ban"
+                                                label: _ "Kick + Ban"
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            row: {
+                column: {
+                    horizontal_alignment: "right"
+                    border: "all"
+                    border_size: 5
+                    button: {
+                        definition: "default"
+                        id: "cancel"
+                        label: _ "Close"
+                    }
+                }
+            }
+        }
+    }
+}

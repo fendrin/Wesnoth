@@ -1,0 +1,57 @@
+-- Test that clearing multiple variables works, also that
+-- the WML `_G` analogue works.
+
+GENERIC_UNIT_TEST("test_clear_one", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("A", 5)
+                VARIABLE("B", 10)
+
+                CLEAR_VARIABLE("A")
+
+                Lua{
+                    code: [[ local a,b,c = false,false,false
+			  for k,v in pairs(wesnoth.get_all_vars()) do
+			    if k == "A" then
+			      a = true
+			    elseif (k == "B") and (v == 10) then
+			      b = true
+			    elseif (k == "C") then
+			      c = true
+			    end
+			  end
+			  wesnoth.set_variable("result", (not a) and b and (not c)) ]]
+                }
+
+                RETURN(VARIABLE_CONDITIONAL("result", "boolean_equals", true))
+        }
+})
+
+GENERIC_UNIT_TEST("test_clear_two", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("A", 5)
+                VARIABLE("B", 10)
+                VARIABLE("C", 20)
+
+                CLEAR_VARIABLE("A,C")
+
+                Lua{
+                    code: [[ local a,b,c = false,false,false
+			  for k,v in pairs(wesnoth.get_all_vars()) do
+			    if k == "A" then
+			      a = true
+			    elseif (k == "B") and (v == 10) then
+			      b = true
+			    elseif (k == "C") then
+			      c = true
+			    end
+			  end
+			  wesnoth.set_variable("result", (not a) and b and (not c)) ]]
+                }
+
+                RETURN(VARIABLE_CONDITIONAL("result", "boolean_equals", true))
+        }
+})

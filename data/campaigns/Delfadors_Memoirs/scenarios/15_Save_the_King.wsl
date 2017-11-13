@@ -1,0 +1,461 @@
+--textdomain wesnoth-dm
+Scenario{
+    id: "15_Save_the_King"
+    name: _ "Save the King"
+    next_scenario: "16_Dark_Sky_Over_Weldyn"
+    <MEMOIRS_MAP("15_Save_the_King.map")
+    <TURNS(35, 30, 25)
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("loyalists.ogg", "vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("northerners.ogg")
+
+    story: {
+        part: {
+            show_title: true
+            story: _ "Following Delfador, the elves moved to unite with the Wesnothian forces and meet Zorlan head-on..."
+            delay: 4000
+            <DM_BIGMAP!
+            <KALENZ_STAGE3!
+        }
+        part: {
+            story: _ "but the King was in an unenviable position..."
+            delay: 4000
+        }
+    }
+
+--wmllint: validate-off
+    side: {
+        <YOUNG_DELFADOR!
+        side: 1
+        save_id: "Player"
+        persistent: true
+        controller: "human"
+        recruit: ELVES!
+        team_name: "allies"
+        user_team_name: _ "Loyalists"
+        <FLAG_VARIANT("long")
+        <GOLD(200, 150, 100)
+    }
+--wmllint: validate-on
+
+    side: {
+        type: "King of Wesnoth"
+        id: "Garard II"
+        name: _ "Garard II"
+        profile: "portraits/garard.png"
+        facing: "nw"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        team_name: "allies"
+        user_team_name: _ "Loyalists"
+        recruit: {"Heavy Infantryman", "Spearman", "Bowman", "Cavalryman", "Horseman", "Mage", "Royal Guard", "Shock Trooper", "Swordsman"}
+        <GOLD(300, 450, 600)
+        <INCOME(0, 0, 0)
+        ai: {
+            passive_leader: true
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Garard II"
+                }
+                value: 20
+            }
+            avoid: {
+                not: {
+                    x: 14, y: 22
+                    radius: 5
+                }
+            }
+        }
+
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Sovereign"
+        id: "Zorlan"
+        name: _ "Zorlan"
+        profile: "portraits/zorlan.png"
+        facing: "sw"
+        side: 3
+        canrecruit: true
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+        }
+        <GOLD(150, 260, 330)
+        team_name: "enemies"
+        user_team_name: _ "Pillagers"
+        <FLAG_VARIANT6("ragged")
+    }
+    side: {
+        type: "Orcish Warrior"
+        id: "T'bhan"
+        name: _ "T’bhan"
+        facing: "ne"
+        side: 4
+        canrecruit: true
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+        }
+        <GOLD(150, 250, 300)
+        team_name: "enemies"
+        user_team_name: _ "Pillagers"
+        <FLAG_VARIANT6("ragged")
+    }
+    side: {
+        type: "Orcish Warrior"
+        id: "Qgthun"
+        name: _ "Qgthun"
+        facing: "nw"
+        side: 5
+        canrecruit: true
+        controller: "ai"
+
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+        }
+        <GOLD(150, 250, 300)
+        team_name: "enemies"
+        user_team_name: _ "Pillagers"
+    }
+    side: {
+        <unless EASY! then {
+            type: "Great Troll"
+        } else {
+            type: "Troll Hero"
+        }
+        id: "Trgrau"
+        name: _ "Trgrau"
+        facing: "sw"
+        side: 6
+        canrecruit: true
+        controller: "ai"
+        <if EASY then {
+            recruit: "Troll Whelp"
+        }
+        <if NORMAL then {
+            recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        }
+
+        <if HARD then {
+            recruit: {"Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber"}
+        }
+
+        <GOLD(150, 250, 300)
+        team_name: "enemies"
+        user_team_name: _ "Pillagers"
+        <FLAG_VARIANT6("ragged")
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Recall{
+                id: "Chantal"
+            }
+
+            Recall{
+                id: "Kalenz"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Chantal"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Garard II"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 80
+                }
+            }
+            Recall{
+                id: "Clogrin"
+            }
+            Recall{
+                id: "Droni"
+            }
+            Recall{
+                id: "Artos"
+            }
+            Recall{
+                id: "Theorsten"
+            }
+            Recall{
+                id: "Igler"
+            }
+            Recall{
+                id: "Larsin"
+            }
+            Recall{
+                id: "Glen"
+            }
+            Recall{
+                id: "Aldrin"
+            }
+            MODIFY_UNIT({side: 1}, "facing", "se")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                id: "Delfador"
+                message: _ "It appears we have arrived just in time! The King stands at bay, surrounded by the enemy."
+            }
+            Message{
+                id: "Chantal"
+                message: _ "I fear we may be too late. This new warlord must have united every orcish tribe north of the Great River. Look at their army, it is vast!"
+            }
+            Message{
+                id: "Zorlan"
+                message: _ "Elves! I heard you have been looking for me! But you will save neither the human prince, nor yourselves."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "We must destroy this warlord now, before his power grows any greater!"
+            }
+            Message{
+                id: "Delfador"
+                message: _ "Agreed, but we must make haste, for the King is hard pressed."
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "Victory!"
+            }
+            Message{
+                id: "Garard II"
+                message: _ "Delfador! And you, elvish friends! The kingdom of Wesnoth is in your debt today!"
+            }
+            Message{
+                id: "Delfador"
+                message: _ "My King, this is Kalenz, High Lord of the Elves."
+            }
+            Message{
+                id: "Garard II"
+                message: _ "You will be forever welcome in the court of Wesnoth."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "We look forward to fighting beside you to defeat those threats that remain."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "Your Majesty, we have more urgent matters. Leollyn sent me on a mission to find out why the dead are restless. A foul necromancer has opened a portal to the land of the dead. It must be closed at all costs, and I am afraid my skills may be insufficient for that task."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Delfador, our weapons are weak against the undead, but perhaps we have other help to give you. Centuries ago the great mage Crelanu entrusted to us a book of lore, powerful knowledge, perilous secrets that it took Crelanu all his life to gather."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Crelanu charged us to guard his book until someone worthy of it appeared. We believe you are that one, Delfador. The book may help you find a way to close that portal."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "Friends, your words do me perhaps greater honor than I deserve. I am not sure I am worthy of this charge."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Chantal and I are sure of your quality. But be warned: there is a curse on this book. Crelanu fairly warned us that his arts would bring much woe down upon us. And so it proved, though at the time we had no other choice. The victories you win with it may cost you as dearly."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "Curse or no, we must close that portal soon, or else we are all doomed."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "This is a decision you will have to make. If we fight the undead without the book’s help, it will be an honor to fight by your side, no matter what the outcome."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "I think I, too, have no choice but to accept the book. I cannot allow the sure death of many humans and elves for fear of the curse."
+            }
+            Message{
+                id: "Chantal"
+                message: _ "Then here it is, Delfador. May it help you bring a swift end to the undead menace. And may it cost you less than it has cost us..."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "Thank you, friends. May we meet again in happier times. Now I must make haste, for I need to study the book and prepare for the battle with the undead."
+            }
+
+            ELVES_DEPART!
+    }
+
+--- Extra help for Garard in case Delf and Kalenz are a bit late
+--  but this is only once
+    event: {
+        name: "moveto"
+        filter: {
+            side: {3, 4, 5, 6}
+            x: "12-17"
+            y: "20-24"
+        }
+        do: ->
+            Message{
+                speaker: "Garard II"
+                message: _ "The enemy is drawing near. My personal guards must join the fight. We can only hope help arrives soon."
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 2
+                x: {12, 12}
+                y: {19, 20}
+            }
+
+            Unit{
+                id: "Adamar"
+                name: _ "Adamar"
+                type: "Royal Guard"
+                side: 2
+                x: 12
+                y: 20
+                modifications: {
+                    <TRAIT_RESILIENT!
+                    <TRAIT_STRONG!
+                }
+                facing: "sw"
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 2
+                x: {16, 17}
+                y: {23, 24}
+            }
+            Unit{
+                id: "Mitbreen"
+                name: _ "Mitbreen"
+                type: "Royal Guard"
+                side: 2
+                x: 17
+                y: 24
+                modifications: {
+                    <TRAIT_RESILIENT!
+                    <TRAIT_STRONG!
+                }
+                facing: "sw"
+            }
+
+            Move_Unit_Fake{
+                type: "Iron Mauler"
+                side: 2
+                x: {12, 12}
+                y: {19, 20, 21, 22, 23}
+            }
+
+            Unit{
+                id: "Ronduger"
+                name: _ "Ronduger"
+                type: "Iron Mauler"
+                side: 2
+                x: 12
+                y: 23
+                modifications: {
+                    <TRAIT_RESILIENT!
+                    <TRAIT_STRONG!
+                }
+                facing: "sw"
+            }
+
+            Scroll_To_Unit{
+                x: 12
+                y: 20
+            }
+
+            Message{
+                speaker: "Adamar"
+                message: _ "For the King!"
+            }
+    }
+
+-- The king usually takes care of the first wave of orcs by himself.
+-- They need a second wave for the player to help with.
+-- Since this event uses the player's turn, the orcs will not be
+-- able to use their gold until the following turn.
+    event: {
+        <if HARD then {
+            name: "turn 8"
+        }
+        <if NORMAL then {
+            name: "turn 9"
+        }
+        <if EASY then {
+            name: "turn 10"
+        }
+        do: ->
+            Gold{
+                side: 4
+                <QUANTITY("amount", 140, 230, 320)
+            }
+            Gold{
+                side: 5
+                <QUANTITY("amount", 120, 210, 300)
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+            }
+    }
+
+    <MEMOIRS_DEATHS!
+}

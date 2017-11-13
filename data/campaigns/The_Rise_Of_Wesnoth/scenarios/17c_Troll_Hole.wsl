@@ -1,0 +1,363 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "17c_Troll_Hole"
+    name: _ "Troll Hole"
+    next_scenario: "16_The_Kalian"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/17c_Troll_Hole.map"
+
+    <TURNS(39, 36, 33)
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("underground.ogg")
+
+-- No story
+    <TROW_GC_TRACK(JOURNEY_17C_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        shroud: true
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <INCOME(8, 4, 2)
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Troll Warrior"
+        id: "Erart"
+        name: _ "Erart"
+        side: 2
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        <INCOME(2, 4, 8)
+        team_name: "Troll"
+        user_team_name: _ "Trolls"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(3, 5, 5)
+        }
+    }
+
+    <STARTING_VILLAGES(2, 10)
+
+    side: {
+        type: "Troll Warrior"
+        id: "Raol"
+        name: _ "Raol"
+        side: 3
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        <INCOME(2, 4, 8)
+        team_name: "Troll"
+        user_team_name: _ "Trolls"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(3, 5, 5)
+        }
+    }
+
+    <STARTING_VILLAGES(3, 10)
+
+    side: {
+        type: "Troll Warrior"
+        id: "Rilg"
+        name: _ "Rilg"
+        side: 4
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        <INCOME(2, 4, 8)
+        team_name: "Troll"
+        user_team_name: _ "Trolls"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(3, 5, 5)
+        }
+    }
+
+    <STARTING_VILLAGES(4, 10)
+
+    side: {
+        type: "Troll Warrior"
+        id: "Gulg"
+        name: _ "Gulg"
+        side: 5
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        <INCOME(2, 4, 8)
+        team_name: "Troll"
+        user_team_name: _ "Trolls"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(3, 5, 5)
+        }
+    }
+
+    <STARTING_VILLAGES(5, 10)
+
+    <if EASY then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3, 4, 5}, "Troll", 1)
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3, 4, 5}, "Troll Rocklobber", 1)
+    } else {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3, 4, 5}, "Troll", 2)
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3, 4, 5}, "Troll Rocklobber", 2)
+    }
+
+    INCLUDE("campaigns/The_Rise_Of_Wesnoth/utils/trow-nlmsg.cfg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/rubble.png", 3, 14)
+            PLACE_IMAGE("scenery/rubble.png", 25, 19)
+            PLACE_IMAGE("scenery/rubble.png", 15, 3)
+            PLACE_IMAGE("scenery/rubble.png", 17, 27)
+
+            LOYAL_UNIT(2, "Tentacle of the Deep", 15, 11)
+            LOYAL_UNIT(3, "Tentacle of the Deep", 14, 19)
+
+            if NORMAL
+                LOYAL_UNIT(4, "Tentacle of the Deep", 11, 15)
+                LOYAL_UNIT(5, "Tentacle of the Deep", 19, 17)
+            
+            if HARD
+
+                LOYAL_UNIT(4, "Tentacle of the Deep", 11, 15)
+                LOYAL_UNIT(5, "Tentacle of the Deep", 19, 17)
+                LOYAL_UNIT(2, "Tentacle of the Deep", 11, 17)
+                LOYAL_UNIT(3, "Tentacle of the Deep", 19, 15)
+            
+
+            RANDOM("1..4")
+            If{
+                variable: {
+                    name: "random"
+                    numerical_equals: 1
+                }
+                then: ->
+                    Kill{
+                        id: "Erart"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 3, 5, 5)
+                    Kill{
+                        id: "Raol"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 2, 25, 5)
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    numerical_equals: 2
+                }
+                then: ->
+                    Kill{
+                        id: "Raol"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 2, 25, 5)
+                    Kill{
+                        id: "Rilg"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 5, 5, 25)
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    numerical_equals: 3
+                }
+                then: ->
+                    Kill{
+                        id: "Rilg"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 5, 5, 25)
+                    Kill{
+                        id: "Gulg"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 4, 25, 25)
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    numerical_equals: 4
+                }
+                then: ->
+                    Kill{
+                        id: "Gulg"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 4, 25, 25)
+                    Kill{
+                        id: "Erart"
+                    }
+                    GUARD_UNIT("Giant Spider", {}, _ "Fang", 3, 5, 5)
+                
+            }
+
+            Recall{
+                id: "Lady Jessene"
+                x: 14
+                y: 15
+            }
+            Recall{
+                id: "Burin the Lost"
+                x: 16
+                y: 14
+            }
+            Recall{
+                id: "Minister Edren"
+                x: 15
+                y: 16
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "It isn’t long before Haldric and his companions enter the Brown Hills. An elven guide leads them to a gaping cave mouth, and they descend into the darkness."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Does anybody actually know anything about Trolls?"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "I indeed do. They are green, and mean, and will try to crush you like a bug. They heal very quickly."
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Hmm... Do we really need to know that much about the trolls? I think it’s safe to say that the elves wouldn’t have sent us down here if they were at all friendly."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Fair enough. Well, let’s get them!"
+                image: "portraits/haldric-mad.png"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We have failed... More of the trolls’ kin are arriving through the entrance."
+                image: "portraits/haldric-surprised.png"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Erart"
+        }
+        do: ->
+            LOOT(50, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Raol"
+        }
+        do: ->
+            LOOT(50, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Rilg"
+        }
+        do: ->
+            LOOT(50, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Gulg"
+        }
+        do: ->
+            LOOT(50, 1)
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "The trolls are beaten, but they were no easy opponents. It is no wonder why the elves pressed us to do their dirty work."
+            }
+
+            VARIABLE_OP("num_done", "add", 1)
+
+            Set_Variable{
+                name: "troll_hole"
+                value: 1
+            }
+
+            Set_Variable{
+                name: "last_done"
+                value: "Hole"
+            }
+
+            CLEAR_VARIABLE("random")
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+}

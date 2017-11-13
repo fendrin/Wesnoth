@@ -1,0 +1,269 @@
+-- Tests that when a side wins by killing the
+-- enemy leader with an attack, the game ends
+-- correctly. (This is different from the
+-- test_check_victory tests because we use
+-- [do_command] attack, and not [kill]).
+--
+-- Also we test that killing on retal works
+-- the same.
+
+ALICE_MOVES_TO_BOB = () ->
+    Do_Command{
+        move: {
+            x: {7, 8, 9, 10, 11, 12, 13}
+            y: {3, 3, 4, 4, 4, 4, 4}
+        }
+    }
+
+
+BOB_1_HP = () ->
+    Harm_Unit{
+        filter: {
+            x: 13, y: 3
+        }
+        amount: 100
+        kill: false
+    }
+
+
+ALICE_1_HP = () ->
+    Harm_Unit{
+        filter: {
+            x: 13, y: 4
+        }
+        amount: 100
+        kill: false
+    }
+
+
+BOTH_0_DEF = () ->
+    Terrain_Mask{
+        x: 13, y: 3
+        border: false
+        mask: "Xv"
+    }
+
+    Terrain_Mask{
+        x: 13, y: 4
+        border: false
+        mask: "Xv"
+    }
+
+
+BOTH_MAX_XP = () ->
+    Store_Unit{
+        filter: {
+            id: "alice"
+        }
+        variable: "temp"
+        kill: true
+    }
+    VARIABLE("temp.max_experience", 8)
+    Unstore_Unit{
+        variable: "temp"
+        animate: false
+        fire_event: false
+    }
+
+    Store_Unit{
+        filter: {
+            id: "bob"
+        }
+        variable: "temp"
+        kill: true
+    }
+    VARIABLE("temp.max_experience", 1)
+    Unstore_Unit{
+        variable: "temp"
+        animate: false
+        fire_event: false
+    }
+
+
+GENERIC_UNIT_TEST("alice_kills_bob", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                BOB_1_HP!
+                BOTH_0_DEF!
+
+                Do_Command{
+                    attack: {
+                        weapon: 1
+                        defender_weapon: -1
+                        source: {
+                            x: 13, y: 4
+                        }
+                        destination: {
+                            x: 13, y: 3
+                        }
+                    }
+                }
+        }
+
+        event: {
+            name: "side turn end"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("bob_kills_alice_on_retal", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                ALICE_1_HP!
+                BOTH_0_DEF!
+
+                Do_Command{
+                    attack: {
+                        weapon: 0
+                        defender_weapon: 0
+                        source: {
+                            x: 13, y: 4
+                        }
+                        destination: {
+                            x: 13, y: 3
+                        }
+                    }
+                }
+        }
+
+        event: {
+            name: "side turn end"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("alice_kills_bob_levelup", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                BOB_1_HP!
+                BOTH_0_DEF!
+                BOTH_MAX_XP!
+
+                Do_Command{
+                    attack: {
+                        weapon: 1
+                        defender_weapon: -1
+                        source: {
+                            x: 13, y: 4
+                        }
+                        destination: {
+                            x: 13, y: 3
+                        }
+                    }
+                }
+        }
+
+        event: {
+            name: "side turn end"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("bob_kills_alice", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                ALICE_1_HP!
+                BOTH_0_DEF!
+                End_Turn{
+                }
+        }
+        event: {
+            name: "side 2 turn"
+            do: ->
+                Do_Command{
+                    attack: {
+                        weapon: 0
+                        defender_weapon: 0
+                        source: {
+                            x: 13, y: 3
+                        }
+                        destination: {
+                            x: 13, y: 4
+                        }
+                    }
+                }
+        }
+        event: {
+            name: "side 2 turn end"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("alice_kills_bob_on_retal", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                BOB_1_HP!
+                BOTH_0_DEF!
+                End_Turn{
+                }
+        }
+        event: {
+            name: "side 2 turn"
+            do: ->
+                Do_Command{
+                    attack: {
+                        weapon: 0
+                        defender_weapon: 0
+                        source: {
+                            x: 13, y: 3
+                        }
+                        destination: {
+                            x: 13, y: 4
+                        }
+                    }
+                }
+        }
+        event: {
+            name: "side 2 turn end"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("alice_kills_bob_on_retal_levelup", {
+        event: {
+            name: "start"
+            do: ->
+                ALICE_MOVES_TO_BOB!
+                BOB_1_HP!
+                BOTH_0_DEF!
+                BOTH_MAX_XP!
+                End_Turn{
+                }
+        }
+        event: {
+            name: "side 2 turn"
+            do: ->
+                Do_Command{
+                    attack: {
+                        weapon: 0
+                        defender_weapon: 0
+                        source: {
+                            x: 13, y: 3
+                        }
+                        destination: {
+                            x: 13, y: 4
+                        }
+                    }
+                }
+        }
+        event: {
+            name: "side 2 turn end"
+            do: ->
+                FAIL!
+        }
+})

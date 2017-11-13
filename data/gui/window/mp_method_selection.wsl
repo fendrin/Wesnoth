@@ -1,0 +1,315 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window select the way to access the addon server.
+----
+
+Window{
+    id: "mp_method_selection"
+    description: "Language selection dialog."
+
+    resolution: {
+        definition: "default"
+
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        linked_group: {
+            id: "icon"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+                    label: {
+                        definition: "title"
+
+                        label: _ "Multiplayer"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                grow_factor: 0
+
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+
+                                    label: _ "Login:"
+                                }
+
+                            }
+
+                            column: {
+                                grow_factor: 1
+
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                text_box: {
+                                    id: "user_name"
+                                    definition: "default"
+                                    history: "mp_user_name_history"
+                                    max_input_length: 20
+
+                                    tooltip: _ "You may login to the official multiplayer server with your forum username and password.
+Note that registration is not required to join the server: you need to supply a password only if you wish to use a registered username.
+
+The Battle for Wesnoth forum can be found at https://forums.wesnoth.org/"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    border: "all"
+                    border_size: 5
+
+                    listbox: {
+                        id: "method_list"
+                        definition: "default"
+
+                        vertical_scrollbar_mode: "never"
+                        horizontal_scrollbar_mode: "never"
+                        list_definition: {
+
+                            row: {
+
+                                column: {
+                                    horizontal_grow: true
+
+                                    toggle_panel: {
+                                        definition: "default"
+                                        return_value_id: "ok"
+
+                                        grid: {
+
+                                            row: {
+
+                                                column: {
+                                                    grow_factor: 0
+                                                    horizontal_grow: true
+
+                                                    border: "all"
+                                                    border_size: 5
+
+                                                    image: {
+                                                        id: "image"
+                                                        definition: "default"
+                                                        linked_group: "icon"
+                                                    }
+                                                }
+
+                                                column: {
+                                                    grow_factor: 1
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_grow: true
+
+                                                    label: {
+                                                        id: "name"
+                                                        definition: "default"
+                                                    }
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        list_data: {
+
+                            row: {
+
+                                column: {
+                                    tooltip: _ "Log on to the official Wesnoth multiplayer server"
+
+                                    widget: {
+                                        id: "image"
+                                        label: "icons/icon-server.png"
+                                    }
+
+                                    widget: {
+                                        id: "name"
+                                        label: _ "Join Official Server"
+                                    }
+
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    tooltip: _ "Join a different server"
+
+                                    widget: {
+                                        id: "image"
+                                        label: "icons/icon-serverother.png"
+                                    }
+
+                                    widget: {
+                                        id: "name"
+                                        label: _ "Connect to Server"
+                                    }
+
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    tooltip: _ "Host a game using a dedicated server"
+
+                                    widget: {
+                                        id: "image"
+                                        label: "icons/icon-hostgame.png"
+                                    }
+
+                                    widget: {
+                                        id: "name"
+                                        label: _ "Host Networked Game"
+                                    }
+
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    tooltip: _ "Play a multiplayer game with the AI or humans sharing the same machine"
+
+                                    widget: {
+                                        id: "image"
+                                        label: "icons/icon-hotseat.png"
+                                    }
+
+                                    widget: {
+                                        id: "name"
+                                        label: _ "Local Game"
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_alignment: "right"
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+
+                                    label: _ "OK"
+                                }
+
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+
+                                    label: _ "Cancel"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

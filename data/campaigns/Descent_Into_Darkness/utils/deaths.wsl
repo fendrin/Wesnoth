@@ -1,0 +1,104 @@
+--textdomain wesnoth-did
+
+HERODEATH_MALIN = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Malin Keshar"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I’m not ready to die..."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_MALIN_LICH = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mal Keshar"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Then my battle against the orcs is lost!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_VOLK = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Darken Volk"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Fool boy! You have allowed my death, and now none in this world will aid you."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_VOLK_B = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Darken Volk"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "No! I will not fall this close to achieving the goal of so many years!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+TIME_OVER_DEFEAT = () -> {
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Darken Volk"
+                message: _ "Your incompetence at this simple task is appalling. You will never grow strong enough to be of use to me."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+TIME_OVER_DEFEAT_MANOR = () -> {
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "As dawn breaks, the city guards force their way into the manor and capture the two necromancers."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

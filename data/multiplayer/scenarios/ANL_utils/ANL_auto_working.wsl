@@ -1,0 +1,357 @@
+--textdomain wesnoth-anl
+
+-- ------------------------------------------------------
+-- Automatic Studying
+-- ------------------------------------------------------
+
+AUTO_STUDYING = (TYPES) -> {
+    event: {
+        name: "side turn"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    type: TYPES
+                    side: side_number
+                    canrecruit: false
+                    filter_location: {
+                        terrain: "Gg^Ve,Gg^Vea"
+                    }
+                }
+                variable: "researchers"
+                kill: false
+            }
+
+            Set_Variable{
+                name: "sound"
+                value: false
+            }
+
+            Foreach{
+                array: "researchers"
+                do: ->
+                    Set_Variable{
+                        name: "temp_x"
+                        value: this_item.x
+                    }
+                    Set_Variable{
+                        name: "temp_y"
+                        value: this_item.y
+                    }
+
+                    Set_Variable{
+                        name: "credited_side"
+                        value: this_item.side
+                    }
+                    Set_Variable{
+                        name: "amount"
+                        value: this_item.level
+                    }
+
+                    ADDING_TO_CURRENT_RESEARCH_FIELD(credited_side, amount)
+
+                    Set_Variable{
+                        name: "sound"
+                        value: true
+                    }
+
+                    Scroll_To{
+                        x: temp_x, y: temp_y
+                    }
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                        text: amount
+                        <COLOR_WHITE!
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "sound"
+                    equals: true
+                }
+
+                then: ->
+                    Sound{
+                        name: "magic-holy-miss-3.ogg"
+                    }
+
+                    Delay{
+                        time: 200
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"sound", "researchers", "amount", "credited_side"}
+            }
+
+            Redraw{
+            }
+    }
+}
+
+-- ------------------------------------------------------
+-- Automatic Farming
+-- ------------------------------------------------------
+
+AUTO_FARMING = (TYPES) -> {
+    event: {
+        name: "side turn"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    type: TYPES
+                    side: side_number
+                    filter_location: {
+                        terrain: "Re^Gvs"
+                    }
+                }
+                variable: "harvesters"
+                kill: false
+            }
+
+            Store_Unit{
+                filter: {
+                    type: TYPES
+                    side: side_number
+                    filter_location: {
+                        terrain: "Re"
+                    }
+                }
+                variable: "planters"
+                kill: false
+            }
+
+            Set_Variable{
+                name: "sound"
+                value: false
+            }
+            Foreach{
+                array: "harvesters"
+                do: ->
+                    Set_Variable{
+                        name: "temp_x"
+                        value: this_item.x
+                    }
+                    Set_Variable{
+                        name: "temp_y"
+                        value: this_item.y
+                    }
+
+                    Set_Variable{
+                        name: "credited_side"
+                        value: this_item.side
+                    }
+                    Set_Variable{
+                        name: "amount"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_auto_working.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 151:                     value=$player_$credited_side|.farming.gold
+                    }
+
+-- auto-harvest
+                    Gold{
+                        side: credited_side
+                        amount: amount
+                    }
+
+                    MODIFY_TERRAIN("Re", temp_x, temp_y)
+                    Remove_Item{
+                        x: temp_x, y: temp_y
+                    }
+
+                    Set_Variable{
+                        name: "sound"
+                        value: true
+                    }
+
+                    Scroll_To{
+                        x: temp_x, y: temp_y
+                    }
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                        text: amount
+                        red: 204, green: 204, blue: 51
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "sound"
+                    equals: true
+                }
+
+                then: ->
+                    Sound{
+                        name: "gold.ogg"
+                    }
+
+                    Delay{
+                        time: 200
+                    }
+                
+            }
+
+            Set_Variable{
+                name: "sound"
+                value: false
+            }
+
+            Foreach{
+                array: "planters"
+                do: ->
+                    Set_Variable{
+                        name: "temp_x"
+                        value: this_item.x
+                    }
+                    Set_Variable{
+                        name: "temp_y"
+                        value: this_item.y
+                    }
+
+-- auto-plant
+                    MODIFY_TERRAIN("Re^Gvs", temp_x, temp_y)
+
+                    Remove_Item{
+                        x: temp_x, y: temp_y
+                    }
+                    Item{
+                        x: temp_x, y: temp_y
+                        image: "items/flower4.png"
+                    }
+
+                    Set_Variable{
+                        name: "sound"
+                        value: true
+                    }
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "sound"
+                    equals: true
+                }
+
+                then: ->
+                    Sound{
+                        name: "entangle.wav"
+                    }
+
+                    Delay{
+                        time: 200
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"sound", "harvesters", "planters", "amount", "credited_side"}
+            }
+
+            Redraw{
+            }
+    }
+}
+
+-- ------------------------------------------------------
+-- Automatic Mining
+-- ------------------------------------------------------
+
+AUTO_MINING = (TYPES) -> {
+    event: {
+        name: "side turn"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    type: TYPES
+                    side: "#{side_number"
+                    filter_location: {
+                        terrain: {"Hh^Vhh", "Ha^Vhha", "Mm^Vhh"}
+                    }
+                }
+                variable: "miners"
+                kill: false
+            }
+
+            Set_Variable{
+                name: "sound"
+                value: false
+            }
+            Foreach{
+                array: "miners"
+                do: ->
+                    Set_Variable{
+                        name: "temp_x"
+                        value: this_item.x
+                    }
+                    Set_Variable{
+                        name: "temp_y"
+                        value: this_item.y
+                    }
+
+                    Set_Variable{
+                        name: "credited_side"
+                        value: this_item.side
+                    }
+                    Set_Variable{
+                        name: "amount"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_auto_working.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 307:                     value=$player_$credited_side|.mining.gold
+                    }
+
+-- auto-mine
+                    Gold{
+                        side: credited_side
+                        amount: amount
+                    }
+
+                    Scroll_To{
+                        x: temp_x, y: temp_y
+                    }
+
+                    Set_Variable{
+                        name: "sound"
+                        value: true
+                    }
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                        text: amount
+                        red: 204, green: 204, blue: 51
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "sound"
+                    equals: true
+                }
+
+                then: ->
+                    Sound{
+                        name: "gold.ogg"
+                    }
+
+                    Delay{
+                        time: 200
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"sound", "miners", "amount", "credited_side"}
+            }
+
+            Redraw{
+            }
+    }
+}

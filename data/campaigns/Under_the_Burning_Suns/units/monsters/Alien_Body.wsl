@@ -1,0 +1,192 @@
+--textdomain wesnoth-utbs
+-- This is the Alien Central Body with his immune to attacks
+Unit_Type{
+    id: "Central Body"
+    name: _ "Central Body"
+    race: "monster"
+    image: "units/alien/core-compact.png"
+    image_icon: "units/alien/core-compact.png~SCALE(72,72)"
+    standing_anim: {
+        frame: {
+            duration: 100
+            image: "units/alien/core-compact.png"
+            auto_hflip: false
+        }
+    }
+    hitpoints: 100
+    movement_type: "smallfoot"
+    movement_costs: {
+        cave: UNREACHABLE!
+        flat: UNREACHABLE!
+    }
+    resistance: {
+        blade: 0
+        pierce: 0
+        impact: 0
+        fire: 0
+        cold: 0
+        arcane: 0
+    }
+    movement: 7
+    experience: 150
+    <AMLA_DEFAULT!
+    level: 3
+    alignment: "chaotic"
+    advances_to: "null"
+    cost: 20
+    usage: "fighter"
+    do_not_list: true
+    description: _ "This thing is impossible to describe, no one has seen anything like it before." .. SPECIAL_NOTES! .. SPECIAL_NOTES_MAGICAL!
+    <DEFENSE_ANIM_FILTERED("units/alien/core-compact.png", "units/alien/core-compact.png", "wail.wav", {direction: {"n", "ne", "se", "s"}})
+    <DEFENSE_ANIM_FILTERED("units/alien/core-compact.png~FL(horiz)", "units/alien/core-compact.png~FL(horiz)", "wail.wav", {direction: {"nw", "sw"}})
+
+    attack: {
+        name: "energy ray"
+        description: _ "energy ray"
+        icon: "attacks/energyray.png"
+        type: "cold"
+        range: "melee"
+        specials: {
+            <WEAPON_SPECIAL_MAGICAL!
+        }
+        damage: 7
+        number: 3
+    }
+    attack: {
+        name: "energy ray"
+        description: _ "energy ray"
+        icon: "attacks/energyray.png"
+        type: "cold"
+        range: "ranged"
+        specials: {
+            <WEAPON_SPECIAL_MAGICAL!
+        }
+        damage: 7
+        number: 3
+    }
+    attack_anim: {
+-- NOTE: The following attack filter deliberately matches both ranged and melee.
+        filter_attack: {
+            name: "energy ray"
+        }
+        start_time: -100
+        missile_start_time: -50
+        missile_frame: {
+            duration: 200
+            image: "projectiles/darkmissile-n.png"
+            image_diagonal: "projectiles/darkmissile-ne.png"
+        }
+        frame: {
+            image: "units/alien/core-compact.png:200"
+            auto_hflip: false
+        }
+        <SOUND.HIT_AND_MISS("magic-dark.ogg", "magic-dark-miss.ogg", -100)
+    }
+}
+
+-- This is the Alien Central Body which is vulnerable to attacks
+Unit_Type{
+    base_unit: {
+        id: "Central Body"
+    }
+    id: "Central Body2"
+    name: _ "Weakened Central Body"
+    hitpoints: ON_DIFFICULTY(50, 75, 100)
+    resistance: {
+        blade: 110
+        pierce: 110
+        impact: 80
+        fire: 150
+        cold: 150
+        arcane: 200
+    }
+
+    hide_help: true
+    do_not_list: true
+    die_sound: "wail-long.wav"
+
+    attack: {
+        damage: 3
+    }
+    attack: {
+        damage: 3
+    }
+
+    death: {
+        die_sound_frame: {
+            duration: 600
+            sound: "explosion.ogg"
+        }
+        die_sound_frame: {
+            duration: 800
+            sound: "lich-hit-1.ogg"
+        }
+        die_sound_frame: {
+            duration: 400
+            sound: "explosion.ogg"
+        }
+        die_sound_frame: {
+            duration: 800
+            sound: "lich-hit-2.ogg"
+        }
+        die_sound_frame: {
+            duration: 900
+            sound: "explosion.ogg"
+        }
+        die_sound_frame: {
+            duration: 600
+            sound: "lich-die.ogg"
+        }
+        die_sound_frame: {
+            duration: 800
+            sound: "explosion.ogg"
+        }
+
+-- Creating timed explosions at POS
+        BURST_FRAME: (NUMBER, TIME, DELAY, POS) -> {
+err: ../attic/data/campaigns/Under_the_Burning_Suns/units/monsters/Alien_Body.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 147:     burst_{NUMBER}_start_time={TIME}
+            "[burst_#{NUMBER}_frame]"
+            duration: DELAY
+            halo: {"halo/flame-burst-[1~8].png:50", "misc/blank-hex.png:1"}
+            halo_x: POS[1], halo_y: POS[2]
+            auto_hflip: false
+            auto_vflip: false
+            "[/burst_#{NUMBER}_frame]"
+            "[burst_#{NUMBER}_frame]"
+            halo: {"projectiles/fireball-impact-[1", "1~16].png", "misc/blank-hex.png:1"}
+            halo_x: POS[1], halo_y: POS[2]
+            auto_hflip: false
+            auto_vflip: false
+            "[/burst_#{NUMBER}_frame]"
+        }
+
+        <BURST_FRAME(1, 0, 1800, {-9, 17})
+        <BURST_FRAME(2, 600, 1700, {18, 0})
+        <BURST_FRAME(3, 1200, 1600, {-9, -18})
+        <BURST_FRAME(4, 1800, 1500, {9, 17})
+        <BURST_FRAME(5, 2400, 1400, {8, -18})
+        <BURST_FRAME(6, 3000, 1300, {-18, 0})
+
+        BURST_FRAME = nil
+
+        frame: {
+            duration: 2500
+            image: "units/alien/core-compact.png"
+            blend_color: {255, 255, 255}
+            blend_ratio: "0.0~1.0"
+            auto_hflip: false
+        }
+        frame: {
+            duration: 2600
+            image: "units/alien/core-compact.png"
+            blend_color: {255, 255, 255}
+            blend_ratio: 1.0
+            alpha: "1.0~0.0"
+            auto_hflip: false
+        }
+        frame: {
+            duration: 1
+            image: "misc/blank-hex.png"
+        }
+    }
+}

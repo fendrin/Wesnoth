@@ -1,0 +1,322 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to display various possible attack results
+----
+
+_GUI_SPACER_ROW = () -> {
+    row: {
+        grow_factor: 0
+
+        column: {
+            spacer: {
+                height: 15
+            }
+        }
+
+    }
+}
+
+_GUI_DOUBLE_SPACER_ROW = () -> {
+    row: {
+        grow_factor: 0
+
+        column: {
+            spacer: {
+                height: 15
+            }
+        }
+
+        column: {
+            spacer: {
+                height: 15
+            }
+        }
+
+    }
+}
+
+_GUI_DATA_ROW = (_ID_PREFIX, _ID, _LABEL) -> {
+
+--arg _DEFINITON
+    "default_small"--endarg
+
+--arg _GROW_FACTOR
+    "0"--endarg
+
+    row: {
+        grow_factor: _GROW_FACTOR!
+
+        column: {
+            border: "left,right,top"
+            border_size: 5
+            horizontal_alignment: "left"
+
+            label: {
+err: ../attic/data/gui/window/attack_predictions.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 55: 				id = {_ID_PREFIX} + "_" + {_ID} + "_label"
+                definition: _DEFINITON!
+
+                label: _LABEL
+
+                use_markup: true
+            }
+        }
+
+        column: {
+            border: "left,right,top"
+            border_size: 5
+            horizontal_alignment: "left"
+
+            label: {
+err: ../attic/data/gui/window/attack_predictions.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 70: 				id = {_ID_PREFIX} + "_" + {_ID}
+                definition: "default_small"
+
+                use_markup: true
+            }
+        }
+
+    }
+}
+
+_GUI_DATA_PANEL = (_ID_PREFIX) -> {
+    grid: {
+        <_GUI_DATA_ROW(_ID_PREFIX, "base_damage", _ "Base damage")
+        <_GUI_DATA_ROW(_ID_PREFIX, "resis", {})
+        <_GUI_DATA_ROW(_ID_PREFIX, "tod_modifier", _ "Time of day modifier")
+        <_GUI_DATA_ROW(_ID_PREFIX, "leadership_modifier", _ "Leadership bonus")
+        <_GUI_DATA_ROW(_ID_PREFIX, "slowed_modifier", _ "Slowed penalty", "_GROW_FACTOR=1")
+
+        <_GUI_DOUBLE_SPACER_ROW!
+
+        <_GUI_DATA_ROW(_ID_PREFIX, "total_damage", "<b>" .. _ "Total damage" .. "</b>", "_DEFINITON="default"")
+
+        <_GUI_DOUBLE_SPACER_ROW!
+
+        <_GUI_DATA_ROW(_ID_PREFIX, "chance_to_hit", _ "Chance to hit")
+        <_GUI_DATA_ROW(_ID_PREFIX, "chance_unscathed", _ "Chance of being unscathed")
+    }
+}
+
+_GUI_HP_GRAPH = (_ID_PREFIX) -> {
+    drawing: {
+err: ../attic/data/gui/window/attack_predictions.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 101: 		id = {_ID_PREFIX} + "_hp_graph"
+        definition: "default"
+
+        width: 270
+        height: 170
+
+        draw: {
+
+            rectangle: {
+                x: 0
+                y: 0
+                w: "(width)"
+                h: "(height)"
+                fill_color: GUI__BACKGROUND_COLOR_DISABLED!
+                border_thickness: 2
+                border_color: GUI__FONT_COLOR_DISABLED__DEFAULT!
+            }
+
+            rectangle: {
+                x: "(hp_column_width)"
+                y: 0
+                w: 2
+                h: "(height - 2)"
+                fill_color: GUI__FONT_COLOR_DISABLED__DEFAULT!
+            }
+
+            rectangle: {
+                x: "(width - chance_column_width - 2)"
+                y: 0
+                w: 2
+                h: "(height - 2)"
+                fill_color: GUI__FONT_COLOR_DISABLED__DEFAULT!
+            }
+
+        }
+
+    }
+}
+
+_GUI_DATA_COLUMN = (_HEADER, _ID_PREFIX) -> {
+    grid: {
+        linked_group: "main_column"
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "center"
+
+                label: {
+                    label: _HEADER
+                    definition: "default_large"
+                }
+            }
+
+        }
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                horizontal_grow: true
+                vertical_grow: true
+
+                <_GUI_DATA_PANEL(_ID_PREFIX)
+            }
+
+        }
+
+        <_GUI_SPACER_ROW!
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "center"
+
+                label: {
+                    definition: "default_small"
+                    label: _ "Expected Battle Result (HP)"
+                }
+            }
+
+        }
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "center"
+
+                <_GUI_HP_GRAPH(_ID_PREFIX)
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "attack_predictions"
+    description: "Statistics dialog."
+
+    resolution: {
+        definition: "default"
+
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+--maximum_height = 400
+
+        linked_group: {
+            id: "main_column"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+
+                        label: _ "Damage Calculations"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 1
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_DATA_COLUMN(_ "Attacker", "attacker")
+                            }
+
+                            <GUI_VERTICAL_SPACER_LINE!
+
+                            column: {
+                                grow_factor: 1
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_DATA_COLUMN(_ "Defender", "defender")
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "right"
+
+                    button: {
+                        id: "cancel"
+                        label: _ "Close"
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_SPACER_ROW = nil
+_GUI_DOUBLE_SPACER_ROW = nil
+_GUI_DATA_ROW = nil
+_GUI_DATA_COLUMN = nil
+_GUI_DATA_PANEL = nil
+_GUI_HP_GRAPH = nil

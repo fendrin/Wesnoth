@@ -1,0 +1,94 @@
+--textdomain wesnoth-ei
+Textdomain{
+    name: "wesnoth-ei"
+}
+
+-- wmlscope: set export=no
+Campaign{
+    id: "Eastern_Invasion"
+    rank: 130
+    start_year: "625 YW"
+    end_year: "627 YW"
+    icon: "units/human-loyalists/general.png~RC(magenta>red)"
+    name: _ "Eastern Invasion"
+    abbrev: _ "EI"
+    define: "CAMPAIGN_EASTERN_INVASION"
+    first_scenario: "01_The_Outpost"
+
+    <CAMPAIGN_DIFFICULTY("EASY", "units/human-loyalists/spearman.png~RC(magenta>red)", _ "Spearman", _ "Easy")
+    <CAMPAIGN_DIFFICULTY("NORMAL", "units/human-loyalists/swordsman.png~RC(magenta>red)", _ "Swordsman", _ "Normal"), <DEFAULT_DIFFICULTY!
+    <CAMPAIGN_DIFFICULTY("HARD", "units/human-loyalists/royalguard.png~RC(magenta>red)", _ "Royal Guard", _ "Challenging")
+
+    description: _ "There are rumors of undead attacks on the eastern border of Wesnoth. You, an officer in the Royal Army, have been sent to the eastern front to protect the villagers and find out what is happening.
+
+" .. _ "(Intermediate level, 16 scenarios.)"
+    image: "data/campaigns/Eastern_Invasion/images/campaign_image.png"
+
+    about: {
+        title: _ "Campaign Design"
+        entry: {
+            name: "Joseph Simmons (turin)"
+        }
+    }
+    about: {
+        title: _ "Campaign Maintenance"
+        entry: {
+            name: "Dimitar Ilccov (Mythological)"
+        }
+        entry: {
+            name: "Lari Nieminen (zookeeper)"
+            comment: "current maintainer"
+        }
+        entry: {
+            name: "Bär Halberkamp (bumbadadabum)"
+        }
+    }
+    about: {
+        title: _ "Campaign Epilogue and Continuity"
+        entry: {
+            name: "Eric S. Raymond (ESR)"
+        }
+    }
+    about: {
+        title: _ "Prose and Story Edits"
+        entry: {
+            name: "Loci"
+        }
+    }
+    about: {
+        title: _ "Artwork and Graphics Design"
+        entry: {
+            name: "Aaron Redfern (A-Red)"
+            comment: "New Owaec sprites"
+        }
+        entry: {
+            name: "Emilien Rotival (LordBob)"
+            comment: "new portraits"
+        }
+        entry: {
+            name: "James Woo (Pickslide)"
+            comment: "old portraits"
+        }
+        entry: {
+            name: "Neoriceisgood"
+        }
+    }
+}
+
+if CAMPAIGN_EASTERN_INVASION
+    Binary_Path{
+        path: "data/campaigns/Eastern_Invasion"
+    }
+
+    Lua{
+        code: "wesnoth.require 'campaigns/Eastern_Invasion/lua/bandits.lua'"
+    }
+
+    INCLUDE("campaigns/Eastern_Invasion/utils")
+    Units{
+        INCLUDE("campaigns/Eastern_Invasion/units")
+    }
+    INCLUDE("campaigns/Eastern_Invasion/scenarios")
+
+
+-- wmllint: directory spellings Gweddry Owaec Mal-Ravanal

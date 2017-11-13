@@ -1,0 +1,84 @@
+--textdomain wesnoth-ai
+Event{
+    name: "preload"
+    first_time_only: false
+    do: ->
+        Lua{
+            code: [[ register_test('0001-healing','Healing test'); ]]
+        }
+}
+
+Event{
+    name: "0001-healing"
+    first_time_only: false
+    do: ->
+        Message{
+            speaker: "narrator"
+            image: "wesnoth-icon.png"
+            message: _ "This situation should test the ability of AI to heal efficiently..."
+        }
+        UNIT(2, "Peasant", 10, 11, {hitpoints: 1})
+        NOTRAIT_UNIT(2, "Mage of Light", 16, 16)
+        UNIT(2, "Heavy Infantryman", 19, 13, {hitpoints: 1})
+        UNIT(2, "General", 21, 13, {hitpoints: 1})
+        UNIT(2, "Grand Knight", 21, 14, {hitpoints: 1})
+        UNIT(2, "Halberdier", 10, 12, {hitpoints: 1})
+        UNIT(2, "Pikeman", 9, 17, {hitpoints: 1})
+        UNIT(2, "Master at Arms", 20, 12, {hitpoints: 1})
+        UNIT(2, "Peasant", 21, 9, {hitpoints: 1})
+        UNIT(2, "Peasant", 16, 17, {hitpoints: 1})
+        UNIT(2, "Peasant", 9, 17, {hitpoints: 1})
+
+        Capture_Village{
+            side: 2
+            x: 5, y: 9
+        }
+        Capture_Village{
+            side: 2
+            x: 6, y: 19
+        }
+        Capture_Village{
+            side: 2
+            x: 9, y: 17
+        }
+        Capture_Village{
+            side: 2
+            x: 10, y: 20
+        }
+        Capture_Village{
+            side: 2
+            x: 11, y: 4
+        }
+        Capture_Village{
+            side: 2
+            x: 14, y: 8
+        }
+        Capture_Village{
+            side: 2
+            x: 16, y: 17
+        }
+        Capture_Village{
+            x: 19, y: 22
+            side: 2
+        }
+        Capture_Village{
+            side: 2
+            x: 20, y: 5
+        }
+        Capture_Village{
+            side: 2
+            x: 21, y: 9
+        }
+        Capture_Village{
+            side: 2
+            x: 24, y: 6
+        }
+        Capture_Village{
+            side: 2
+            x: 25, y: 17
+        }
+        Modify_Side{
+            side: 2
+            gold: 10000
+        }
+}

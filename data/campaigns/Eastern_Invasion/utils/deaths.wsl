@@ -1,0 +1,131 @@
+--textdomain wesnoth-ei
+
+HERODEATH_GWEDDRY = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Gweddry"
+        }
+        do: ->
+            Message{
+                speaker: "Gweddry"
+                message: _ "No! I... die..."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_DACYN = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Dacyn"
+        }
+        do: ->
+            Message{
+                speaker: "Dacyn"
+                message: _ "We are doomed..."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_OWAEC = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Owaec"
+        }
+        do: ->
+            Message{
+                speaker: "Owaec"
+                message: _ "I... must— Argh...!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_GRUG = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Grug"
+        }
+        do: ->
+            Message{
+                speaker: "Grug"
+                message: _ "Grarrgghh..." -- wmllint: no spellcheck
+            }
+    }
+}
+
+HERODEATH_ENGINEER = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Engineer"
+        }
+        do: ->
+            Message{
+                speaker: "Engineer"
+                message: _ "Wha’? Yah fail’d to give me protecshun..." -- wmllint: no spellcheck
+            }
+    }
+}
+
+EARLY_DEFEAT = () -> {
+    event: {
+        name: "defeat"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "It was perhaps as well for the men of Gweddry’s troop that they did not live to see the grim tide of undead sweeping westward into Wesnoth, laying waste to all in its path."
+            }
+    }
+}
+
+FOREIGN_DEFEAT = () -> {
+    event: {
+        name: "defeat"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Wesnoth never learned the fate of Gweddry’s band, but all too soon they would suffer the rage and malice of marauding orcs and undead in a war that would end only in misery and death."
+            }
+    }
+}
+
+WESNOTH_DEFEAT = () -> {
+    event: {
+        name: "defeat"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Their home country proved to be no refuge for Gweddry’s weary men, and no more would it for the inhabitants of Wesnoth as foes pressed them on all sides to a final defense of the doomed kingdom."
+            }
+    }
+}
+
+LATE_DEFEAT = () -> {
+    event: {
+        name: "defeat"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "With the staunchest defenders of Wesnoth bested on their home ground, the once-great kingdom was plunged into final darkness under the vengeful hand of Mal-Ravanal."
+            }
+    }
+}

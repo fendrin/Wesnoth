@@ -1,0 +1,2177 @@
+--textdomain wesnoth-utbs
+
+-- Scenario should work under following assumptions:
+-- -- Player finds himself on the battlefield between feuding undead.
+-- -- Undead deploy champions (one each).
+-- -- Number of tents saved from destruction affects unit cost later in campaign
+-- -- Character Garak is removed from campaign at this stage.
+-- -- There is an orc raid in second half.
+-- -- There is no timeflow, scenario takes place at night.
+
+Scenario{
+    id: "03_Stirring_in_the_Night"
+    next_scenario: "04_Descending_into_Darkness"
+    name: _ "A Stirring in the Night"
+    <UTBS_MAP("03_A_Stirring_in_the_Night.map")
+    snapshot: "no"
+    <LONGDARK4!
+-- Set initial turns to 12 to give impression that that is how long player needs to
+-- survive.
+    turns: 12
+    victory_when_enemies_defeated: false
+
+    <INTRO_AND_SCENARIO_MUSIC("transience.ogg", "the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+
+    <STORY_STIRRING_IN_THE_NIGHT!
+
+-- Side 1 elves
+    side: {
+        side: 1
+        id: "Kaleh"
+        type: "Quenoth Youth"
+        canrecruit: true
+        controller: "human"
+        recruit: {"Quenoth Fighter", "Tauroch Rider", "Quenoth Scout", "Quenoth Mystic"}
+        gold: 200
+        <INCOME(4, 2, 0)
+        <FLAG_VARIANT("long")
+        user_team_name: _ "team_name^Quenoth Elves"
+    }
+
+-- Side 2 undead, starts with pet revenant, Zur
+    side: {
+        side: 2
+        id: "Azkotep"
+        name: _ "Azkotep"
+        type: "Lich"
+        canrecruit: true
+        controller: "ai"
+        <GOLD(125, 150, 175)
+        <INCOME(15, 18, 21)
+        <if HARD then {
+            recruit: {"Deathblade", "Revenant", "Bone Shooter", "Skeleton Rider"}
+        } else {
+            recruit: {"Skeleton", "Skeleton Archer", "Skeleton Rider"}
+        }
+
+        ai: {
+            <AI_SIMPLE_ALWAYS_ASPECT("aggression", 0.9)
+            <AI_SIMPLE_ALWAYS_ASPECT("caution", 0.0)
+            <AI_SIMPLE_ALWAYS_ASPECT("passive_leader", true)
+
+            <AI_SIMPLE_ALWAYS_ASPECT("village_value", 0)
+            <AI_SIMPLE_ALWAYS_ASPECT("scout_village_targeting", 0)
+            <AI_NO_SCOUTS!
+--!-- Do not target sides 1 and 4, thay are an annoyance not an enemy
+--!-- Unless on HARD of course, death to the living
+            goal: {
+                value: 10
+                criteria: {
+                    side: 3
+                }
+            }
+
+            goal: {
+                value: 20
+                criteria: {
+                    id: "Grak"
+                }
+            }
+
+            <if HARD then {
+                goal: {
+                    value: 5
+                    criteria: {
+                        side: 1
+                    }
+                }
+
+                goal: {
+                    value: 5
+                    criteria: {
+                        side: 4
+                    }
+                }
+            }
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+-- Side 3 undead, starts with pet wraith, Grak
+    side: {
+        side: 3
+        id: "Ystara"
+        name: _ "Ystara"
+        type: "Death Knight"
+        canrecruit: true
+        controller: "ai"
+        <GOLD(125, 150, 175)
+        <INCOME(15, 18, 21)
+        <if HARD then {
+            recruit: {"Blood Bat", "Necrophage", "Wraith", "Soulless"}
+        } else {
+            recruit: {"Vampire Bat", "Ghoul", "Ghost", "Walking Corpse"}
+        }
+
+        ai: {
+            <AI_SIMPLE_ALWAYS_ASPECT("aggression", 0.9)
+            <AI_SIMPLE_ALWAYS_ASPECT("caution", 0.0)
+            <AI_SIMPLE_ALWAYS_ASPECT("passive_leader", true)
+            <AI_SIMPLE_ALWAYS_ASPECT("village_value", 0)
+            <AI_SIMPLE_ALWAYS_ASPECT("scout_village_targeting", 0)
+            <AI_NO_SCOUTS!
+
+            goal: {
+                value: 10
+                criteria: {
+                    side: 2
+                }
+            }
+
+            goal: {
+                value: 20
+                criteria: {
+                    id: "Zur"
+                }
+            }
+            <if HARD then {
+                goal: {
+                    value: 5
+                    criteria: {
+                        side: 1
+                    }
+                }
+
+                goal: {
+                    value: 5
+                    criteria: {
+                        side: 4
+                    }
+                }
+            }
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+-- Side 4, Orcish Raiders
+-- Raider shouldn’t usually capture the elves' keep, but if they do, they can
+-- summon more units.
+    side: {
+        side: 4
+        no_leader: true
+        controller: "ai"
+
+        recruit: {"Orcish Grunt", "Orcish Archer", "Goblin Spearman", "Orcish Assassin"}
+        shroud: false
+        fog: false
+
+        ai: {
+            <AI_SIMPLE_ALWAYS_ASPECT("aggression", 1.0)
+            <AI_SIMPLE_ALWAYS_ASPECT("caution", 0.0)
+            <AI_SIMPLE_ALWAYS_ASPECT("scout_village_targeting", 0)
+            <AI_SIMPLE_ALWAYS_ASPECT("village_value", 0)
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES(1, 30)
+
+    VILLAGE_CONTROL_OBJECTIVE: () -> {
+        objective: {
+            description: _ "You lose control (even temporarily) of more than 6 villages"
+            condition: "lose"
+        }
+    }
+    DEFEAT_AZKOTEP_OBJECTIVE: () -> {
+        objective: {
+            description: _ "Defeat Azkotep"
+            condition: "win"
+        }
+    }
+    DEFEAT_YSTARA_OBJECTIVE: () -> {
+        objective: {
+            description: _ "Defeat Ystara"
+            condition: "win"
+        }
+    }
+    HERO_DEATH_OBJECTIVE: () -> {
+        objective: {
+            description: _ "Death of Kaleh"
+            condition: "lose"
+        }
+
+        objective: {
+            description: _ "Death of Nym"
+            condition: "lose"
+        }
+
+        objective: {
+            description: _ "Death of Zhul"
+            condition: "lose"
+        }
+    }
+
+--! -- setting up objectives,variables and map objects sets
+--! -- variables : $ambush_turn, $sneak_up, $elven_camps,
+--! -- $killed_by_azkotep, $killed_by_ystara, $grak_defeated,
+--! -- $zur_defeated
+    event: {
+        name: "prestart"
+
+-- set starting scenario objectives
+        do: ->
+            Objectives{
+                summary: _ "Starting Objectives:"
+                objective: {
+                    description: _ "Survive until dawn"
+                    condition: "win"
+                    show_turn_counter: true
+                }
+                objective: {
+                    <ALTERNATIVE_OBJECTIVE_CAPTION!
+                    description: _ "Defeat all undead leaders"
+                    condition: "win"
+                }
+                <VILLAGE_CONTROL_OBJECTIVE!
+                objective: {
+                    description: _ "Death of Kaleh"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Nym"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Garak"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Zhul"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+--recall heroes
+            Recall{
+                id: "Nym"
+            }
+
+            Recall{
+                id: "Elyssa"
+            }
+
+            Recall{
+                id: "Zhul"
+            }
+
+            Recall{
+                id: "Garak"
+            }
+
+            Recall{
+                id: "Dust Devil"
+            }
+
+            Item{
+                x: 14
+                y: 10
+                halo: "halo/fire-aura.png"
+            }
+
+            Item{
+                x: 16
+                y: 15
+                halo: "halo/fire-aura.png"
+            }
+
+            Item{
+                x: 13
+                y: 20
+                halo: "halo/fire-aura.png"
+            }
+
+            VARIABLE("sneak_up", 0)
+            VARIABLE("killed_by_azkotep", 0)
+            VARIABLE("killed_by_ystara", 0)
+            VARIABLE("grak_defeated", 0)
+            VARIABLE("zur_defeated", 0)
+            VARIABLE("defiant_death", 0)
+
+--Time Areas correspond with halos around campfires
+            Time_Area{
+                x: {14, 16, 13}
+                y: {10, 15, 20}
+                id: "campfires"
+                radius: 2
+                <DUSK!
+            }
+    }
+
+-- Start of scenario event. It sets up
+-- initial undead units and plays intro dialogue
+
+    event: {
+        name: "start"
+
+        <if EASY then {
+            <NAMED_NOTRAIT_UNIT(2, "Revenant", 20, 22, "Zur", _ "Zur")
+            <NAMED_NOTRAIT_UNIT(3, "Wraith", 22, 7, "Grak", _ "Grak")
+
+-- On medium and hard change champions type to more menacing
+-- and give them some help
+
+        } else {
+            <NOTRAIT_UNIT(2, "Skeleton Rider", 20, 23)
+            <NOTRAIT_UNIT(2, "Skeleton Rider", 21, 23)
+            <NOTRAIT_UNIT(3, "Necrophage", 22, 6)
+            <NOTRAIT_UNIT(3, "Necrophage", 23, 7)
+        }
+
+        <if NORMAL then {
+            <NAMED_NOTRAIT_UNIT(2, "Deathblade", 20, 22, "Zur", _ "Zur")
+            <NAMED_NOTRAIT_UNIT(3, "Wraith", 22, 7, "Grak", _ "Grak")
+        }
+
+        <if HARD then {
+            <NAMED_NOTRAIT_UNIT(2, "Draug", 20, 22, "Zur", _ "Zur")
+            <NAMED_NOTRAIT_UNIT(3, "Spectre", 22, 7, "Grak", _ "Grak")
+        }
+        do: ->
+            Message{
+                speaker: "Nym"
+                message: _ "Kaleh, wake up! Sentries report movement in the sands!"
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "Orcs?"
+            }
+            Message{
+                speaker: "Nym"
+                message: _ "I don’t..."
+            }
+            Message{
+                speaker: "Azkotep"
+                message: _ "We meet again, Ystara."
+            }
+            Message{
+                speaker: "Ystara"
+                message: _ "You think you can take me, Azkotep?"
+            }
+            Message{
+                speaker: "Azkotep"
+                message: _ "My champion, Zur shall slice you to shreds like the puny adept you once were."
+            }
+            Message{
+                speaker: "Ystara"
+                message: _ "You always were an arrogant little bastard. Grak will swallow your soul, or what’s left of it."
+            }
+            Message{
+                speaker: "Azkotep"
+                message: _ "You spurned me once and I will make you pay. To battle, my minions! Become my wrath!"
+            }
+            Message{
+                speaker: "Nym"
+                message: _ "... think so. You really know how to pick a campsite, Kaleh."
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "Where did they come from? I swear those castles weren’t there at sunset."
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "Many strange things can happen during the long dark. But despite their wraith-like forms, I have no doubt that their cold steel can still bite flesh."
+            }
+            Message{
+                speaker: "Elyssa"
+                message: _ "Like I haven’t killed enough undead recently. Why can’t these guys just stay dead?"
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "Our encampment is out of the direct line of attack, so we should be somewhat safe, at least."
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "But if the battle spills around our people will be slaughtered by the undead hordes!"
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "There’s no way we can escape the battle in time. We must protect the camp from the undead."
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "I fear that if we lose more than half of the tents we will not have the strength to go on. Garak, wake your men. We must hold off the undead until dawn."
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "To arms my people, to arms!"
+            }
+    }
+
+-- At the end of the initial dialogue Kaleh raises a war cry,
+-- some elves will wake up and respond
+-- Recall a random number of troops among the tents to make the
+-- glorious victory achieveable on harder levels.
+-- Internal variables: $tents, $rally_chance, $i
+
+    event: {
+        name: "turn 1"
+        do: ->
+            Store_Villages{
+                variable: "tents"
+            }
+
+            VARIABLE("rally_chance", ON_DIFFICULTY(70, 50, 30))
+
+            Foreach{
+                array: "tents"
+                do: ->
+                    RANDOM("0..100")
+                    VARIABLE_OP("random", "sub", "this_item.y")
+                    If{
+                        variable: {
+                            name: "random"
+                            less_than: rally_chance
+                        }
+
+                        then: ->
+                            Recall{
+                                side: 1
+                                x: this_item.x
+                                y: this_item.y
+                            }
+                            VARIABLE_OP("rally_chance", "sub", 3)
+                        
+                    }
+                
+            }
+            CLEAR_VARIABLE("tents")
+            CLEAR_VARIABLE("rally_chance")
+    }
+
+-- The first capture of an elven_camp has some speech
+    event: {
+        name: "capture"
+        first_time_only: true
+        filter: {
+            side: {2, 3}
+        }
+        do: ->
+            Message{
+                speaker: "Nym"
+                message: _ "They’re raising the corpses of our fallen! What a horrible fate!"
+            }
+            Message{
+                speaker: "Elyssa"
+                message: _ "Then we shall have to give them a proper cremation."
+            }
+    }
+
+-- Count destroyed tents, each lost makes future scenarios harder
+-- Includes defeat by loss of tents
+-- Affects variables : $elven_camps
+-- Each tent lost to undead spawns a WC
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Villages{
+                variable: "camps"
+            }
+
+-- give player villages to protect
+            VARIABLE("elven_camps", camps.length)
+
+--This generates and stores an event for every camp.
+--That way we can avoid to store information about each village
+--by using the first_time_only feature.
+            Foreach{
+                array: "camps"
+                do: ->
+                    Set_Variables{
+                        name: "camp_event"
+                        mode: "replace"
+                        value: {
+                            name: "capture"
+                            first_time_only: true
+                            filter: {
+                                side: {2, 3, 4}
+                                x: this_item.x
+                                y: this_item.y
+                            }
+
+                            if: {
+                                variable: {
+                                    name: "unit.side"
+                                    equals: 2
+                                }
+                                or: {
+                                    variable: {
+                                        name: "unit.side"
+                                        equals: 3
+                                    }
+                                }
+                                then: ->
+                                    if HARD
+                                        NOTRAIT_UNIT("#{}unit.side", "Soulless", "#{}x1", "#{}y1")
+                                    
+                                    if NORMAL
+                                        RANDOM({"Walking Corpse", "Soulless"})
+                                        NOTRAIT_UNIT("#{}unit.side", "#{}random", "#{}x1", "#{}y1")
+                                    
+                                    if EASY
+                                        NOTRAIT_UNIT("#{}unit.side", "Walking Corpse", "#{}x1", "#{}y1")
+                                    
+                                
+                            }
+
+                            gold: {
+                                amount: ON_DIFFICULTY(10, 20, 30)
+                                side: "#{}unit.side"
+                            }
+
+                            <VARIABLE_OP("elven_camps", "sub", 1)
+
+                            if: {
+                                variable: {
+                                    name: "elven_camps"
+                                    equals: 5
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Kaleh"
+                                        message: _ "Too many of our people have been killed. We will surely be overwhelmed by the undead now. All is lost!"
+                                    }
+
+                                    Endlevel{
+                                        result: "defeat"
+                                    }
+                                
+                            }
+                        }
+                    }
+                    Insert_Tag{
+                        name: "event"
+                        variable: "camp_event"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("camps")
+            CLEAR_VARIABLE("camp_event")
+    }
+
+-- Instead with providing AI with higher lvl units on medium
+-- and hard give it highly experienced lvl1's
+
+    <if NORMAL then {
+-- Change the difficulty increase model from having computer
+-- recruit some lvl2 and 3 units outright to advancing or
+-- half-advancing recruited lvl 1. At the same time, guarantees
+-- broader spectrum of opposing units, as AI advancement is random.
+-- Internal variables : $factor
+-- TODO: Should this happen on HARD too (would need to change recruit list to match)
+        event: {
+            name: "recruit"
+            first_time_only: false
+            filter: {
+                side: {2, 3, 4}
+            }
+            do: ->
+                VARIABLE("factor", unit.max_experience)
+                VARIABLE_OP("factor", "multiply", 0.5)
+                VARIABLE_OP("factor", "round", 0)
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 589:         {RANDOM $factor..$unit.max_experience}
+                VARIABLE("unit.experience", random)
+                Unstore_Unit{
+                    variable: "unit"
+                }
+                CLEAR_VARIABLE("factor")
+        }
+    }
+
+-- If opposing champion wasn't attacked by the player yet Garak
+-- can issue a challenge. Sffects variables : $grak_defeated,
+-- $zur_defeated
+-- Inform the player about the possibility of challenge and
+-- adjust Garak accordingly. Perform the challenge, set the
+-- death events where required. Internal variables :
+-- $garak_x, $garak_y, $challenged
+    event: {
+        name: "turn 2"
+        do: ->
+            Message{
+                speaker: "Garak"
+                message: _ "These champions... I will challenge them. Zhul, bless my weapons with light of Eloh."
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "Garak, but the suns..."
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "You will not do any such thing, anyone trying to fight these creeps singlehanded will surely die. We need you, we will not make it without you."
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "I had dreams this night Kaleh, full of gloom and darkness, my journey will end here one way or another."
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "No! That’s not true, our future is what we make of it, stay behind for this fight and..."
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "And what? You’ll help me become a coward? I lived long, I’m not afraid of the end, just let me give it some meaning."
+            }
+            Message{
+                speaker: "Zhul"
+--TODO: update bow and sword reference
+                message: _ "I bless you champion with the light that will come, I bless you with the memory and the promise. Lay down your bow, champion, and let your sword shine in the dark."
+            }
+            Object{
+                id: "Garak_vow"
+                silent: true
+                filter: {
+                    id: "Garak"
+                }
+                effect: {
+                    apply_to: "remove_attacks"
+                    range: "ranged"
+                }
+                effect: {
+                    apply_to: "new_ability"
+                    abilities: {
+                        <ABILITY_STEADFAST!
+                    }
+                }
+--textdomain wesnoth-help
+                effect: {
+                    apply_to: "attack"
+                    range: "melee"
+                    set_specials: {
+                        berserk: {
+                            id: "berserk"
+                            name: _ "berserk"
+                            name_inactive: ""
+                            description: _ "Whether used offensively or defensively, this attack presses the engagement until one of the combatants is slain, or 30 rounds of attacks have occurred."
+                            value: 30
+                            filter_opponent: {
+                                id: {"Grak", "Zur"}
+                            }
+                        }
+                        <unless HARD! then {
+                            chance_to_hit: {
+                                id: "magical"
+                                name: _ "magical"
+                                name_inactive: ""
+                                description: _ "This attack always has a 70% chance to hit regardless of the defensive ability of the unit being attacked."
+                                value: 70
+                                cumulative: false
+                                filter_opponent: {
+                                    id: {"Grak", "Zur"}
+                                }
+                            }
+                        }
+                        mode: "append"
+                    }
+                }
+--textdomain wesnoth-utbs
+                effect: {
+                    apply_to: "attack"
+                    range: "melee"
+-- the type=blade is needed in case Garak picked up the holy
+-- water in the second scenario - in that case he gets to keep it
+                    type: "blade"
+                    set_type: "fire"
+                }
+            }
+    }
+
+    event: {
+        name: "attack"
+        first_time_only: false
+        filter: {
+            id: {"Garak", "Grak", "Zur"}
+        }
+        filter_second: {
+            id: {"Garak", "Grak", "Zur"}
+        }
+
+-- Identify who was challenged
+-- could be none if Zur fights Grak
+        do: ->
+            If{
+                variable: {
+                    name: "unit.id"
+                    equals: "Garak"
+                }
+                then: ->
+                    VARIABLE("challenged", second_unit.id)
+                
+                else: ->
+                    If{
+                        variable: {
+                            name: "second_unit.id"
+                            equals: "Garak"
+                        }
+                        then: ->
+                            VARIABLE("challenged", unit.id)
+                        
+                    }
+                
+            }
+
+-- if Zur or Grak is challenged, display appropriate dialog
+            If{
+                variable: {
+                    name: "challenged"
+                    equals: "Grak"
+                }
+                then: ->
+                    Message{
+                        speaker: "Garak"
+                        message: _ "You there! Creep! Stand and face me, shade! I challenge you!"
+                    }
+                    If{
+                        variable: {
+                            name: "zur_defeated"
+                            equals: 0
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Grak"
+                                message: _ "Foolish mortal... For daring to challenge me, I’ll devour your soul and torment it for all eternity..."
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Grak"
+                                message: _ "So you destroyed Zur... Come mortal, let’s cross our blades... It’s time for you to take his place..."
+                            }
+                        
+                    }
+                    Event{
+                        name: "die"
+                        filter: {
+                            id: "Grak"
+                        }
+                        do: ->
+                            VARIABLE("grak_defeated", 1)
+                    }
+                
+                else: ->
+                    If{
+                        variable: {
+                            name: "challenged"
+                            equals: "Zur"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Garak"
+                                message: _ "You there! Pile of bones! I challenge you, stand and face me!"
+                            }
+                            If{
+                                variable: {
+                                    name: "grak_defeated"
+                                    equals: 0
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Zur"
+                                        message: _ "Puny elf... Time to die..."
+                                    }
+                                
+                                else: ->
+                                    Message{
+                                        speaker: "Zur"
+                                        message: _ "Grak was weak... But still you deserve respect... Meet my axe and take his place..."
+                                    }
+                                
+                            }
+                            Event{
+                                name: "die"
+                                filter: {
+                                    id: "Zur"
+                                }
+                                do: ->
+                                    VARIABLE("zur_defeated", 1)
+                            }
+                        
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("challenged")
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Garak"
+        }
+        filter_second: {
+            id: {"Grak", "Zur"}
+        }
+        do: ->
+            Message{
+                speaker: second_unit.id
+                message: _ "And so it ends... Your champion is dead, elves... Come join him..."
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Garak"
+        }
+        filter_second: {
+            not: {
+                id: {"Grak", "Zur"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Kaleh"
+                message: _ "Where is Garak? Has anybody seen him?"
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "I saw him jumping into deep darkness pursuing a group of enemies. Let’s hope nothing happened to him."
+            }
+    }
+
+-- If challenge didn't happen by turn 12 and bad guy dies, Garak
+-- gets possessed. Sets variable : $ElvishGarak, $defiant_death
+-- Depends on variables : $grak_defeated, $zur_defeated,
+-- $azkotep_casualties[], $ystara_casualties[],
+-- $killed_by_azkotep, $killed_by_ystara clears variables :
+-- $azkotep_casualties[], $ystara_casualties[],
+-- $killed_by_azkotep, $killed_by_ystara
+
+-- Turn 12
+-- -- The sun should rise, it won't need dialogue
+-- --If both bad guys alive -> kill Garak -> replace with zombie
+--   If champion not killed in a duel else just kill
+-- --If one alive && his champion not killed in a duel ->
+--   kill Garak, place fallen one -> else just kill
+-- --If both died it will not be invoked
+-- Internal variables : $choice_flag, $i
+    event: {
+        name: "turn 12"
+        do: ->
+            VARIABLE("choice_flag", 0)
+
+            If{
+                have_unit: {
+                    id: "Azkotep"
+                }
+                then: ->
+                    VARIABLE_OP("choice_flag", "add", 1000)
+                
+            }
+            If{
+                have_unit: {
+                    id: "Ystara"
+                }
+                then: ->
+                    VARIABLE_OP("choice_flag", "add", 100)
+                
+            }
+            VARIABLE_OP("grak_defeated", "multiply", 10)
+            VARIABLE_OP("choice_flag", "add", grak_defeated)
+            VARIABLE_OP("grak_defeated", "divide", 10)
+            VARIABLE_OP("choice_flag", "add", zur_defeated)
+
+            Message{
+                speaker: "Nym"
+                message: _ "Look, dawn is nigh, our salvation is almost at hand. Even the long dark can’t last forever, and with the light of the sun the undead power wanes and their dark magics unravel."
+            }
+
+-- Garak will die - store him for resurrection dialogs.
+            Store_Unit{
+                filter: {
+                    id: "Garak"
+                }
+                variable: "ElvishGarak"
+                kill: false
+            }
+
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 1111
+                }
+                then: ->
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "No! This contest is not over yet, Azkotep. I shall show you a taste of my true power."
+                    }
+
+                    Kill{
+                        id: "Ystara"
+                        animate: true
+                        fire_event: false
+                    }
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", ElvishGarak.x, ElvishGarak.y, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "garak_resists"
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "No! How dare you? I shall have my vengeance upon you for spoiling this contest! Darkness shall reign until I have triumphed!"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, he has even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy that abomination."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        <DEFEAT_AZKOTEP_OBJECTIVE!
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                    VARIABLE("defiant_death", 1)
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 1110
+                }
+                then: ->
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "No, I shall have my revenge. I shall show you that darkness is strongest just before dawn. Death and decay, grant me my vengeance!"
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "In this I shall support you, the darkness will not lift until one of us is victorious."
+                    }
+
+                    Kill{
+                        id: "Azkotep"
+                        animate: true
+                        fire_event: false
+                    }
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    Modify_Side{
+                        side: 1
+                        shroud: true
+                        reset_maps: true
+                    }
+                    NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", 21, 24, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "create_garak_minions_azkotep"
+                    }
+                    Fire_Event{
+                        name: "garak_gloats"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, they have even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy one of these abominations. Whether it be the thing that has taken our friend, or the spectral evil that remains, one of them must die for this battle to end. We have no choice."
+                    }
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "But to kill Garak? How can we?"
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "That thing is not Garak. This night has lasted long enough, and too many of our people have died. How many more would you sacrifice for Garak’s sake? Just protecting our encampments isn’t enough, darkness and chaos will overwhelm us if we can’t end this battle soon. We must destroy one of those two evils, whatever the cost. I do not intend to let that... thing keep control of the body of our friend."
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "The stench of death is in the air."
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "Yes, let us end this once and for all."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        objective: {
+                            description: _ "Defeat Possessed Garak"
+                            condition: "win"
+                        }
+                        <DEFEAT_YSTARA_OBJECTIVE!
+                        objective: {
+                            amend: true
+                            <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        }
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 1101
+                }
+                or: {
+                    variable: {
+                        name: "choice_flag"
+                        equals: 1100
+                    }
+                }
+                then: ->
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "No, I shall have my revenge. I shall show you that darkness is strongest just before dawn. Death and decay, grant me my vengeance!"
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "In this I shall support you, the darkness shall not break until one of us is victorious."
+                    }
+
+                    Kill{
+                        id: "Ystara"
+                        animate: true
+                        fire_event: false
+                    }
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    Redraw{
+                        side: 1
+                    }
+                    Modify_Side{
+                        side: 1
+                        shroud: true
+                        reset_maps: true
+                    }
+                    NAMED_NOTRAIT_UNIT(3, "Corrupted Quenoth Elf", 23, 6, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "create_garak_minions_ystara"
+                    }
+                    Fire_Event{
+                        name: "garak_gloats"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, they have even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy one of these abominations. Whether it be the thing that has taken our friend, or the spectral evil that remains, one of them must die for this battle to end. We have no choice."
+                    }
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "But to kill Garak? How can we?"
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "That thing is not Garak. This night has lasted long enough, and too many of our people have died. How many more would you sacrifice for Garak’s sake? Just protecting our encampments isn’t enough, darkness and chaos will overwhelm us if we can’t end this battle soon. We must destroy one of those two evils, whatever the cost. I do not intend to let that... thing keep control of the body of our friend."
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "The stench of death is in the air."
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "Yes, let us end this once and for all."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        objective: {
+                            description: _ "Defeat Possessed Garak"
+                            condition: "win"
+                        }
+                        <DEFEAT_AZKOTEP_OBJECTIVE!
+                        objective: {
+                            amend: true
+                            <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        }
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 1010
+                }
+                or: {
+                    variable: {
+                        name: "choice_flag"
+                        equals: 1011
+                    }
+                }
+                then: ->
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "No! This contest is not over yet, Azkotep. I shall show you a taste of my true power."
+                    }
+
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", ElvishGarak.x, ElvishGarak.y, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "garak_resists"
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "No! How dare you! I shall have my vengeance upon you for spoiling this contest! Darkness shall reign until I have triumphed!"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, he has even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy that abomination."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        <DEFEAT_AZKOTEP_OBJECTIVE!
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                    VARIABLE("defiant_death", 1)
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 1001
+                }
+                or: {
+                    variable: {
+                        name: "choice_flag"
+                        equals: 1000
+                    }
+                }
+                then: ->
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    Modify_Side{
+                        side: 1
+                        shroud: true
+                        reset_maps: true
+                    }
+                    NAMED_NOTRAIT_UNIT(3, "Corrupted Quenoth Elf", 23, 6, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "create_garak_minions_ystara"
+                    }
+                    Fire_Event{
+                        name: "garak_gloats"
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "I told you, I will be back, you fools! Now I shall have my vengeance upon you all. Darkness shall reign until I have triumphed!"
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "In this I shall support you, the darkness shall not lift until one of us is victorious."
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, they have even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy one of these abominations. Whether it be the thing that has taken our friend, or the spectral evil that remains, one of them must die for this battle to end. We have no choice."
+                    }
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "But to kill Garak? How can we?"
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "That thing is not Garak. This night has lasted long enough, and too many of our people have died. How many more would you sacrifice for Garak’s sake? Just protecting our encampments isn’t enough, darkness and chaos will overwhelm us if we can’t end this battle soon. We must destroy one of those two evils, whatever the cost. I do not intend to let that... thing keep control of the body of our friend."
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "The stench of death is in the air."
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "Yes, let us end this once and for all."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        objective: {
+                            description: _ "Defeat Possessed Garak"
+                            condition: "win"
+                        }
+                        <DEFEAT_AZKOTEP_OBJECTIVE!
+                        objective: {
+                            amend: true
+                            <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        }
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 101
+                }
+                or: {
+                    variable: {
+                        name: "choice_flag"
+                        equals: 111
+                    }
+                }
+                then: ->
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "No, I shall have my revenge. I shall show you that darkness is strongest just before dawn. Death and decay, grant me my vengeance!"
+                    }
+                    Kill{
+                        id: "Azkotep"
+                        animate: true
+                        fire_event: false
+                    }
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", ElvishGarak.x, ElvishGarak.y, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "garak_resists"
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "No! How dare you! I shall have my vengeance upon you for spoiling this contest! Darkness shall reign until I have triumphed!"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, she has even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy that abomination."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        <DEFEAT_YSTARA_OBJECTIVE!
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                    VARIABLE("defiant_death", 1)
+                
+            }
+            If{
+                variable: {
+                    name: "choice_flag"
+                    equals: 110
+                }
+                or: {
+                    variable: {
+                        name: "choice_flag"
+                        equals: 100
+                    }
+                }
+                then: ->
+                    Kill{
+                        id: "Garak"
+                        animate: true
+                        fire_event: false
+                    }
+                    Modify_Side{
+                        side: 1
+                        shroud: true
+                        reset_maps: true
+                    }
+                    NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", 21, 24, "Possessed Garak", _ "Possessed Garak")
+                    Fire_Event{
+                        name: "create_garak_minions_azkotep"
+                    }
+                    Fire_Event{
+                        name: "garak_gloats"
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "I told you, I will be back, you fools! Now I shall have my vengeance upon you all. Darkness shall reign until I have triumphed!"
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "In this I shall support you, the darkness shall not lift until one of us is victorious."
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Maybe I spoke too soon. Curse Uria, they have even blotted out the stars, all is darkness. Kaleh, our course is clear, we must destroy one of these abominations. Whether it be the thing that has taken our friend, or the spectral evil that remains, one of them must die for this battle to end. We have no choice."
+                    }
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "But to kill Garak? How can we?"
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "That thing is not Garak. This night has lasted long enough, and too many of our people have died. How many more would you sacrifice for Garak’s sake? Just protecting our encampments isn’t enough, darkness and chaos will overwhelm us if we can’t end this battle soon. We must destroy one of those two evils, whatever the cost. I do not intend to let that... thing keep control of the body of our friend."
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "The stench of death is in the air."
+                    }
+                    Message{
+                        speaker: "Possessed Garak"
+                        message: _ "Yes, let us end this once and for all."
+                    }
+                    Objectives{
+                        summary: _ "New Objectives:"
+                        show: true
+                        objective: {
+                            description: _ "Defeat Possessed Garak"
+                            condition: "win"
+                        }
+                        <DEFEAT_YSTARA_OBJECTIVE!
+                        objective: {
+                            amend: true
+                            <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        }
+                        <VILLAGE_CONTROL_OBJECTIVE!
+                        <HERO_DEATH_OBJECTIVE!
+
+                        gold_carryover: {
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+
+            Modify_Turns{
+                value: -1
+            }
+            CLEAR_VARIABLE("choice_flag")
+            if HARD
+                CLEAR_VARIABLE("azkotep_casualties,ystara_casualties")
+            
+            CLEAR_VARIABLE("killed_by_azkotep")
+            CLEAR_VARIABLE("killed_by_ystara")
+    }
+
+    event: {
+        name: "garak_resists"
+        do: ->
+            Message{
+                speaker: "Zhul"
+                message: _ "Eloh protect us, what has he done?"
+            }
+            Message{
+                speaker: "Possessed Garak"
+                message: _ "I live again! I can feel!"
+            }
+            Kill{
+                id: "Possessed Garak"
+                animate: false
+                fire_event: false
+            }
+            Unstore_Unit{
+                variable: "ElvishGarak"
+                find_vacant: true
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "I will... not... yield... I defeated... your... champion... I... will... overcome... you..."
+            }
+            Kill{
+                id: "Garak"
+                animate: false
+                fire_event: false
+            }
+            NAMED_NOTRAIT_UNIT(2, "Corrupted Quenoth Elf", ElvishGarak.x, ElvishGarak.y, "Possessed Garak", _ "Possessed Garak")
+            Message{
+                speaker: "Possessed Garak"
+                message: _ "No, fool! Stop!"
+            }
+            Kill{
+                id: "Possessed Garak"
+                animate: false
+                fire_event: false
+            }
+            Unstore_Unit{
+                variable: "ElvishGarak"
+                find_vacant: true
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "The dark lord... is no more..."
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Garak collapses to the ground with his own blade sticking from his chest."
+                image: "wesnoth-icon.png"
+            }
+            Kill{
+                id: "Garak"
+                animate: true
+                fire_event: false
+            }
+    }
+
+-- Count (or store) dying elves and orcs, they will make a host for possessed Garak.
+-- Two events per undead side: one to count units as killed by that side and one to
+-- create the appropriate number of minions when Garak is possessed by that side.
+    UTBS_COUNT_DEATHS_AND_CREATE_MINIONS: (FOR_VILLAIN, SIDE) -> {
+        event: {
+            name: "die"
+            first_time_only: false
+            filter: {
+                side: {1, 4}
+            }
+            filter_second: {
+                side: SIDE
+            }
+            filter_condition: {
+                variable: {
+                    name: "turn_number"
+                    less_than: 12
+                }
+            }
+
+            <if HARD then {
+                store_unit: {
+                    filter: {
+                        x: x1, y: y1
+                    }
+                    mode: "append"
+                    variable: "#{FOR_VILLAIN}_casualties"
+                    kill: false
+                }
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1464:         {VARIABLE {FOR_VILLAIN}_casualties[$killed_by_{FOR_VILLAIN}].side {SIDE}}
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1465:         {VARIABLE {FOR_VILLAIN}_casualties[$killed_by_{FOR_VILLAIN}].hitpoints ${FOR_VILLAIN}_casualties[$killed_by_{FOR_VILLAIN}].max_hitpoints}
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1466:         {VARIABLE {FOR_VILLAIN}_casualties[$killed_by_{FOR_VILLAIN}].status.poisoned "no"}
+            }
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1468:         {VARIABLE_OP killed_by_{FOR_VILLAIN} add 1}
+        }
+
+        event: {
+            name: "create_garak_minions_#{FOR_VILLAIN}"
+            do: ->
+                Store_Locations{
+                    filter: {
+                        id: "Possessed Garak"
+                    }
+                    variable: "coords"
+                }
+
+                VARIABLE("i", 0)
+                While{
+                    variable: {
+                        name: "i"
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1485:                 less_than=$killed_by_{FOR_VILLAIN}
+                    }
+                    do: ->
+                        if HARD
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/03_Stirring_in_the_Night.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1489:                 {VARIABLE {FOR_VILLAIN}_casualties[$i].side {SIDE}}
+                            Unstore_Unit{
+                                variable: "#{FOR_VILLAIN}_casualties[#{i]"
+                                x: coords.x
+                                y: coords.y
+                                find_vacant: true
+                            }
+                        
+                        if NORMAL
+                            RANDOM({"Walking Corpse", "Soulless"})
+                            NOTRAIT_UNIT(SIDE, random, coords.x, coords.y)
+                        
+                        if EASY
+                            NOTRAIT_UNIT(SIDE, "Walking Corpse", coords.x, coords.y)
+                        
+                        Set_Variable{
+                            name: "i"
+                            add: 1
+                        }
+                    
+                }
+                CLEAR_VARIABLE("i")
+                CLEAR_VARIABLE("coords")
+        }
+    }
+
+    <UTBS_COUNT_DEATHS_AND_CREATE_MINIONS("azkotep", 2)
+    <UTBS_COUNT_DEATHS_AND_CREATE_MINIONS("ystara", 3)
+    UTBS_COUNT_DEATHS_AND_CREATE_MINIONS = nil
+
+    event: {
+        name: "garak_gloats"
+        do: ->
+            Message{
+                speaker: "Possessed Garak"
+                message: _ "Hahaha...!"
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "Eloh protect us, what is happening?"
+            }
+            Redraw{
+                side: 1
+            }
+            Message{
+                speaker: "Possessed Garak"
+                message: _ "I live again! I can feel!"
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "Garak?"
+            }
+            Message{
+                speaker: "Possessed Garak"
+                message: _ "Hahaha! Your puny friend is no more. With his body I shall crush you all. Arise again my minions and feast in the slaughter!"
+            }
+    }
+
+-- Somewhere around turn 8 an orc raiding party makes an entrance.
+-- Internal variables: $ambush_turn
+-- Creates orcs on random turn around turn 8
+-- Creates warning about incoming orcs two turns before they show up
+    event: {
+        name: "prestart"
+        <if EASY then {
+            <VARIABLE_OP("ambush_turn", "rand", "7..9")
+        }
+        <if NORMAL then {
+            <VARIABLE_OP("ambush_turn", "rand", "6..8")
+        }
+        <if HARD then {
+            <VARIABLE_OP("ambush_turn", "rand", "6..8")
+        }
+        do: ->
+            Event{
+                name: "turn_#{ambush_turn"
+                delayed_variable_substitution: false
+                do: ->
+                    Unit{
+                        <if EASY then {
+                            type: "Orcish Leader"
+                        } else {
+                            type: "Orcish Ruler"
+                        }
+                        id: "Ganthos"
+                        name: _ "Ganthos"
+                        canrecruit: true
+                        side: 4
+                        x: 3
+                        y: 4
+                    }
+                    if HARD
+                        GENERIC_UNIT(4, "Goblin Pillager", 2, 4)
+                        GENERIC_UNIT(4, "Goblin Pillager", 3, 3)
+                    } else {
+                        GENERIC_UNIT(4, "Wolf Rider", 2, 4)
+                        GENERIC_UNIT(4, "Wolf Rider", 3, 3)
+                    
+                    if HARD
+                        GENERIC_UNIT(4, "Orcish Crossbowman", 1, 5)
+                        GENERIC_UNIT(4, "Orcish Crossbowman", 3, 2)
+                    } else {
+                        GENERIC_UNIT(4, "Orcish Archer", 1, 5)
+                        GENERIC_UNIT(4, "Orcish Archer", 3, 2)
+                    
+                    if NORMAL
+                        GENERIC_UNIT(4, "Orcish Assassin", 2, 5)
+                        GENERIC_UNIT(4, "Orcish Assassin", 4, 2)
+                    
+                    if HARD
+                        GENERIC_UNIT(4, "Orcish Slayer", 2, 5)
+                        GENERIC_UNIT(4, "Orcish Slayer", 4, 2)
+                    
+                    if EASY
+                        GENERIC_UNIT(4, "Orcish Grunt", 3, 6)
+                        GENERIC_UNIT(4, "Orcish Grunt", 5, 3)
+                    } else {
+                        GENERIC_UNIT(4, "Orcish Warrior", 3, 6)
+                        GENERIC_UNIT(4, "Orcish Warrior", 5, 3)
+                    
+--give orcs an income, if they ever capture a keep to use it
+                    Modify_Side{
+                        side: 4
+                        <INCOME(20, 25, 30)
+                        <GOLD(75, 100, 125)
+                    }
+                    Message{
+                        speaker: "Ganthos"
+-- wmllint: local spelling Stinkin'
+                        message: _ "What’s this on our borders? Stinkin’ elves and more undead? We’ll teach them a lesson they won’t soon forget. Attack!"
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "If those raiders capture any of our encampments, I fear our people’s fate will be just as bad as if it was captured by the undead."
+                    }
+            }
+
+            VARIABLE_OP("ambush_turn", "sub", 2)
+
+            Event{
+                name: "turn_#{ambush_turn"
+                delayed_variable_substitution: false
+                do: ->
+                    NAMED_UNIT(1, "Quenoth Scout", 1, 1, "Elven Scout", _ "Wounded Elven Scout", {upkeep: "free"})
+                    Message{
+                        speaker: "Elven Scout"
+                        message: _ "Orcs... Not far behind me... From the hills..."
+                    }
+                    Kill{
+                        id: "Elven Scout"
+                        animate: true
+                        fire_event: false
+                    }
+            }
+
+            CLEAR_VARIABLE("ambush_turn")
+    }
+
+-- Die event for orcish boss and reward for killing him
+-- Affects variables: $sneak_up
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Ganthos"
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "second_unit.side"
+                    equals: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Ganthos"
+                        message: _ "You got me, elf... But you won’t be so lucky with the tribes of the hills... (<i>Cough</i>)"
+                    }
+                    Message{
+                        speaker: "Ganthos"
+                        message: _ "I deeply regret... I won’t be able to see that..."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Ganthos"
+                        message: _ "Killed by a dead creep... (<i>Cough</i>)"
+                    }
+                
+            }
+            Item{
+                x: x1, y: y1
+                image: "items/parchment.png"
+            }
+            Message{
+                speaker: "Nym"
+                message: _ "Look, he dropped something! I wonder what it is..."
+            }
+
+            Event{
+                name: "moveto"
+                delayed_variable_substitution: false
+
+                filter: {
+                    x: x1
+                    y: y1
+                }
+                do: ->
+                    If{
+                        variable: {
+                            name: "unit.side"
+                            equals: 1
+                        }
+                        then: ->
+                            Message{
+                                speaker: "unit"
+                                message: _ "It’s some sort of a map. I think I recognize some of those hills ahead on it."
+                            }
+                            Message{
+                                speaker: "Nym"
+                                message: _ "And these look like camps and patrol routes. A lot of camps and patrol routes. Kaleh, do you think we could sneak up between them?"
+                            }
+                            Message{
+                                speaker: "Kaleh"
+                                message: _ "Difficult, but worth a try I guess. But first we must try to survive this mess."
+                            }
+                            Message{
+                                speaker: "Nym"
+                                message: _ "Right, sorry. Damn creeps."
+                            }
+                            VARIABLE("sneak_up", 1)
+                        
+                        else: ->
+                            Message{
+                                speaker: "Nym"
+                                message: _ "And now we’ll never know what was on that parchment. Shame."
+                            }
+                        
+                    }
+                    Remove_Item{
+                        x: x1
+                        y: y1
+                    }
+            }
+            if EASY
+                If{
+                    have_unit: {
+                        race: "orc"
+                    }
+                    then: ->
+                        Message{
+                            race: "orc"
+                            message: _ "Chief has fallen! Flee!"
+                        }
+                    
+                    else: ->
+-- The wolf rider line are wolves, so must include both
+-- goblins (for recruited spearmen) and wolves
+                        Message{
+                            race: {"goblin", "wolf"}
+                            message: _ "Boss dead! Run!"
+                        }
+                    
+                }
+                Kill{
+                    side: 4
+                    animate: false
+                    fire_event: false
+                }
+            
+    }
+
+-- Handles evil guys deaths and victory events, lots of dialogue.
+-- Includes both normal and glorious victory.
+-- Depends on variables : $ElvishGarak, $defiant_death
+-- Internal variables : $other_creep
+    event: {
+        name: "last breath"
+        first_time_only: false
+        filter: {
+            id: {"Azkotep", "Ystara"}
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "unit.id"
+                    equals: "Azkotep"
+                }
+                then: ->
+                    VARIABLE("other_creep", "Ystara")
+                
+                else: ->
+                    VARIABLE("other_creep", "Azkotep")
+                
+            }
+            If{
+                have_unit: {
+                    id: other_creep
+                }
+                then: ->
+                    Message{
+                        speaker: unit.id
+                        message: _ "You think you have defeated me, don’t you? Foolish boy, I shall assume a new form more powerful and horrible than you could ever imagine!"
+                    }
+                    Message{
+                        speaker: other_creep
+                        message: _ "How dare you interfere in our contest! I did not need your help. I shall teach you not to cross a lord of darkness."
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "turn_number"
+                    greater_than: 11
+                }
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Finally. It is over."
+                    }
+                    If{
+                        have_unit: {
+                            id: "Possessed Garak"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Possessed Garak"
+                                message: _ "See, I told you I was more powerful. This game is over, now I can leave this shell of a body."
+                            }
+                            Kill{
+                                id: "Possessed Garak"
+                                animate: false
+                                fire_event: false
+                            }
+                            Unstore_Unit{
+                                variable: "ElvishGarak"
+                                find_vacant: true
+                            }
+                            Message{
+                                speaker: "Zhul"
+                                message: _ "He’s... he’s still breathing!"
+                            }
+                            Message{
+                                speaker: "Garak"
+                                message: _ "Protect the boy for me Zhul, (<i>cough</i>) I go to a better place."
+                            }
+                            Kill{
+                                id: "Garak"
+                                animate: true
+                                fire_event: false
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Nym"
+                                message: _ "What about Garak?"
+                            }
+                            If{
+                                variable: {
+                                    name: "defiant_death"
+                                    equals: 0
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Kaleh"
+                                        message: _ "I’ve asked and looked around, there is no sign of him or his body"
+                                    }
+                                    Message{
+                                        speaker: "Zhul"
+                                        message: _ "He’s probably dead, then, but he died as a warrior. Let’s respect his wishes and remember him for that."
+                                    }
+                                
+                                else: ->
+                                    Message{
+                                        speaker: "Zhul"
+                                        message: _ "He died as a hero. Remember that and tell the tale, for it’s worth it."
+                                    }
+                                
+                            }
+                        
+                    }
+
+                    Fire_Event{
+                        name: "garak_eulogy"
+                    }
+
+                    Fire_Event{
+                        name: "count_final_camps"
+                    }
+
+                    CLEAR_VARIABLE("other_creep")
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+            If{
+                not: {
+                    have_unit: {
+                        id: other_creep
+                    }
+                }
+                variable: {
+                    name: "turn_number"
+                    less_than: 12
+                }
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "The undead lords are defeated at last."
+                    }
+                    Message{
+                        speaker: "Ganthos"
+                        message: _ "There’s too many of them and the night is almost gone. Pull back you wretches, pull back!"
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "I can see the first rays of Naia shining over the horizon. She never looked so beautiful. The undead forces have crumbled into dust and the remaining orcs are retreating with the dawn."
+                    }
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "That was a very brave thing you did, Kaleh, defeating both of those Undead Lords. It took great courage and strength. Because of your daring attack, we did not have to wait for the dawn to save us. You were our savior. And many fewer of our people died than would have if we had had to wait out the long night."
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Though we saved almost all our people this time, we won’t always be so lucky. While elves who have fought with you in the past will gladly return, if the numbers of our people dwindle, it’s going to become more and more costly to recruit new warriors. It would be wise to stockpile gold against this eventuality."
+                    }
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "You have triumphed for the moment, but think not that the dark lords can be so easily vanquished. We shall return, and shall rule long after your bones have crumbled to dust. This is our land, and none shall leave it unscathed."
+                    }
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "You fought so hard to protect your precious people, young elf. No great deed should go unpunished."
+                    }
+                    If{
+                        have_unit: {
+                            id: "Garak"
+                        }
+                        then: ->
+                            Message{
+                                id: {"Ystara", "Azkotep"}
+                                message: _ "A token to remember us by..."
+                            }
+                            Message{
+                                speaker: "Garak"
+                                message: _ "Aauugghh!"
+                            }
+                            Message{
+                                speaker: "Zhul"
+                                message: _ "He just collapsed!"
+                            }
+                            Message{
+                                speaker: "Garak"
+                                message: _ "Protect the boy for me Zhul, (<i>cough</i>) I go to a better place."
+                            }
+                            Kill{
+                                id: "Garak"
+                                animate: true
+                                fire_event: false
+                            }
+                        
+                        else: ->
+                            Message{
+                                id: {"Ystara", "Azkotep"}
+                                message: _ "You will never see your champion again. And we will torment his soul for the rest of the eternity."
+                            }
+                            Message{
+                                speaker: "Zhul"
+                                message: _ "Don’t listen to them, they are powerless in their defeat. Even if Garak fell in battle his soul went to a better place and they can’t reach him there."
+                            }
+                        
+                    }
+
+                    Fire_Event{
+                        name: "garak_eulogy"
+                    }
+
+                    CLEAR_VARIABLE("other_creep")
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Possessed Garak"
+        }
+        do: ->
+            Kill{
+                id: "Possessed Garak"
+                animate: false
+                fire_event: false
+            }
+            If{
+                have_unit: {
+                    id: "Azkotep"
+                }
+                then: ->
+                    Message{
+                        speaker: "Azkotep"
+                        message: _ "Hah, now you have learned the flesh is always weaker than the powers of the undead."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Ystara"
+                        message: _ "My undead zombies shall always defeat the living."
+                    }
+                
+            }
+            Message{
+                speaker: "Kaleh"
+                message: _ "Finally. It is over."
+            }
+            Unstore_Unit{
+                variable: "ElvishGarak"
+                find_vacant: true
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "He’s... he’s still breathing!"
+            }
+            Message{
+                speaker: "Garak"
+                message: _ "Protect the boy for me Zhul, (<i>cough</i>) I go to a better place."
+            }
+            Kill{
+                id: "Garak"
+                animate: true
+                fire_event: false
+            }
+
+            Fire_Event{
+                name: "garak_eulogy"
+            }
+
+            Fire_Event{
+                name: "count_final_camps"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "garak_eulogy"
+        do: ->
+            Message{
+                speaker: "Kaleh"
+                message: _ "From the sands he came, to the sands he will return. We remember and honor his sacrifice, and I vow that his death will not be in vain."
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "Goodbye, old friend. May Eloh shine her light eternal upon you."
+            }
+            Message{
+                speaker: "Elyssa"
+                message: _ "He was as brave and valiant a fighter as I have ever seen in my travels."
+            }
+            Message{
+                speaker: "Nym"
+                message: _ "He was a bastard at times... But... but why did he have to die? It... it just doesn’t make sense."
+            }
+    }
+
+-- Final dialog concerning survival of camps
+-- Depends on variables : $elven_camps
+    event: {
+        name: "count_final_camps"
+        do: ->
+            If{
+                variable: {
+                    name: "elven_camps"
+                    equals: 12
+                }
+                then: ->
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Miraculously, all of our encampments survived the night."
+                    }
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Though we saved almost all our people this time, we won’t always be so lucky. While elves who have fought with you in the past will gladly return, if the numbers of our people dwindle, it’s going to become more and more costly to recruit new warriors. It would be wise to stockpile gold against this eventuality."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Well, only #{elven_camps encampments remain, but we will survive."
+                    }
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Yes, but at what cost?"
+                    }
+                    If{
+                        variable: {
+                            name: "elven_camps"
+                            greater_than: 8
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Nym"
+                                message: _ "Though we saved almost all our people this time, we won’t always be so lucky. While elves who have fought with you in the past will gladly return, as the numbers of our people dwindle, it’s going to become more and more costly to recruit new warriors. It would be wise to stockpile gold against this eventuality."
+                            }
+                        
+                        else: ->
+                            If{
+                                variable: {
+                                    name: "elven_camps"
+                                    greater_than: 6
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "Nym"
+                                        message: _ "We have suffered losses, but we are not broken yet. We have saved most of our people tonight. But while elves who have fought with you in the past will gladly return, as the numbers of our people dwindle, it’s going to become more and more costly to recruit new warriors. It would be wise to stockpile gold against this eventuality."
+                                    }
+
+                                    INCREASE_RECRUIT_COSTS(1)
+                                
+                                else: ->
+                                    Message{
+                                        speaker: "Nym"
+                                        message: _ "We have suffered grievous losses, but we are not broken yet. Long will this slaughter be remembered by our people. Where was Eloh during the darkness? And I’m afraid that while elves who have fought with you in the past will gladly return, as the numbers of our people dwindle, it’s going to become more and more costly to recruit new warriors. It would be wise to stockpile gold against this eventuality."
+                                    }
+
+                                    INCREASE_RECRUIT_COSTS(2)
+                                
+                            }
+                        
+                    }
+                
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "All this death and destruction. What were those shades arguing over? Was this all just some sort of demented game?"
+            }
+            Message{
+                speaker: "Zhul"
+                message: _ "The lords of the dead are powerful and twisted indeed. Only Eloh knows the truth of what happened tonight."
+            }
+            Message{
+                speaker: "Nym"
+                message: _ "I don’t want to be here tomorrow night to find out. The hills to the north are close. Let’s be far away before another nightfall."
+            }
+    }
+
+-- victory
+-- clear all variables potentially not cleared
+    event: {
+        name: "scenario_end"
+        do: ->
+            CLEAR_VARIABLE("defiant_death")
+            CLEAR_VARIABLE("zur_defeated")
+            CLEAR_VARIABLE("grak_defeated")
+            CLEAR_VARIABLE("ElvishGarak")
+            CLEAR_VARIABLE("elven_camps")
+            if HARD
+                CLEAR_VARIABLE("azkotep_casualties,ystara_casualties")
+            
+            CLEAR_VARIABLE("killed_by_azkotep")
+            CLEAR_VARIABLE("killed_by_ystara")
+    }
+
+    UTBS_GARAK_MUST_LIVE: () -> {
+        }true
+        <UTBS_INCLUDE("utils/deaths.cfg")
+        UTBS_GARAK_MUST_LIVE = nil
+    }

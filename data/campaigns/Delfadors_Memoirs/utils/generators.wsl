@@ -1,0 +1,87 @@
+--textdomain wesnoth-dm
+
+MEMOIRS_GENERATOR_SKELETON = (X, Y) -> {
+-- set the generator's terrain
+    event: {
+        name: "prestart"
+        do: ->
+            Item{
+                x: X, y: Y
+                image: "scenery/monolith2.png"
+            }
+    }
+
+-- generate a unit each turn
+    event: {
+        id: "generator_#{X}_#{Y}"
+        name: "new turn"
+        first_time_only: false
+
+        scroll_to: {
+            x: X, y: Y
+        }
+        do: ->
+            Sound{
+                name: "heal.wav"
+            }
+            RANDOM({"Skeleton", "Skeleton Archer"})
+            Unit{
+                type: random
+                side: 2
+                x: X, y: Y
+                animate: true
+            }
+            CLEAR_VARIABLE("random")
+    }
+
+-- if someone capable of destroying the generator moves there
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: X, y: Y
+            type_adv_tree: {"Mage", "Journeyman Mage", "Paladin"}
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I call upon all that is holy to break the power of this evil stone!"
+            }
+            Sound{
+                name: "lightning.ogg"
+            }
+            Color_Adjust{
+                red: 100
+                green: 100
+                blue: 100
+            }
+            Delay{
+                time: 10
+            }
+            Color_Adjust{
+                red: 0
+                green: 0
+                blue: 0
+            }
+            Remove_Event{
+                id: "generator_#{X}_#{Y}"
+            }
+    }
+
+-- if someone who can't destroy the generator moves there
+    event: {
+        name: "moveto"
+        filter: {
+            x: X, y: Y
+            side: 1
+            not: {
+                type_adv_tree: {"Mage", "Journeyman Mage", "Paladin"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Evil emanates from this stone, but I have not the power to destroy it."
+            }
+    }
+}

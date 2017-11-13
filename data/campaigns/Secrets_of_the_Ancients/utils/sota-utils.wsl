@@ -1,0 +1,1067 @@
+--textdomain wesnoth-sota
+
+SIDE_1_ARDONNA = () -> {
+    side: 1
+    controller: "human"
+    team_name: "good"
+    user_team_name: _ "Ardonna"
+-- This type of Dark Adept cannot eventually advance to a lich.
+    type: "Dark Adept SotA"
+    id: "Ardonna"
+    profile: "portraits/ardonna.png"
+    gender: "female"
+    name: _ "Ardonna"
+    canrecruit: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+    }
+    recruit: "Vampire Bat SotA"
+    <FLAG_VARIANT("undead")
+}
+
+SIDE_1_RAS-TABAHN = () -> {
+    side: 1
+    controller: "human"
+    team_name: "good"
+    user_team_name: _ "Ras-Tabahn"
+-- This type of Dark Sorcerer cannot advance to a lich.
+    type: "Dark Sorcerer SotA"
+    id: "Ras-Tabahn"
+    name: _ "Ras-Tabahn"
+    canrecruit: true
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_INTELLIGENT!
+    }
+    recruit: {"Walking Corpse", "Ghost", "Skeleton", "Skeleton Archer"}
+    <FLAG_VARIANT("undead")
+}
+
+SIDE_1_BOTH = () -> {
+    side: 1
+    controller: "human"
+    team_name: "good"
+    user_team_name: _ "Ardryn-Na"
+-- This type of Dark Adept cannot eventually advance to a lich.
+    type: "Dark Adept SotA"
+    id: "Ardonna"
+    profile: "portraits/ardonna.png"
+    gender: "female"
+    name: _ "Ardryn-Na"
+    canrecruit: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+    }
+    <FLAG_VARIANT("undead")
+    recruit: {"Walking Corpse", "Ghost", "Skeleton", "Skeleton Archer"}
+}
+
+RECALL_LOYAL_UNITS = () -> {
+    recall: {
+        id: "Bone Captain"
+        show: false
+    }
+    recall: {
+        id: "Carcyn"
+        show: false
+    }
+-- Only one Shynal will be recalled.
+    recall: {
+        id: "Shynal"
+        show: false
+    }
+    recall: {
+        id: "Corpse Shynal"
+        show: false
+    }
+    recall: {
+        id: "Vendraxis"
+        show: false
+    }
+    recall: {
+        id: "Ras-Tabahn"
+        show: false
+    }
+}
+
+HOW_TO_LOSE_WITH_ARDONNA = () -> {
+    objective: {
+        description: _ "Death of Ardonna"
+        condition: "lose"
+    }
+    <TURNS_RUN_OUT!
+}
+
+HOW_TO_LOSE_WITH_RAS-TABAHN = () -> {
+    objective: {
+        description: _ "Death of Ras-Tabahn"
+        condition: "lose"
+    }
+    <TURNS_RUN_OUT!
+}
+
+HOW_TO_LOSE_WITH_BOTH = () -> {
+    objective: {
+        description: _ "Death of Ardryn-Na"
+        condition: "lose"
+    }
+    objective: {
+        description: _ "Death of Ras-Tabahn"
+        condition: "lose"
+    }
+    <TURNS_RUN_OUT!
+}
+
+HERO_DEATHS = () -> {
+    event: {
+        name: "last_breath"
+        filter: {
+            id: "Ardonna"
+        }
+        do: ->
+            Message{
+                speaker: "Ardonna"
+                message: _ "No, no, NO, <i><b>NO</b></i>!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Ardonna"
+        }
+        do: ->
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last_breath"
+        filter: {
+            id: "Ras-Tabahn"
+        }
+        do: ->
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Urgh."
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Ras-Tabahn"
+            race: "human"
+        }
+        do: ->
+            Message{
+                speaker: "Ardonna"
+                message: _ "But I don't know how to bring you back yet!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Ras-Tabahn"
+            race: "undead"
+        }
+        do: ->
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Shynal"
+            race: "human"
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Carcyn"
+                }
+                then: ->
+                    Message{
+                        speaker: "Carcyn"
+                        message: _ "Shynal!"
+                    }
+                    Message{
+                        speaker: "Carcyn"
+                        message: _ "Bring her back. Please!"
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "I'm not sure that's such a good..."
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "If you insist."
+                    }
+                    ADVANCE_UNIT({id: "Shynal"}, "Walking Corpse Shynal")
+                    Modify_Unit{
+                        filter: {
+                            type: "Walking Corpse Shynal"
+                        }
+                        id: "Corpse Shynal"
+                    }
+                    Message{
+                        speaker: "Corpse Shynal"
+                        message: _ "Car. Cyn."
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "She will not know you for long, so make the most of it."
+                    }
+
+                    Event{
+                        name: "die"
+                        filter: {
+                            id: "Corpse Shynal"
+                        }
+                        do: ->
+                            Message{
+                                speaker: "Carcyn"
+                                message: _ "Perhaps that was for the best."
+                            }
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Shynal"
+            type: {"Lich SotA", "Ancient Lich SotA", "Lich", "Ancient Lich"}
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Carcyn"
+                }
+                then: ->
+                    Message{
+                        speaker: "Carcyn"
+                        message: _ "Shynal!"
+                    }
+                    Message{
+                        speaker: "Carcyn"
+                        message: _ "Bring her back. Please!"
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "It's not possible. She was already back from the dead. She has been utterly destroyed this time."
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "last_breath"
+        filter: {
+            id: "Carcyn"
+        }
+        do: ->
+            Message{
+                speaker: "Shynal"
+                message: _ "Oh, my sweet Carcyn!"
+            }
+    }
+    event: {
+        name: "die"
+        filter: {
+            id: "Carcyn"
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "side_number"
+                    equals: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Shynal"
+                        message: _ "You were always so reckless."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Shynal"
+                        message: _ "I will miss you."
+                    }
+                
+            }
+    }
+}
+
+-- Ardonna is a normal unit, but uses mostly custom portraits. These events cause the
+-- portrait to change as necessary. The profile event is called automatically by the
+-- post_advance event or can be called manually. This macro is included in every scenario.
+MANAGE_PROFILE = () -> {
+    event: {
+        name: "post_advance"
+        first_time_only: false
+        filter: {
+            id: "Ardonna"
+        }
+        do: ->
+            Fire_Event{
+                name: "ardonna_profile"
+            }
+    }
+
+    event: {
+        name: "ardonna_profile"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Ardonna"
+                }
+                variable: "Ardonna_stored"
+            }
+            Switch{
+                variable: "Ardonna_stored.type"
+                case: {
+                    value: "Necromancer SotA"
+                    do: ->
+                        Set_Variable{
+                            name: "Ardonna_stored.profile"
+                            value: "portraits/humans/necromancer+female.png"
+                        }
+                }
+                case: {
+                    value: {"Lich SotA", "Ancient Lich SotA"}
+                    do: ->
+                        Set_Variable{
+                            name: "Ardonna_stored.profile"
+                            value: "portraits/ardonna-lich.png"
+                        }
+                }
+-- Other values should not change it from "profile=portraits/ardonna.png"
+            }
+            Unstore_Unit{
+                variable: "Ardonna_stored"
+            }
+            Clear_Variable{
+                name: "Ardonna_stored"
+            }
+    }
+}
+
+-- If one of the two kids is advanced to something other than a Dark Adept, they complain.
+-- The player is given the choice to reconsider. They say something about being very
+-- powerful which may clue the player in to the fact that they can become Ancient Liches,
+-- and that it would be a good idea to go that way. Maybe.
+KIDS_ADVANCE = () -> {
+    event: {
+        name: "post_advance"
+        first_time_only: false
+        filter: {
+            id: {"Carcyn", "Shynal"}
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: unit.id
+                    type: {"Footpad", "Thug"}
+                }
+                then: ->
+                    Fire_Event{
+                        name: "argue_about_advancement"
+                        primary_unit: {
+                            id: unit.id
+                        }
+                    }
+                
+            }
+
+            If{
+-- Shynal uses a couple custom portraits. We manage them here.
+                variable: {
+                    name: "unit.id"
+                    equals: "Shynal"
+                }
+                then: ->
+                    Store_Unit{
+-- Her type may have just changed, so we will store a fresh
+-- copy of the unit.
+                        filter: {
+                            id: unit.id
+                        }
+                        variable: "Shynal_stored"
+                    }
+                    Switch{
+                        variable: "Shynal_stored.type"
+                        case: {
+                            value: {"Dark Adept SotA", "Dark Adept", "Dark Sorcerer SotA", "Dark Sorcerer"}
+                            do: ->
+                                Set_Variable{
+                                    name: "Shynal_stored.profile"
+                                    value: "portraits/shynal-adept.png"
+                                }
+                        }
+                        case: {
+                            value: {"Necromancer SotA", "Necromancer"}
+                            do: ->
+                                Set_Variable{
+                                    name: "Shynal_stored.profile"
+                                    value: "portraits/humans/necromancer+female.png"
+                                }
+                        }
+                        case: {
+                            value: "Lich"
+                            do: ->
+                                Set_Variable{
+                                    name: "Shynal_stored.profile"
+                                    value: "portraits/lich.png"
+                                }
+                        }
+                        case: {
+                            value: "Ancient Lich"
+                            do: ->
+                                Set_Variable{
+                                    name: "Shynal_stored.profile"
+                                    value: "portraits/brown-lich.png"
+                                }
+                        }
+-- Other values should not change it from its original
+-- outlaw-themed value.
+                    }
+                    Unstore_Unit{
+                        variable: "Shynal_stored"
+                    }
+                    Clear_Variable{
+                        name: "Shynal_stored"
+                    }
+                
+            }
+    }
+
+-- This event is split from above for readability.
+    event: {
+        name: "argue_about_advancement"
+        first_time_only: false
+        do: ->
+            If{
+-- The dialog is different if one of the kids is already a Dark something.
+                have_unit: {
+                    type: {"Dark Adept SotA", "Dark Sorcerer SotA", "Necromancer SotA", "Dark Adept", "Dark Sorcerer", "Necromancer"}
+                    and: {
+                        id: "Shynal"
+                        or: {
+                            id: "Carcyn"
+                        }
+                    }
+                }
+                then: ->
+                    If{
+                        variable: {
+                            name: "unit.id"
+                            equals: "Carcyn"
+                        }
+                        then: ->
+                            Message{
+                                speaker: unit.id
+                                message: _ "Aww. I wanted to be a mage like Shynal."
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: unit.id
+                                message: _ "Aww. I wanted to be a mage like Carcyn."
+                            }
+                        
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        option: {
+                            message: _ "Do not make me regret liberating you from jail. My decision is final."
+                        }
+                        option: {
+                            message: _ "I have reconsidered. Perhaps you will be very powerful one day."
+                            command: ->
+                                ADVANCE_UNIT({id: unit.id}, "Dark Adept SotA")
+                                Modify_Unit{
+                                    filter: {
+                                        id: unit.id
+                                    }
+                                    experience: unit.experience
+                                }
+                                Message{
+                                    speaker: unit.id
+                                    message: _ "Thanks!"
+                                }
+                            
+                        }
+                    }
+                
+                else: ->
+                    If{
+                        variable: {
+                            name: "refused_to_make_DA"
+                            not_equals: true
+                        }
+                        then: ->
+                            Message{
+                                speaker: unit.id
+                                message: _ "Hey, I wanted to be a wizard like you and live forever when you figure it out! I know I could be super-powerful in the end."
+                            }
+
+                            Message{
+                                speaker: "Ras-Tabahn"
+                                option: {
+                                    message: _ "Hold your tongue. You will do as I command."
+                                    command: ->
+                                        Set_Variable{
+                                            name: "refused_to_make_DA"
+                                            value: true
+                                        }
+                                    
+                                }
+                                option: {
+                                    message: _ "Very well. Having more adepts might be a good idea after all."
+                                    command: ->
+                                        ADVANCE_UNIT({id: unit.id}, "Dark Adept SotA")
+                                        Modify_Unit{
+                                            filter: {
+                                                id: unit.id
+                                            }
+                                            experience: unit.experience
+                                        }
+                                    
+                                }
+                            }
+                        
+                    }
+                
+            }
+    }
+}
+
+JOURNEY_PART = (STAGE) -> {
+    part: {
+        background_layer: {
+            image: "maps/background.jpg"
+            scale_vertically: true
+            scale_horizontally: false
+            keep_aspect_ratio: true
+        }
+        background_layer: {
+            image: "maps/titlescreen.png"
+            scale_vertically: true
+            scale_horizontally: false
+            keep_aspect_ratio: true
+            base_layer: true
+        }
+        show_title: true
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/utils/sota-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 549:         {JOURNEY_STAGE{STAGE}}
+    }
+}
+
+FREEZE_UNIT = (ID) -> {
+    object: {
+        silent: true
+        duration: "scenario"  -- So this object will not be in the save files forever.
+        filter: {
+            id: ID
+        }
+        effect: {
+            apply_to: "movement_costs"
+            replace: false  -- So this amount is added to the current number.
+            movement_costs: {
+                shallow_water: 100
+                reef: 100
+                swamp_water: 100
+                flat: 100
+                sand: 100
+                forest: 100
+                hills: 100
+                mountains: 100
+                village: 100
+                castle: 100
+                cave: 100
+                frozen: 100
+                unwalkable: 100
+                fungus: 100
+            }
+        }
+    }
+}
+
+THAW_UNIT = (ID) -> {
+    store_unit: {
+        filter: {
+            id: ID
+-- This prevents a unit from being thawed that was not frozen first:
+            movement_cost: "100-120"
+        }
+        variable: "stored_unit"
+    }
+    object: {
+        silent: true
+        duration: "scenario"
+        filter: {
+            id: ID
+        }
+        effect: {
+            apply_to: "movement_costs"
+            replace: false  -- This amount is added to the current number.
+            movement_costs: {
+                shallow_water: -100
+                reef: -100
+                swamp_water: -100
+                flat: -100
+                sand: -100
+                forest: -100
+                hills: -100
+                mountains: -100
+                village: -100
+                castle: -100
+                cave: -100
+                frozen: -100
+                unwalkable: -100
+                fungus: -100
+            }
+        }
+    }
+    clear_variable: {
+        name: "stored_unit"
+    }
+}
+
+-- Finds the nearest hex to (X,Y) within MAX_DISTANCE that matches the FILTER, and stores
+-- the location in VARIABLE with x, y, and terrain. If there is more than one location
+-- found, VARIABLE will be an array.
+NEAREST_HEX = (X, Y, MAX_DISTANCE, FILTER, VAR_NAME) -> {
+    set_variable: {
+        name: "distance"
+        value: 0
+    }
+    set_variable: {
+        name: "location_found"
+        value: false
+    }
+    clear_variable: {
+        name: VAR_NAME
+    }
+
+-- Store any matching locations within a radius of "distance". If nothing got stored,
+-- add one to "distance" and try again. Do this until a location is found, or
+-- "distance" goes over the MAX_DISTANCE:
+    while: {
+        variable: {
+            name: "#{VAR_NAME}.length"
+            less_than: 1
+        }
+        and: {
+            variable: {
+                name: "distance"
+                less_than_equal_to: MAX_DISTANCE
+            }
+        }
+
+        do: ->
+            Store_Locations{
+                <FILTER
+                and: {
+                    x: X
+                    y: Y
+                    radius: distance
+                }
+                variable: VAR_NAME
+            }
+
+            If{
+                variable: {
+                    name: "#{VAR_NAME}.length"
+                    greater_than: 0
+                }
+                then: ->
+                    Set_Variable{
+                        name: "location_found"
+                        value: true
+                    }
+                
+            }
+
+            Set_Variable{
+                name: "distance"
+                add: 1
+            }
+        
+    }
+
+    clear_variable: {
+        name: {"location_found", "distance"}
+    }
+}
+
+-- Conditional clause that means both Carcyn and Shynal are still alive.
+BOTH_KIDS_LIVE = () -> {
+    and: {
+        have_unit: {
+            id: "Shynal"
+        }
+        have_unit: {
+            id: "Carcyn"
+        }
+    }
+}
+
+-- Conditional clause that means both Carcyn and Shynal are dead.
+NO_KIDS_LIVE = () -> {
+    and: {
+        not: {
+            have_unit: {
+                id: "Shynal"
+            }
+        }
+        not: {
+            have_unit: {
+                id: "Carcyn"
+            }
+        }
+    }
+}
+
+-- Conditional clause that means only Carcyn *or* Shynal is still alive.
+ONE_KID_LIVES = () -> {
+    and: {
+        have_unit: {
+            id: "Shynal"
+        }
+        not: {
+            have_unit: {
+                id: "Carcyn"
+            }
+        }
+    }
+    or: {
+        and: {
+            have_unit: {
+                id: "Carcyn"
+            }
+            not: {
+                have_unit: {
+                    id: "Shynal"
+                }
+            }
+        }
+    }
+}
+
+-- Returns the nearest unoccupied castle hex to the side's starting location. If there
+-- isn't one, the starting location is returned.
+FIND_CASTLE_HEX = (SIDE, VARIABLE) -> {
+    store_starting_location: {
+        side: SIDE
+        variable: "side#{SIDE}_keep_location"
+    }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/utils/sota-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 752:     {NEAREST_HEX ($side{SIDE}_keep_location.x) ($side{SIDE}_keep_location.y) 6 (
+    terrain: "C*"
+    not: {
+        filter: {
+        }
+    }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/utils/sota-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 758:     ) {VARIABLE}}
+    if: {
+        variable: {
+            name: "#{VARIABLE}.length"
+            less_than: 1
+        }
+        then: ->
+            Set_Variables{
+                name: VARIABLE
+                to_variable: "side#{SIDE}_keep_location"
+            }
+        
+    }
+    clear_variable: {
+        name: "side#{SIDE}_keep_location"
+    }
+}
+
+-- This event turns a necromancer into a lich. It can be activated by an event or from
+-- a right-click menu option. It needs $unit to be set or it won't do anything.
+TURN_INTO_A_LICH = () -> {
+    event: {
+        name: "lichify"
+        first_time_only: false
+
+-- This is just to get a more descriptive name for the "unit" variable.
+        do: ->
+            Set_Variables{
+                name: "stored_necromancer"
+                mode: "replace"
+                to_variable: "unit"
+            }
+
+-- The necromancer may have AMLAd and had its experience reset to 0. Now, as a
+-- lich, there is a fourth level available for the unit, and all that experience
+-- should be applied towards the level-up instead of simply being lost. We will
+-- "unwind" each AMLA and calculate how much it cost, so we can give back those
+-- experience points.
+            Set_Variable{
+                name: "num_amlas"
+-- This gives us the number of AMLAs that the unit has had:
+                value: stored_necromancer.modifications.advancement.length
+            }
+            Set_Variable{
+-- The experience that will be used for the new lich will be at least
+-- the necromancer's current actual experience.
+                name: "experience_gained_after_max_level"
+                value: stored_necromancer.experience
+            }
+            Set_Variable{
+-- Each AMLA took 20% more experience, so we will need to reduce this
+-- value as we unwind them. The variable starts out storing the amount
+-- needed for the *next* AMLA, so we will need to reduce it one step as
+-- the first operation.
+                name: "experience_for_one_amla"
+                value: stored_necromancer.max_experience
+            }
+
+            While{
+                variable: {
+                    name: "num_amlas"
+                    greater_than: 0
+                }
+                do: ->
+                    Set_Variable{
+-- Each AMLA increased the experience needed by 20%, which
+-- is the same as multiplying by 1.2. We reverse that here.
+                        name: "experience_for_one_amla"
+                        divide: 1.2
+                    }
+                    Set_Variable{
+-- Round it off in case it's a float:
+                        name: "experience_for_one_amla"
+                        round: 0
+                    }
+                    Set_Variable{
+-- Add the experience that was needed for the previous AMLA
+-- to the amount that will be given to the lich:
+                        name: "experience_gained_after_max_level"
+                        add: experience_for_one_amla
+                    }
+                    Set_Variable{
+                        name: "num_amlas"
+                        sub: 1
+                    }
+                
+            }
+
+-- It's nice if Ardonna looks different as an ancient lich, and since there is
+-- another sprite available, we will use it. She needs a different type though:
+            If{
+                variable: {
+                    name: "stored_necromancer.id"
+                    equals: "Ardonna"
+                }
+                then: ->
+                    Set_Variable{
+                        name: "lich_type"
+                        value: "Lich SotA"
+                    }
+                
+                else: ->
+                    Set_Variable{
+                        name: "lich_type"
+                        value: "Lich"
+                    }
+                
+            }
+
+-- We are going to create a new unit instead of transforming the old one.
+-- Using the old unit would leave its AMLAs in effect, changing the hitpoints
+-- and experience needed to level up.
+            Unit{
+                side: 1
+                type: lich_type
+                x: stored_necromancer.x
+                y: stored_necromancer.y
+                id: stored_necromancer.id
+                name: stored_necromancer.name
+                facing: stored_necromancer.facing
+                moves: stored_necromancer.moves
+                overlays: stored_necromancer.overlays
+                hitpoints: stored_necromancer.hitpoints
+                canrecruit: stored_necromancer.canrecruit
+                attacks_left: stored_necromancer.attacks_left
+                experience: experience_gained_after_max_level
+
+-- Copy the original traits into the new unit:
+                modifications: {
+                    insert_tag: {
+                        name: "trait"
+                        variable: "stored_necromancer.modifications.trait[0]"
+                    }
+                    insert_tag: {
+                        name: "trait"
+                        variable: "stored_necromancer.modifications.trait[1]"
+                    }
+                }
+
+                to_variable: "new_lich"  -- Don't create the unit yet. Just store it.
+            }
+
+-- Hitpoints are transferred to the new unit so that turning into a lich doesn't
+-- heal it. However, this could result in the lich having more HP than its
+-- maximum. If that is the case, we will reset it to the maximum.
+            If{
+                variable: {
+                    name: "new_lich.hitpoints"
+                    greater_than: new_lich.max_hitpoints
+                }
+                then: ->
+                    Set_Variable{
+                        name: "new_lich.hitpoints"
+                        value: new_lich.max_hitpoints
+                    }
+                
+            }
+
+-- The leaders are changed in a scripted event at the end of a scenario, so
+-- they need to be handled differently than normal units:
+            If{
+                variable: {
+                    name: "stored_necromancer.id"
+                    not_equals: "Ardonna"
+                }
+                variable: {
+                    name: "stored_necromancer.id"
+                    not_equals: "Ras-Tabahn"
+                }
+                then: ->
+                    Unstore_Unit{
+-- The unit will be automatically advanced to Ancient Lich at
+-- this point if its experience is sufficient. Theoretically,
+-- it could even AMLA.
+                        variable: "new_lich"
+                        text: _ "Lich"  -- This text goes by quickly, so it must be short.
+                        red: 220, green: 0, blue: 220  -- dark-magic purple
+                        animate: true
+                    }
+                
+                else: ->
+-- It's unlikely, but one of the leaders could be at a lower
+-- level, and therefore have fewer hitpoints than the same unit
+-- as a lich. We will set the hitpoints to the maximum in case
+-- that has happened.
+                    Set_Variable{
+                        name: "new_lich.hitpoints"
+                        value: new_lich.max_hitpoints
+                    }
+
+-- The leaders are changed to liches in between scenarios, so if
+-- we are working with one of them, the new unit needs to get
+-- sent to the recall list.
+                    Set_Variable{
+                        name: "new_lich.x"
+                        value: "recall"
+                    }
+                    Set_Variable{
+                        name: "new_lich.y"
+                        value: "recall"
+                    }
+                    Unstore_Unit{
+                        variable: "new_lich"
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"stored_necromancer", "new_lich", "lich_type", "num_amlas", "experience_for_one_amla", "experience_gained_after_max_level"}
+            }
+    }
+}
+
+-- OFFSET changes depending on which map the ship is on. It only affects 'y' because the
+-- x-position of the ship is the same on both maps.
+HIDE_SAILS_MENU_ITEM = (OFFSET) -> {
+    set_menu_item: {
+        id: "hide-sails"
+        description: _ "Hide Sails and Rigging"
+
+        show_if: {
+            variable: {
+                name: "sails_hidden"
+                boolean_equals: false
+            }
+        }
+
+        command: ->
+            Terrain{
+                x: 5
+                y: "#{(11+#{OFFSET})"
+                terrain: "''"
+                layer: "overlay"
+            }
+            Terrain{
+                x: 14
+                y: "#{(9+#{OFFSET})"
+                terrain: "''"
+                layer: "overlay"
+            }
+            Terrain{
+                x: 7
+                y: "#{(9+#{OFFSET})"
+                terrain: "^Zrlp"
+                layer: "overlay"
+            }
+            Set_Variable{
+                name: "sails_hidden"
+                value: true
+            }
+        
+    }
+}
+
+SHOW_SAILS_MENU_ITEM = (OFFSET) -> {
+    set_menu_item: {
+        id: "show-sails"
+        description: _ "Show Sails and Rigging"
+
+        show_if: {
+            variable: {
+                name: "sails_hidden"
+                boolean_equals: true
+            }
+        }
+
+        command: ->
+            Terrain{
+                x: 5
+                y: "#{(11+#{OFFSET})"
+                terrain: "^Zrig"
+                layer: "overlay"
+            }
+            Terrain{
+                x: 14
+                y: "#{(9+#{OFFSET})"
+                terrain: "^Zpie"
+                layer: "overlay"
+            }
+            Terrain{
+                x: 7
+                y: "#{(9+#{OFFSET})"
+                terrain: "''"
+                layer: "overlay"
+            }
+            Set_Variable{
+                name: "sails_hidden"
+                value: false
+            }
+        
+    }
+}

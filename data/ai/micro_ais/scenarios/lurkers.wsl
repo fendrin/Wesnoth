@@ -1,0 +1,545 @@
+--textdomain wesnoth-ai
+
+MINIMUM = (CONTAINER, VAR) ->
+-- Get the minimum value of CONTAINER.VAR
+-- Result is returned in variable 'minimum'
+-- Index is returned in min_index
+-- It only works for values smaller than 99999
+
+-- Seed for the minimum variable
+    VARIABLE("minimum", 99999)
+
+-- Go through container variable
+    For{
+        array: CONTAINER
+        variable: "i_min"
+        do: ->
+err: ../attic/data/ai/micro_ais/scenarios/lurkers.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 17:             {IF_VAR {CONTAINER}[$i_min].{VAR} less_than $minimum (
+            Then{
+                VARIABLE("minimum", Var(CONTAINER)[i_min][VAR])
+                VARIABLE("min_index", i_min)
+            
+err: ../attic/data/ai/micro_ais/scenarios/lurkers.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! do closed by table at line 21
+--{DEBUG "$i_min: $minimum (${CONTAINER}[$i_min].{VAR})"}
+        
+    }
+
+
+LURKER_MOVES = (SIDE, ENEMY_SIDES) -> {
+-- The events that move the Saurian Skirmishers each turn
+-- This is not left to the AI, because they can only stop on swamps, but move across other terrain
+-- This means they cannot be used on a human player side either
+
+-- Lurkers have no moves left each turn, instead, they are moved "manually" here
+    event: {
+        name: "side #{SIDE} turn refresh"
+        first_time_only: false
+
+-- No moves each turn
+        do: ->
+            MODIFY_UNIT({side: SIDE, type: "Saurian Skirmisher"}, "moves", 0)
+
+-- Store all the Lurkers of the side
+            Store_Unit{
+                filter: {
+                    side: SIDE
+                    type: "Saurian Skirmisher"
+                }
+                variable: "stored_lurkers"
+            }
+
+-- For each Lurker, we do:
+            For{
+                array: "stored_lurkers"
+                variable: "i_l"
+                do: ->
+--{DEBUG "Lurker $i_l"}
+
+-- Store reachable swamp locations next to an enemy
+-- This should include the current location
+                    Store_Reachable_Locations{
+                        filter: {
+                            id: stored_lurkers[i_l].id
+                        }
+                        filter_location: {
+                            terrain: "S*"  -- swamp
+                            not: {  -- unoccupied by other unit
+                                filter: {
+                                    not: {
+                                        id: stored_lurkers[i_l].id
+                                    }
+                                }
+                            }
+                            filter_adjacent_location: {  -- next to enemy
+                                filter: {
+                                    side: ENEMY_SIDES
+                                }
+                            }
+                        }
+                        moves: "max"
+                        variable: "stored_locs"
+                    }
+--{DEBUG "  reachable with enemy adjacent: $stored_locs.length"}
+
+-- Now find all those enemies and store
+-- Doesn't matter if some enemies are stored several times
+                    For{
+                        array: "stored_locs"
+                        variable: "i_e"
+                        do: ->
+                            Store_Unit{
+                                filter: {
+                                    side: ENEMY_SIDES
+                                    filter_location: {
+                                        filter_adjacent_location: {
+                                            x: stored_locs[i_e].x, y: stored_locs[i_e].y
+                                        }
+                                    }
+                                }
+                                variable: "adj_enemies"
+                                mode: "append"
+                            }
+--{DEBUG "  $i_e: enemies adjacent to current location: $adj_enemies.length"}
+                        
+                    }
+
+                    IF_VAR("adj_enemies.length", "equals", 0, {
+                            then: -> -- if there is no reachable enemy
+-- Simply pick a random reachable swamp hex (Lurkers are pretty stupid)
+-- (there is always at least the hex the unit is on)
+                                Store_Reachable_Locations{
+                                    filter: {
+                                        id: stored_lurkers[i_l].id
+                                    }
+                                    filter_location: {
+                                        terrain: "S*"  -- swamp
+                                        not: {  -- unoccupied by other unit
+                                            filter: {
+                                                not: {
+                                                    id: stored_lurkers[i_l].id
+                                                }
+                                            }
+                                        }
+                                    }
+                                    moves: "max"
+                                    variable: "stored_locs"
+                                }
+--{DEBUG "Reachable hexes: $stored_locs.length"}
+                            
+
+                            else: -> -- if there are reachable enemies
+-- We simply find the enemies with minimum hitpoints (Lurkers are pretty stupid)
+                                MINIMUM("adj_enemies", "hitpoints")
+-- Unfortunately, now we need to store the reachable location again
+                                Store_Reachable_Locations{
+                                    filter: {
+                                        id: stored_lurkers[i_l].id
+                                    }
+                                    filter_location: {
+                                        terrain: "S*"  -- swamp
+                                        not: {  -- unoccupied by other unit
+                                            filter: {
+                                                not: {
+                                                    id: stored_lurkers[i_l].id
+                                                }
+                                            }
+                                        }
+                                        filter_adjacent_location: {
+                                            filter: {
+                                                x: adj_enemies[min_index].x, y: adj_enemies[min_index].y
+                                            }
+                                        }
+                                    }
+                                    moves: "max"
+                                    variable: "stored_locs"
+                                }
+--{DEBUG "  final possible reachable locations: $stored_locs.length"}
+                            
+                    })
+
+-- Move unit to one of those at random
+                    RANDOM("0..#{(#{stored_locs.length-1)")
+--{DEBUG "$stored_lurkers[$i_l].x $stored_lurkers[$i_l].y : $random"}
+                    If{  -- only if different from current position
+                        <VARIABLE_CONDITIONAL("stored_locs[#{random].x", "not_equals", stored_lurkers[i_l].x)
+                        or: {
+                            <VARIABLE_CONDITIONAL("stored_locs[#{random].y", "not_equals", stored_lurkers[i_l].y)
+                        }
+                        then: ->
+                            MOVE_UNIT({id: stored_lurkers[i_l].id}, stored_locs[random].x, stored_locs[random].y)
+                        
+                    }
+
+-- Need to clear adj_enemies inside the loop, as mode=append
+                    CLEAR_VARIABLE("adj_enemies,minimum,min_index,random,stored_locs")
+                
+            }
+            CLEAR_VARIABLE("stored_lurkers")
+
+-- Attack is then left to the AI
+    }
+}
+
+Test{
+    id: "lurkers"
+    name: _ "Lurkers of the Swamp"
+    next_scenario: "micro_ai_test"
+
+    map: "ai/micro_ais/maps/lurkers.map"
+
+    <DEFAULT_SCHEDULE!
+    turns: -1
+    victory_when_enemies_defeated: false
+
+    side: {
+        side: 1
+        controller: "human"
+        suppress_end_turn_confirmation: true
+        id: "Pekzs"
+        name: _ "Pekzs"
+        unrenamable: true
+        type: "Saurian Soothsayer"
+        persistent: false
+
+        team_name: "Pekzs"
+        user_team_name: _ "team_name^Pekzs"
+        recruit: {"Saurian Augur", "Saurian Skirmisher"}
+
+        gold: 261
+    }
+
+-- Micro AI Lurkers
+    side: {
+        side: 2
+        controller: "ai"
+        type: "Saurian Oracle"
+        x: 10, y: 18
+        max_moves: 0, max_attacks: 0
+        persistent: false
+
+        team_name: "lurkers_mai2"
+        user_team_name: _ "Micro AI Lurkers (saurians, stationary)"
+
+        gold: 0
+        income: -2
+    }
+
+-- Micro AI Lurkers
+    side: {
+        side: 3
+        controller: "ai"
+        type: "Saurian Oracle"
+        x: 10, y: 17
+        max_moves: 0, max_attacks: 0
+        persistent: false
+
+        team_name: "lurkers_mai3"
+        user_team_name: _ "Micro AI Lurkers (saurians, wanderers)"
+
+        gold: 0
+        income: -2
+    }
+
+-- Micro AI Lurkers
+    side: {
+        side: 4
+        controller: "ai"
+        type: "Naga Warrior"
+        x: 11, y: 18
+        max_moves: 0, max_attacks: 0
+        persistent: false
+
+        team_name: "lurkers_mai4"
+        user_team_name: _ "Micro AI Lurkers (nagas)"
+
+        gold: 0
+        income: -2
+    }
+
+-- WML Lurkers
+    side: {
+        side: 5
+        controller: "ai"
+        type: "Saurian Oracle"
+        x: 12, y: 18
+        max_moves: 0, max_attacks: 0
+        persistent: false
+
+        team_name: "lurkers_wml"
+        user_team_name: _ "WML Lurkers (saurians)"
+
+        gold: 0
+        income: -2
+    }
+
+-- Formula AI Lurkers
+    side: {
+        side: 6
+        controller: "ai"
+        type: "Saurian Oracle"
+        x: 12, y: 17
+        max_moves: 0, max_attacks: 0
+        persistent: false
+
+        team_name: "lurkers_fai"
+        user_team_name: _ "Formula AI Lurkers (saurians)"
+
+        gold: 0
+        income: -2
+
+        ai: {
+            stage: {
+                id: "main_loop"
+                name: "ai_default_rca::candidate_action_evaluation_loop"
+
+                candidate_action: {
+                    engine: "fai"
+                    name: "lurker_moves_fai"
+                    id: "lurker_moves_fai"
+                    max_score: 300000
+                    type: "movement"
+                    filter: {
+                        me: "filter(input, (self.type = 'Saurian Skirmisher'))"
+                    }
+                    evaluation: 300000
+                    action: "#{ai/micro_ais/engines/lurker_moves.fai}"
+                }
+            }
+        }
+    }
+
+    event: {
+        name: "preload"
+        first_time_only: false
+
+-- Hide the other sides' leaders; they are only there so that side color shows up in Status menu
+        do: ->
+            Hide_Unit{
+                side: {2, 3, 4, 5, 6}
+                canrecruit: true
+            }
+    }
+
+-- Prestart - put all the lurkers out there and set up the AIs
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("scenario_name", "lurkers")
+
+-- Place some random lurkers
+            SCATTER_UNITS(3, "Saurian Skirmisher", 1, {x: "1-6", terrain: "S*"}, {side: 2})
+            SCATTER_UNITS(3, "Saurian Skirmisher", 1, {x: "12-19", terrain: "S*"}, {side: 3})
+            SCATTER_UNITS(3, "Naga Fighter", 1, {y: 18, terrain: "W*"}, {side: 4})
+            SCATTER_UNITS(3, "Saurian Skirmisher", 1, {x: "21-29", terrain: "S*"}, {side: 5})
+            SCATTER_UNITS(3, "Saurian Skirmisher", 1, {x: "32-99", terrain: "S*"}, {side: 6})
+
+-- The Micro AI lurkers
+            Micro_Ai{
+                side: 2
+                ai_type: "lurkers"
+                action: "add"
+
+                filter: {
+                    type: "Saurian Skirmisher"
+                }
+                filter_location: {
+                    terrain: "S*"
+                }
+                stationary: true
+            }
+
+            Micro_Ai{
+                side: 3
+                ai_type: "lurkers"
+                action: "add"
+
+                filter: {
+                    type: "Saurian Skirmisher"
+                }
+                filter_location: {
+                    terrain: "S*"
+                }
+            }
+
+            Micro_Ai{
+                side: 4
+                ai_type: "lurkers"
+                action: "add"
+
+                filter: {
+                    type: "Naga Fighter"
+                }
+                filter_location: {
+                    terrain: {"W*", "S*"}
+                }
+                filter_location_wander: {
+                    terrain: "W*"
+                }
+            }
+
+-- The WML lurkers
+            LURKER_MOVES(5, {1, 2, 3, 4, 6})
+
+            PLACE_IMAGE("scenery/signpost.png", 27, 3)
+            SET_LABEL(27, 3, _ "End Scenario")
+
+-- Menu items to place additional lurkers by hand
+            Set_Menu_Item{
+                id: "m01_menu_lurker2"
+                description: _ "Place a Side 2 lurker"
+                image: "units/saurians/skirmisher/skirmisher.png~CROP(28,25,24,24)"
+                show_if: {
+                    <VARIABLE_CONDITIONAL("scenario_name", "equals", "lurkers")
+                }
+                command: ->
+                    UNIT(2, "Saurian Skirmisher", x1, y1, {})
+                
+            }
+
+            Set_Menu_Item{
+                id: "m01_menu_lurker3"
+                description: _ "Place a Side 3 lurker"
+                image: "units/saurians/skirmisher/skirmisher.png~CROP(28,25,24,24)"
+                show_if: {
+                    <VARIABLE_CONDITIONAL("scenario_name", "equals", "lurkers")
+                }
+                command: ->
+                    UNIT(3, "Saurian Skirmisher", x1, y1, {})
+                
+            }
+
+            Set_Menu_Item{
+                id: "m01_menu_lurker4"
+                description: _ "Place a Side 4 lurker"
+                image: "units/nagas/fighter.png~CROP(25,19,24,24)"
+                show_if: {
+                    <VARIABLE_CONDITIONAL("scenario_name", "equals", "lurkers")
+                }
+                command: ->
+                    UNIT(4, "Naga Fighter", x1, y1, {})
+                
+            }
+
+            Set_Menu_Item{
+                id: "m01_menu_lurker5"
+                description: _ "Place a Side 5 lurker"
+                image: "units/saurians/skirmisher/skirmisher.png~CROP(28,25,24,24)"
+                show_if: {
+                    <VARIABLE_CONDITIONAL("scenario_name", "equals", "lurkers")
+                }
+                command: ->
+                    UNIT(5, "Saurian Skirmisher", x1, y1, {})
+                
+            }
+
+            Set_Menu_Item{
+                id: "m01_menu_lurker6"
+                description: _ "Place a Side 6 lurker"
+                image: "units/saurians/skirmisher/skirmisher.png~CROP(28,25,24,24)"
+                show_if: {
+                    <VARIABLE_CONDITIONAL("scenario_name", "equals", "lurkers")
+                }
+                command: ->
+                    UNIT(6, "Saurian Skirmisher", x1, y1, {})
+                
+            }
+    }
+
+-- Start
+    event: {
+        name: "start"
+        do: ->
+            MESSAGE("Pekzs", "", "", _ "In this scenario we demonstrate the Lurker Micro AI. A lurker is a unit that is capable of moving across most terrains, but that only stops on and attacks from specific terrain. It might also have the ability to hide on this terrain (which is the reason why this is called the Lurker AI).
+
+Lurkers move individually without any strategy and always attack the weakest enemy within their reach. If no enemy is in reach, the lurker does a random move instead - or it just sits and waits (lurks).")
+
+-- wmllint: unbalanced-on
+            MESSAGE("Pekzs", "", "", _ "Three different lurker behaviors are set up here using the [micro_ai] tag with different parameters:
+
+Side 2 (blue): saurians attacking only from swamp. If no enemy is in range, they do not move.
+
+Side 3 (green): saurians attacking only from swamp. If no enemy is in range, they wander randomly (on swamp only).
+
+Side 4 (purple): nagas wandering only on water terrain, but attacking from both water and swamp.
+
+We also added two other sides, which demonstrate lurker behavior coded in WML (Side 5, gray) and Formula AI (Side 6, brown).")
+
+            MESSAGE("narrator", "wesnoth-icon.png", _ "Notes", _ "You can use the right-click context menu to add additional lurkers.
+
+Any unit not adjacent to swamp (and water, for the nagas) is safe from the lurkers, thus it is easy to keep Pekzs from being attacked.
+
+The Lua Lurker AI is coded as a Micro AI. A Micro AI can be added and adapted to the need of a scenario easily using only WML and the [micro_ai] tag. Check out the <span color='#00A000'>Micro AI wiki page</span> at http://wiki.wesnoth.org/Micro_AIs for more information.")
+-- wmllint: unbalanced-off
+
+            Objectives{
+                side: 1
+                summary: _ "Watch the lurkers move around and fight them if you want"
+                objective: {
+                    description: _ "Defeat all lurkers"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Move Pekzs to the signpost"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Pekzs"
+                    condition: "lose"
+                }
+                note: {
+                    description: _ "Right-click on unoccupied swamp hexes to add more lurkers"
+                }
+            }
+    }
+
+-- The events finishing the scenario
+-- 1: When all Lurkers are dead
+    event: {
+        name: "die"
+        first_time_only: false
+        do: ->
+            If{
+                not: {
+                    have_unit: {
+                        side: {2, 3, 4, 5, 6}
+                    }
+                }
+                then: ->
+                    Kill{
+                        id: unit.id
+                    }
+
+                    Fire_Event{
+                        name: "end_scenario"
+                    }
+                
+            }
+    }
+
+-- 2: When Pekzs moves to the signpost
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Pekzs"
+            x: 27, y: 3
+        }
+        do: ->
+            Fire_Event{
+                name: "end_scenario"
+            }
+    }
+
+    event: {
+        name: "end_scenario"
+        do: ->
+            MESSAGE("Pekzs", "", "", _ "Zzanksss for helping me wizz zzossse lurkerss. Hope to sssee you again ssometime.")
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                carryover_percentage: 0
+                carryover_report: false
+                linger_mode: false
+            }
+    }
+}

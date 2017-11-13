@@ -1,0 +1,784 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "06_The_Siege_of_Elensefar"
+    name: _ "The Siege of Elensefar"
+    map: "campaigns/Heir_To_The_Throne/maps/06_The_Siege_of_Elensefar.map"
+    <TURNS(40, 32, 29)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "07_Crossroads"
+
+    <SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+    <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    label: {
+        x: 16, y: 28
+        text: _ "Elensefar"
+    }
+
+    <HTTT_TRACK(JOURNEY_06_NEW!)
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-elvish.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        <GOLD(180, 120, 120)
+        <FLAG_VARIANT("long")
+    }
+
+-- wmllint: recognize Delfador
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Agadla"
+        name: _ "Agadla"
+        side: 2
+        canrecruit: true
+        recruit: {"Orcish Warrior", "Orcish Grunt", "Orcish Assassin", "Orcish Crossbowman", "Orcish Archer"}
+        <GOLD(100, 180, 240)
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter", "archer"}
+            leader_value: 10.0
+            aggression: 0.0
+            caution: 1.0
+            grouping: "defensive"
+            <ATTACK_DEPTH(1, 3, 5)
+        }
+
+        ai: {
+            time_of_day: "dusk"
+            aggression: 0.6
+            grouping: "defensive"
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.7
+            caution: 0.25
+            grouping: "offensive"
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <unless HARD! then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Orcish Warrior", 2)
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Orcish Crossbowman", 2)
+    }
+
+    side: {
+        type: "Dark Sorcerer"
+        id: "Muff Jaanal"
+        name: _ "Muff Jaanal"
+        side: 3
+        canrecruit: true
+
+        recruit: {"Skeleton Archer", "Skeleton"}
+
+        <GOLD(100, 160, 220)
+
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            leader_value: 10.0
+            <ATTACK_DEPTH(1, 3, 5)
+        }
+
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 1.0
+            grouping: false
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+-- Start the orcs/undead with most of the villages on the map
+    <if EASY then {
+        <STARTING_VILLAGES(2, 5)
+        <STARTING_VILLAGES(3, 0)
+    }
+    <if NORMAL then {
+        <STARTING_VILLAGES(2, 10)
+        <STARTING_VILLAGES(3, 10)
+    }
+    <if HARD then {
+        <STARTING_VILLAGES(2, 10)
+        <STARTING_VILLAGES(3, 20)
+    }
+
+    time_area: {
+        x: {11, 12, 13, 14, 15, "16-22", 23, 24, "25-26"}
+        y: {"0-1", "0-2", "0-6", "0-5", "0-6", "0-5", "0-3", "0-1", "0-2"}
+        <UNDERGROUND!
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/rock1.png", 13, 12)
+            PLACE_IMAGE("scenery/rock2.png", 25, 28)
+
+            Disallow_Recruit{
+                side: 1
+                type: "Thief"
+            }
+
+            NEED_KALENZ({x: "recall", y: "recall"})
+            NEED_DELFADOR({x: "recall", y: "recall"})
+
+            STORE_DELFADOR!
+            STORE_KALENZ!
+
+            ADVISOR = () -> {
+                role: {
+                    role: "Advisor"
+                    auto_recall: {}
+
+                    type: "Elvish Sylph,Great Mage," .. 
+
+                    "Elvish Marshal,Elvish Champion,Elvish Avenger,Elvish Sharpshooter,Elvish Shyde,Elvish Enchantress,Elvish Outrider," .. 
+                    "Paladin,Grand Knight," .. 
+                    "Mage of Light,Arch Mage,Silver Mage," .. 
+                    "Merman Triton,Merman Hoplite,Merman Javelineer,Merman Entangler,Mermaid Diviner,Mermaid Siren," .. 
+                    "Highwayman,Fugitive,Huntsman,Ranger," .. 
+
+                    "Elvish Captain,Elvish Hero,Elvish Ranger,Elvish Marksman,Elvish Druid,Elvish Sorceress,Elvish Rider," .. 
+                    "Knight,Lancer," .. 
+                    "White Mage,Red Mage," .. 
+                    "Merman Warrior,Merman Spearman,Merman Netcaster,Mermaid Priestess,Mermaid Enchantress," .. 
+                    "Bandit,Outlaw,Trapper," .. 
+
+                    "Elvish Fighter,Elvish Archer,Elvish Shaman,Elvish Scout," .. 
+                    "Horseman," .. 
+                    "Mage," .. 
+                    "Merman Fighter,Merman Hunter,Mermaid Initiate," .. 
+                    "Thug,Footpad,Poacher"
+                    else: ->
+                        Unit{
+                            side: 1
+                            type: "Elvish Fighter"
+                            role: "Advisor"
+                            placement: "leader"
+                        }
+                    
+                }
+            }
+            ADVISOR!
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The party arrived at Elensefar at last, but found that the city had already fallen to the savage orcs."
+            }
+            Message{
+                role: "Advisor"
+                message: _ "My lord! It seems the city has already fallen!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "This is terrible news! We must retake the city!"
+            }
+            Message{
+                role: "Advisor"
+                message: _ "There are so many of them. This will not be easy! And look to the north! It seems that the undead are allied with the orcs!"
+            }
+            Message{
+                speaker: "Muff Jaanal"
+                message: _ "Here come the elves! Our newly forged alliance with the orcs will give us the power to crush them with ease!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "We must take the city, and destroy the evil undead before reinforcements arrive!"
+            }
+    }
+
+    event: {
+        name: "turn 4"
+        do: ->
+            Move_Unit_Fake{
+                type: "Rogue"
+                side: 1
+                x: {24, 24, 23}
+                y: {38, 39, 40}
+            }
+
+            Unit{
+                id: "Reglok"
+                name: _ "Reglok"
+                type: "Rogue"
+                side: 1
+                x: 23
+                y: 40
+                gender: "male"
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+
+            Unit{
+                id: "Gelgar"
+                name: _ "Gelgar"
+                type: "Thief"
+                side: 1
+                x: 22
+                y: 39
+                gender: "male"
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                id: "Gamlel"
+                name: _ "Gamlel"
+                type: "Thief"
+                side: 1
+                x: 24
+                y: 40
+                gender: "female"
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+
+            Redraw{
+            }
+            Delay{
+                time: 1250
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "As night began to fall, three dark figures crept out of the forest."
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("mad")
+                message: _ "Halt! Who goes there, friend or foe?"
+            }
+            Message{
+                speaker: "Reglok"
+                message: _ "Greetings, friend. We are from the Elensefar Thieves’ Guild. We would like to help you against the orcs!"
+            }
+            ADVISOR!
+            Message{
+                role: "Advisor"
+                message: _ "Thieves, hmmm? Who says we can trust such as you?"
+            }
+            Message{
+                speaker: "Gamlel"
+                message: _ "We would understand if you didn’t trust us, of course, but it is in our mutual interest to rid the city of the orcs!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Very well. You may join us."
+            }
+            Message{
+                speaker: "Reglok"
+                message: _ "We will serve you well, for we respect the help you are providing to our city. You shall find that there is honor, even among thieves."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Yes, but where is your fighting force? How can you help us?"
+            }
+            Message{
+                speaker: "Gelgar"
+                message: _ "We survive by stealth. We can help you sneak into the city and surround the orcs. Alternatively, we can lay in wait until you give us a signal then ambush the orcs’ rear."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Hmm... I have to consider this..."
+                option: {
+                    label: _ "Help us infiltrate the city. We can do the rest."
+                    command: ->
+                        Message{
+                            speaker: "Reglok"
+                            message: _ "Excellent. Two hours past midnight meet us on the west bank of the river, across from Elensefar’s docks."
+                        }
+                        Set_Variable{
+                            name: "thieves_ford"
+                            value: true
+                        }
+                    
+                }
+                option: {
+                    label: _ "I want you to reinforce us once we break through their line."
+                    command: ->
+                        Message{
+                            speaker: "Reglok"
+                            message: _ "Very well. When you raise your red banner over any building in the city proper, we will see the sign and attack from the city’s northern gate."
+                        }
+                        Message{
+                            speaker: "Konrad"
+                            message: _ "Agreed. But, will you be able to see our flag if it’s dark?"
+                        }
+                        Message{
+                            speaker: "Reglok"
+                            message: _ "Yes, we will see it. In fact, we prefer to fight at night. I pray you do not lead us into slaughter."
+                        }
+                        Message{
+                            speaker: "Konrad"
+                            message: _ "Do not fear, friends. There will be a slaughter here, but it will be orcish blood staining the streets."
+                        }
+--
+-- Special event - if you chose to have the thieves
+-- ambush the orcs, they appear when you capture
+-- one of the Elensefar villages
+--
+                        Event{
+                            name: "moveto"
+                            filter: {
+                                side: 1
+                                filter_location: {
+                                    terrain: "*^V*"
+                                    and: {
+                                        x: 16, y: 26
+                                        radius: 5
+                                    }
+                                }
+                            }
+                            do: ->
+                                Message{
+                                    speaker: "narrator"
+                                    image: "wesnoth-icon.png"
+                                    message: _ "As the banner was raised, sounds of fighting could be heard from across the city."
+                                }
+
+--create units
+
+                                Unit{
+                                    id: "Reglok"
+                                    name: _ "Reglok"
+                                    type: "Rogue"
+                                    side: 1
+                                    x: 16
+                                    y: 22
+                                    gender: "male"
+                                    facing: "sw"
+                                    modifications: {
+                                        <TRAIT_LOYAL!
+                                        <TRAIT_INTELLIGENT!
+                                    }
+                                    <IS_LOYAL!
+                                }
+
+                                Unit{
+                                    id: "Gelgar"
+                                    name: _ "Gelgar"
+                                    type: "Thief"
+                                    side: 1
+                                    x: 14
+                                    y: 22
+                                    gender: "male"
+                                    facing: "se"
+                                    modifications: {
+                                        <TRAIT_LOYAL!
+                                    }
+                                    <IS_LOYAL!
+                                }
+                                Unit{
+                                    id: "Gamlel"
+                                    name: _ "Gamlel"
+                                    type: "Thief"
+                                    side: 1
+                                    x: 20
+                                    y: 23
+                                    gender: "female"
+                                    facing: "sw"
+                                    modifications: {
+                                        <TRAIT_LOYAL!
+                                    }
+                                    <IS_LOYAL!
+                                }
+                                Unit{
+                                    id: "Darglen"
+                                    name: _ "Darglen"
+                                    type: "Thief"
+                                    side: 1
+                                    x: 18
+                                    y: 23
+                                    facing: "sw"
+                                    modifications: {
+                                        <TRAIT_LOYAL!
+                                    }
+                                    <IS_LOYAL!
+                                }
+--dialog
+                                Message{
+                                    speaker: "Reglok"
+                                    message: _ "Let’s expel these invaders! Today, the city is ours again!"
+                                }
+                        }
+                    
+                }
+            }
+            Kill{
+                type: "Thief"
+            }
+            Kill{
+                type: "Rogue"
+            }
+            Allow_Recruit{
+                side: 1
+                type: "Thief"
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "You can now recruit Thieves!"
+            }
+    }
+
+--
+-- Special event - if you chose to have the thieves help you across the river,
+-- on turn 6 the ford appears
+--
+    event: {
+        name: "turn 6"
+        do: ->
+            If{
+                variable: {
+                    name: "thieves_ford"
+                    equals: true
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "On the banks of Elensefar’s port district, three shadowy figures appeared."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "To Konrad’s surprise, they quickly made their way across the river’s mouth. The turbulent waters hid a nearly invisible ford, wide enough for two soldiers to march shoulder-to-shoulder."
+                    }
+--create units
+
+                    Unit{
+                        id: "Reglok"
+                        name: _ "Reglok"
+                        type: "Rogue"
+                        side: 1
+                        x: 7
+                        y: 30
+                        gender: "male"
+                        facing: "se"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_INTELLIGENT!
+                        }
+                        <IS_LOYAL!
+                    }
+
+                    Unit{
+                        id: "Gelgar"
+                        name: _ "Gelgar"
+                        type: "Thief"
+                        side: 1
+                        x: 6
+                        y: 30
+                        gender: "male"
+                        facing: "se"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+                        <IS_LOYAL!
+                    }
+
+                    Unit{
+                        id: "Gamlel"
+                        name: _ "Gamlel"
+                        type: "Thief"
+                        side: 1
+                        x: 6
+                        y: 31
+                        gender: "female"
+                        facing: "se"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+                        <IS_LOYAL!
+                    }
+--create terrain
+                    Terrain{
+                        terrain: "Wwf" -- wmllint: ignore
+                        x: {8, "7-8"}
+                        y: {30, "31-32"}
+                    }
+--dialog
+                    Message{
+                        speaker: "Reglok"
+                        message: _ "Very few people know that the river can be forded here. The orcs have yet to discover this place. Bring your forces into the city, quickly now, and you can flank them."
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("glad")
+                message: _ "Finally, we have retaken the city! Let us rest here, friends."
+            }
+            Role{
+                role: "Thief"
+                type: {"Assassin", "Rogue", "Thief"}
+            }
+            Message{
+                role: "Thief"
+                message: _ "Victory! The thieves of Elensefar will be in your service, my lord."
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The party rested for three days, after which an old friend returned."
+            }
+
+            VARIABLE("delfador_store.profile", "portraits/delfador.png")
+            RESTORE_DELFADOR!
+            RESTORE_KALENZ!
+
+            Move_Unit_Fake{
+                type: "Elder Mage"
+                side: 1
+                x: {25, 24, 24}
+                y: {18, 17, 16}
+            }
+
+            Recall{
+                id: "Delfador"
+                x: 24, y: 16
+                show: false
+            }
+
+            Recall{
+                id: "Kalenz"
+                x: 22, y: 16
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "Greetings, friends. I see that you have rescued the city! I knew that you could do it."
+            }
+
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("glad")
+                message: _ "Delfador! So good to see you! Where have you been?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "I have been meeting with the Ka’lian, the Great Council of the Elves. This is Kalenz, a great lord of the Northern Elves who came to the Council to offer us the support of his people."
+-- See Legend of Wesmere; Kalenz is the former High Lord of
+-- the elves. At this time in 517 YW, he is probably a leader or
+-- legate of the elves of the Forest of Lintanir.  None of
+-- this backstory existed when HttT was first written.
+            }
+
+            Message{
+                speaker: "Kalenz"
+                message: _ "Greetings, friend."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Delfador, we have captured this city, but surely Asheviere’s men will come and attack us! What should we do?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "The Ka’lian has met and decided: we must capture the Sceptre of Fire."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "The Sceptre of Fire? What’s that?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING!
+                message: _ "The Sceptre of Fire is the most ancient artifact of the realm of Wesnoth. It was forged by the dwarves of Knalga at the request of King Haldric II. It took their finest smiths years to make it, but soon after it was completed, the makers were chased underground, attacked by the elves. None know exactly what occurred, but the Sceptre was lost somewhere in the great caverns. Years have passed, and the fortunes of the dwarves have waxed and waned, but the Sceptre has never been found."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "But what has this to do with me?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "When Garard II, your uncle, was deciding upon a successor, he issued an edict that whichever member of the royal family could retrieve the Sceptre of Fire would rule the land."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Oh, and you want me to get this Sceptre?"
+            }
+
+            Message{
+                speaker: "Kalenz"
+                message: _ "We will help you retrieve it, my lord."
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "Time is short. We think that Asheviere is also searching for the Sceptre, to help seal her place as ruler. But if you find the Sceptre first, the people will support you as the king."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Me? King?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "Yes, Konrad. I believe you will be king one day. Now let us make haste!"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "We cannot go to Wesmere, for Asheviere’s orcs have the approaches ringed about with steel; Kalenz and I barely escaped, and Chantal cannot get out. Until we are stronger, we must go where the orcs are not."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+-- Konrad's troops reach Muff Jaanal's citadel.
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: "16-17"
+            y: "5-6"
+        }
+        do: ->
+            Message{
+                speaker: "Muff Jaanal"
+                message: _ "So you endeavor to fight me in my home. Foolish."
+            }
+
+            if EASY
+                Gold{
+                    side: 3
+                    amount: 30
+                }
+            } else {
+                Gold{
+                    side: 3
+                    amount: 60
+                }
+            
+
+            Terrain{
+                x: 13
+                y: 2
+                terrain: "Uu"
+            }
+            Sound{
+                name: "skeleton-big-die.ogg"
+            }
+            if EASY
+                LOYAL_UNIT(3, "Skeleton", 13, 2)
+            } else {
+                LOYAL_UNIT(3, "Revenant", 13, 2)
+            
+            Scroll_To_Unit{
+                x: 13
+                y: 2
+            }
+
+            Terrain{
+                x: 22
+                y: 2
+                terrain: "Uu"
+            }
+            Sound{
+                name: "skeleton-big-die.ogg"
+            }
+            if HARD
+                LOYAL_UNIT(3, "Deathblade", 22, 2)
+            } else {
+                LOYAL_UNIT(3, "Skeleton", 22, 2)
+            
+            Scroll_To_Unit{
+                x: 22
+                y: 2
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("thieves_ford")
+
+            Allow_Recruit{
+                side: 1
+                type: "Thief"
+            }
+
+            RESTORE_DELFADOR!
+            RESTORE_KALENZ!
+    }
+}
+
+ADVISOR = nil

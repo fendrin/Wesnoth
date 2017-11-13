@@ -1,0 +1,17 @@
+-- wmllint: no translatables
+Unit_Type{
+    base_unit: {
+        id: "Fire Guardian"
+    }
+    id: "Fire Guardian3"
+    hide_help: true
+    do_not_list: true
+    hitpoints: 26
+    movement: 7
+    attack: {
+        damage: 5
+    }
+    attack: {
+        damage: 8
+    }
+}

@@ -351,20 +351,20 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Gwabbo"
                                 message: _ "Most of your citizens are not soldiers who will simply obey your orders. It will not be voiced aloud, but if you leave now, some of the people will think this mission is just an excuse to run away."
                             }
-
+                        
                         else: ->
                             Message{
                                 speaker: "Cylanna"
                                 message: _ "However, I am afraid that not everyone will follow you on so perilous an adventure. First you must prove you are not afraid of danger. If you leave now, many will think the mission is but an excuse to flee."
                             }
-
+                        
                     }
 
                     Message{
                         speaker: "Kai Krellis"
                         message: _ "I am not afraid! My people will see me fight the undead before we leave, even if defeating them all is impossible."
                     }
-
+                
                 else: ->
                     Message{
                         speaker: "Kai Krellis"
@@ -379,15 +379,15 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Gwabbo"
                                 message: _ "They will follow. You proved your courage in our last battle. Your father, the Kai-that-was, would have been proud."
                             }
-
+                        
                         else: ->
                             Message{
                                 speaker: "Cylanna"
                                 message: _ "You have proven your courage in battle, as tradition required of a kai; they will follow you now."
                             }
-
+                        
                     }
-
+                
             }
 
             Clear_Variable{
@@ -438,7 +438,7 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Cylanna"
                         message: _ "With their master gone, the undead are vanishing!"
                     }
-
+                
             }
 
             Unit{
@@ -480,7 +480,7 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Kai Krellis"
                         message: _ "If it does not attack, do not kill it. Let us see if it follows us."
                     }
-
+                
 
                 else: ->
                     If{
@@ -506,7 +506,7 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Kai Krellis"
                                 message: _ "If it does not attack, do not kill it. Let us see if it follows us."
                             }
-
+                        
 
                         else: ->
                             Message{
@@ -525,9 +525,9 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Kai Krellis"
                                 message: _ "If it does not attack, we shall not kill it. Let us see if it follows us."
                             }
-
+                        
                     }
-
+                
             }
 
 -- If either of the named characters is dead, we have to take
@@ -564,7 +564,7 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Cylanna"
                         message: _ "With their master gone, the undead are fading away!"
                     }
-
+                
             }
 
             RING_OF_STRENGTH_APPEARS!
@@ -611,7 +611,7 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Cylanna"
                         message: _ "Apparently you have your own bat."
                     }
-
+                
 
                 else: ->
                     If{
@@ -645,7 +645,7 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Cylanna"
                                 message: _ "Apparently you have your own bat."
                             }
-
+                        
 
                         else: ->
                             Message{
@@ -673,9 +673,9 @@ _f, _f, _f, _f, _f, _f, _f
                                 speaker: "Kai Krellis"
                                 message: _ "Very well then. I suppose we have our own bat."
                             }
-
+                        
                     }
-
+                
             }
 
             Set_Variable{
@@ -710,7 +710,7 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Cylanna"
                         message: _ "With their master gone, the skeletons are crumbling!"
                     }
-
+                
             }
 
             Unit{
@@ -743,14 +743,14 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Kai Krellis"
                         message: _ "Look! There is a bat. It is moving, but it looks half dead."
                     }
-
+                
 
                 else: ->
                     Message{
                         speaker: "second_unit"
                         message: _ "Look! There is a bat in the corner here. It is moving, but it looks half dead."
                     }
-
+                
             }
 
             If{
@@ -762,13 +762,13 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Gwabbo"
                         message: _ "No, that thing is all the way dead."
                     }
-
+                
                 else: ->
                     Message{
                         speaker: "Cylanna"
                         message: _ "Actually, I believe it is truly dead."
                     }
-
+                
             }
             Message{
                 speaker: "Cylanna"
@@ -783,7 +783,7 @@ _f, _f, _f, _f, _f, _f, _f
 -- Knight's tent, so we offset it a bit
             Item{
                 x: x1, y: y1
--- err: ../attic/data/campaigns/Dead_Water/scenarios/02_Flight.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 784:             image=misc/blank-hex.png~BLIT(items/chest-open.png~CROP(0,0,68,54),4,18)
+err: ../attic/data/campaigns/Dead_Water/scenarios/02_Flight.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 784:             image=misc/blank-hex.png~BLIT(items/chest-open.png~CROP(0,0,68,54),4,18)
             }
 
             If{
@@ -800,13 +800,13 @@ _f, _f, _f, _f, _f, _f, _f
                         speaker: "Kai Krellis"
                         message: _ "He had a chest in his tent, too. It is filled with gold!"
                     }
-
+                
                 else: ->
                     Message{
                         speaker: "second_unit"
                         message: _ "He had a chest in his tent, too. It is filled with gold!"
                     }
-
+                
             }
 
             Sound{
@@ -877,7 +877,7 @@ _f, _f, _f, _f, _f, _f, _f
                 }
                 then: ->
                     SCENARIO_END!
-
+                
             }
     }
 
@@ -934,7 +934,7 @@ _f, _f, _f, _f, _f, _f, _f
                             carryover_percentage: 40
                         }
                     }
-
+                
 
 -- ...Otherwise, since the ring must have been picked up
 -- already, we'll end now.
@@ -948,7 +948,7 @@ _f, _f, _f, _f, _f, _f, _f
                         message: _ "Onward to Tyegëa’s island, then."
                     }
                     SCENARIO_END!
-
+                
             }
     }
 

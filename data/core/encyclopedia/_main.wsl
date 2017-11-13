@@ -1,0 +1,16 @@
+--textdomain wesnoth-help
+
+Section{
+    id: "encyclopedia"
+    title: _ "Encyclopedia"
+    sections: "geography"
+    topics: "..encyclopedia"
+}
+
+Topic{
+    id: "..encyclopedia"
+    title: _ "Encyclopedia"
+--generator="contents:encyclopedia"
+    text: _ "<ref>dst='..geography' text='Geography'</ref>"
+}
+err: ../attic/data/core/encyclopedia/_main.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 17: {./geography.cfg}

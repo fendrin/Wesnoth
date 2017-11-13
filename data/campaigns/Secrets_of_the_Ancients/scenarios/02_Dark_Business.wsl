@@ -1,0 +1,729 @@
+--textdomain wesnoth-sota
+
+-- Walking corpses are summoned from graves using the right-click menu. Each grave is
+-- marked by a stone on the map and has its own terrain type. Each can only be used once,
+-- so a pile of dirt is used to mark one after it is used. After the player captures the
+-- guardhouse, they can summon skeletons as well, but that ability is lost if the enemy
+-- units retake it. The opening has some interesting WML to keep Ardonna hidden while
+-- the guards are talking amongst themselves. It is explained there.
+
+Scenario{
+    name: _ "Dark Business"
+    map: "campaigns/Secrets_of_the_Ancients/maps/02_Dark_Business.map"
+
+    id: "02_Dark_Business"
+    next_scenario: "03_Bandits"
+    victory_when_enemies_defeated: false
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/cemetery.jpg"
+                scale: false
+            }
+            story: _ "16 III, 23 YW:
+
+I decided to hide in the cemetery. That way I could try my experiment to animate a human body when night fell. With my dark cloak, I resembled the mourners, and with my hood up, nobody could see my hair."
+        }
+        <JOURNEY_PART(2)
+    }
+
+    <FIRST_WATCH_HOUR3!
+    <FIRST_WATCH_HOUR3!
+    <FIRST_WATCH_HOUR4!
+    <FIRST_WATCH_HOUR4!
+    <MIDNIGHT_HOUR!
+    <MIDNIGHT_HOUR!
+    <SECOND_WATCH_HOUR1!
+    <SECOND_WATCH_HOUR1!
+    <SECOND_WATCH_HOUR2!
+    <SECOND_WATCH_HOUR2!
+    <SECOND_WATCH_HOUR3!
+    <SECOND_WATCH_HOUR3!
+    <SECOND_WATCH_HOUR4!
+    <SECOND_WATCH_HOUR4!
+    <SECOND_WATCH_HOUR5!
+    <SECOND_WATCH_HOUR5!
+    <SECOND_WATCH_HOUR6!
+    <SECOND_WATCH_HOUR6!
+    <DAWN_HOUR!
+
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(18, 18, 18)
+
+    side: {
+        <SIDE_1_ARDONNA!
+        <GOLD(50, 40, 30)
+        facing: "se"
+-- The scenario won't be shrouded, but some of the intro dialog is:
+        shroud: true
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        no_leader: true
+        user_team_name: _ "Guards"
+        <FLAG_VARIANT("loyalist")
+    }
+
+-- *************************** MACROS ***************************
+
+-- This menu item macro is used for "recruiting" walking corpses, skeletons, and skeleton
+-- archers from graves. UNIT is the unit type, UNIT_STRING is similar but has underscores
+-- and is used for the id and icon filename. GOLD is the cost (a number).
+    SET_MENU_ITEM_FOR: (UNIT, UNIT_STRING, GOLD) -> {
+-- We need a variable to use in the switch statement:
+        set_variable: {
+            name: "unit_string"
+            value: UNIT_STRING
+        }
+-- The following sentences could be built from the macro arguments, but that might
+-- make them impossible to translate properly. So, we use a switch statement instead.
+        switch: {
+            variable: "unit_string"
+            case: {
+                value: "walking_corpse"
+                do: ->
+                    Set_Variable{
+                        name: "description_text"
+                        value: _ "Raise Walking Corpse (8 Gold)"
+                    }
+            }
+            case: {
+                value: "skeleton"
+                do: ->
+                    Set_Variable{
+                        name: "description_text"
+                        value: _ "Raise Skeleton (15 Gold)"
+                    }
+            }
+            case: {
+                value: "skeleton_archer"
+                do: ->
+                    Set_Variable{
+                        name: "description_text"
+                        value: _ "Raise Skeleton Archer (14 Gold)"
+                    }
+            }
+        }
+        clear_variable: {
+            name: "unit_string"
+        }
+
+        set_menu_item: {
+            id: "raise_#{UNIT_STRING}"
+            description: description_text
+            image: "units/icons/icon-#{UNIT_STRING}.png"
+
+            show_if: {
+                and: {
+-- Show if: This is a grave overlay terrain...
+                    have_location: {
+                        terrain: "*^Gryv"
+                        x: x1, y: y1
+
+-- ...within 1 hex of the leader...
+                        and: {
+                            filter: {
+                                id: "Ardonna"
+                            }
+                            radius: 1
+                        }
+                    }
+
+-- ...And there is not a unit here already.
+                    not: {
+                        have_unit: {
+                            x: x1, y: y1
+                        }
+                    }
+                }
+            }
+
+            command: ->
+                Store_Gold{
+                    side: 1
+                    variable: "gold"
+                }
+
+                If{
+                    variable: {
+                        name: "gold"
+                        less_than: GOLD
+                    }
+                    then: ->
+                        Message{
+                            speaker: "narrator"
+                            image: "items/gold-coins-message.png"
+                            message: _ "You don't have enough gold to raise that unit."
+                        }
+                    
+                    else: ->
+                        Gold{
+                            side: 1
+                            amount: "-#{GOLD}"
+                        }
+-- x1 and y1 have to be stored because they can be changed by the
+-- player right-clicking again during this command:
+                        Set_Variable{
+                            name: "zombie_x"
+                            value: x1
+                        }
+                        Set_Variable{
+                            name: "zombie_y"
+                            value: y1
+                        }
+                        Item{  -- Marks the grave as used.
+                            x: zombie_x, y: zombie_y
+                            image: "items/dirt.png"
+                        }
+                        Delay{  -- This makes it a bit animated.
+                            time: 400
+                        }
+                        Unit{
+                            side: 1
+                            x: zombie_x, y: zombie_y
+                            type: UNIT
+                            animate: true
+                            moves: 0
+                            attacks_left: 0
+                        }
+
+-- Remove the overlay that defines this terrain as a grave:
+                        Terrain{
+                            terrain: "''"
+                            layer: "overlay"
+                            x: zombie_x, y: zombie_y
+                        }
+                        Fire_Event{
+                            id: "more_guards"
+                        }
+                        Clear_Variable{
+                            name: {"zombie_x", "zombie_y"}
+                        }
+                    
+                }
+            
+        }
+    }
+
+    PLACE_GUARD: (X, Y, TYPE, TRAIT1, TRAIT2, NAME) -> {
+        unit: {
+            type: TYPE
+            id: NAME
+            name: NAME
+            x: X, y: Y
+            side: 2
+            facing: "sw"
+            modifications: {
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/02_Dark_Business.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 217:             {TRAIT_{TRAIT1}}
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/02_Dark_Business.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 218:             {TRAIT_{TRAIT2}}
+            }
+        }
+    }
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Hide_Unit{
+                id: "Ardonna"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Kill all the guards, and capture the guardhouse"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_ARDONNA!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                note: {
+                    description: _ "Right-click on a grave adjacent to your leader to raise a unit."
+                }
+                note: {
+                    description: _ "Each grave can be used only once."
+                }
+                note: {
+                    description: _ "This scenario takes place entirely at night."
+                }
+            }
+
+            Label{
+                x: 10, y: 11
+                text: _ "Guardhouse"
+                immutable: false
+            }
+            Item{
+                x: 15, y: 7
+                image: "scenery/temple1.png"
+            }
+            Label{
+                x: 15, y: 7
+-- This label bled into the two hexes on either side, and obscured
+-- the units there. It's better on two lines. The extra spaces before
+-- "Temple" are to center that word above the others.
+                text: _ "  Temple
+of Healing"
+                immutable: false
+            }
+            Item{
+                x: 23, y: 8
+                image: "items/gravestone1.png"
+            }
+
+            PLACE_GUARD(10, 11, "Spearman", "RESILIENT", "QUICK", _ "Gwillyn")
+            PLACE_GUARD(10, 10, "Spearman", "QUICK", "RESILIENT", _ "Veomyr")
+            PLACE_GUARD(8, 10, "Spearman", "STRONG", "RESILIENT", _ "Syrillin")
+            PLACE_GUARD(7, 10, "Bowman", "STRONG", "INTELLIGENT", _ "Glant")
+
+            if HARD
+                PLACE_GUARD(8, 9, "Spearman", "STRONG", "INTELLIGENT", _ "Renvan")
+                PLACE_GUARD(10, 9, "Bowman", "STRONG", "RESILIENT", _ "Vin")
+            
+
+            if EASY
+                PLACE_GUARD(9, 10, "Lieutenant", "AGED", "INTELLIGENT", _ "Caradoc")
+            } else {
+                PLACE_GUARD(9, 10, "Lieutenant", "RESILIENT", "INTELLIGENT", _ "Caradoc")
+            
+
+-- We don't want the guard on the village to move from there:
+            FREEZE_UNIT("Gwillyn")
+
+            Store_Locations{
+                terrain: "*^Gryv"
+                variable: "graves"
+            }
+
+            For{
+                array: "graves"
+                variable: "i"
+                do: ->
+                    Set_Variable{
+                        name: "stone_number"
+                        rand: "1..3"
+                    }
+                    Item{
+                        x: graves[i].x
+                        y: graves[i].y
+                        image: "items/gravestone#{stone_number}.png"
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"graves", "stone_number"}
+            }
+
+            SET_MENU_ITEM_FOR("Walking Corpse", "walking_corpse", 8)
+    }
+
+-- *************************** PLAY ***************************
+    event: {
+        name: "side 1 turn end"
+
+-- Remove the (invisible) keep:
+        do: ->
+            Terrain{
+                terrain: "''"
+                layer: "overlay"
+                x: {20, 21, 22}
+                y: {"6-7", "7-8", 7}
+            }
+    }
+
+    event: {
+        name: "capture"
+        first_time_only: false
+
+        filter: {
+            side: 1
+            x: 10, y: 11
+        }
+        do: ->
+            Allow_Recruit{
+                type: {"Skeleton", "Skeleton Archer"}
+                side: 1
+            }
+            Message{
+                speaker: "narrator"
+-- This puts images of the two units next to each other,
+-- scaled to the same size:
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/02_Dark_Business.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 356:             image=story/black-background.png~BLIT(portraits/undead/archer.png~SCALE(180,180),6,25 )~BLIT(portraits/undead/skeleton.png~SCALE(220,220),187,0)~CROP(0,0,376,205)~SCALE(171,93)
+                message: _ "You can now recruit skeletons and skeleton archers!"
+            }
+            Set_Variable{
+                name: "can_recruit_skeletons"
+                value: true
+            }
+
+            Fire_Event{
+                name: "guards_emerge"
+            }
+
+            SET_MENU_ITEM_FOR("Skeleton", "skeleton", 15)
+            SET_MENU_ITEM_FOR("Skeleton Archer", "skeleton_archer", 14)
+
+            Fire_Event{
+                name: "check for win"
+            }
+    }
+
+-- This macro animates guards moving out of the guardhouse. Each guard moves to the
+-- nearest unoccupied, walkable, hex, without an ^Nhyr overlay. ^Nhyr ("Not here") marks
+-- hexes outside the fence where the unit shouldn't be placed. We use it because it's made
+-- to be invisible in the minimap. ^Fnzb is the base fence tile.
+    MOVE_AND_PLACE_GUARD: (TRAIT1, TRAIT2, NAME) -> {
+        <NEAREST_HEX(10, 11, 20, {
+                and: {
+                    terrain: {"!", "*^Nhyr", "*^Qov", "*^Fnzb"}
+                    not: {
+                        x: 10, y: 11
+                    }
+                    not: {
+                        filter: {
+                        }
+                    }
+                }
+
+                move_unit_fake: {
+                    type: "Spearman"
+                    x: {10, location.x}
+                    y: {11, location.y}
+                    side: 2
+                }
+                <PLACE_GUARD(location.x, location.y, "Spearman", TRAIT1, TRAIT2, NAME)
+                clear_variable: {
+                    name: "location"
+                }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/02_Dark_Business.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by define at line 400
+
+                event: {
+                    name: "guards_emerge"
+                    first_time_only: true
+                    do: ->
+                        MOVE_AND_PLACE_GUARD("STRONG", "RESILIENT", _ "Blollyn")
+                        MOVE_AND_PLACE_GUARD("INTELLIGENT", "RESILIENT", _ "Ceoran")
+                        if HARD
+                            MOVE_AND_PLACE_GUARD("INTELLIGENT", "QUICK", _ "Vindry")
+                            MOVE_AND_PLACE_GUARD("STRONG", "QUICK", _ "Aethacyn")
+                            MOVE_AND_PLACE_GUARD("STRONG", "INTELLIGENT", _ "Elomyr")
+                        
+                }
+
+-- A capture event does not fire when a leaderless side takes a village, but that is
+-- what we need. The filters make this event fire when a unit from side 2 retakes the
+-- "guardhouse" village. The can_recruit_skeletons variable is used to check whether
+-- side 1 owned the village before.
+                event: {
+                    name: "moveto"
+                    first_time_only: false
+
+                    filter: {
+                        side: 2
+                        x: 10, y: 11
+                    }
+                    filter_condition: {
+                        variable: {
+                            name: "can_recruit_skeletons"
+                            equals: true
+                        }
+                    }
+                    do: ->
+                        Disallow_Recruit{
+                            type: {"Skeleton", "Skeleton Archer"}
+                            side: 1
+                        }
+                        Message{
+                            speaker: "narrator"
+                            image: "logo.png"
+                            message: _ "You can no longer recruit skeletons and skeleton archers."
+                        }
+                        Clear_Menu_Item{
+                            id: {"raise_skeleton_archer", "raise_skeleton"}
+                        }
+                        Set_Variable{
+                            name: "can_recruit_skeletons"
+                            value: false
+                        }
+                }
+
+                event: {
+                    name: "die"
+                    first_time_only: false
+                    filter: {
+                        side: 2
+                    }
+                    do: ->
+                        Fire_Event{
+                            name: "check for win"
+                        }
+                }
+
+                event: {
+                    name: "check for win"
+                    first_time_only: false
+                    do: ->
+                        If{
+                            and: {
+                                have_location: {
+                                    x: 10, y: 11
+                                    owner_side: 1
+                                }
+                                not: {
+                                    have_unit: {
+                                        side: 2
+                                    }
+                                }
+                            }
+
+                            then: ->
+                                Clear_Variable{
+                                    name: {"can_recruit_skeletons", "gold", "description_text", "unit_string"}
+                                }
+                                Clear_Menu_Item{
+                                    id: {"raise_skeleton_archer", "raise_skeleton", "raise_walking_corpse"}
+                                }
+
+                                Allow_Recruit{
+                                    type: "Walking Corpse"
+                                    side: 1
+                                }
+
+                                Endlevel{
+                                    result: "victory"
+                                    bonus: true
+                                    <NEW_GOLD_CARRYOVER(40)
+                                }
+                            
+                        }
+                }
+
+                event: {
+                    name: {"recruit", "recall"}
+                    id: "more_guards"
+                    do: ->
+                        Message{
+                            speaker: "Ardonna"
+                            <if HARD then {
+                                message: _ "Wait, that guard said there were twelve of them, so where are the other five?"
+                            } else {
+                                message: _ "Wait, that guard said there were seven of them, so where are the other two?"
+                            }
+                        }
+                }
+
+-- *************************** OPENING / ENDING ***************************
+                event: {
+                    name: "start"
+                    do: ->
+                        Place_Shroud{
+                            side: 1
+                        }
+                        Remove_Shroud{
+                            side: 1
+                            x: 9, y: 11
+                            radius: 5
+                        }
+                        Message{
+                            speaker: "Syrillin"
+                            message: _ "Why are we stuck guarding a cemetery all night?"
+                        }
+                        Message{
+                            speaker: "Veomyr"
+                            image: "portraits/humans/spearman-2.png"
+                            <if HARD then {
+                                message: _ "And why <i>twelve</i> of us? Who wants to break into a cemetery that badly?"
+                            } else {
+                                message: _ "And why <i>seven</i> of us? Who wants to break into a cemetery that badly?"
+                            }
+                        }
+                        Message{
+                            speaker: "Glant"
+                            message: _ "I don’t know, but this evening a mage from the academy was here talking to the mayor, my brother says."
+                        }
+                        Message{
+                            speaker: "Caradoc"
+                            message: _ "Well <i>I</i> say you shouldn’t question orders, so pipe down."
+                        }
+                        Place_Shroud{
+                            side: 1
+                        }
+
+-- Until now, Ardonna has been invisible. To keep her from clearing the
+-- shroud around her until she is revealed in the graveyard, she started
+-- buried in the middle of a void. The void kept her from seeing anything.
+-- She is not in her starting location though. The position where we actually
+-- want her to start would take a lot of work to un-void, so she was at the
+-- edge of the map in a place where we wanted only hill terrain.
+                        Teleport{
+                            filter: {
+                                id: "Ardonna"
+                            }
+                            x: 22, y: 7
+                            animate: false
+                            clear_shroud: false
+                            check_passability: false
+                        }
+                        Terrain{  -- Turn void into hills
+                            terrain: "Hh"
+                            and: {
+                                terrain: "Xv"
+                            }
+                        }
+
+                        Unhide_Unit{
+                            id: "Ardonna"
+                        }
+                        Remove_Shroud{
+                            side: 1
+                            x: 22, y: 7
+                            radius: 5
+                        }
+
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "They must be guarding the cemetery from <i>me</i>! Maybe Aimucasur really was suspicious. It’s a good thing I’m here already, but how am I going to get out?
+
+Well, I might as well do my experiment and worry about leaving later."
+                        }
+
+                        Item{
+                            x: 23, y: 8
+                            image: "items/dirt.png"
+                        }
+                        Delay{
+                            time: 400
+                        }
+                        Unit{
+                            side: 1
+                            x: 23, y: 8
+                            id: "first_zombie"
+                            type: "Walking Corpse"
+                            animate: true
+                            moves: 0
+                            attacks_left: 0
+                            facing: "nw"
+                        }
+
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "Hello?"
+                        }
+                        Message{
+                            speaker: "first_zombie"
+                            image: "portraits/zombie-farmer.png"
+                            message: _ "Uhngh."
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "Do you remember anything?"
+                        }
+                        Message{
+                            speaker: "first_zombie"
+                            image: "portraits/zombie-farmer.png"
+                            message: _ "Uhrrr."
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "It seems that my first guess was correct. The poor creature is mindless."
+                        }
+
+                        Place_Shroud{
+                            side: 1
+                        }
+                        Remove_Shroud{
+                            side: 1
+                            x: 9, y: 11
+                            radius: 5
+                        }
+                        Message{
+                            speaker: "Veomyr"
+                            image: "portraits/humans/spearman-2.png"
+                            message: _ "I heard something over there!"
+                        }
+                        Modify_Unit{
+                            filter: {
+                                side: 2
+                            }
+                            facing: "ne"
+                        }
+                        Message{
+                            speaker: "Glant"
+                            message: _ "Who’s there?"
+                        }
+
+                        Remove_Shroud{
+                            side: 1
+                        }
+                        Move_Unit{
+                            id: "Ardonna"
+                            to_x: 21
+                            to_y: 7
+                        }
+                        Modify_Unit{
+-- This is not really necessary at the moment (as of 1.11.7) because
+-- dark adepts can't face north anyway. This is in case that changes.
+                            filter: {
+                                id: "Ardonna"
+                            }
+                            facing: "sw"
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "It’s only me. Is the cemetery closed then? I was about to leave."
+                        }
+                        Message{
+                            speaker: "Syrillin"
+                            message: _ "You and that... other person. Who is that?"
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "Oh, him. See here, I don't want any trouble, but he is a little... ah..."
+                        }
+                        Message{
+                            speaker: "Caradoc"
+                            message: _ "He's <i>dead</i>! This is dark sorcery like in my granddad’s time in the old country! The penalty is death. Attack and destroy them both!"
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "Hey! Don't do that, or I will need more of them."
+                        }
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "I would do better if I had weapons, and I bet I can find some in the guardhouse. Go take it, my companions."
+                        }
+                        Message{
+                            speaker: "Caradoc"
+                            message: _ "Gwyllin, don’t move from that guardhouse."
+                        }
+                        Message{
+                            speaker: "narrator"
+                            image: "logo.png"
+                            message: _ "You can recruit or recall from your starting position on the first turn only. To get more units, raise them from their graves."
+                        }
+                }
+
+                event: {
+                    name: "time over"
+                    do: ->
+                        Message{
+                            speaker: "Ardonna"
+                            message: _ "The morning has come, and we have not escaped the city. We will be caught for sure!"
+                        }
+                }
+                <HERO_DEATHS!
+                <MANAGE_PROFILE!
+
+                PLACE_GUARD = nil
+                MOVE_AND_PLACE_GUARD = nil
+                SET_MENU_ITEM_FOR = nil
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/02_Dark_Business.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by scenario at line 720

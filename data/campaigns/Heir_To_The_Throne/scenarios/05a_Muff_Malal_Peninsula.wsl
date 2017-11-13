@@ -1,0 +1,236 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "05a_Muff_Malals_Peninsula"
+    name: _ "Muff Malal’s Peninsula"
+    map: "campaigns/Heir_To_The_Throne/maps/05a_Muff_Malal_Peninsula.map"
+    <TURNS(27, 24, 21)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "06_The_Siege_of_Elensefar"
+
+    <SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("weight_of_revenge.ogg")
+
+-- wmllint: local spelling Malal
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Escape down the road to Elensefar"
+                    condition: "win"
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat Muff Malal")
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    <HTTT_TRACK(JOURNEY_05A_NEW!)
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-elvish.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        controller: "human"
+        gold: 140
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Dark Sorcerer"
+        id: "Muff Malal"
+        name: _ "Muff Malal"
+        side: 2
+        canrecruit: true
+        <if HARD then {
+            recruit: {"Blood Bat", "Walking Corpse", "Dark Adept"}
+        } else {
+            recruit: {"Vampire Bat", "Walking Corpse", "Dark Adept"}
+        }
+        ai: {
+            recruitment_pattern: {"scout", "fighter", "fighter", "fighter", "fighter", "fighter", "fighter", "fighter", "archer"}
+            grouping: false
+            aggression: 1.0
+            caution: -1.0
+            simple_targeting: true
+            <ATTACK_DEPTH(1, 4, 5)
+        }
+        <GOLD(20, 50, 100)
+        <INCOME(20, 25, 40)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    <RECRUIT_UNIT_VARIATIONS(2, "Walking Corpse", "none,none,none,none,swimmer,swimmer,mounted,bat")
+
+    <STARTING_VILLAGES(2, 30)
+
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("via_isle_of_the_damned", false)
+            CLEAR_VARIABLE("moremirmu")
+
+            PLACE_IMAGE("scenery/signpost.png", 8, 2)
+            PLACE_IMAGE("scenery/rock2.png", 17, 20)
+
+            STORE_DELFADOR!
+            Role{
+                role: "Advisor"
+                auto_recall: {}
+
+                type: "Elvish Sylph,Great Mage," .. 
+                "Elvish Marshal,Elvish Champion,Elvish Avenger,Elvish Sharpshooter,Elvish Shyde,Elvish Enchantress,Elvish Outrider,Paladin,Grand Knight,Mage of Light,Arch Mage,Silver Mage," .. 
+                "Merman Triton,Merman Hoplite,Merman Javelineer,Merman Entangler,Mermaid Diviner,Mermaid Siren," .. 
+                "Elvish Captain,Elvish Hero,Elvish Ranger,Elvish Marksman,Elvish Druid,Elvish Sorceress,Elvish Rider,Knight,Lancer,White Mage,Red Mage," .. 
+                "Merman Warrior,Merman Spearman,Merman Netcaster,Mermaid Priestess,Mermaid Enchantress," .. 
+                "Elvish Fighter,Elvish Archer,Elvish Shaman,Elvish Scout,Horseman,Mage," .. 
+                "Merman Fighter,Merman Hunter,Mermaid Initiate"
+                else: ->
+                    Unit{
+                        side: 1
+                        type: "Elvish Fighter"
+                        role: "Advisor"
+                        placement: "leader"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "But the road to Elensefar was a treacherous one. Konrad and his men were set upon by a strong band of undead."
+            }
+            Message{
+                speaker: "Muff Malal"
+                message: _ "Ahh, a party of elves approaches. Soon we shall have elven zombies serving us!"
+            }
+            Message{
+                role: "Advisor"
+                message: _ "My lord! On yonder peninsula there seems to be some movement!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "It looks like an undead outpost! If we could defeat them, the locals would probably be grateful. But I do not know if we have the strength to defeat such a foe, or the time to spare."
+            }
+            Message{
+                role: "Advisor"
+                message: _ "Cleansing this land of undead does not appear overly difficult. It could be good training for those yet untested in battle."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "I see. If we are to break the siege of Elensefar, we will need every veteran soldier we can get."
+            }
+            Message{
+                role: "Advisor"
+                message: _ "The decision is yours, sir. If we are to leave, I advise we hurry past before they are upon us. If we are to fight, then... to arms!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 8
+            y: 2
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "scenery/signpost.png"
+                message: _ "To Elensefar"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 5
+            y: 1
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Konrad"
+                    x: 5
+                    y: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "We do not have time to tarry here! On to Elensefar!"
+                    }
+
+                    Endlevel{
+                        bonus: false
+                        result: "victory"
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "Shirk not your duty! I will decide when it is time to leave for Elensefar."
+                    }
+
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "Victory is ours! Let us hope that this delay will not hamper our quest to save Elensefar, but at least we have freed these good people. We must move onward with haste!"
+            }
+
+            Endlevel{
+                bonus: true
+                result: "victory"
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    event: {
+        name: "victory"
+        do: ->
+            RESTORE_DELFADOR!
+    }
+}

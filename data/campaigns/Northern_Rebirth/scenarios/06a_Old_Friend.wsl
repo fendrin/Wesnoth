@@ -1,0 +1,566 @@
+--textdomain wesnoth-nr
+
+Scenario{
+    id: "06a_Old_Friend"
+    name: _ "Old Friend"
+    map: "campaigns/Northern_Rebirth/maps/06a_Old_Friend.map"
+    turns: 18
+    next_scenario: "07a_Settling_Disputes"
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+
+-- Scenario story, some parts have character portraits as background
+    story: {
+        part: {
+            music: "loyalists.ogg"
+            story: _ "The humans rested for many days while they were equipped with new arms and armor and trained by the dwarves."
+        }
+        part: {
+            story: _ "But the peace was not to last. Early one morning Tallin (sore from head to foot from his training) was startled awake by the blare of trumpets, the pounding of drums and the clash of steel as the humans and dwarves hurried to arm themselves."
+        }
+        part: {
+            story: _ "He sought out Hamel, who informed him that a massive host of orcs had arrived at the gates of the new Knalga."
+        }
+        part: {
+            story: _ "It was decided that Tallin’s men should sally forth to meet the orcs, while Hamel’s held open their retreat into the caves."
+        }
+    }
+
+    <NR_TRACK(REVOLT_STAGE4!)
+
+-- Players side
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Peasant", "Woodsman", "Thug", "Poacher", "Spearman", "Bowman", "Footpad"}
+        <GOLD(350, 300, 250)
+        team_name: "knalgans"
+        user_team_name: _ "Knalgans"
+
+-- wmllint: recognize Tallin
+        <CHARACTER_STATS_TALLIN!
+    }
+
+-- Main enemy. Note the AI is set to be highly aggressive and target Tallin
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Orcish Grunt", "Orcish Archer", "Wolf Rider", "Orcish Assassin", "Troll Whelp", "Orcish Warrior", "Orcish Crossbowman", "Troll"}
+        <GOLD(500, 600, 700)
+        <INCOME(40, 50, 60)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+
+-- wmllint: recognize Rakshas
+        <CHARACTER_STATS_RAKSHAS!
+
+        ai: {
+            aggression: 1.0
+            caution: -1.0
+            leader_value: 50
+            passive_leader: true
+        }
+
+-- Place bad guy bodyguards
+        <NOTRAIT_UNIT(2, "Orcish Warlord", 2, 20), <GUARDIAN!
+        <NOTRAIT_UNIT(2, "Orcish Warlord", 5, 20), <GUARDIAN!
+        <NOTRAIT_UNIT(2, "Orcish Warlord", 8, 21), <GUARDIAN!
+        <NOTRAIT_UNIT(2, "Orcish Warlord", 9, 24), <GUARDIAN!
+        <NOTRAIT_UNIT(2, "Orcish Warlord", 9, 26), <GUARDIAN!
+    }
+-- wmllint: validate-on
+
+-- Sidekicks
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Orcish Grunt", "Orcish Archer", "Wolf Rider", "Orcish Assassin", "Troll Whelp", "Orcish Warrior", "Orcish Crossbowman", "Troll"}
+        <GOLD(500, 600, 700)
+        <INCOME(40, 50, 60)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+
+        type: "Orcish Warlord"
+        id: "Drung"
+        name: _ "Drung"
+        canrecruit: true
+
+        ai: {
+            aggression: 1.0
+            caution: -1.0
+            leader_value: 50
+        }
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        recruit: {"Orcish Grunt", "Orcish Archer", "Wolf Rider", "Orcish Assassin", "Troll Whelp", "Orcish Warrior", "Orcish Crossbowman", "Troll"}
+        <GOLD(500, 600, 700)
+        <INCOME(40, 50, 60)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+
+        type: "Orcish Warlord"
+        id: "Poul"
+        name: _ "Poul"
+        canrecruit: true
+
+        ai: {
+            aggression: 1.0
+            caution: -1.0
+            leader_value: 50
+        }
+    }
+
+    <STARTING_VILLAGES(1, 4)
+
+    event: {
+        name: "prestart"
+
+-- Recall heroes and a supporter
+        do: ->
+            Recall{
+                id: "Camerin"
+            }
+
+            Recall{
+                id: "Abhai"
+            }
+
+            Recall{
+                id: "Krash"
+            }
+
+            Recall{
+                id: "Elenia"
+            }
+
+            Recall{
+                id: "Father Morvin"
+            }
+
+            Recall{
+                id: "Sister Thera"
+            }
+
+            RECALL_SUPPORTER!
+
+-- Change Tallin to be of Sergeant line
+-- Check his level, and set new type to be a commander of the same level.
+            STORE_UNIT_VAR({id: "Tallin"}, "level", "old_tallin_level")
+
+            Switch{
+                variable: "old_tallin_level"
+
+                case: {
+                    value: {0, 1}
+                    do: ->
+                        VARIABLE("new_tallin_type", "Sergeant")
+                }
+
+                case: {
+                    value: 2
+                    do: ->
+                        VARIABLE("new_tallin_type", "Lieutenant")
+                }
+
+                else: ->
+                    VARIABLE("new_tallin_type", "General")
+                
+            }
+
+            Modify_Unit{
+                filter: {
+                    id: "Tallin"
+                }
+
+                type: new_tallin_type
+                moves: 6
+            }
+
+            CLEAR_VARIABLE("old_tallin_level,new_tallin_type")
+    }
+
+-- Do the talk
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                id: "Rakshas"
+                message: _ "So I see you stinky-midgets and human-worms finally mustered up the courage to face me."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Who are you, and what do you want?"
+            }
+
+            Message{
+                id: "Rakshas"
+                message: _ "I am Emperor Rakshas and by the power of my sword, I lead the orcish people. I am here simply finishing the job Khazg Black-Tusk started years ago — the conquest of Knalga."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Khazg tried and failed, and if you repeat his folly you will soon join him in the land of the dead!"
+            }
+
+            Message{
+                id: "Rakshas"
+-- wmllint: local spelling Pah
+                message: _ "Pah! I would like to see those cowardly dwarves try their treachery on me as they did on the Black-Tusk! In any case, those dwarves will soon be groveling at my feet and equipping my people with the finest weapons. With the dwarvish weapons, and the wealth of Knalga, nothing will be able to stop us. Even that little backwater that you humans call Wesnoth will be nothing but a burnt out, pillaged wreck before long."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Boy, this guy sure has delusions of grandeur."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "I am not so sure it’s that simple, Tallin. Think back to those orcs at the Dwarven Doors, and those wolves on the way to the mines; they were both saying something about ‘The Master’."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Yeah?"
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Well, unless I miss my guess, dreamy fellow would be him."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Well, if that is so, then it’s time to end this menace once and for all! Fall on them, boys!"
+            }
+
+            Objectives{
+                side: 1
+
+                objective: {
+                    description: _ "Resist until the end of turns"
+                    condition: "win"
+                    show_turn_counter: true
+                }
+
+                <ALTERNATIVE_OBJECTIVE(_ "Defeat Rakshas, if you can...")
+
+                objective: {
+                    description: _ "Death of Tallin"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 0
+                }
+            }
+    }
+
+-- Turn 3, if we didn't employ Russian army tactics yet Tallin gets upset
+    event: {
+        name: "turn 3"
+
+-- Store starting point coordinates
+        do: ->
+            Store_Starting_Location{
+                side: 1
+                variable: "starting_point"
+            }
+
+-- Check every unit belonging to side 1 in a radius of 10 hexes from starting point that are not within radius of
+-- 5 hexes from starting point.
+            If{
+                have_unit: {
+                    side: 1
+                    x: starting_point.x
+                    y: starting_point.y
+                    range: 10
+                    not: {
+                        x: starting_point.x
+                        y: starting_point.y
+                        range: 5
+                    }
+                }
+                then: ->
+-- No, Tallin calls for all out charge. "URRAAA!"
+                    Message{
+                        id: "Tallin"
+                        message: _ "Come on, why are we just sitting here in these caves?! Have you forgotten already all these orcs have done to us! Let us spill their foul blood on the ground!"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("starting_point")
+    }
+
+-- Player somehow breached bad boss cordon, things are going too well, which means we need to throw an army of wolfriders at him
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: "1-9"
+            y: "10-27"
+        }
+        do: ->
+            Message{
+                id: "Rakshas"
+                message: _ "So! Your forces are managing to advance upon me, are they? Very impressive, but it shall do you no good. KNIGHTS!!"
+            }
+
+-- Place 36 Goblin Knights. Yes. Thirty-six.
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 15, 17)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 11, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 7, 16)
+            NOTRAIT_UNIT(2, "Goblin Knight", 26, 22)
+            NOTRAIT_UNIT(2, "Goblin Knight", 26, 22)
+            NOTRAIT_UNIT(2, "Goblin Knight", 26, 22)
+            NOTRAIT_UNIT(2, "Goblin Knight", 26, 22)
+            NOTRAIT_UNIT(2, "Goblin Knight", 26, 22)
+            NOTRAIT_UNIT(2, "Goblin Knight", 25, 26)
+            NOTRAIT_UNIT(2, "Goblin Knight", 25, 26)
+            NOTRAIT_UNIT(2, "Goblin Knight", 25, 26)
+            NOTRAIT_UNIT(2, "Goblin Knight", 25, 26)
+            NOTRAIT_UNIT(2, "Goblin Knight", 25, 26)
+
+            Message{
+                type: "Goblin Knight"
+                message: _ "HAHAHA! GOT YOU, SUCKERS!"
+            }
+
+            Message{
+                id: "Rakshas"
+                message: _ "CHARGE!!"
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Oh, hell! Form up, men, back to back! Don’t let them penetrate our ranks!"
+            }
+
+            Message{
+                id: "Rakshas"
+                message: _ "That’s not all, my friends. GENERALS, CALL THE RESERVES!"
+            }
+
+            Message{
+                id: "Drung"
+                message: _ "Oh yeah!"
+            }
+
+            Message{
+                id: "Poul"
+                message: _ "HAHAHA!"
+            }
+
+            Message{
+                id: "Drung"
+                message: _ "You are so dead, you human vermin!"
+            }
+
+            Message{
+                id: "Poul"
+                message: _ "Oooooooh! Time to start the fun!"
+            }
+
+-- And give bad guys 1500 gold each for a good measure. Yes,
+-- Taurus is a sadist.
+            Gold{
+                side: {2, 3, 4}
+                amount: 1500
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "This doesn’t look good..."
+            }
+    }
+
+-- Sidekick death event, 500g to player and 500 to each enemy
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Drung"
+        }
+        do: ->
+            Message{
+                id: "Drung"
+                message: _ "Argh! I have been slain!"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "Killed him! Got his gold too. Let’s see, hmmm, about 500 gold pieces. Not bad."
+            }
+
+            Gold{
+                side: 1
+                amount: 512
+            }
+
+            Message{
+                id: "Rakshas"
+                message: _ "They have killed one of my generals! REINFORCEMENTS!"
+            }
+
+            Gold{
+                side: {2, 3, 4}
+                amount: 500
+            }
+    }
+
+-- As above
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Poul"
+        }
+        do: ->
+            Message{
+                id: "Poul"
+                message: _ "My death will only make the Master’s punishment for you worse, you fools!"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "Your death makes your Master’s punishment from us one step closer!"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "But— my my, what’s in that big pouch? 300 gold! Not bad."
+            }
+
+            Gold{
+                side: 1
+                amount: 302
+            }
+
+            Message{
+                id: "Rakshas"
+                message: _ "You vermin will pay for that! REINFORCEMENTS!"
+            }
+
+            Gold{
+                side: {2, 3, 4}
+                amount: 500
+            }
+    }
+
+-- A miracle happened. Bad boss died. Player won.
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Rakshas"
+        }
+        do: ->
+            Message{
+                id: "Rakshas"
+                message: _ "Ahhhh! Run for your life!"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "What the... Hey, where do you think you are running off to, you coward!"
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Stop him!"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "It’s too late! I am sorry, Tallin, he got away! We did not expect he would flee like a coward."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Damn! We had the opportunity to end the war in one stroke there. Now we will have to go after him, assuming we can break this siege!"
+            }
+    }
+
+-- Time over. Player didn't kill the bad guy but still survived, and that's also a victory.
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                id: "Tallin"
+-- wmllint: local spelling Geez
+                message: _ "Geez, we have been fighting them for three whole days and nights now with no end in sight. Now the fourth night is approaching, what should we do?"
+            }
+
+            Message{
+                id: "Father Morvin"
+                message: _ "It seems hopeless to continue on like this. The orcs’ numbers are unlimited and Rakshas is very well guarded. The only possible outcome to all this is more slaughter."
+            }
+
+            Message{
+                id: "Sister Thera"
+                message: _ "I propose that we retreat into the caves and consult with the dwarves."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "I agree, Tallin, it is pointless to carry on."
+            }
+
+            Message{
+                id: "Tallin"
+                message: _ "Very well. Everyone fall back!"
+            }
+
+            Message{
+                id: "Camerin"
+                message: _ "Awwwww! Just when I was having the most fun!"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+-- And load the standard death events.
+    <HERODEATH_TALLIN!
+    <HERODEATH_CAMERIN!
+    <HERODEATH_KRASH!
+    <HERODEATH_ELENIA!
+    <HERODEATH_THERA_AND_MORVIN_NO_DIALOG!
+
+    <SUPPORTER_DEATH_HANDLER!
+}

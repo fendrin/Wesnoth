@@ -1,0 +1,863 @@
+--textdomain wesnoth-anl
+Multiplayer{
+    id: "multiplayer_A_New_Land"
+    name: _ "4p — A New Land"
+    map: "multiplayer/maps/4p_A_New_Land.map"
+    description: _ "This 4p survival scenario allows you to construct buildings and terraform the land. Use map settings. The recommended starting gold is 100."
+    experience_modifier: "70%"
+    turns: "unlimited"
+    force_lock_settings: true
+    define: "MULTIPLAYER_A_NEW_LAND_LOAD"
+
+    <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+        <DEFAULT_SCHEDULE!
+        <DEFAULT_MUSIC_PLAYLIST!
+-- ------------------------------------------------------
+-- Include ANL macros
+-- ------------------------------------------------------
+        INCLUDE("multiplayer/scenarios/ANL_utils")
+
+-- ------------------------------------------------------
+-- Story & Objectives
+-- ------------------------------------------------------
+
+        story: {
+            part: {
+                show_title: true
+                story: _ "In the aftermath of the great war the remnants of humanity fled to an obscure secluded glen. Though they knew they could not hide from the mighty armies that had crushed their homeland, the leaders of the resistance hoped only for enough time to rebuild their forces."
+            }
+        }
+
+        event: {
+            name: "start"
+            do: ->
+                Objectives{
+                    side: 0
+                    summary: "<small>" .. _ "Right-click on your leader during your turn for help" .. "</small>" -- wmllint: no spellcheck
+                    objective: {
+                        description: _ "You must survive until turn 25."
+                        condition: "win"
+                    }
+                }
+        }
+    }
+
+-- ------------------------------------------------------
+-- Side Definitions
+-- ------------------------------------------------------
+
+-- Players
+
+    mp_village_gold: 2
+
+    side: {
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: 1
+        user_team_name: _ "teamname^Team 1"
+        team_lock: true
+        income_lock: true
+        shroud: false
+        fog: true
+        recruit: {"Peasant", "Mage"}
+        faction_lock: true
+    }
+
+    side: {
+        side: 2
+        canrecruit: true
+        controller: "human"
+        team_name: 1
+        user_team_name: _ "teamname^Team 1"
+        team_lock: true
+        income_lock: true
+        shroud: false
+        fog: true
+        recruit: {"Peasant", "Mage"}
+        faction_lock: true
+    }
+
+    side: {
+        side: 3
+        canrecruit: true
+        controller: "human"
+        team_name: 1
+        user_team_name: _ "teamname^Team 1"
+        team_lock: true
+        income_lock: true
+        shroud: false
+        fog: true
+        recruit: {"Peasant", "Mage"}
+        faction_lock: true
+    }
+
+    side: {
+        side: 4
+        canrecruit: true
+        controller: "human"
+        team_name: 1
+        user_team_name: _ "teamname^Team 1"
+        team_lock: true
+        income_lock: true
+        shroud: false
+        fog: true
+        recruit: {"Peasant", "Mage"}
+        faction_lock: true
+    }
+
+-- AI
+
+    side: {
+        side: 5
+        canrecruit: true
+        controller: "ai"
+        allow_player: false
+        team_name: 2
+        user_team_name: _ "teamname^Team 2"
+        gold: 25
+        recruit: "Walking Corpse"
+        income: 20
+        village_gold: 2
+        team_lock: true
+        income_lock: true
+        type: "Death Knight"
+        allow_player: false
+        <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+            modifications: {
+                <MOVEMENT_RESTRICTION("flat", "shallow_water")
+            }
+            ai: {
+                aggression: 1.0
+                recruitment_pattern: "fighter"
+            }
+            village: {
+                x: 10, y: 25
+            }
+        }
+    }
+
+    side: {
+        side: 6
+        canrecruit: true
+        controller: "ai"
+        allow_player: false
+        team_name: 2
+        user_team_name: _ "teamname^Team 2"
+        gold: 25
+        recruit: "Goblin Spearman"
+        income: 20
+        village_gold: 2
+        team_lock: true
+        income_lock: true
+        type: "Orcish Sovereign"
+        allow_player: false
+        <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+            modifications: {
+                <MOVEMENT_RESTRICTION("flat", "shallow_water")
+            }
+            ai: {
+                aggression: 1.0
+                recruitment_pattern: "fighter"
+            }
+            village: {
+                x: 50, y: 25
+            }
+        }
+    }
+
+    side: {
+        side: 7
+        canrecruit: true
+        controller: "ai"
+        allow_player: false
+        team_name: 2
+        user_team_name: _ "teamname^Team 2"
+        gold: 25
+        recruit: "Goblin Spearman"
+        income: 20
+        village_gold: 2
+        team_lock: true
+        income_lock: true
+        type: "Orcish Sovereign"
+        allow_player: false
+        <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+            modifications: {
+                <MOVEMENT_RESTRICTION("flat", "shallow_water")
+            }
+            ai: {
+                aggression: 1.0
+                recruitment_pattern: "fighter"
+            }
+            village: {
+                x: 10, y: 30
+            }
+        }
+    }
+
+    side: {
+        side: 8
+        canrecruit: true
+        controller: "ai"
+        allow_player: false
+        team_name: 2
+        user_team_name: _ "teamname^Team 2"
+        gold: 25
+        recruit: "Walking Corpse"
+        income: 20
+        village_gold: 2
+        team_lock: true
+        income_lock: true
+        type: "Death Knight"
+        allow_player: false
+        <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+            modifications: {
+                <MOVEMENT_RESTRICTION("flat", "shallow_water")
+            }
+            ai: {
+                aggression: 1.0
+                recruitment_pattern: "fighter"
+            }
+            village: {
+                x: 50, y: 30
+            }
+        }
+    }
+
+-- This side is for trapped units. It is allied to the AI so they don't attack it.
+
+    side: {
+        side: 9
+        canrecruit: false
+        controller: "null"
+        allow_player: false
+        no_leader: true
+        team_name: 2
+        income: 0
+        village_gold: 0
+        team_lock: true
+        gold_lock: true
+        income_lock: true
+        allow_player: false
+        ai: {
+            ai_algorithm: "idle_ai"
+        }
+    }
+
+    <if MULTIPLAYER_A_NEW_LAND_LOAD then {
+-- ------------------------------------------------------
+-- ANL Building Logic
+-- ------------------------------------------------------
+
+        event: {
+            name: "prestart"
+
+-- Players
+            do: ->
+                SET_SIDE_VARIABLES(1)
+                SET_SIDE_VARIABLES(2)
+                SET_SIDE_VARIABLES(3)
+                SET_SIDE_VARIABLES(4)
+
+                ANL_HELP!
+                WORKER_OPTIONS("Peasant")
+                RESEARCH_OPTIONS("Mage,Red Mage,White Mage,Mage of Light,Silver Mage,Arch Mage,Great Mage")
+                LEADER_OPTIONS!
+        }
+
+-- Auto-studying
+
+        <AUTO_STUDYING("Mage,Red Mage,White Mage,Mage of Light,Silver Mage,Arch Mage,Great Mage")
+
+-- Research complete messages
+
+        event: {
+            name: "side turn"
+            first_time_only: false
+            do: ->
+                If{
+                    variable: {
+                        name: "side_number"
+                        less_than_equal_to: 4
+                    }
+
+                    then: ->
+                        FARMING_RESEARCH_COMPLETE!
+                        MINING_RESEARCH_COMPLETE!
+                        WARFARE_RESEARCH_COMPLETE!
+                    
+                }
+        }
+
+-- Remove working status from any working units when starting a turn
+
+        event: {
+            name: "side turn"
+            first_time_only: false
+            do: ->
+                Store_Unit{
+                    filter: {
+                        side: side_number
+                        status: "worked_this_turn"
+                    }
+
+                    kill: true
+                    variable: "this_side_workers"
+                }
+
+                Foreach{
+                    array: "this_side_workers"
+                    do: ->
+                        Clear_Variable{
+                            name: "this_item.status.worked_this_turn"
+                        }
+
+                        Unstore_Unit{
+                            variable: "this_item"
+                        }
+                    
+                }
+
+                Clear_Variable{
+                    name: "this_side_workers"
+                }
+        }
+
+-- Auto-working
+
+        <AUTO_FARMING("Peasant")
+        <AUTO_MINING("Peasant")
+
+-- ------------------------------------------------------
+-- Scenario Events
+-- ------------------------------------------------------
+
+        event: {
+            name: "prestart"
+
+-- Placing trapped creatures
+            do: ->
+                ANL_PLACE_TRAPPED_UNIT(9, "Gryphon", 24, 12)
+                ANL_PLACE_TRAPPED_UNIT(9, "Fire Drake", 36, 12)
+                ANL_PLACE_TRAPPED_UNIT(9, "Ogre", 24, 43)
+                ANL_PLACE_TRAPPED_UNIT(9, "Elder Wose", 36, 43)
+
+-- Placing spiders
+                ANL_PLACE_WOUNDED_UNIT(5, "Giant Spider", 29, 13, 4)
+                ANL_PLACE_WOUNDED_UNIT(6, "Giant Spider", 31, 13, 4)
+                ANL_PLACE_WOUNDED_UNIT(7, "Giant Spider", 29, 43, 4)
+                ANL_PLACE_WOUNDED_UNIT(8, "Giant Spider", 31, 43, 4)
+
+-- Initial AI units - Side 5
+                ANL_PLACE_UNIT(5, "Walking Corpse", 10, 25)
+                ANL_PLACE_UNIT(5, "Walking Corpse", 10, 25)
+                ANL_PLACE_UNIT(5, "Walking Corpse", 10, 25)
+                ANL_PLACE_GUARDIAN(5, "Revenant", 26, 18)
+                ANL_PLACE_GUARDIAN(5, "Revenant", 45, 32)
+                ANL_PLACE_GUARDIAN(5, "Walking Corpse", 13, 27)
+-- Initial AI units - Side 6
+                ANL_PLACE_UNIT(6, "Goblin Spearman", 50, 25)
+                ANL_PLACE_UNIT(6, "Goblin Spearman", 50, 25)
+                ANL_PLACE_UNIT(6, "Goblin Spearman", 50, 25)
+                ANL_PLACE_GUARDIAN(6, "Orcish Warrior", 34, 18)
+                ANL_PLACE_GUARDIAN(6, "Orcish Warrior", 45, 24)
+                ANL_PLACE_GUARDIAN(6, "Goblin Spearman", 47, 27)
+-- Initial AI units - Side 7
+                ANL_PLACE_UNIT(7, "Goblin Spearman", 10, 30)
+                ANL_PLACE_UNIT(7, "Goblin Spearman", 10, 30)
+                ANL_PLACE_UNIT(7, "Goblin Spearman", 10, 30)
+                ANL_PLACE_GUARDIAN(7, "Orcish Warrior", 15, 32)
+                ANL_PLACE_GUARDIAN(7, "Orcish Warrior", 26, 37)
+                ANL_PLACE_GUARDIAN(7, "Goblin Spearman", 13, 29)
+-- Initial AI units - Side 8
+                ANL_PLACE_UNIT(8, "Walking Corpse", 50, 30)
+                ANL_PLACE_UNIT(8, "Walking Corpse", 50, 30)
+                ANL_PLACE_UNIT(8, "Walking Corpse", 50, 30)
+                ANL_PLACE_GUARDIAN(8, "Revenant", 15, 24)
+                ANL_PLACE_GUARDIAN(8, "Revenant", 34, 37)
+                ANL_PLACE_GUARDIAN(8, "Walking Corpse", 47, 29)
+        }
+
+-- Setting leader names
+
+        event: {
+            name: "new turn"
+            first_time_only: false
+            do: ->
+                SET_NAMES(1)
+                SET_NAMES(2)
+                SET_NAMES(3)
+                SET_NAMES(4)
+        }
+
+-- Rescuing trapped units
+
+        <ANL_RESCUE_TRAPPED_UNIT(25, 13, 24, 12)
+        <ANL_RESCUE_TRAPPED_UNIT(35, 13, 36, 12)
+        <ANL_RESCUE_TRAPPED_UNIT(25, 43, 24, 43)
+        <ANL_RESCUE_TRAPPED_UNIT(35, 43, 36, 43)
+
+-- Destroying mushroom mines
+
+        event: {
+            name: "moveto"
+            filter: {
+                x: 10
+                y: 25
+                side: {1, 2, 3, 4}
+            }
+            do: ->
+                Modify_Side{
+                    side: 5
+                    income: 10
+                }
+                MODIFY_TERRAIN("Uh", x1, y1)
+                Sound{
+                    name: "skeleton-die-1.ogg"
+                }
+                Message{
+                    speaker: "narrator"
+                    image: "terrain/village/cave-tile.png"
+                    message: _ "You destroy the mushroom mine. The northwest undead now have 10 less income."
+                }
+        }
+
+        event: {
+            name: "moveto"
+            filter: {
+                x: 50
+                y: 25
+                side: {1, 2, 3, 4}
+            }
+            do: ->
+                Modify_Side{
+                    side: 6
+                    income: 10
+                }
+                MODIFY_TERRAIN("Uh", x1, y1)
+                Sound{
+                    name: "skeleton-die-1.ogg"
+                }
+                Message{
+                    speaker: "narrator"
+                    image: "terrain/village/cave-tile.png"
+                    message: _ "You destroy the mushroom mine. The northeast orcs now have 10 less income."
+                }
+        }
+
+        event: {
+            name: "moveto"
+            filter: {
+                x: 10
+                y: 30
+                side: {1, 2, 3, 4}
+            }
+            do: ->
+                Modify_Side{
+                    side: 7
+                    income: 10
+                }
+                MODIFY_TERRAIN("Uh", x1, y1)
+                Sound{
+                    name: "skeleton-die-1.ogg"
+                }
+                Message{
+                    speaker: "narrator"
+                    image: "terrain/village/cave-tile.png"
+                    message: _ "You destroy the mushroom mine. The southwest orcs now have 10 less income."
+                }
+        }
+
+        event: {
+            name: "moveto"
+            filter: {
+                x: 50
+                y: 30
+                side: {1, 2, 3, 4}
+            }
+            do: ->
+                Modify_Side{
+                    side: 8
+                    income: 10
+                }
+                MODIFY_TERRAIN("Uh", x1, y1)
+                Sound{
+                    name: "skeleton-die-1.ogg"
+                }
+                Message{
+                    speaker: "narrator"
+                    image: "terrain/village/cave-tile.png"
+                    message: _ "You destroy the mushroom mine. The southeast undead now have 10 less income."
+                }
+        }
+
+-- Make AI units destroy player’s buildings
+
+-- Villages
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                side: {5, 6, 7, 8}
+                filter_location: {
+                    terrain: "Gg^Vh"
+                }
+            }
+            do: ->
+                MODIFY_TERRAIN("Rd", x1, y1)
+                PLACE_IMAGE("scenery/village-human-burned2.png", x1, y1)
+                Sound{
+                    name: "torch.ogg"
+                }
+        }
+
+-- Farms
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                side: {5, 6, 7, 8}
+                filter_location: {
+                    terrain: "Re^Gvs"
+                }
+            }
+            do: ->
+                MODIFY_TERRAIN("Rd", x1, y1)
+                PLACE_IMAGE("scenery/castle-ruins.png", x1, y1)
+                Sound{
+                    name: "pincers.ogg"
+                }
+        }
+
+-- Universities & Castles
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                side: {5, 6, 7, 8}
+                filter_location: {
+                    terrain: {"Gg^Ve", "Gg^Vea", "Ch", "Ce", "Cv", "Chr", "Chw", "Chs", "Ke", "Kv", "Kh", "Khr"}
+                }
+            }
+            do: ->
+                MODIFY_TERRAIN("Rd", x1, y1)
+                PLACE_IMAGE("scenery/rubble.png", x1, y1)
+                Sound{
+                    name: "dagger-swish.wav"
+                }
+                Sound{
+                    name: "club.ogg"
+                }
+        }
+
+-- Hill mines
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                side: {5, 6, 7, 8}
+                filter_location: {
+                    terrain: "Hh^Vhh"
+                }
+            }
+            do: ->
+                MODIFY_TERRAIN("Hh", x1, y1)
+                Sound{
+                    name: "dagger-swish.wav"
+                }
+                Sound{
+                    name: "club.ogg"
+                }
+        }
+
+-- Mountain mines
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                side: {5, 6, 7, 8}
+                filter_location: {
+                    terrain: "Mm^Vhh"
+                }
+            }
+            do: ->
+                MODIFY_TERRAIN("Mm", x1, y1)
+                Sound{
+                    name: "dagger-swish.wav"
+                }
+                Sound{
+                    name: "club.ogg"
+                }
+        }
+
+-- ------------------------------------------------------
+-- Messages
+-- ------------------------------------------------------
+
+-- Telling players about spiders
+
+        event: {
+            name: "turn 3"
+            do: ->
+                Message{
+                    speaker: "narrator"
+                    message: _ "One of your peasants has happened upon some spiders’ nests in the north and south."
+                    image: "wesnoth-icon.png"
+                }
+                Message{
+                    side: {1, 2, 3, 4}
+                    type: "Peasant"
+                    message: _ "I swear I saw somebody trapped in the spider’s web. Maybe we should rescue him?"
+                }
+
+                SCROLL_TO(24, 12)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(36, 12)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(24, 43)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(36, 43)
+                Delay{
+                    time: 200
+                }
+
+                Message{
+                    speaker: "narrator"
+                    message: _ "Move any unit next to these captives and they will join your side. The spiders guarding each captive are currently wounded, the sooner you get there the better chance you have of killing them."
+                    image: "wesnoth-icon.png"
+                }
+        }
+
+-- Telling players about mushroom mines
+
+        event: {
+            name: "turn 5"
+            do: ->
+                Message{
+                    speaker: "narrator"
+                    message: _ "Your men report strange sounds coming from some caves to the east and west."
+                    image: "wesnoth-icon.png"
+                }
+                Message{
+                    canrecruit: true
+                    side: {1, 2, 3, 4}
+                    message: _ "It would seem the enemy has built some underground mushroom mines nearby — it must be where the mainstay of their resources are produced. If we could destroy them our chances wouldn’t nearly be so slim."
+                }
+
+                SCROLL_TO(10, 25)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(10, 30)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(50, 25)
+                Delay{
+                    time: 200
+                }
+                SCROLL_TO(50, 30)
+                Delay{
+                    time: 200
+                }
+
+                Message{
+                    speaker: "narrator"
+                    message: _ "Move any unit onto these villages to destroy the mine. Each one you destroy will reduce the enemy’s income by 10."
+                    image: "wesnoth-icon.png"
+                }
+        }
+
+-- Almost there...
+
+        event: {
+            name: "turn 23"
+            do: ->
+                Message{
+                    side: {1, 2, 3, 4}
+                    canrecruit: true
+                    message: _ "This battle is nearly at an end. Victory is close at hand!"
+                }
+        }
+
+-- Victory!
+
+        event: {
+            name: "turn 25"
+            do: ->
+                Message{
+                    side: {1, 2, 3, 4}
+                    canrecruit: true
+                    message: _ "We have survived the onslaught! The tide of the battle has turned, victory cannot elude us now!"
+                }
+                Message{
+                    speaker: "narrator"
+                    message: _ "You have won the game, but you may continue if you wish..."
+                    image: "wesnoth-icon.png"
+                }
+        }
+
+-- Deaths
+
+        event: {
+            name: "last breath"
+            filter: {
+                canrecruit: true
+                side: 1
+            }
+            do: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "I have fallen, but all is not lost!"
+                }
+        }
+
+        event: {
+            name: "last breath"
+            filter: {
+                canrecruit: true
+                side: 2
+            }
+            do: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "I am done for, but we have yet to lose this battle!"
+                }
+        }
+
+        event: {
+            name: "last breath"
+            filter: {
+                canrecruit: true
+                side: 3
+            }
+            do: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "Comrades, avenge me!"
+                }
+        }
+
+        event: {
+            name: "last breath"
+            filter: {
+                canrecruit: true
+                side: 4
+            }
+            do: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "Do not fear, there is hope for us still!"
+                }
+        }
+
+-- ------------------------------------------------------
+-- AI Recruitment Pattern
+-- ------------------------------------------------------
+
+        event: {
+            name: "turn 7"
+            do: ->
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: "Goblin Rouser"
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: "Soulless"
+                }
+        }
+
+        event: {
+            name: "turn 9"
+            do: ->
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: "Orcish Grunt"
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: "Skeleton"
+                }
+        }
+
+        event: {
+            name: "turn 11"
+            do: ->
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: "Orcish Archer"
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: "Skeleton Archer"
+                }
+        }
+
+        event: {
+            name: "turn 13"
+            do: ->
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: "Troll Whelp"
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: "Ghoul"
+                }
+
+                Disallow_Recruit{
+                    side: {6, 7}
+                    type: {"Goblin Spearman", "Goblin Rouser"}
+                }
+
+                Disallow_Recruit{
+                    side: {5, 8}
+                    type: {"Walking Corpse", "Soulless"}
+                }
+        }
+
+        event: {
+            name: "turn 15"
+            do: ->
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: "Orcish Assassin"
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: "Dark Adept"
+                }
+        }
+
+        event: {
+            name: "turn 17"
+            do: ->
+                Gold{
+                    side: {5, 6, 7, 8}
+                    amount: 50
+                }
+
+                Allow_Recruit{
+                    side: {6, 7}
+                    type: {"Troll", "Orcish Crossbowman", "Orcish Warrior"}
+                }
+
+                Allow_Recruit{
+                    side: {5, 8}
+                    type: {"Necrophage", "Bone Shooter", "Revenant"}
+                }
+        }
+    }
+}

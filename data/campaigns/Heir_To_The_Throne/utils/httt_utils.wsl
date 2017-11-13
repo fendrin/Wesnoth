@@ -1,0 +1,841 @@
+--textdomain wesnoth-httt
+
+---------------------------------
+--
+-- HTTT MACROS FOLLOW
+--
+---------------------------------
+
+--
+-- Portrait variation macros
+--
+
+KONRAD_VARIATION = (NAME) -> {
+    image: "portraits/konrad-human-#{NAME}.png"
+}
+
+KONRAD_VARIATION_ELF = (NAME) -> {
+    image: "portraits/konrad-elvish-#{NAME}.png"
+}
+
+DELFADOR_VARIATION = (NAME) -> {
+    image: "portraits/delfador-#{NAME}.png"
+}
+
+DELFADOR_VARIATION_ELF = (NAME) -> {
+    image: "portraits/delfador-elvish-#{NAME}.png"
+}
+
+DELFADOR_MENTORING = () -> {
+    image: "portraits/delfador-mentoring.png"
+}
+
+DELFADOR_MENTORING_ELF = () -> {
+    image: "portraits/delfador-elvish-mentoring.png"
+}
+
+LISAR_VARIATION = (NAME) -> {
+    image: "portraits/lisar-#{NAME}.png"
+}
+
+ASHEVIERE_VARIATION = (NAME) -> {
+    image: "portraits/asheviere-#{NAME}.png"
+}
+
+--
+-- HTTT-specific artifacts
+--
+
+OBJ_SWORD_FIRE = (X, Y, ID) -> {
+
+-- Give a hint the first time a unit stops in a hex near the sword.
+-- There is a village right there, so that's probably when it will occur,
+-- but anywhere nearby will do.
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+        }
+        filter_condition: {
+            have_location: {
+                x: x1, y: y1
+                and: {
+                    x: X, y: Y
+                    radius: 2
+                }
+                not: {
+                    x: X, y: Y
+                }
+            }
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Nearby is a clearing with a huge tree standing alone in the center."
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 1
+            x: X
+            y: Y
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "A large tree stands alone in a clearing. Driven into the trunk is a huge sword with flames dancing along its blade. Strangely, while the trunk near the sword is blackened and scorched, the tree seems otherwise unaffected by the flames."
+            }
+            PLACE_IMAGE("items/flame-sword.png", X, Y)
+            VARIABLE("sword_taken", 0)
+            Event{
+                name: "victory"
+                do: ->
+                    CLEAR_VARIABLE("sword_taken")
+            }
+    }
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: X
+            y: Y
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "sword_taken"
+                    numerical_equals: 0
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Should #{unit.name} attempt to pick up the sword?"
+                        option: {
+                            label: _ "Yes"
+                            command: ->
+                                Object{
+                                    id: ID
+                                    name: _ "Flaming Sword"
+                                    image: "attacks/sword-flaming.png"
+                                    duration: "forever"
+-- wmllint: local spelling forgemasters
+                                    description: _ "This massive blade was created centuries ago by long-forgotten elvish forgemasters, who imbued the bluish steel with an inner magical fire. Tongues of flame dance on the surface, giving the metal a flawless mirrored finish."
+                                    cannot_use_message: _ "Only the leader of an army can wield this sword!"
+                                    filter: {
+                                        type: {"Fighter", "Commander", "Lord", "Princess", "Battle Princess", "Elvish Captain", "Elvish Hero", "Elvish Marshal", "Elvish Champion", "Paladin", "Elvish Lord", "Elvish High Lord"}
+                                        x: X, y: Y
+                                    }
+                                    then: ->
+                                        Remove_Item{
+                                            x: X, y: Y
+                                        }
+                                        Message{
+                                            speaker: unit.id
+                                            image: "wesnoth-icon.png"
+                                            caption: ""
+                                            male_message: _ "As #{unit.name} places his hand around the glittering leather hilt, the sword roars to life! Strangely, he feels no heat once he picks it up, yet the grass at his feet bursts into flame as he tests the heft of this mighty weapon."
+                                            female_message: _ "As #{unit.name} places her hand around the glittering leather hilt, the sword roars to life! Strangely, she feels no heat once she picks it up, yet the grass at her feet bursts into flame as she tests the heft of this mighty weapon."
+                                        }
+                                        VARIABLE("sword_taken", 1)
+                                    
+                                    effect: {
+                                        apply_to: "attack"
+                                        name: {"sword", "saber"}
+                                        set_description: _ "flaming sword"
+                                        set_icon: "attacks/sword-flaming.png"
+                                        set_type: "fire"
+                                        set_specials: {
+                                            <WEAPON_SPECIAL_MAGICAL!
+                                        }
+                                        increase_damage: "25%"
+                                    }
+                                }
+                            
+                        }
+
+                        option: {
+                            label: _ "No"
+
+                            command: ->
+                                Allow_Undo{
+                                }
+                            
+                        }
+                    }
+                
+
+                else: ->
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+}
+
+OBJ_VOID_ARMOR = (X, Y, ID) -> {
+    <PLACE_IMAGE("items/armor-golden.png", X, Y)
+    <VARIABLE("armor_taken", 0)
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: X, y: Y
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "armor_taken"
+                    numerical_equals: 0
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Should #{unit.name} attempt to pick up the armor?"
+                        option: {
+                            label: _ "Yes"
+                            command: ->
+                                Object{
+                                    id: ID
+                                    name: _ "Void Armor"
+                                    image: "icon_armor.png"
+                                    description: _ "A beautiful chest plate crafted from shimmering black steel, the Void Armor is virtually impenetrable to physical weapons!"
+                                    cannot_use_message: _ "Only a powerful warrior may don this armor!"
+                                    duration: "forever"
+                                    filter: {
+                                        side: 1
+                                        x: X, y: Y
+                                        type: {"Fighter", "Commander", "Lord", "Princess", "Battle Princess", "Elvish Lord", "Elvish High Lord", "Elvish Fighter", "Elvish Captain", "Elvish Hero", "Elvish Marshal", "Elvish Champion", "Elvish Ranger", "Elvish Avenger", "Horseman", "Knight", "Lancer", "Paladin", "Grand Knight", "Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Lord", "Dwarvish Guardsman", "Dwarvish Stalwart", "Dwarvish Sentinel"}
+                                    }
+                                    then: ->
+                                        Remove_Item{
+                                            x: X, y: Y
+                                        }
+                                        Message{
+                                            speaker: unit.id
+                                            image: "wesnoth-icon.png"
+                                            caption: ""
+                                            male_message: _ "#{unit.name} struggles to lift and don the heavy plate. Once worn, however, it is amazingly comfortable. He feels an increased resistance to all physical damage!"
+                                            female_message: _ "#{unit.name} struggles to lift and don the heavy plate. Once worn, however, it is amazingly comfortable. She feels an increased resistance to all physical damage!"
+                                        }
+                                        VARIABLE("armor_taken", 1)
+
+                                        Modify_Unit{
+                                            filter: {
+                                                x: X, y: Y
+                                            }
+
+                                            trait: {
+                                                id: "void_armor"
+                                                name: _ "void armor"
+                                                description: _ "The Void Armor grants the following resistances:
+blade:  50%
+pierce: 40%
+impact: 40%
+fire:  +10%"
+                                            }
+                                        }
+                                    
+--
+-- Set physical resistance to 50/40/40
+--
+                                    effect: {
+                                        apply_to: "resistance"
+                                        replace: true
+                                        resistance: {
+                                            blade: 50
+                                            pierce: 60
+                                            impact: 60
+                                        }
+                                    }
+--
+-- Increase fire resistance by 10%
+--
+                                    effect: {
+                                        apply_to: "resistance"
+                                        resistance: {
+                                            fire: -10
+                                        }
+                                    }
+                                }
+                            
+                        }
+                        option: {
+                            label: _ "No"
+                        }
+                    }
+                
+            }
+    }
+}
+
+---------------------------------
+--
+-- SCEPTRE OF FIRE MACROS FOLLOW
+--
+---------------------------------
+
+SOF_TERRAIN_MASK = () -> {
+    terrain_mask: {
+        x: 1, y: 1
+        mask: "#{campaigns/Heir_To_The_Throne/masks/17_Scepter_of_Fire.mask}"
+
+        rule: {      -- Make sure your castle keep and cave walls are not converted
+            old: {"Cud", "Xu", "Kud"}
+            new: {"Re", "Uu^Vud", "Uh", "Uu^Uf"}
+            use_old: true
+        }
+        rule: {      -- Convert cave villages to stone villages
+            old: "Vu"
+            new: {"Re", "Uu^Vud", "Uh", "Uu^Uf"}   -- wmllint: ignore
+            terrain: "Uu^Vud"
+        }
+        rule: {      -- Add stone villages
+            old: "Uu"
+            new: "Uu^Vud"
+            terrain: "Uu^Vud"
+        }
+        rule: {      -- Add roads
+            old: "Uu"
+            new: "Re"
+            terrain: "Re"
+        }
+        rule: {      -- Add hilly caves
+            old: "Uu"
+            new: "Uh"
+            terrain: "Uh"
+        }
+        rule: {      -- Add a mushroom forest
+            old: "Uu"
+            new: "Uu^Uf"
+            terrain: "Uu^Uf"
+        }
+    }
+}
+
+PLACE_SCEPTRE = () -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Item{
+                location_id: "sceptre"
+                image: "items/sceptre-of-fire.png"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            filter_location: {
+                location_id: "sceptre"
+            }
+        }
+        do: ->
+            Object{
+                id: "object_sceptre"
+                name: _ "Sceptre of Fire"
+                image: "items/sceptre-of-fire.png"
+                duration: "forever"
+                description: _ "This ancient Sceptre was forged by the great Dwarves of the Heart Mountains. A symbol of the kingship of Wesnoth, the Sceptre has the power to shoot fireballs at enemies of the bearer!"
+                cannot_use_message: _ "This is the Sceptre of Fire. Only a true successor to the throne can possibly dare to take this!"
+                filter: {
+                    type: {"Princess", "Battle Princess", "Fighter", "Commander", "Lord"}
+                    x: x1, y: y1
+                }
+                effect: {
+                    apply_to: "variation"
+                    name: "sceptre"
+                }
+            }
+    }
+}
+
+KONRAD_GETS_SCEPTRE = () -> {
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Konrad"
+            filter_location: {
+                location_id: "sceptre"
+            }
+        }
+        do: ->
+            Set_Variable{
+                name: "sceptre"
+                value: "Konrad"
+            }
+
+            MODIFY_UNIT({id: "Konrad"}, "profile", "portraits/konrad-human-sceptre.png")
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Here it is at last, I have the Sceptre!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "So it is in our hands! Now let us leave this stinking pit."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I think that if we travel just a little north, we might be able to get out."
+            }
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+}
+
+LISAR_GETS_SCEPTRE = () -> {
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Li'sar"
+            filter_location: {
+                location_id: "sceptre"
+            }
+        }
+        do: ->
+            Set_Variable{
+                name: "sceptre"
+                value: "Li'sar"
+            }
+
+            MODIFY_UNIT({id: "Li'sar"}, "profile", "portraits/lisar-sceptre.png")
+
+            Message{
+                speaker: "Li'sar"
+                message: _ "At last! I have the Sceptre!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Indeed. You managed to reach it, Li’sar. I hope you shall use it wisely."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "My first use for it is going to be to help us get out of this hole! I hope you consider that wise."
+            }
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING!
+                message: _ "The Sceptre makes its wielder powerful, but hardly immortal, child. Use it prudently. Now come, I believe there is an exit to the north!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I think I know what I’m doing. Come, let us go!"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+}
+
+PASSAGE_NORMAL = (DESTINATION_NAME, WIDTH_NUMBER, WINDINESS_NUMBER, JAGGED_NUMBER) -> {
+    passage: {
+        destination: DESTINATION_NAME
+        width: WIDTH_NUMBER
+        windiness: WINDINESS_NUMBER
+        jagged: JAGGED_NUMBER
+    }
+}
+
+PASSAGE_CHANCE = (CHANCE_NUMBER, DESTINATION_NAME, WIDTH_NUMBER, WINDINESS_NUMBER, JAGGED_NUMBER) -> {
+    passage: {
+        chance: CHANCE_NUMBER
+        destination: DESTINATION_NAME
+        width: WIDTH_NUMBER
+        windiness: WINDINESS_NUMBER
+        jagged: JAGGED_NUMBER
+    }
+}
+
+ERASE_CASTLE = (SIDE, TERRAIN) -> {
+    store_unit: {
+        variable: "side_store"
+        filter: {
+            side: SIDE
+            canrecruit: true
+        }
+    }
+    <VARIABLE("min_x", side_store.x)
+    <VARIABLE_OP("min_x", "sub", 1)
+    <VARIABLE("min_y", side_store.y)
+    <VARIABLE_OP("min_y", "sub", 1)
+    <VARIABLE("max_x", side_store.x)
+    <VARIABLE_OP("max_x", "add", 1)
+    <VARIABLE("max_y", side_store.y)
+    <VARIABLE_OP("max_y", "add", 1)
+    <VARIABLE("x_range", "#{min_x}-#{max_x")
+    <VARIABLE("y_range", "#{min_y}-#{max_y")
+    terrain: {
+        x: x_range
+        y: y_range
+        terrain: TERRAIN
+    }
+    <CLEAR_VARIABLE("side_store,min_x,min_y,max_x,max_y,x_range,y_range")
+}
+
+--textdomain wesnoth-help
+UNDERGROUND_VOLCANO = (RED, GREEN, BLUE) -> {
+--
+-- -30, -40, -40 are the default good values for an underground
+-- reddish hue
+--
+    time: {
+        id: "underground"
+        name: _ "Underground"
+        image: "misc/time-schedules/schedule-underground.png"
+        lawful_bonus: -25
+        red: RED
+        green: GREEN
+        blue: BLUE
+    }
+}
+
+--textdomain wesnoth-httt
+NEXT_LAVA = () -> {
+    store_locations: {
+        variable: "potential_locs"
+        terrain: "Xu"
+        filter_adjacent_location: {
+            terrain: {"U*", "Re"}
+            filter_adjacent_location: {
+                terrain: {"U*", "Re"}
+                count: "4-5"
+            }
+        }
+        not: {
+-- don't start near the cave floor around the sceptre
+            x: sceptre_x
+            y: sceptre_y
+            radius: 5
+        }
+        not: {
+-- don't start near the existing lava
+            terrain: "Ql"
+            radius: 5
+        }
+    }
+    if: {
+        variable: {
+            name: "potential_locs.length"
+            greater_than: 0
+        }
+        then: ->
+            VARIABLE("lava_count", 0)
+            VARIABLE("randrange", potential_locs.length)
+            VARIABLE_OP("randrange", "sub", 1)
+            VARIABLE("randrange", "0..#{randrange")
+            RANDOM(randrange)
+            CLEAR_VARIABLE("lava_body")
+            VARIABLE("lava_body.x", potential_locs[random].x)
+            VARIABLE("lava_body.y", potential_locs[random].y)
+            CLEAR_VARIABLE("random")
+            Terrain{
+                x: lava_body.x
+                y: lava_body.y
+                terrain: "Ql"
+            }
+            CLEAR_VARIABLE("randrange")
+        
+    }
+    <CLEAR_VARIABLE("potential_locs")
+}
+
+EXPAND_LAVA = () -> {
+-- the lava should expand to any cave floor that is not next to a cavewall,
+-- or cave floor that is next to cavewall that is already next to lava
+-- also if it comes near another lavabody, it should not expand in that direction
+
+-- first we store cavewall that is not already next to this lava
+    store_locations: {
+        variable: "far_walls"
+        terrain: "Xu"
+        not: {
+            find_in: "lava_body"
+            radius: 1
+        }
+    }
+
+-- next we store lava that is not part of this body
+    store_locations: {
+        variable: "far_lava"
+        terrain: "Ql"
+        not: {
+            find_in: "lava_body"
+        }
+    }
+
+-- now we store cave floor nearby that doesn't approach the bad stuff
+    store_locations: {
+        variable: "good_floor"
+        terrain: {"U*", "Re"}
+        and: {
+            find_in: "lava_body"
+            radius: 1
+        }
+        not: {
+            find_in: "far_walls"
+            radius: 1
+        }
+        not: {
+            find_in: "far_lava"
+            radius: 1
+        }
+        not: {
+-- don't go anywhere near the cave floor around the sceptre
+            x: sceptre_x, y: sceptre_y
+            radius: 4
+            filter_radius: {
+                terrain: {"U*", "Re"}
+            }
+        }
+    }
+
+    if: {
+        variable: {
+            name: "good_floor.length"
+            greater_than: 0
+        }
+        then: ->
+            Foreach{
+                array: "good_floor"
+                do: ->
+                    Terrain{
+                        x: this_item.x
+                        y: this_item.y
+                        terrain: "Ql"
+                    }
+                
+            }
+            Store_Locations{
+                variable: "lava_body"
+                find_in: "lava_body"
+                or: {
+                    find_in: "good_floor"
+                }
+            }
+        
+        else: ->
+-- this lava can't expand so force a new eruption
+            NEXT_LAVA!
+        
+    }
+    <CLEAR_VARIABLE("far_walls")
+    <CLEAR_VARIABLE("far_lava")
+    <CLEAR_VARIABLE("good_floor")
+
+-- everyone on lava dies
+    kill: {
+        not: {
+            type: {"Gryphon Rider", "Gryphon Master"}
+        }
+        filter_location: {
+            terrain: "Ql"
+        }
+        animate: true
+        fire_event: true
+    }
+}
+
+WATERFALL_MASK = (X, Y) -> {
+    item: {
+        image: "projectiles/icemissile-n-6.png"
+        x: X
+        y: Y
+    }
+    item: {
+        image: "projectiles/icemissile-n-5.png"
+        x: X
+        y: Y
+    }
+    item: {
+        image: "projectiles/icemissile-n-4.png"
+        x: X
+        y: Y
+    }
+    item: {
+        image: "projectiles/icemissile-n-3.png"
+        x: X
+        y: Y
+    }
+    item: {
+        image: "halo/elven/nature-halo1.png"
+        x: X
+        y: Y
+    }
+}
+
+CHECK_VARIABLE = (NAME, VALUE) -> {
+    variable: {
+        name: NAME
+        equals: VALUE
+    }
+}
+
+NEED_DELFADOR = (PLACEMENT) -> {
+    unit: {
+        id: "Delfador"
+        name: _ "Delfador"
+        profile: "portraits/delfador-elvish.png"
+        unrenamable: true
+        type: "Elder Mage"
+        <PLACEMENT
+        <IS_HERO!
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_INTELLIGENT!
+        }
+    }
+}
+
+NEED_KALENZ = (PLACEMENT) -> {
+    unit: {
+        id: "Kalenz"
+        name: _ "Kalenz"
+        profile: "portraits/kalenz.png"
+        unrenamable: true
+        type: "Elvish Lord"
+        <PLACEMENT
+        <IS_HERO!
+        random_traits: false
+        modifications: {
+            <TRAIT_LOYAL!
+        }
+    }
+}
+
+NEED_LISAR = (PLACEMENT) -> {
+    unit: {
+        id: "Li'sar"
+        name: _ "Li'sar"
+        profile: "portraits/lisar.png"
+        unrenamable: true
+        type: "Princess"
+        <PLACEMENT
+        <IS_HERO!
+        random_traits: false
+        modifications: {
+            <TRAIT_LOYAL!
+        }
+    }
+}
+
+STORE_DELFADOR = () -> {
+    if: {
+        have_unit: {
+            id: "Delfador"
+            search_recall_list: true
+        }
+        then: ->
+            Store_Unit{
+                filter: {
+                    id: "Delfador"
+                }
+                kill: true
+                variable: "delfador_store"
+            }
+        
+    }
+}
+
+RESTORE_DELFADOR = () -> {
+    if: {
+        variable: {
+            name: "delfador_store.id"
+            equals: "Delfador"
+        }
+        then: ->
+            Unstore_Unit{
+                variable: "delfador_store"
+                x: "recall", y: "recall"
+            }
+            CLEAR_VARIABLE("delfador_store")
+        
+    }
+}
+
+STORE_KALENZ = () -> {
+    if: {
+        have_unit: {
+            id: "Kalenz"
+            search_recall_list: true
+        }
+        then: ->
+            Store_Unit{
+                filter: {
+                    id: "Kalenz"
+                }
+                kill: true
+                variable: "kalenz_store"
+            }
+        
+    }
+}
+
+RESTORE_KALENZ = () -> {
+    if: {
+        variable: {
+            name: "kalenz_store.id"
+            equals: "Kalenz"
+        }
+        then: ->
+            Unstore_Unit{
+                variable: "kalenz_store"
+                x: "recall", y: "recall"
+            }
+            CLEAR_VARIABLE("kalenz_store")
+        
+    }
+}
+
+STORE_LISAR = () -> {
+    if: {
+        have_unit: {
+            side: 1
+            id: "Li'sar"
+            search_recall_list: true
+        }
+        then: ->
+            Store_Unit{
+                filter: {
+                    side: 1
+                    id: "Li'sar"
+                }
+                kill: true
+                variable: "lisar_store"
+            }
+        
+    }
+}
+
+RESTORE_LISAR = () -> {
+    if: {
+        variable: {
+            name: "lisar_store.id"
+            equals: "Li'sar"
+        }
+        then: ->
+            Unstore_Unit{
+                variable: "lisar_store"
+                x: "recall", y: "recall"
+            }
+            CLEAR_VARIABLE("lisar_store")
+        
+    }
+}

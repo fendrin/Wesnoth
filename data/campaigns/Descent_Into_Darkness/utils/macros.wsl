@@ -1,0 +1,109 @@
+--textdomain wesnoth-did
+
+-- MODIFY_ONE_UNIT alters a unit variable for a single unit
+MODIFY_ONE_UNIT = (FILTER, WML) -> {
+    store_unit: {
+        filter: {
+            <FILTER
+        }
+        variable: "MODIFY_UNIT_store"
+        kill: false
+    }
+
+    modify_unit: {
+        filter: {
+            id: MODIFY_UNIT_store[1].id
+        }
+        <WML
+    }
+
+    <CLEAR_VARIABLE("MODIFY_UNIT_store")
+}
+
+-- Create a new ghost-type "advisor" if Malin doesn't already have one
+CREATE_ADVISOR = () -> {
+    if: {
+        have_unit: {
+            side: 1
+            role: "advisor"
+            search_recall_list: true
+        }
+        then: ->
+-- Recall an advisor if we have one to do so
+            Recall{
+                role: "advisor"
+            }
+        
+        elseif: {
+-- Else, make a new advisor from a ghost unit
+            have_unit: {
+                side: 1
+                type: {"Spectre", "Nightgaunt", "Wraith", "Shadow", "Ghost"}
+                search_recall_list: true
+            }
+            then: ->
+                Role{
+                    role: "advisor"
+                    side: 1
+                    type: {"Spectre", "Nightgaunt", "Wraith", "Shadow", "Ghost"}
+                }
+
+                Recall{
+                    role: "advisor"
+                }
+            
+        }
+        else: ->
+-- If that fails too, make a brand new ghost advisor
+            Unit{
+                type: "Ghost"
+                side: 1
+                role: "advisor"
+                animate: true
+                placement: "leader"
+            }
+        
+    }
+}
+
+MANOR_DOORS = (ALLOWED_SIDES) -> {
+-- Triggers when moving next to any door terrain and will replace it
+-- with an 'opened' variant.
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            side: ALLOWED_SIDES
+
+            filter_location: {
+                filter_adjacent_location: {
+                    terrain: "*^Pr*"
+                }
+            }
+        }
+        do: ->
+            Store_Locations{
+                terrain: "*^Pr*"
+
+                filter_adjacent_location: {
+                    x: x1, y: y1
+                }
+
+                variable: "door_to_open"
+            }
+
+            Terrain{
+                x: door_to_open.x, y: door_to_open.y
+                terrain: "#{door_to_open.terrain}o" -- Append 'o' to the terrain string to get open variant.
+                layer: "both"
+            }
+
+            Redraw{
+                side: unit.side
+            }
+
+            CLEAR_VARIABLE("door_to_open")
+    }
+}

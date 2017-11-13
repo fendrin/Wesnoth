@@ -1,0 +1,150 @@
+-- Tests how various variable settings occuring in prestart
+-- and in early events work out.
+-- For example, whether setting gold of a side in prestart works, or goes OOS
+-- Also, whether setting the turn counter works.
+
+GENERIC_UNIT_TEST("set_gold_in_prestart_one", {
+        event: {
+            name: "prestart"
+            do: ->
+                Modify_Side{
+                    side: 1
+                    gold: 666
+                }
+        }
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Store_Side{
+                    side: 1
+                    variable: "temp"
+                }
+                RETURN(VARIABLE_CONDITIONAL("temp.gold", "equals", 666))
+        }
+})
+
+GENERIC_UNIT_TEST("set_gold_in_prestart_two", {
+        event: {
+            name: "prestart"
+            do: ->
+                Gold{
+                    amount: 566
+                }
+        }
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Store_Side{
+                    side: 1
+                    variable: "temp"
+                }
+                RETURN(VARIABLE_CONDITIONAL("temp.gold", "equals", 666))
+        }
+})
+
+GENERIC_UNIT_TEST("modify_turns_one", {
+        event: {
+            name: "prestart"
+            do: ->
+                Modify_Turns{
+                    value: 42
+                }
+        }
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Store_Turns{
+                    variable: "temp"
+                }
+                RETURN(VARIABLE_CONDITIONAL("temp", "equals", 42))
+        }
+})
+
+GENERIC_UNIT_TEST("modify_turns_two", {
+        event: {
+            name: "prestart"
+            do: ->
+                Modify_Turns{
+                    current: 42
+                }
+        }
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                FAIL!
+        }
+        event: {
+            name: "side 1 turn 42"
+            do: ->
+                SUCCEED!
+        }
+})
+
+GENERIC_UNIT_TEST("modify_turns_three", {
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Modify_Turns{
+                    current: 42
+                }
+        }
+        event: {
+            name: "side 1 turn 1 refresh"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "side 1 turn 42"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("modify_turns_four", {
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Modify_Turns{
+                    current: 42
+                }
+        }
+        event: {
+            name: "side 1 turn 1 refresh"
+            do: ->
+                End_Turn{
+                }
+        }
+        event: {
+            name: "side 1 turn 1 end"
+            do: ->
+                FAIL!
+        }
+        event: {
+            name: "side 2 turn 42"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "side 1 turn 43"
+            do: ->
+                FAIL!
+        }
+})
+
+GENERIC_UNIT_TEST("replace_schedule_prestart", {
+        event: {
+            name: "prestart"
+            do: ->
+                Replace_Schedule{
+                    <DUSK!
+                }
+        }
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                Store_Time_Of_Day{
+                    x: 1, y: 1
+                }
+                RETURN(VARIABLE_CONDITIONAL("time_of_day.id", "equals", "dusk"))
+        }
+})

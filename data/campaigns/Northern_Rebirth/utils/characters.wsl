@@ -1,0 +1,90 @@
+--textdomain wesnoth-nr
+
+CHARACTER_STATS_TALLIN = () -> {
+    type: "Peasant"
+    id: "Tallin"
+    name: _ "Tallin"
+    profile: "portraits/Tallin.png"
+    canrecruit: true
+    unrenamable: true
+    modifications: {
+        <TRAIT_FEARLESS!
+        <TRAIT_INTELLIGENT!
+        <TRAIT_RESILIENT!
+        object: {
+            effect: {
+                apply_to: "image_mod"
+err: ../attic/data/campaigns/Northern_Rebirth/utils/characters.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 17:                 add=RC(magenta>purple)
+            }
+        }
+    }
+}
+
+CHARACTER_STATS_CAMERIN = () -> {
+    type: "Arch Mage"
+    id: "Camerin"
+    name: _ "Camerin"
+    profile: "portraits/Camerin.png"
+    <IS_LOYAL!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_STRONG!
+    }
+}
+
+CHARACTER_STATS_FATHER_MORVIN = () -> {
+    type: "White Mage"
+    id: "Father Morvin"
+    name: _ "Father Morvin"
+    profile: "portraits/Father_Morvin.png"
+    <IS_LOYAL!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_RESILIENT!
+    }
+}
+
+CHARACTER_STATS_SISTER_THERA = () -> {
+    type: "White Mage"
+    gender: "female"
+    id: "Sister Thera"
+    name: _ "Sister Thera"
+    profile: "portraits/Sister_Thera.png"
+    <IS_LOYAL!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_QUICK!
+    }
+}
+
+CHARACTER_STATS_ELENIA = () -> {
+    type: "Elvish Druid"
+    id: "Elenia"
+    name: _ "Elenia"
+    profile: "portraits/Elenia.png"
+    <IS_LOYAL!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_HEALTHY!
+    }
+}
+
+CHARACTER_STATS_KRASH = () -> {
+    type: "Drake Burner"
+    id: "Krash"
+    name: _ "Krash"
+    <IS_LOYAL!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_RESILIENT!
+    }
+}
+
+CHARACTER_STATS_RAKSHAS = () -> {
+    type: "Orcish Sovereign"
+    id: "Rakshas"
+    name: _ "Rakshas"
+-- Use the default Soverign portrait for now
+-- profile=portraits/Rakshas.png
+    canrecruit: true
+}

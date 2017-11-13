@@ -1,0 +1,999 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "08_Clearwater_Port"
+    name: _ "Clearwater Port"
+    next_scenario: "09_Fallen_Lich_Point"
+    victory_when_enemies_defeated: false
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/08_Clearwater_Port.map"
+
+    turns: 32
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_08_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        side: 1
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Humans"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(1, 5)
+
+    side: {
+        side: 2
+        type: "Lieutenant"
+        id: "Commander Aethyr"
+        name: _ "Commander Aethyr"
+        profile: "portraits/aethyr-first.png"
+        canrecruit: true
+        recruit: {"Peasant", "Bowman", "Horseman", "Mage", "Spearman"}
+        <GOLD(220, 160, 120)
+        ai: {
+            aggression: -0.5
+            <NO_SCOUTS!
+            recruitment_pattern: {"mixed fighter", "fighter", "mixed fighter", "archer", "fighter", "fighter"}
+            passive_leader: true
+            grouping: "defensive"
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            grouping: "offensive"
+            aggression: 0.5
+        }
+        team_name: "Haldric"
+        user_team_name: _ "Humans"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <AI_CONTROLLER({}, 1, 2, {})
+
+    <STARTING_VILLAGES(2, 9)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Vragar"
+        name: _ "Tan-Vragar"
+        side: 3
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler"}
+        }
+
+        <GOLD(190, 230, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(4, 8, 12)
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Burg"
+        name: _ "Tan-Burg"
+        side: 4
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler"}
+        }
+
+        <GOLD(190, 230, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(4, 8, 12)
+    }
+
+    side: {
+--One Bad Dude
+        type: "Orcish Warlord"
+        id: "Ut'Tan-Vrork"
+        name: _ "Ut’Tan-Vrork"
+        profile: "portraits/orcs/grunt-2.png"
+        side: 5
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Warrior", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler"}
+        }
+
+        <GOLD(260, 300, 360)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(5, 10, 15)
+    }
+
+--Time Areas broken - no visible change, use a halo with it
+    time_area: {
+        x: {34, 35, 36, 36, 36, 35, 34, 33, 32, 32, 32, 33, 34, 35, 35, 34, 33, 33, 34}  --,37,37,31,31
+        y: {6, 7, 7, 8, 9, 10, 10, 10, 9, 8, 7, 7, 7, 8, 9, 9, 9, 8, 8}  --,8,9,8,9
+        <MORNING!
+        <MORNING!
+        <AFTERNOON!
+        <AFTERNOON!
+        <DUSK!
+        <DAWN!
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/signpost.png", 33, 8)
+            PLACE_IMAGE("scenery/signpost.png", 8, 17)
+            PLACE_IMAGE("scenery/signpost.png", 1, 10)
+            PLACE_IMAGE("scenery/signpost.png", 36, 18)
+
+            Item{
+                x: 34
+                y: 8
+                image: "scenery/lighthouse.png"
+                halo: "halo/lighthouse-aura.png"
+            }
+
+            Recall{
+                id: "Lady Jessene"
+            }
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+
+            Recall{
+                id: "Sir Ladoc"
+            }
+
+            Recall{
+                id: "Minister Edren"
+            }
+
+            NAMED_LOYAL_UNIT(2, "Peasant", 26, 18, {}, _ "Angry Farmer")
+            NAMED_LOYAL_UNIT(2, "Peasant", 28, 19, {}, _ "Angry Farmer")
+            NAMED_LOYAL_UNIT(2, "Peasant", 29, 22, {}, _ "Angry Farmer")
+
+            Objectives{
+                side: 1
+                objective: {
+                    caption: _ "Cowardly:"
+                    description: _ "Flee on the First Ship"
+                    condition: "win"
+                }
+                objective: {
+                    caption: _ "Normal:"
+                    description: _ "Flee on the Second Ship"
+                    condition: "win"
+                }
+                objective: {
+                    caption: _ "Heroic:"
+                    description: _ "Flee on the Third Ship" .. EARLY_FINISH_BONUS_FOOTNOTE!
+                    condition: "win"
+                }
+                objective: {
+                    caption: _ "Heroic:"
+                    description: _ "Defeat all enemy leaders" .. EARLY_FINISH_BONUS_FOOTNOTE!
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Commander Aethyr"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Miss the Last Ship"
+                    condition: "lose"
+                    show_turn_counter: true
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+
+                <AI_CONTROLLER_NOTE!
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Our Prince has arrived at Clearwater Port, with the orcs on his heels. While the orcs haven’t caught up with him yet, the winter snow has, and the ships seem to be missing from the port."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Sir Ruddry"
+                message: _ "Ha! Clearwater Port still stands!"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Lieutenant, who is in command here? And where are the ships? We risk being trapped in this city for the winter if the port freezes over."
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "I am, my Lord, I command the local garrison. Our whole fishing fleet is evacuating people to Southbay as we speak. The ships should be back in a few days. Our forces engaged the orcs as they exited the Swamp of Esten. At first, we prevailed, and pushed them back into the swamp!"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "But our victory did not hold; orc reinforcements quickly overran our positions. We lost most of our forces, my lord, including the King of Clearwater, who died bravely leading a charge."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "That’s horrible!"
+                image: "portraits/haldric-surprised.png"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "The blood of many good soldiers stained the frozen field that day. And still the orcs press on. The king left no heir, but the other nobles have fled to Southbay. We’ve been busy evacuating the rest of the populace. The army bought us enough time to evacuate almost all our people, and most of the winter stores. They’ve gone to Southbay, which is brimming with refugees from all over."
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "We’re only holding the city until the last of the refugees are gone. You, my lord, are free to retreat to safety when the next ship comes. But, if I may be frank, my lord, our defenses are stretched thin and we could use all the help we can get to hold our walls. Otherwise I fear that we will be overrun before the last of the people can be evacuated."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Well, we are the last of the refugees from our lands, for the orcs are right on our heels! We have Wesfolk with us. They have been of service. They are to be evacuated as well. We have traveled far and bear many wounded, but we will help you defend these walls as long as we can."
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "I thank you, my lord. But we are to bring these Wesfolk too? It would be... highly irregular. Are you sure, my lord?"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Yes. Be sure that it is understood that these are our allies and friends."
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Yes, sir!"
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Yes sir, indeed! You need us to help hold out until the ships arrive."
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Ships! Nobody said anything about ships. Will this torture ever end! Ahh, the orcs will help take my mind off things."
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "To your posts, men! We should be able to evacuate everyone in three more boatloads. Until then, let us make those orcs pay dearly for every inch of our land. For our homes, for our people, for our fallen king!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            type: "Peasant"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "You killed my family! Die!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Lady Jessene"
+        }
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "<i>“Bring these Wesfolk too? It would be... highly irregular.”</i> Bah! I’ll show you irregular..."
+            }
+    }
+
+    event: {
+        name: "turn 3"
+        do: ->
+            Message{
+                speaker: "Ut'Tan-Vrork"
+                message: _ "Push ’em into the sea! They’re in our winter homes! Heh... Tan-Vragar, I’m sure they will enjoy your little surprise!"
+            }
+
+            Scroll_To{
+                x: 30, y: 30
+            }
+
+            Allow_Recruit{
+                type: "Naga Fighter"
+                side: 3
+            }
+
+            if EASY
+                LOYAL_UNIT(3, "Naga Fighter", 31, 30)
+            
+            if NORMAL
+                LOYAL_UNIT(3, "Naga Fighter", 31, 30)
+                LOYAL_UNIT(3, "Naga Fighter", 30, 31)
+            
+
+            if HARD
+                LOYAL_UNIT(3, "Naga Fighter", 31, 30)
+                LOYAL_UNIT(3, "Naga Fighter", 30, 31)
+                LOYAL_UNIT(3, "Naga Fighter", 27, 33)
+            
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 33
+            y: 8
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "An ode to ye, on yer way, I hope you have a brighter day!"
+                image: "scenery/signpost.png"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 8
+            y: 17
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Dead-Man’s Ford"
+                image: "scenery/signpost.png"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 1
+            y: 10
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "The River Road — To the Swamp of Esten."
+                image: "scenery/signpost.png"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 36
+            y: 18
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Clearwater Port"
+                image: "scenery/signpost.png"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        <if EASY then {
+            name: {"turn 16", "turn 22", "turn 28"}
+        } else {
+            name: {"turn 10", "turn 16", "turn 22", "turn 28"}
+        }
+        first_time_only: false
+        do: ->
+            Gold{
+                side: 3
+                amount: ON_DIFFICULTY(30, 40, 50)
+            }
+            Gold{
+                side: 4
+                amount: ON_DIFFICULTY(30, 40, 50)
+            }
+            Gold{
+                side: 5
+                amount: ON_DIFFICULTY(40, 50, 60)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Vragar"
+        }
+        do: ->
+            LOOT(75, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Burg"
+        }
+        do: ->
+            LOOT(75, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Ut'Tan-Vrork"
+        }
+        do: ->
+            LOOT(125, 1)
+    }
+
+--First Ship
+    event: {
+        name: "turn 12"
+        do: ->
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {40, 39, 39, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 30, 30}
+                y: {14, 14, 13, 12, 11, 11, 10, 11, 11, 12, 12, 13, 13, 14, 15}
+            }
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 30, 15)
+            PLACE_IMAGE("items/gohere.png", 31, 16)
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the first ship has arrived! Prince Haldric, if you and your men must leave for Southbay just go to the pier to board the ship."
+            }
+            Set_Variable{
+                name: "First_Ship"
+                value: 1
+            }
+    }
+
+    event: {
+        name: "turn 18"
+        do: ->
+            Remove_Item{
+                x: 31
+                y: 16
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the first ship is departing. But the second ship should arrive shortly."
+            }
+
+            Remove_Item{
+                x: 30
+                y: 15
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {30, 30, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 39, 39, 40}
+                y: {15, 14, 13, 13, 12, 12, 11, 11, 10, 11, 11, 12, 13, 14, 14}
+            }
+            CLEAR_VARIABLE("First_Ship")
+    }
+
+--Second Ship
+    event: {
+        name: "turn 20"
+        do: ->
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {40, 39, 39, 39, 38, 37, 36, 35, 34, 33, 32, 31, 31}
+                y: {14, 14, 13, 12, 11, 11, 10, 11, 11, 12, 12, 13, 14}
+            }
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 31, 14)
+            PLACE_IMAGE("items/gohere.png", 32, 14)
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the second ship has arrived! Prince Haldric, if you and your men want to leave for Southbay just go to the pier to board the ship."
+            }
+            Set_Variable{
+                name: "Second_Ship"
+                value: 1
+            }
+    }
+
+    event: {
+        name: "turn 24"
+        do: ->
+            Remove_Item{
+                x: 32
+                y: 14
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the second ship is departing. But the last ship will be here before long. With your help we can hold on just a while longer."
+            }
+
+            Remove_Item{
+                x: 31
+                y: 14
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {31, 31, 32, 33, 34, 35, 36, 37, 38, 39, 39, 39, 40}
+                y: {14, 13, 12, 12, 11, 11, 10, 11, 11, 12, 13, 14, 14}
+            }
+            CLEAR_VARIABLE("Second_Ship")
+    }
+
+--Third Ship
+    event: {
+        name: "turn 26"
+        do: ->
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {40, 39, 39, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 30, 29, 28}
+                y: {14, 14, 13, 12, 11, 11, 10, 11, 11, 12, 12, 13, 13, 14, 15, 15}
+            }
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 28, 15)
+            PLACE_IMAGE("items/gohere.png", 29, 16)
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the last ship has arrived! Finally the last of our people can flee to safety. Prince Haldric, you and your men must go now! Go to the pier to board the ship for Southbay."
+            }
+            Set_Variable{
+                name: "Third_Ship"
+                value: 1
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Remove_Item{
+                x: 29
+                y: 16
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My lord, the last ship is departing. We’re trapped!"
+            }
+
+            Remove_Item{
+                x: 28
+                y: 15
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 2
+                x: {28, 29, 30, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 39, 39, 40}
+                y: {15, 15, 14, 13, 13, 12, 12, 11, 11, 10, 11, 11, 12, 13, 14, 14}
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+--The victory
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 31
+            y: 16
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Prince Haldric"
+                    x: 31
+                    y: 16
+                }
+
+                then: ->
+                    If{
+                        variable: {
+                            name: "First_Ship"
+                            numerical_equals: 1
+                        }
+                        then: ->
+                            CLEAR_VARIABLE("First_Ship")
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Commander Aethyr"
+                                message: _ "My lord, the ship isn’t here yet. Come help us defend against the orcs."
+                            }
+
+                            Allow_Undo{
+                            }
+                        
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "Commander Aethyr"
+                        message: _ "Shirk not your duty, soldier. When the boat arrives, this is where Prince Haldric must go to lead you to the ship. Until then, help us defend against the orcs."
+                    }
+
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 32
+            y: 14
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Prince Haldric"
+                    x: 32
+                    y: 14
+                }
+
+                then: ->
+                    If{
+                        variable: {
+                            name: "Second_Ship"
+                            numerical_equals: 1
+                        }
+                        then: ->
+                            CLEAR_VARIABLE("Second_Ship")
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Commander Aethyr"
+                                message: _ "My lord, the ship isn’t here yet. Come help us defend against the orcs."
+                            }
+
+                            Allow_Undo{
+                            }
+                        
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "Shirk not your duty, soldier. When the boat arrives, this is where Prince Haldric must go to lead you to the ship. Until then, help us defend against the orcs."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 29
+            y: 16
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Prince Haldric"
+                    x: 29
+                    y: 16
+                }
+
+                then: ->
+                    If{
+                        variable: {
+                            name: "Third_Ship"
+                            numerical_equals: 1
+                        }
+                        then: ->
+                            CLEAR_VARIABLE("Third_Ship")
+                            Endlevel{
+                                result: "victory"
+                                bonus: true
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Commander Aethyr"
+                                message: _ "My lord, the ship isn’t here yet. Come help us defend against the orcs."
+                            }
+
+                            Allow_Undo{
+                            }
+                        
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "Shirk not your duty, soldier. When the boat arrives, this is where Prince Haldric must go to lead you to the ship. Until then, help us defend against the orcs."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Commander Aethyr"
+        }
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Let me have peace in Death! My love, I’ll be there soon—"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We needed him to get out of here. We’re trapped!"
+                image: "portraits/haldric-surprised.png"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve escaped from the orcs before we were trapped by the ice! Now, on to Southbay."
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "I know I mentioned I can’t float."
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Might I suggest a bit of a detour?"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Why?"
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "You have the Ruby of Fire, but you have no idea what it does, correct? You know that lich you have petrified just outside of Southbay—"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Yes, Lich Point! Where we first used our magi in battle, and turned the tide of war against your people."
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+-- wmllint: local spelling Erm
+                message: _ "Erm, yes... He was Caror, the arch rival of our dearly departed Lich-Lord Lenvan. He coveted the ruby, and was studying it. The only copy of his study, the Book of Fire and Darkness, was petrified along with him."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "If we make landfall outside of Southbay, we’ll be trapped. Of that I am sure!"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My family was from Southbay. My father was a soldier there. The city’s sewer entrance is near that fossil of a lich."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Wow, this is beginning to sound dangerously like a plan. Commander Aethyr, will you join us?"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "No. These monsters killed my family. My wife, my daughters. There is nothing left for me. I’ll stay. By the time the orcs wrestle Clearwater Port away from me there’ll be nothing but rubble left!"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "The peasant farmers seem to like you. Who knows, maybe they’ll be of some help."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Resources are scarce, we need all of the help we can get. Be brave and fight hard, my friend!"
+            }
+
+            Allow_Recruit{
+                side: 1
+                type: "Peasant"
+            }
+
+            CLEAR_VARIABLE("First_Ship")
+            CLEAR_VARIABLE("Second_Ship")
+            CLEAR_VARIABLE("Third_Ship")
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+}

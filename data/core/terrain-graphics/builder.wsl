@@ -1,41 +1,41 @@
 --textdomain wesnoth
 
-IMAGE_SINGLE = (IMAGESTEM, POSTFIX) ->
-    "#{IMAGESTEM}#{POSTFIX}.png"
+IMAGE_SINGLE = (IMAGESTEM, POSTFIX) -> {
+err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 4: {IMAGESTEM}{POSTFIX}.png#enddef
 
-ANIMATION_01 = (IMAGESTEM, POSTFIX) ->
-    "#{IMAGESTEM}-A01#{POSTFIX}.png:100"
+    ANIMATION_01: (IMAGESTEM, POSTFIX) -> {
+err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 7: {IMAGESTEM}-A01{POSTFIX}.png:100#enddef
 
-ANIMATION_03 = (IMAGESTEM, POSTFIX) ->
-    "#{IMAGESTEM}-A[01~03]#{POSTFIX}.png:200"
+        ANIMATION_03: (IMAGESTEM, POSTFIX) -> {
+err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 10: {IMAGESTEM}-A[01~03]{POSTFIX}.png:200#enddef
 
-ANIMATION_04 = (IMAGESTEM, POSTFIX) -> {
+            ANIMATION_04: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 13: {IMAGESTEM}-A[01~04]{POSTFIX}.png:100#enddef
 
-ANIMATION_08 = (IMAGESTEM, POSTFIX) ->
-    "{IMAGESTEM}-A[01~08]{POSTFIX}.png:200"
+                ANIMATION_08: (IMAGESTEM, POSTFIX) -> {
+err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 16: {IMAGESTEM}-A[01~08]{POSTFIX}.png:200#enddef
 
-                    ANIMATION_08_140 = (IMAGESTEM, POSTFIX) -> {
+                    ANIMATION_08_140: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 19: {IMAGESTEM}-A[01~08]{POSTFIX}.png:140#enddef
 
-                        ANIMATION_10 = (IMAGESTEM, POSTFIX) -> {
+                        ANIMATION_10: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 22: {IMAGESTEM}-A[01~10]{POSTFIX}.png:100#enddef
 
-                            ANIMATION_15 = (IMAGESTEM, POSTFIX) -> {
+                            ANIMATION_15: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 25: {IMAGESTEM}-A[01~15]{POSTFIX}.png:110#enddef
 
-                                ANIMATION_15_SLOW = (IMAGESTEM, POSTFIX) -> {
+                                ANIMATION_15_SLOW: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 28: {IMAGESTEM}-A[01~15]{POSTFIX}.png:150#enddef
 
-                                    ANIMATION_04_140 = (IMAGESTEM, POSTFIX) -> {
+                                    ANIMATION_04_140: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 31: {IMAGESTEM}-A[01~04]{POSTFIX}.png:140#enddef
 
-                                        ANIMATION_18_70 = (IMAGESTEM, POSTFIX) -> {
+                                        ANIMATION_18_70: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 34: {IMAGESTEM}-A[01~18]{POSTFIX}.png:130#enddef
 
-                                            ANIMATION_06_150 = (IMAGESTEM, POSTFIX) -> {
+                                            ANIMATION_06_150: (IMAGESTEM, POSTFIX) -> {
 err: ../attic/data/core/terrain-graphics/builder.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 37: {IMAGESTEM}-A[01~06]{POSTFIX}.png:300#enddef
 
-                                                BUILD_IMAGE = (BUILDER, IMAGESTEM, POSTFIX) -> {
+                                                BUILD_IMAGE: (BUILDER, IMAGESTEM, POSTFIX) -> {
                                                     <EXEC(BUILDER, IMAGESTEM, POSTFIX)--enddef
 }

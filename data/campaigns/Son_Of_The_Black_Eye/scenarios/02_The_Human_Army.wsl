@@ -1,0 +1,352 @@
+--textdomain wesnoth-sotbe
+Scenario{
+    id: "02_The_Human_Army"
+    name: _ "The Human Army"
+    map: "campaigns/Son_Of_The_Black_Eye/maps/01_End_of_Peace.map"
+
+    turns: 18
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "03_Toward_Mountains_of_Haag"
+
+    <SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Lanbec’h"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    side: {
+        side: 1
+        id: "Kapou'e"
+        type: "Orcish Leader"
+        controller: "human"
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        gold: 100
+        <BLACK_FLAG!
+    }
+
+-- Give Kapou'e the northern tier of villages near his keep.
+    <STARTING_VILLAGES(1, 18)
+
+    side: {
+        type: "General"
+        id: "Lanbec'h"
+        name: _ "Lanbec’h"
+        profile: "portraits/lanbech.png"
+        side: 2
+        canrecruit: true
+        facing: "sw"
+        recruit: {"Dragoon", "Swordsman", "Pikeman", "Longbowman"}
+        team_name: "Humans"
+        user_team_name: _ "Humans"
+        gold: 10000
+        <FLAG_VARIANT("loyalist")
+    }
+
+    story: {
+        part: {
+            story: _ "Refusing to yield to fear, Kapou’e rallied his warriors in preparation for the upcoming battle."
+            <SOTBE_BIGMAP!
+            <JOURNEY_01_OLD!
+        }
+
+        part: {
+            story: _ "He was not disappointed. A few days later the main body of the human army arrived. Driven to a desperate rage by the death of his son-in-law, Earl Lanbec’h led the army himself."
+            <SOTBE_BIGMAP!
+            <JOURNEY_01_OLD!
+        }
+    }
+
+    <SOTBE_TRACK(JOURNEY_02_NEW!)
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Vrag"
+            }
+
+            Message{
+                speaker: "Lanbec'h"
+                message: _ "So this is the bold orc who has dared kill my son-in-law."
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "And this is that stupid human who dares march against Kapou’e — Son of the Black-Eye!"
+            }
+    }
+
+    event: {
+        name: "turn 6"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "As Kapou’e saw the hardened troops pour out of the human encampment, he began to have second thoughts."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "They are too many and too tough. The few here don’t stand a chance."
+            }
+
+-- List types so that lowest-level unit gets picked first
+            Role{
+                role: "Helper"
+                type: {"Wolf Rider", "Orcish Archer", "Orcish Grunt", "Orcish Warrior", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Orcish Warlord", "Orcish Slurbow", "Direwolf Rider"}
+                side: 1
+                not: {
+                    id: "Kapou'e,Vrag"
+                }
+                x: "1-99"
+            }
+
+            If{
+                not: {
+                    have_unit: {
+                        role: "Helper"
+                    }
+                }
+                then: ->
+                    UNIT(1, "Orcish Grunt", 16, 3, {role: "Helper"})
+                
+            }
+
+            If{
+                have_unit: {
+                    id: "Vrag"
+                }
+                then: ->
+                    Message{
+                        speaker: "Vrag"
+                        message: _ "I told you so!"
+                    }
+
+                    Message{
+                        speaker: "Kapou'e"
+                        message: _ "Insolence! But you make a good point all the same. I should have paid attention to my supporters before. But what should we do now?"
+                    }
+
+                    Message{
+                        speaker: "Vrag"
+                        message: _ "We must flee! There is no way we can stand up against such a force."
+                    }
+                
+                else: ->
+                    Message{
+                        role: "Helper"
+                        message: _ "We must flee! There is no way we can stand up against such a force."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "The Son of the Black-Eye will never ‘flee’. But making a ‘strategic withdrawal’ is another matter."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "My father often spoke of the shamans of the Great Council who live in Barag Gór in the lands of the free tribes. We shall ask them for support. With their help, perhaps we can unite the orcish tribes and crush these humans."
+            }
+
+            Store_Unit{
+                filter: {
+                    role: "Helper"
+                }
+                kill: false
+                variable: "stored_helper"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "#{stored_helper.name}!"
+            }
+
+            Message{
+                role: "Helper"
+                message: _ "Yeah, Chief?"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "You, gather up our people and assemble them on the road some distance north of here. We will hold back the humans here until you are finished."
+            }
+
+            Message{
+                role: "Helper"
+                message: _ "Done."
+            }
+
+            Kill{
+                role: "Helper"
+                animate: false
+            }
+
+            PLACE_IMAGE("scenery/signpost.png", 28, 1)
+
+            Objectives{
+                side: 1
+                objective: {
+                    <if EASY then {
+                        description: _ "Resist until your people are ready to go (Turn 12)"
+                    }
+                    <if NORMAL then {
+                        description: _ "Resist until your people are ready to go (Turn 13)"
+                    }
+                    <if HARD then {
+                        description: _ "Resist until your people are ready to go (Turn 14)"
+                    }
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Then move Kapou’e to the signpost in the Northeast"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        <if EASY then {
+            name: "turn 12"
+        }
+        <if NORMAL then {
+            name: "turn 13"
+        }
+        <if HARD then {
+            name: "turn 14"
+        }
+        do: ->
+            VARIABLE("stored_helper.x", 27)
+            VARIABLE("stored_helper.y", 1)
+
+            Unstore_Unit{
+                variable: "stored_helper"
+                find_vacant: true
+            }
+
+            CLEAR_VARIABLE("stored_helper")
+
+            MOVE_UNIT({role: "Helper"}, 26, 2)
+
+            Message{
+                role: "Helper"
+                message: _ "Chief, we have all our people ready to go. Come on, this way. We managed to gather the last of the gold from the treasury as well."
+            }
+
+            Gold{
+                side: 1
+                amount: 100
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Took you long enough. Let’s go!"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Kapou’e to the signpost in the Northeast"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+
+            If{
+                have_unit: {
+                    x: 28
+                    y: 1
+                    id: "Kapou'e"
+                }
+
+                then: ->
+                    Fire_Event{
+                        name: "Kapoue_leaves"
+                    }
+                
+            }
+
+            Event{
+                name: "moveto"
+
+                filter: {
+                    x: 28
+                    y: 1
+                    id: "Kapou'e"
+                }
+                do: ->
+                    Fire_Event{
+                        name: "Kapoue_leaves"
+                    }
+            }
+    }
+
+    event: {
+        name: "Kapoue_leaves"
+        do: ->
+            Message{
+                speaker: "Kapou'e"
+                message: _ "We’ll be back, you foul mud-sucking humans!"
+            }
+
+            Message{
+                speaker: "Lanbec'h"
+                message: _ "That’s right, flee, you cowardly orcs! This land is mine!"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "In your dreams, worm. When the time comes you will pay for all this with your life!"
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <KAPOUE_DEATH!
+}

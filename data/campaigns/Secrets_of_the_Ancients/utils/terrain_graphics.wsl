@@ -1,0 +1,730 @@
+if EDITOR
+    Terrain_Graphics{
+        tile: {
+            x: 0, y: 0
+            type: "*^Gryv"
+            image: {
+                name: "grave-overlay-editor.png~O(0.5)"
+                layer: 1000
+            }
+        }
+    }
+
+    Terrain_Graphics{
+        tile: {
+            x: 0, y: 0
+            type: "*^Nhyr"
+            image: {
+                name: "not-here-tile-editor.png~O(0.5)"
+                layer: 1000
+            }
+        }
+    }
+
+------------------------------------------------------------------
+
+-- Farmers' Fences from first scenario. This is copied directly from the BfW core
+-- terrain_graphics file. If the macro name ever changes, this will have to as well.
+-- (The custom terrain has different behavior from the normal one though it looks
+-- the same.)
+
+NEW.FENCE("*^Fync", "embellishments/fence")
+------------------------------------------------------------------
+
+-- The sparkle for the Crystal Caves in 20_North_Knalga. Any number of these are picked
+-- at random where a glint overlay is used.
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Crys"
+        image: {
+            layer: 0
+            name: "crystal-caves/glint-a[1~4].png:200,crystal-caves/glint-a[3~1].png:200,crystal-caves/glint-blank.png:1000,crystal-caves/glint-b[1~4].png:200,crystal-caves/glint-b[3~1].png:200,crystal-caves/glint-blank.png:3000"
+        }
+    }
+    probability: 20
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Crys"
+        image: {
+            layer: 0
+            name: "crystal-caves/glint-c[1~4].png:200,crystal-caves/glint-c[3~1].png:200,crystal-caves/glint-blank.png:2000,crystal-caves/glint-d[1~4].png:200,crystal-caves/glint-d[3~1].png:200,crystal-caves/glint-blank.png:2500"
+        }
+    }
+    probability: 25
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Crys"
+        image: {
+            layer: 0
+            name: "crystal-caves/glint-f[1~4].png:200,crystal-caves/glint-f[3~1].png:200,crystal-caves/glint-blank.png:4000"
+        }
+    }
+    probability: 33
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Crys"
+        image: {
+            layer: 0
+            name: "crystal-caves/glint-g[1~4].png:200,crystal-caves/glint-g[3~1].png:200,crystal-caves/glint-blank.png:3500"
+        }
+    }
+    probability: 50
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Crys"
+        image: {
+            layer: 0
+            name: "crystal-caves/glint-e[1~4].png:200,crystal-caves/glint-e[3~1].png:200,crystal-caves/glint-blank.png:1500,crystal-caves/glint-b[1~4].png:200,crystal-caves/glint-b[3~1].png:200,crystal-caves/glint-blank.png:4500"
+        }
+    }
+    probability: 100
+}
+------------------------------------------------------------------
+
+-- The spiderwebs for 18_Abandoned_Outpost. The rules are fairly specific. Webs will not
+-- be drawn in quite a few locations because none of the rules will match. If you want to
+-- use them, be careful. Or, add more artwork and rules.
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web1.png"
+        layer: 10
+    }
+    image: {
+        name: "spiderweb/web1-bottom.png"
+        layer: -10
+    }
+    map: "
+.,  .
+, 2
+2,  2
+, 1
+2,  3
+, 3"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web2.png"
+        layer: 10
+    }
+    image: {
+        name: "spiderweb/web2-bottom.png"
+        layer: -10
+    }
+    map: "
+.,  .
+, 2
+2,  2
+, 1
+3,  2
+, 3"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web3.png"
+        layer: -10
+    }
+    map: "
+3,  3
+, 1
+2,  2
+, 2"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web4.png"
+        layer: 10
+    }
+    map: "
+.,  .
+, *
+2,  3
+, 1
+2,  3
+, 2"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web5.png"
+        layer: 10
+    }
+    map: "
+.,  .
+, *
+3,  2
+, 1
+3,  2
+, 2"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web6.png"
+        layer: 10
+    }
+    image: {
+        name: "spiderweb/web6-bottom.png"
+        layer: -10
+    }
+    map: "
+.,  2,  .
+, 2,  2
+2,  1,  3
+, 3,  3
+.,  3,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: "X*"
+    }
+    tile: {
+        pos: 3
+        type: {"!", "X*"}
+    }
+    image: {
+        name: "spiderweb/web7.png"
+        layer: 10
+    }
+    image: {
+        name: "spiderweb/web7-bottom.png"
+        layer: -10
+    }
+    map: "
+.,  .
+, 2,  .
+2,  2
+, 1,  2
+*,  3
+, 3,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "Q*^Wyb"
+    }
+    tile: {
+        pos: 2
+        type: {"!", "Q*^*"}
+    }
+    image: {
+        name: "spiderweb/web8.png"
+        position: "vertical"
+    }
+    map: "
+2,  2
+, 1
+2,  1
+, 2"
+}
+------------------------------------------------------------------
+
+-- The next three tiles are for 20_North Knalga. There is gate which can be open or
+-- closed, and a narrow passageway that fits between cave walls.
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Gytc"
+    }
+    image: {
+        name: "gate-closed.png"
+        layer: 100
+    }
+    map: "
+.,  *
+, *,  *
+*,  *
+, 1,  *
+*,  *
+, *,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Gyto"
+    }
+    image: {
+        name: "gate-open.png"
+        layer: 100
+    }
+    map: "
+.,  *
+, *,  *
+.,  *
+, 1,  *
+.,  *
+, *,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Pysg"
+    }
+    image: {
+        name: "passageway-north.png"
+        position: "vertical"
+        base: {36, 90}
+    }
+    image: {
+        name: "passageway-south.png"
+        position: "vertical"
+        base: {90, 180}
+    }
+    map: "
+1
+, *
+*
+, 1"
+}
+------------------------------------------------------------------
+
+-- These three void tiles are used to create voids with no transitions. They are used on
+-- 04_Becalmed in the bottom half of the map / lower deck of the ship.
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "Vyd"
+        image: {
+            name: "void-full.png"
+            layer: -110
+        }
+    }
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Vydo"
+        image: {
+            name: "void-full.png"
+            layer: -110
+        }
+    }
+}
+
+Terrain_Graphics{
+    tile: {
+        x: 0, y: 0
+        type: "*^Vydh"
+        image: {
+            name: "void-half.png"
+        }
+    }
+}
+------------------------------------------------------------------
+
+-- These two rules draw the fence in 02_Dark_Business. The fence sits logically in just
+-- two tiles. It can't be drawn at other sizes without a lot of work, but this was easier
+-- code, and made the gate trivial to add.
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Fnzt"
+    }
+    image: {
+-- The fence tops project into the hexes above them on
+-- the map, and should sit in front of any units there.
+        name: "fence-top.png"
+        layer: 100
+    }
+    map: "
+.,  .,  .,  .,  .,  .,  *,  .,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  *,  *,  .,  .,  .,  .,  .,  .
+.,  .,  .,  .,  .,  *,  .,  *,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  *,  .,  .,  *,  .,  .,  .,  .,  .
+.,  .,  .,  .,  *,  .,  .,  .,  *,  .,  .,  .,  .
+, .,  .,  .,  *,  .,  .,  .,  .,  *,  .,  .,  .,  .
+.,  .,  .,  *,  .,  .,  .,  .,  .,  *,  .,  .,  .
+, .,  .,  *,  .,  .,  .,  .,  .,  .,  *,  .,  .,  .
+.,  .,  *,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+, .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+.,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+, *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+*,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+, *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+.,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+, .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+.,  .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+, .,  .,  *,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+.,  .,  .,  *,  .,  .,  .,  .,  .,  .,  *,  .,  .
+, .,  .,  .,  *,  .,  .,  .,  .,  .,  *,  .,  .,  .
+.,  .,  .,  .,  *,  .,  .,  .,  .,  *,  .,  .,  .
+, .,  .,  .,  .,  *,  .,  .,  .,  *,  .,  .,  .,  .
+.,  .,  .,  .,  .,  *,  .,  .,  *,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  *,  .,  *,  .,  .,  .,  .,  .
+.,  .,  .,  .,  .,  .,  *,  *,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  .,  1,  .,  .,  .,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Fnzb"
+    }
+    image: {
+-- The fence is unwalkable and mostly under units (bats).
+-- This needs to be defined separately from the top because
+-- the SotA bats don't automatically sit in front of any terrain.
+        name: "fence-bottom.png"
+        position: "vertical"
+    }
+    map: "
+.,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .
+.,  .,  .,  .,  .,  .,  *,  .,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  *,  *,  .,  .,  .,  .,  .,  .
+.,  .,  .,  .,  .,  *,  .,  *,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  *,  .,  .,  *,  .,  .,  .,  .,  .
+.,  .,  .,  .,  *,  .,  .,  .,  *,  .,  .,  .,  .
+, .,  .,  .,  *,  .,  .,  .,  .,  *,  .,  .,  .,  .
+.,  .,  .,  *,  .,  .,  .,  .,  .,  *,  .,  .,  .
+, .,  .,  *,  .,  .,  .,  .,  .,  .,  *,  .,  .,  .
+.,  .,  *,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+, .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+.,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+, *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+*,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+, *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+.,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *
+, .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+.,  .,  *,  .,  .,  .,  .,  .,  .,  .,  .,  *,  .
+, .,  .,  *,  .,  .,  .,  .,  .,  .,  .,  *,  .,  .
+.,  .,  .,  *,  .,  .,  .,  .,  .,  .,  *,  .,  .
+, .,  .,  .,  *,  .,  .,  .,  .,  .,  *,  .,  .,  .
+.,  .,  .,  .,  *,  .,  .,  .,  .,  *,  .,  .,  .
+, .,  .,  .,  .,  *,  .,  .,  .,  *,  .,  .,  .,  .
+.,  .,  .,  .,  .,  *,  .,  .,  *,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  *,  .,  *,  .,  .,  .,  .,  .
+.,  .,  .,  .,  .,  .,  *,  *,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  .,  1,  .,  .,  .,  .,  .,  ."
+}
+------------------------------------------------------------------
+
+-- The rest are for the ship. All ship terrains start with "Z". There is more information
+-- in terrain.cfg.
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zfoc"
+    }
+    image: {
+        name: "ship/forecastle.png"
+        layer: -90
+    }
+    map: "
+.,  *,  .
+, *,  *,  .
+.,  1,  *
+, 1,  1,  *
+*,  1,  1
+, 1,  1,  *
+*,  *,  *
+, *,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zdek"
+    }
+    image: {
+        name: "ship/main-deck.png"
+        layer: -100
+    }
+    map: "
+.,  .,  .,  *,  .
+, .,  .,  1,  *
+.,  *,  1,  1,  *
+, *,  1,  1,  1
+*,  1,  1,  1,  *
+, 1,  1,  1,  *
+*,  1,  1,  *,  .
+, *,  1,  *,  .
+.,  *,  *,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zpoo"
+    }
+    image: {
+        name: "ship/poop-deck.png"
+        layer: -90
+    }
+    map: "
+.,  *,  .
+, *,  *,  .
+*,  1,  *
+, 1,  1,  *
+*,  1,  1
+, *,  1,  *
+.,  *,  *
+, .,  *,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zral"
+    }
+    image: {
+        name: "ship/railing.png"
+        layer: 100
+    }
+    map: "
+.,  .,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  *,  .
+.,  .,  .,  .,  *,  *,  .
+, .,  .,  .,  *,  *,  *
+.,  .,  .,  *,  *,  *,  *
+, .,  .,  *,  .,  .,  *
+.,  .,  *,  .,  .,  *,  .
+, .,  *,  .,  .,  .,  .
+.,  *,  .,  .,  .,  .,  .
+, *,  .,  .,  .,  .,  .
+*,  .,  .,  .,  .,  .,  .
+, .,  .,  *,  .,  .,  .
+*,  .,  *,  .,  .,  .,  .
+, *,  *,  .,  .,  .,  .
+1,  .,  .,  .,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zrlp"
+    }
+    image: {
+        name: "ship/railing-piece.png"
+        layer: 100
+    }
+    map: "
+.
+, *
+1"
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zhul"
+    }
+    image: {
+        name: "ship/hull.png"
+        layer: -80
+    }
+    map: "
+.,  .,  .,  .,  .,  .,  *
+, .,  .,  .,  .,  .,  *
+.,  .,  .,  .,  .,  *,  *
+, .,  .,  .,  .,  *,  *
+.,  .,  .,  .,  *,  *,  .
+, .,  .,  .,  *,  *,  .
+.,  .,  .,  *,  *,  .,  .
+, .,  .,  *,  *,  .,  .
+.,  .,  *,  *,  .,  .,  .
+, *,  *,  *,  .,  .,  .
+*,  1,  *,  .,  .,  .,  .
+, *,  *,  .,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zrig"
+    }
+    image: {
+        name: "ship/rigging-and-sails.png"
+        layer: 110
+    }
+    map: "
+.,  .,  .,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  *,  .,  .,  .
+.,  .,  .,  .,  *,  *,  *,  .
+, .,  .,  .,  .,  *,  *,  *,  .
+.,  .,  .,  .,  *,  *,  *,  .
+, .,  .,  .,  *,  *,  *,  *,  .
+.,  .,  .,  .,  *,  *,  *,  .
+, .,  .,  .,  *,  *,  *,  *,  .
+.,  .,  .,  *,  *,  *,  *,  .
+, .,  .,  *,  .,  *,  *,  *,  *
+.,  .,  *,  *,  *,  *,  *,  *
+, .,  .,  *,  *,  *,  *,  *,  .
+.,  .,  *,  *,  *,  *,  .,  *
+, .,  *,  *,  *,  *,  *,  .,  .
+.,  *,  *,  *,  *,  *,  .,  .
+, .,  *,  .,  *,  *,  .,  .,  .
+.,  *,  .,  .,  *,  .,  .,  .
+, *,  .,  .,  *,  .,  .,  .,  .
+*,  1,  .,  .,  *,  .,  .,  .
+, *,  .,  .,  .,  .,  .,  .,  .
+.,  *,  .,  .,  *,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "*^Zpie"
+    }
+    image: {
+        name: "ship/bits-and-pieces.png"
+        layer: -70
+    }
+    map: "
+.,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  *
+.,  .,  .,  .,  *,  *
+, .,  .,  .,  .,  *, .
+.,  .,  .,  *,  .,  .
+, .,  .,  *,  .,  .,  .
+.,  .,  *,  *,  .,  .
+, .,  .,  .,  .,  *,  .
+.,  *,  .,  .,  1,  .
+, .,  *,  .,  *,  .,  .
+.,  .,  .,  .,  .,  .
+, .,  .,  .,  .,  .,  .
+*,  .,  .,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "Zld"
+    }
+    image: {
+        name: "ship/lower-deck.png"
+        layer: -100
+    }
+    map: "
+.,  .,  .,  .,  *,  .
+, .,  .,  .,  *,  *,  .
+.,  .,  .,  *,  1,  *
+, .,  .,  *,  1,  1,  *
+.,  .,  *,  1,  1,  1
+, .,  *,  1,  1,  1,  .
+.,  *,  1,  1,  1,  .
+, *,  1,  1,  1,  .,  .
+.,  1,  1,  1,  .,  .
+, *,  1,  1,  .,  .,  .
+.,  1,  1,  .,  .,  .
+, *,  *,  .,  .,  .,  ."
+}
+
+Terrain_Graphics{
+    tile: {
+        pos: 1
+        type: "Zlde"
+    }
+    image: {
+        name: "ship/lower-deck-edge.png"
+        layer: 100
+    }
+    map: "
+.,  .,  .,  *,  .
+, .,  .,  .,  *
+.,  .,  .,  .,  *
+, .,  .,  .,  *
+.,  *,  .,  *,  .
+, .,  .,  *,  .
+.,  .,  *,  .,  .
+, *,  *,  .,  .
+*,  *,  1,  .,  ."
+}

@@ -1,0 +1,225 @@
+--textdomain wesnoth-low
+
+-- To future editors: 'philter' is a real archaic word in English meaning a
+-- potion with magical effects. Do *not* change it to 'filter'!
+
+---- to do: make Landar dissapear
+Scenario{
+    name: _ "News from the Front"
+    id: "13_News_from_the_Front"
+
+    random_start_time: false
+    allow_new_game: true
+    new_game_title: _ "Chapter Four: The Alliance"
+    force_lock_settings: true
+
+    <LOW_MAP("10_Cliffs_of_Thoria.map")
+    turns: 1
+    snapshot: false
+    next_scenario: "14_Human_Alliance"
+    theme: "Cutscene_Minimal"
+
+    <SCENARIO_MUSIC("the_deep_path.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    story: {
+        part: {
+            story: _ "With Crelanu’s book in hand, Kalenz and his band began the long journey south to the Ka’lian..."
+            <LOW_BIGMAP!
+            <TREASURY_COMPLETE!
+            <BOOK_COMPLETE!
+            <ALLIANCE_STAGE1!
+        }
+    }
+
+    side: {
+        side: 1
+        fog: true
+        share_view: true
+        <PLAYABLE!
+        save_id: "Kalenz"
+        <KALENZ!
+        x: 12
+        y: 1
+        <unless MULTIPLAYER! then {
+            unit: {
+                <LANDAR!
+                placement: "leader"
+            }
+            unit: {
+                <CLEODIL!
+                placement: "leader"
+            }
+            unit: {
+                <OLURF!
+                placement: "leader"
+            }
+        }
+    }
+
+    <if MULTIPLAYER then {
+        side: {
+            side: 2
+            no_leader: true
+            save_id: "Landar"
+            <PLAYABLE!
+            unit: {
+                <LANDAR!
+                x: 11
+                y: 1
+            }
+            fog: true
+        }
+
+        side: {
+            side: 3
+            no_leader: true
+            save_id: "Olurf"
+            <PLAYABLE!
+            unit: {
+                <OLURF!
+                x: 11
+                y: 1
+            }
+            fog: true
+        }
+
+        side: {
+            side: 4
+            no_leader: true
+            save_id: "Cleodil"
+            <PLAYABLE!
+            unit: {
+                <CLEODIL!
+                x: 11
+                y: 1
+            }
+            fog: true
+        }
+    }
+
+    event: {
+        name: "start"
+
+        <if MULTIPLAYER then {
+            persistent_carryover_unstore: {
+                scenario_id: "LoW_Chapter_Three"
+            }
+        }
+
+--TODO recall or create if not recallable
+        do: ->
+            RECALL_LOYALS!
+
+            Message{
+                id: "Landar"
+                message: _ "Oh, no, I forgot my dose of Crelanu’s invisibility philter. I’ll go back and get it. I’ll catch up with you later!"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "Maybe some of my dwarves can escort you..."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Go, Landar, but be careful. We need you."
+            }
+
+            Store_Unit{
+                variable: "landar_store"
+                kill: true
+                filter: {
+                    id: "Landar"
+                }
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Some weeks later, as Kalenz and his companions were working their way southwards from the high peaks of the Heart Mountains into its foothills..."
+            }
+
+            Sound{
+                name: "horse-canter.wav"
+            }
+
+            Move_Unit_Fake{
+                type: "Elvish Scout"
+                x: {10, 11, 12, 13, 14, 15}
+                y: {9, 8, 7, 6, 5, 4}
+            }
+
+            Unit{
+                id: "Eonihar"
+                name: _ "Eonihar"
+                type: "Elvish Scout"
+                side: 1
+                x: 15
+                y: 4
+                facing: "sw"
+            }
+
+            Message{
+                id: "Eonihar"
+                message: _ "At last I have found you, alive and well! We need you back at once! The orcs have attacked the humans."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "This means we are safe for the time being, no?"
+            }
+            Message{
+                id: "Eonihar"
+                message: _ "What’s more, King Haldric is dead. His successor wants to renew the treaty of alliance and has asked for our help."
+            }
+
+            Unstore_Unit{
+                variable: "landar_store"
+                find_vacant: true
+                x: 10
+                y: 1
+            }
+
+            CLEAR_VARIABLE("landar_store")
+
+            Move_Unit{
+                id: "Landar"
+                to_x: 14
+                to_y: 1
+            }
+
+            Message{
+                id: "Landar"
+                message: _ "How convenient! Now they need our help, they come running!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Landar! You’re back! All is well?"
+            }
+            Message{
+                id: "Landar"
+                message: _ "Yes, I have the philter of invisibility."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "We face a difficult choice. I know humans did not help us when the orcs attacked, but the orcs are everybody’s enemy. When humans fall, we’ll be next."
+            }
+            Message{
+                id: "Eonihar"
+                message: _ "The orcish forces are encamped south of the Great River, and have surrounded the fortified human settlement at Tath. The humans are sending all their forces there. We need to decide whether we will help them or not."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Go tell the council and the human king that we will be there! Now, let’s hurry!"
+            }
+            Kill{
+                id: "Eonihar"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: false
+                linger_mode: false
+                carryover_report: false
+                carryover_percentage: 100
+            }
+    }
+}

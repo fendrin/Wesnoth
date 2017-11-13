@@ -1,0 +1,324 @@
+--textdomain wesnoth-ai
+
+-- This is AI test scenario which is not visible to casual player.
+Test{
+    id: "ai_arena_small"
+    name: _ "AI Arena - small"
+    description: _ "Small ai arena"
+    map: "ai/maps/scenario-AI_Arena_small.map"
+    random_start_time: "no"
+    turns: -1
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    <PLACE_IMAGE("items/burial.png", 15, 13)
+    <PLACE_IMAGE("items/burial.png", 26, 16)
+    <PLACE_IMAGE("items/burial.png", 4, 9)
+
+    event: {
+        name: "preload"
+        first_time_only: false
+        do: ->
+            Lua{
+                code: [[
+            H = wesnoth.dofile("lua/helper.lua")
+            W = H.set_wml_action_metatable({})
+            H.set_wml_var_metatable(_G)
+            local tests_table = {}
+            function register_test(_name, _description)
+            tests_table[_name] = _description
+            end
+            function get_tests_table()
+            return tests_table
+            end
+            ]]
+            }
+    }
+
+    event: {
+        name: "preload"
+        first_time_only: false
+        do: ->
+            Set_Variable{
+                name: "test_path_to_ai"
+                value: "ai/ais/ai_default_rca.cfg"
+            }
+            Set_Variable{
+                name: "test_path_to_idle_ai"
+                value: "ai/ais/idle_ai.cfg"
+            }
+            Set_Variable{
+                name: "test_path_to_formula_ai"
+                value: "ai/dev/formula_ai.cfg"
+            }
+            Set_Variable{
+                name: "test_path_to_ai_default_rca"
+                value: "ai/ais/ai_default_rca.cfg"
+            }
+            Set_Variable{
+                name: "test_id"
+                value: "0001-healing"
+            }
+
+            Set_Menu_Item{
+                id: "repeat_test"
+                description: _ "Repeat last test"
+                command: ->
+                    Fire_Event{
+                        name: "_clean_arena"
+                    }
+                    Fire_Event{
+                        name: "_replace_ai_2"
+                    }
+                    Lua{
+                        code: [[  W.fire_event {name=wesnoth.get_variable("test_id") } ]]
+                    }
+                
+            }
+
+            Set_Menu_Item{
+                id: "select_another_ai"
+                description: _ "Select another ai"
+                command: ->
+                    Fire_Event{
+                        name: "_select_challenger_ai"
+                    }
+                
+            }
+
+            Set_Menu_Item{
+                id: "select_test"
+                description: _ "Select another test"
+                command: ->
+                    Fire_Event{
+                        name: "_select_test"
+                    }
+                
+            }
+    }
+
+    INCLUDE("ai/scenarios/ai_arena_small/")
+
+    side: {
+        side: 1
+        name: _ "AI Developer"
+        type: "Nightgaunt"
+        canrecruit: true
+        controller: "human"
+        suppress_end_turn_confirmation: true
+        team_name: "master"
+        user_team_name: _ "team_name^AI Developer"
+        fog: false
+        modifications: {
+            <TRAIT_INTELLIGENT!
+            <TRAIT_QUICK!
+            <TRAIT_LOYAL!
+        }
+    }
+    side: {
+        side: 2
+        id: "chall-ai"
+        name: _ "Challenger AI"
+        type: "White Mage"
+        canrecruit: true
+        controller: "ai"
+        team_name: "north"
+        user_team_name: _ "North"
+        fog: true
+        recruit: "Dwarvish Guardsman,Dwarvish Fighter,Dwarvish Thunderer,Thief,Poacher,Footpad"
+    }
+    side: {
+        side: 3
+        id: "champ-ai"
+        name: _ "Champion AI"
+        type: "Dark Adept"
+        canrecruit: true
+        controller: "ai"
+        team_name: "south"
+        user_team_name: _ "South"
+        fog: true
+        recruit: "Dwarvish Guardsman,Dwarvish Fighter,Dwarvish Thunderer,Thief,Poacher,Footpad"
+    }
+
+    event: {
+        name: "_select_test"
+        first_time_only: false
+        command: ->
+            Fire_Event{
+                name: "_clean_arena"
+            }
+        
+        do: ->
+            Lua{
+                code: [[
+            local opts = {}
+            for k,v in pairs(get_tests_table()) do
+            local cmd = { "command", {{ "set_variable", {name="test_id", value= k } } } }
+            table.insert(opts, { "option", { label = v, cmd } } )
+            end
+            W.message { speaker="narrator", message="Which test do you wish to run, O Mighty AI Developer?", table.unpack(opts) }
+            ]]
+            }
+            Command{
+                Fire_Event{
+                    name: "_replace_ai_2"
+                }
+            
+            Lua{
+                code: [[  W.fire_event {name=wesnoth.get_variable("test_id") } ]]
+            }
+    }
+
+    event: {
+        name: "_select_challenger_ai"
+        first_time_only: false
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Which AI do you wish to use, O Mighty AI Developer?"
+                option: {
+                    label: _ "I am happy with the current AI of team 2, [#{test_path_to_ai]" -- wmllint: no spellcheck
+                }
+                option: {
+                    label: _ "My AI is the RCA AI (the current default)." -- wmllint: no spellcheck
+                    command: ->
+                        Set_Variable{
+                            name: "test_path_to_ai"
+                            value: test_path_to_ai_default_rca
+                        }
+                    
+                }
+                option: {
+                    label: _ "I am the king of FORMULA AI, and I will use its vast powers for world domination."
+                    command: ->
+                        Set_Variable{
+                            name: "test_path_to_ai"
+                            value: test_path_to_formula_ai
+                        }
+                    
+                }
+                option: {
+                    label: _ "I want to test formulaAI-based poisoning improvements" -- wmllint: no spellcheck
+                    command: ->
+                        Set_Variable{
+                            name: "test_path_to_ai"
+                            value: "ai/dev/formula_ai_poisoning.cfg"
+                        }
+                    
+                }
+                option: {
+                    label: _ "I've come with my own AI, and I am ready to test its strength"
+                    command: ->
+                        Message{
+                            speaker: "narrator"
+                            image: "wesnoth-icon.png"
+                            message: _ "And where is it located (path follows the usual WML convention)"
+                            text_input: {
+                                label: _ "AI Location:"
+                                variable: "test_path_to_ai"
+                            }
+                        }
+                    
+                }
+            }
+            Command{
+                Fire_Event{
+                    name: "_replace_ai_2"
+                }
+            
+            Command{
+                TELEPORT_TILE(6, 21, 5, 22)
+            
+    }
+
+    event: {
+        name: "_clean_arena"
+        first_time_only: false
+        do: ->
+            Kill{
+                animate: false
+                fire_event: false
+                canrecruit: false
+            }
+            Capture_Village{
+                x: 5, y: 9
+            }
+            Capture_Village{
+                x: 6, y: 19
+            }
+            Capture_Village{
+                x: 9, y: 17
+            }
+            Capture_Village{
+                x: 10, y: 20
+            }
+            Capture_Village{
+                x: 11, y: 4
+            }
+            Capture_Village{
+                x: 14, y: 8
+            }
+            Capture_Village{
+                x: 16, y: 17
+            }
+            Capture_Village{
+                x: 19, y: 22
+            }
+            Capture_Village{
+                x: 20, y: 5
+            }
+            Capture_Village{
+                x: 21, y: 9
+            }
+            Capture_Village{
+                x: 24, y: 6
+            }
+            Capture_Village{
+                x: 25, y: 17
+            }
+            Label{
+                x: "9"
+                y: "17"
+            }
+            Label{
+                x: "19"
+                y: "6"
+            }
+            Label{
+                x: "25"
+                y: "19"
+            }
+            Label{
+                x: "26"
+                y: "14"
+            }
+            Modify_Side{
+                side: 1
+                gold: 10000
+            }
+            Modify_Side{
+                side: 2
+                gold: 10000
+            }
+            Modify_Side{
+                side: 3
+                gold: 10000
+            }
+    }
+
+    event: {
+        name: "_replace_ai_2"
+        first_time_only: false
+        do: ->
+            Modify_Side{
+                side: 2
+                switch_ai: test_path_to_ai
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "And so, the AI for team 2 was redeployed from file '#{test_path_to_ai'"
+            }
+    }
+}

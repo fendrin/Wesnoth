@@ -1,0 +1,60 @@
+--textdomain wesnoth
+-- Utility macros for use in the objectives dialog
+
+TURNS_RUN_OUT = () -> {
+    objective: {
+        description: _ "Turns run out"
+        condition: "lose"
+        show_turn_counter: true
+    }
+}
+
+--wmllint: markcheck off
+EARLY_FINISH_BONUS_FOOTNOTE = () -> {
+err: ../attic/data/core/macros/objective-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+--wmllint: markcheck on
+
+    OBJECTIVE_FOOTNOTE = (TEXT) -> {
+        "<span foreground='white'><small> " .. TEXT .. "</small></span>"
+    }
+
+    ALTERNATIVE_OBJECTIVE_CAPTION = () -> {
+        caption: _ "Alternative objective:"
+    }
+
+    BONUS_OBJECTIVE_CAPTION = () -> {
+        caption: _ "Bonus objective:"
+    }
+
+    OPTIONAL_OBJECTIVE_CAPTION = () -> {
+        caption: _ "Optional objective:"
+    }
+
+    ALTERNATIVE_OBJECTIVE = (OBJECTIVE_TEXT) -> {
+        objective: {
+            <ALTERNATIVE_OBJECTIVE_CAPTION!
+            description: OBJECTIVE_TEXT
+            condition: "win"
+        }
+    }
+
+    ALTERNATIVE_OBJECTIVE_BONUS = (OBJECTIVE_TEXT) -> {
+        objective: {
+            <ALTERNATIVE_OBJECTIVE_CAPTION!
+            description: OBJECTIVE_TEXT .. EARLY_FINISH_BONUS_FOOTNOTE!
+            condition: "win"
+        }
+    }
+
+    IS_LAST_SCENARIO = () -> {
+        note: {
+            red: 0, blue: 255, green: 255
+            description: "<b>" .. _ "This is the last scenario." .. "</b>"
+        }
+    }
+
+    HAS_NO_TURN_LIMIT = () -> {
+        note: {
+            description: "<b>" .. _ "No turn limit" .. "</b>"
+        }
+    }

@@ -147,8 +147,8 @@ Scenario{
             y: Y
 -- wmlscope: start ignoring
             modifications: {
--- err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 150:             {TRAIT_{TRAIT_1_NAME}}
--- err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 151:             {TRAIT_{TRAIT_2_NAME}}
+err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 150:             {TRAIT_{TRAIT_1_NAME}}
+err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 151:             {TRAIT_{TRAIT_2_NAME}}
             }
 -- wmlscope: stop ignoring
             generate_name: true
@@ -240,23 +240,23 @@ Scenario{
             }
             if EASY
                 SET_VILLAGE_ZOMBIE_PATTERN(1, 1, 1, 2, 1, "Walking Corpse")
-
+            
 
             if NORMAL
                 SET_VILLAGE_ZOMBIE_PATTERN(1, 2, 1, 2, 2, "Walking Corpse")
-
+            
 
             if HARD
                 SET_VILLAGE_ZOMBIE_PATTERN(2, 2, 2, 2, 2, "Soulless")
-
+            
 
             if NIGHTMARE
                 SET_VILLAGE_ZOMBIE_PATTERN(2, 2, 1, 2, 3, "Soulless")
-
+            
     }
 
-    -- PUT_CITIZEN = nil
-    -- SET_VILLAGE_ZOMBIE_PATTERN = nil
+    PUT_CITIZEN = nil
+    SET_VILLAGE_ZOMBIE_PATTERN = nil
 
     event: {
         name: "start"
@@ -402,7 +402,7 @@ Scenario{
             }
     }
 
-    -- PUT_CORPSE_SWIMMER = nil
+    PUT_CORPSE_SWIMMER = nil
 
     event: {
         name: "last breath"
@@ -481,7 +481,7 @@ Scenario{
                 do: ->
                     Set_Variable{
                         name: "village_location"
--- err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 482:                 value=$x1|_$y1
+err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 482:                 value=$x1|_$y1
                     }
 
 -- Loop through the zombified villages to see if that
@@ -500,9 +500,9 @@ Scenario{
                                         name: "already_zombified"
                                         value: true
                                     }
-
+                                
                             }
-
+                        
                     }
 
 -- If the village's location was not found in the
@@ -518,7 +518,7 @@ Scenario{
 -- saving the location in the array:
                             Set_Variable{
                                 name: "zombified_villages[number_of_captured_villages].location"
--- err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 519:                         value=$x1|_$y1
+err: ../attic/data/campaigns/Dead_Water/scenarios/01_Invasion.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 519:                         value=$x1|_$y1
                             }
 
 -- If it is a merman village, set
@@ -535,13 +535,13 @@ Scenario{
                                         name: "zombie_variation"
                                         value: "swimmer"
                                     }
-
+                                
                                 else: ->
                                     Set_Variable{
                                         name: "zombie_variation"
                                         value: "none"
                                     }
-
+                                
                             }
 
 -- Get the number of zombies from the list of numbers:
@@ -559,15 +559,15 @@ Scenario{
                                                     name: "zombie_type"
                                                     value: "Walking Corpse"
                                                 }
-
+                                            
                                             else: ->
                                                 Set_Variable{
                                                     name: "zombie_type"
                                                     value: "Soulless"
                                                 }
-
+                                            
                                         }
-
+                                    
                                     Unit{
                                         type: zombie_type
                                         side: unit.side
@@ -578,7 +578,7 @@ Scenario{
                                         attacks_left: 0
                                         animate: true
                                     }
-
+                                
                             }
 
 -- The second time this happens, warn the player that this will
@@ -598,7 +598,7 @@ Scenario{
                                         speaker: "Gwabbo"
                                         message: _ "This will be a dark day, but we <i>will</i> prevail."
                                     }
-
+                                
                             }
 
                             Set_Variable{
@@ -609,7 +609,7 @@ Scenario{
                             CLEAR_VARIABLE("zombie_variation")
                             CLEAR_VARIABLE("already_zombified")
                             CLEAR_VARIABLE("village_location")
-
+                        
                     }
             }
     }

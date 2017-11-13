@@ -1,0 +1,46 @@
+--textdomain wesnoth-lib
+----
+---- Hotkey bind dialog.
+----
+
+Window{
+    id: "hotkey_bind"
+    description: "Bind action to new hotkey."
+
+    resolution: {
+        definition: "message"
+
+        maximum_width: 600
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+
+                column: {
+                    border: "all"
+                    border_size: 10
+
+                    horizontal_grow: true
+
+                    label: {
+                        definition: "default"
+                        label: _ "Press desired hotkey (Esc cancels)"
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

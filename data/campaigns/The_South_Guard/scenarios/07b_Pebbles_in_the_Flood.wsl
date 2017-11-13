@@ -1,0 +1,329 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "07b_Pebbles_in_the_Flood"
+
+    name: _ "Pebbles in the Flood"
+    next_scenario: "08b_The_Tides_of_War"
+
+    <SCENARIO_MUSIC("elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+
+    map: "campaigns/The_South_Guard/maps/07b_Pebbles_in_the_Flood.map"
+
+    INCLUDE("campaigns/The_South_Guard/utils/sg_help.cfg")
+
+    <DEFAULT_SCHEDULE!
+
+    <SG_PEBBLES_IN_THE_FLOOD!
+    <TSG_BIGMAP(JOURNEY_07B_NEW!)
+
+    turns: -1
+    victory_when_enemies_defeated: false
+    disallow_recall: true
+
+-- The South Guard
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+        <CUSTOM_SG_FLAG!
+
+        gold: 0
+        <INCOME(4, 2, 0)
+
+        canrecruit: true
+        recruit: {"Bowman", "Spearman", "Cavalryman", "Footpad", "Thug"}
+    }
+
+    <STARTING_VILLAGES(1, 15)
+
+-- The Undead Hordes
+
+    side: {
+        side: 2
+        type: "Ancient Lich"
+        id: "Mal M'Brin"
+        name: _ "Mal M’Brin"
+        profile: "portraits/mal-mbrin.png"
+        facing: "sw"
+
+        team_name: "The_Undead_Hordes"
+        user_team_name: _ "Undead"
+        controller: "ai"
+
+        <GOLD(200, 300, 400)
+        <INCOME(50, 75, 100)
+
+        canrecruit: true
+        ai: {
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "archer"}
+            aggression: 1.0
+            caution: 0.0
+            goal: {
+                criteria: {
+                    id: "Sir Gerrick"
+                }
+                value: 10.0
+            }
+        }
+        recruit: {"Wraith", "Shadow", "Skeleton", "Revenant", "Draug", "Bone Shooter", "Blood Bat", "Chocobone"}
+        <FLAG_VARIANT("undead")
+    }
+
+-- Make it impossible for the player to kill him, no matter how lucky.
+    <FORCE_CHANCE_TO_HIT({side: 1}, {id: "Mal M'Brin"}, 0, {})
+
+    side: {
+        side: 3
+        type: "Lich"
+        id: "Mal Tera"
+        name: _ "Mal Tera"
+
+        team_name: "The_Undead_Hordes"
+        user_team_name: _ "Undead"
+        controller: "ai"
+
+        <GOLD(200, 250, 300)
+        <INCOME(0, 0, 0)
+
+        canrecruit: true
+        ai: {
+            recruitment_pattern: "fighter"
+            aggression: 0.95
+        }
+        <if EASY then {
+            recruit: "Walking Corpse"
+        }
+        <if NORMAL then {
+            recruit: {"Walking Corpse", "Soulless"}
+        }
+        <if HARD then {
+            recruit: {"Walking Corpse", "Soulless", "Ghoul"}
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+--prestart
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Side{
+                side: 1
+                variable: "stored_side_1"
+            }
+            VARIABLE("pebbles_starting_gold", stored_side_1.gold)
+
+            Modify_Side{
+                side: 1
+                <GOLD(250, 200, 150)
+            }
+
+-- Sgt. Finde's Section
+
+            NAMED_GENERIC_UNIT(1, "Sergeant", 5, 11, "Sgt. Finde", _ "Sgt. Finde"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Spearman", 4, 10, "Maelvas", _ "Maelvas"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Spearman", 5, 10, "Orome", _ "Orome"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Peasant", 6, 10, "Mitche", _ "Mitche"), GUARDIAN!
+
+-- Lt. Illan's Section
+
+            NAMED_GENERIC_UNIT(1, "Lieutenant", 13, 12, "Lt. Illan", _ "Lt. Illan"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Heavy Infantryman", 13, 13, "Rheban", _ "Rheban"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Horseman", 14, 12, "Jul", _ "Jul"), GUARDIAN!
+
+-- Lt. Meris' Section
+
+            NAMED_GENERIC_UNIT(1, "Lieutenant", 35, 11, "Lt. Meris", _ "Lt. Meris"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Peasant", 34, 10, "Findlas", _ "Findlas"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Bowman", 33, 10, "Chumet", _ "Chumet"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Heavy Infantryman", 33, 11, "Neras", _ "Neras"), GUARDIAN!
+            NAMED_GENERIC_UNIT(1, "Bowman", 34, 11, "Eera", _ "Eera"), GUARDIAN!
+
+-- Ancient Lich's Guards
+
+            NAMED_GENERIC_UNIT(2, "Draug", 26, 23, {}, _ "Death Guard"), GUARDIAN!
+            NAMED_GENERIC_UNIT(2, "Draug", 29, 22, {}, _ "Death Guard"), GUARDIAN!
+
+            MODIFY_UNIT({x: "24-40,5-25"[1], y: "24-40,5-25"[2]}, "facing", "sw")
+
+            CLEAR_VARIABLE("stored_side_1")
+    }
+
+--start
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Sir Gerrick"
+                x: 19, y: 10
+            }
+            Recall{
+                id: "Urza Afalas"
+                x: 18, y: 9
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "We have escaped the great forest, but look! The undead are chasing us — we must not have rooted them all out of the wood."
+            }
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "My lord, you must hasten back to Westin to prepare a defense against them. I will command the defense of the border forts."
+            }
+            Message{
+                speaker: "Urza Afalas"
+                message: _ "I too will make my stand here — I owe you my life and must atone for my crimes. Together we will hold off the foul undead as long as we can."
+            }
+            Message{
+                speaker: "Deoran"
+                message: _ "Minister Hylas, ride with me to Westin — you must summon the Council of Westin while I prepare the city’s defenses. We shall return as soon as we can in force and relieve you."
+            }
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Make no promises you know you cannot keep. Organize the defense of Westin, and if you survive, remember those who fell here."
+            }
+
+            MOVE_UNIT({id: "Deoran"}, 18, 5)
+
+            Message{
+                speaker: "Deoran"
+                message: _ "Your name will be sounded in the roll of heroes, and you will be avenged. Thank you, my friend."
+            }
+
+            MOVE_UNIT({id: "Deoran"}, 17, 1)
+
+            Store_Unit{
+                filter: {
+                    id: "Deoran"
+                }
+
+                kill: true
+                variable: "stored_Deoran"
+            }
+
+            MODIFY_UNIT({id: "Sir Gerrick"}, "overlays", "")
+            MODIFY_UNIT({id: "Sir Gerrick"}, "canrecruit", true)
+            MODIFY_UNIT({id: "Sir Gerrick"}, "ellipse", "")
+
+            MODIFY_UNIT({id: "Urza Afalas"}, "overlays", "misc/loyal-icon.png")
+            MODIFY_UNIT({id: "Urza Afalas"}, "ellipse", "")
+
+            Message{
+                speaker: "Lt. Illan"
+                message: _ "We are yours to command, Sir Gerrick. Our men are not the great warriors that you and Deoran are, but we will hold our lines staunchly, until the bitter end."
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Hold the line: Keep Sir Gerrick alive as long as possible"
+                    condition: "win"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 0
+                }
+                <HAS_NO_TURN_LIMIT!
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "There is no way to win this scenario, and no way to lose. Hold off the undead hordes as long as you can. Keep Sir Gerrick alive as long as you can. Every turn that passes strengthens the defenses of Westin."
+                image: "wesnoth-icon.png"
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: 2
+        }
+        do: ->
+            Gold{
+                side: 2
+                <if EASY then {
+                    amount: 50
+                }
+                <if NORMAL then {
+                    amount: 65
+                }
+                <if HARD then {
+                    amount: 80
+                }
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Urza Afalas"
+        }
+        do: ->
+            Message{
+                speaker: "Urza Afalas"
+                message: _ "Now I will never see my home again... Hold back the undead, Gerrick!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Sir Gerrick"
+        }
+        do: ->
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "I only hope we have bought Deoran enough time to secure Westin for the onslaught!"
+            }
+            Kill{
+                x: x1, y: y1
+                animate: true
+            }
+            Message{
+                speaker: "Mal M'Brin"
+                message: _ "We will crush Westin as we have crushed you! No one shall stand between us and our home."
+            }
+
+            VARIABLE("pebbles_defense_length", turn_number)
+
+            Kill{
+                side: 1
+                <EVERYWHERE!
+                fire_event: false
+                animate: false
+            }
+
+            VARIABLE("stored_Deoran.x", "recall")
+            VARIABLE("stored_Deoran.y", "recall")
+
+            Unstore_Unit{
+                variable: "stored_Deoran"
+            }
+
+--Set the amount of gold that the player has to what it was before Pebbles.
+            Modify_Side{
+                side: 1
+                gold: pebbles_starting_gold
+            }
+            CLEAR_VARIABLE("pebbles_starting_gold")
+            CLEAR_VARIABLE("stored_Deoran")
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+            }
+    }
+}

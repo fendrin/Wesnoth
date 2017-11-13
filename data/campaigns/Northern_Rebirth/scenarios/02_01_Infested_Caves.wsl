@@ -1,0 +1,913 @@
+--textdomain wesnoth-nr
+
+Scenario{
+    id: "02_01_Infested_Caves"
+    name: _ "Infested Caves"
+    map: "campaigns/Northern_Rebirth/maps/02_01_Infested_Caves.map"
+    <TURNS(55, 50, 45)
+    next_scenario: "02_02_Meeting_With_Dwarves"
+
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("revelation.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+
+    story: {
+        part: {
+            music: "knolls.ogg"
+            story: _ "Ill-armed and untrained though they were, the people of Dwarven Doors rose against the Orcs. Although their losses had been tremendous, never once did they break or falter. In the end, the orcish host was smashed and the survivors sent scurrying for their lives."
+        }
+        part: {
+            story: _ "Grief for the fallen could not suppress the people’s joy in their newfound freedom. They ransacked the orcish storehouses, sang, danced and drank with abandon. New-fledged warriors boasted of their deeds in the battle, while the women and children looked on with awe."
+        }
+        part: {
+            story: _ "Amidst all the revelry, Tallin alone remained grave. He knew it likely that the orcs would return with a vengeance and slaughter every last one of them. The following morning, he gathered the cooler heads about him so they could set their next course. How might they, untrained in the art of war and without expectation of aid from the prosperous human lands of the south, defend themselves?"
+        }
+        part: {
+            story: _ "The war council’s thoughts quickly turned to the dwarves, close allies in the past. However, nobody knew the state of things in the Knalgan tunnels. The bravest of scouts found in there the spoor of many trolls, and of creatures darker than trolls. It was even rumored that the dwarven dead from the invasion of Knalga had risen in unlife, roaming the tunnels to slay the living. Fighting through all manner of unknown monsters in the mere hope of finding surviving dwarves held but little appeal."
+        }
+        part: {
+-- wmllint: local spelling woodsrunners
+            story: _ "So the matter lay, and the peasants dithered from one suggested plan of action to the next, never arriving at any conclusion. In the meantime, some help, unlooked for, arrived in the form of a small band of woodsrunners — escapees from the orcs, grown wood-wise and crafty, and in contact with larger bands of poachers and outlaws roaming the night. Embassies were sent; agreements made. A handful of experienced fighters, scarred and closemouthed, came to Dwarven Doors to find and train the most willing in their rugged fighting style."
+        }
+        part: {
+-- wmllint: local spelling nightrunners
+            story: _ "A fortnight after their victory, the town was awakened from slumber in the dead of night by the distant booming of orcish drums. Scouts training with the nightrunners returned to cry the news that a strong orcish company was approaching. Frightened as they had never been before, the folk of Dwarven Doors looked to Tallin for guidance."
+        }
+        part: {
+            story: _ "Faced with certain destruction at the hands of the orcs, or a fate unknown in the caves of Knalga, Tallin chose the latter. The people quickly gathered together and collected whatever food and weapons they could and plunged into the darkness of the caves."
+        }
+    }
+
+    <NR_TRACK(REVOLT_STAGE2!)
+
+-- Set sides
+-- Players side - some more recruit options this time.
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <GOLD(450, 400, 350)
+        recruit: {"Peasant", "Woodsman", "Thug", "Poacher", "Footpad"}
+        team_name: "rebels"
+        user_team_name: _ "Rebels"
+        <FLAG_VARIANT6("ragged")
+
+-- wmllint: recognize Tallin
+        <CHARACTER_STATS_TALLIN!
+
+        shroud: true
+    }
+-- wmllint: validate-on
+
+-- Three sides for trolls, one lead by troll warrior
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: "Troll Whelp"
+        <GOLD(100, 150, 200)
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        type: "Troll"
+        id: "Knash"
+        name: _ "Knash"
+        canrecruit: true
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: "Troll Whelp"
+        <GOLD(100, 150, 200)
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        type: "Troll"
+        id: "Krog"
+        name: _ "Krog"
+        canrecruit: true
+    }
+
+-- Dwarven side
+    side: {
+        side: 4
+        controller: "ai"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout"}
+        <GOLD(130, 120, 100)
+        team_name: "rebels"
+        user_team_name: _ "Rebels"
+        <FLAG_VARIANT("knalgan")
+
+        type: "Dwarvish Lord"
+        id: "Hamel"
+        name: _ "Hamel"
+        profile: "portraits/Hamel.png"
+        canrecruit: true
+
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "fighter", "mixed fighter"}
+        }
+
+        <NOTRAIT_UNIT({}, "Dwarvish Stalwart", 31, 28), <GUARDIAN!, <NO_UPKEEP!
+        <NOTRAIT_UNIT({}, "Dwarvish Stalwart", 28, 21), <GUARDIAN!, <NO_UPKEEP!
+        <NOTRAIT_UNIT({}, "Dwarvish Stalwart", 32, 21), <GUARDIAN!, <NO_UPKEEP!
+        <NOTRAIT_UNIT({}, "Dwarvish Stalwart", 24, 25), <GUARDIAN!, <NO_UPKEEP!
+    }
+
+    side: {
+        side: 5
+        controller: "ai"
+        recruit: {"Skeleton", "Skeleton Archer"}
+        <GOLD(300, 400, 500)
+        <INCOME(10, 15, 20)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Death Knight"
+        id: "Mal Barath"
+        name: _ "Mal Barath"
+        canrecruit: true
+    }
+
+    side: {
+        side: 6
+        controller: "ai"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        <GOLD(300, 400, 500)
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        type: "Troll Warrior"
+        id: "Thung"
+        name: _ "Thung"
+        canrecruit: true
+    }
+
+    side: {
+        side: 7
+        controller: "ai"
+        recruit: {"Skeleton", "Skeleton Archer"}
+        <GOLD(250, 350, 450)
+        <INCOME(4, 6, 8)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Death Knight"
+        id: "Delzath"
+        name: _ "Delzath"
+        canrecruit: true
+    }
+
+    side: {
+        side: 8
+        controller: "ai"
+        recruit: {"Skeleton", "Skeleton Archer"}
+        <GOLD(250, 350, 450)
+        <INCOME(4, 6, 8)
+
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Death Knight"
+        id: "Mal Tath"
+        name: _ "Mal Tath"
+        canrecruit: true
+    }
+
+-- And an empty side for the bat used in flavor event
+    side: {
+        no_leader: true
+        side: 9
+        hidden: true
+        color: "black"
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find the dwarves"
+                    condition: "win"
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Clear the caves")
+                objective: {
+                    description: _ "Death of Tallin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Hamel"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+
+            Time_Area{
+                terrain: {"Gg", "Mm", "Mm^*", "Hh", "Hh^*"}
+                <DEFAULT_SCHEDULE!
+            }
+
+            RECALL_SUPPORTER!
+    }
+
+-- Start event - execute the flavor bat encounter.
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                role: "Supporter"
+                message: _ "So here we are..."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "(<i>Trip</i>) <i>Oof!</i>" -- wmllint: no spellcheck
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Great idea, Tallin, I probably couldn’t even fight a bat down here."
+            }
+
+            Move_Unit_Fake{
+                type: "Blood Bat"
+                side: 9
+                x: {15, 14, 13, 12, 11}
+                y: {12, 12, 12, 12, 12}
+            }
+
+            NOTRAIT_UNIT(9, "Blood Bat", 11, 12)
+
+            Message{
+                type: "Blood Bat"
+                message: _ "Neep Neep!" -- wmmlint: no spellcheck
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Ahhhh!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Calm down. Come what may, we’ll handle them. Come on now, let’s find those dwarves!"
+            }
+    }
+
+-- Find Camerin event
+    event: {
+        name: "capture"
+        filter: {
+            side: 1
+            x: 2, y: 1
+        }
+        do: ->
+            Unit{
+                side: 1
+                x: 1, y: 1
+
+-- wmllint: recognize Camerin
+                <CHARACTER_STATS_CAMERIN!
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "<i>Prepare to die, you foul orc!</i>"
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "Hold it! I am no orc, I am a human!"
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "A human! Amazing, I haven’t seen a human ever since the orcs attacked."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "How have you managed to survive all this time?"
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "By frying every orc, troll or skeleton I come across. Duh! Those monsters desecrated my life’s work, now I shall not rest till I send every last one of them to hell! Oh, and just between me and you, it is actually good fun — more fun anyway than sitting on your backside studying all day..."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "... Uh, sure!"
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "But silly me, where are my manners? Would you like to come inside for tea?"
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "Um... err... well actually we are presently busy fighting our way through hordes of trolls and skeletons trying to find the dwarves... if there are any left."
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "Hordes of trolls and skeletons! Where?! Let’s go burn ’em all!"
+            }
+
+            Message{
+                speaker: "unit"
+-- wmllint: local spelling Er
+                message: _ "Er... let’s go..."
+            }
+
+            Message{
+                speaker: "unit"
+                message: WHISPER(_ "whisper^Is it safe to have this lunatic with us?")
+            }
+
+            VARIABLE("found_Camerin", true)
+
+-- The following two events are absolutely useless if Camerin
+-- was not found so we'll set them only when this happens using
+-- event nesting.
+
+-- Flavor event on Camerins first attack
+            Event{
+                name: "attack"
+                filter: {
+                    id: "Camerin"
+                }
+                do: ->
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "<i>Burn, you disgusting filth!</i>"
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Ahhh! Fire!"
+                    }
+            }
+
+-- And flavor event on his first kill
+            Event{
+                name: "die"
+                filter_second: {
+                    id: "Camerin"
+                }
+                do: ->
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "<i>Yeah! Die, scum, die!</i>"
+                    }
+            }
+    }
+
+-- Information for the player that he can't proceed without either
+-- finding the dwarves or killing the enemies.
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 40
+            y: "12-14"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "This tunnel keeps on going..."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "I think we should finish searching this part of Knalga first before we go deeper into the caves."
+            }
+    }
+
+-- Flavor event on first sighting of the undead
+    event: {
+        name: "sighted"
+        filter: {
+            race: "undead"
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                role: "Supporter"
+                message: _ "Grim Gods of Darkness, what are those things!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Skeletons!"
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Look at the axes they bear. At one time those skeletons must have been dwarves!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Stand firm, men. The dwarven defenders of Knalga rise again. Now it remains to be seen whether or not they recognize us as friends."
+            }
+    }
+
+-- Flavor event for the first time they attack
+    event: {
+        name: "attack"
+        filter: {
+            race: "undead"
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                role: "Supporter"
+                message: _ "They are attacking us!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Destroy them!"
+            }
+    }
+
+-- Opening a pair of hidden doors - the north one
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: {12, 16}
+            y: {7, 5}
+        }
+
+-- Check from which side do we open and use appropriate race in the dialogue.
+        do: ->
+            If{
+                variable: {
+                    name: "unit.y"
+                    equals: 7
+                }
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "Hey look, it’s an ancient door. It seems the trolls were too stupid to find how to open it."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "Hey look, it’s an ancient door. It seems the skeletons were too stupid to find how to open it."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Well, let’s see what’s behind it."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "All right. (<i>Grunt... strain...</i>) It’s not moving. It seems to be stuck."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Well, just kick it down then."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "... Right."
+            }
+
+            QUAKE("rumble.ogg")
+
+            Terrain{
+                x: {13, 14, 15}
+                y: {7, 6, 6}
+                terrain: "Uu"
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The old door crumbles away, revealing an old tunnel on the other side."
+            }
+    }
+
+-- And the south ones
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: {15, 17}
+            y: {26, 27}
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "unit.y"
+                    equals: 26
+                }
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "Hey look, it’s an ancient door. It seems the trolls were too stupid to find how to open it."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "Hey look, it’s an ancient door. It seems the skeletons were too stupid to find how to open it."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Well, let’s see what’s behind it."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "All right. (<i>Grunt... strain...</i>) It’s not moving. It seems to be stuck."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Well, just kick it down then."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "... Right."
+            }
+
+            QUAKE("rumble.ogg")
+
+            Terrain{
+                x: {15, 16, 16, 17}
+                y: {27, 26, 27, 26}
+                terrain: "Uu"
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "A large section of wall crumbles away."
+            }
+    }
+
+-- We're doomed (tm) routine on turn 9
+    event: {
+        name: "turn 9"
+        do: ->
+            Message{
+                role: "Supporter"
+                message: _ "Tallin, this situation is hopeless — there are endless monsters swarming from all directions!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "We are in a dire situation indeed — but just see — the trolls and the skeletons are also attacking each other. We must all stay together in one group; let each man support the man next to him. If our ranks are imposing enough the monsters may shy away from us in favor of easier prey."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "But still, Tallin, we will take losses, and for each one of us, there is no replacement — whereas for every monster we kill, it seems that two more come to take its place!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Which is why we must make haste to find the dwarves. Dwarves are hardy creatures and they know their caves backwards and forwards — so I am sure at least some must have survived! Indeed, this is our only hope for otherwise, be it on the surface or be it down here, any way we turn we face certain destruction!"
+            }
+    }
+
+-- Meeting the dwarves, set new objectives
+    event: {
+        name: "sighted"
+        filter: {
+            side: 4
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Stand where ye be, you... Och! A human!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Greetings from the people of Dwarven Doors, friend."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "Dwarven Doors? I thought ye surface humans had been enslaved or slain by the orcs years ago."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Yes, we were enslaved, but we rose against Al’Tar and defeated his warband. In order to stay free, we seek help and equipment from our old allies, the dwarves."
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "Och, the dwarves of Knalga are themselves in desperate straits — but we havena’ forgotten the old bonds. Be welcome to our keep. Aye, and have speech with our chieftain, the Lord Hamel."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Very well."
+            }
+
+            VARIABLE("found_dwarves", true)
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Speak with Hamel"
+                    condition: "win"
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Clear the caves")
+                objective: {
+                    description: _ "Death of Tallin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Hamel"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- Arriving at the keep, end scenario without bonus.
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Hamel"
+        }
+        filter_second: {
+            id: "Tallin"
+        }
+        do: ->
+            Message{
+                speaker: "Hamel"
+                message: _ "Well met, Tallin. My men have told me of your victory against Al’Tar."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Thank you and well-met indeed, Lord Hamel. I must say, this place is interesting."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "This is how we get our food, me lad. Since we are a tad close to the surface here, some sunlight shines down through the cracks in the roof. If we baby the plants, we can usually get enough. They taste unco’ foul but that’s how we ha’ survived all these long years. But come, let us talk!"
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Whew, we did it!"
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "Awww! Are we done already?"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+-- All enemies defeated, choose appropriate dialog depending on whether the dwarves were found or not.
+    event: {
+        name: "enemies defeated"
+        do: ->
+            If{
+                variable: {
+                    name: "found_dwarves"
+                    boolean_equals: true
+                }
+                then: ->
+                    Message{
+                        speaker: "Tallin"
+                        message: _ "Good, we managed to clear the caves... for now, anyway. Now let’s get to the dwarven keep and dicker for better weapons."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Tallin"
+                        message: _ "Good, there are no more monsters lurking in these parts of the tunnels. I think I can hear the clamor of dwarves just ahead. Come on men, let’s go meet them."
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+            }
+    }
+
+-- Hamel got killed, the scenario is lost.
+    event: {
+        name: "die"
+        filter: {
+            id: "Hamel"
+        }
+        do: ->
+            INCIDENTAL_MUSIC("sad.ogg")
+
+            Role{
+                type: {"Master Bowman", "Royal Guard", "Halberdier", "Swordsman", "Pikeman", "Longbowman", "Javelineer", "Trapper", "Bandit", "Highwayman", "Thug", "Poacher", "Spearman", "Bowman", "Peasant"}
+                role: "Messenger"
+            }
+
+            Message{
+                role: "Messenger"
+                message: _ "Tallin, we have just received the news that the dwarvish Lord Hamel has just been slain. We are too late!"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "No! Without the dwarvish weapons we have no hope!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+-- If we won and Camerin wasn't found add him to the players army
+    event: {
+        name: "victory"
+        do: ->
+            If{
+                variable: {
+                    name: "found_Camerin"
+                    boolean_equals: false
+                }
+                then: ->
+                    Move_Unit_Fake{
+                        type: "Arch Mage"
+                        side: 1
+                        x: {2, 2, 4, 4, 3, 3, 6}
+                        y: {1, 2, 3, 4, 5, 10, 11}
+                    }
+
+                    Unit{
+                        side: 1
+                        x: 6, y: 11
+
+-- wmllint: recognize Camerin
+                        <CHARACTER_STATS_CAMERIN!
+                    }
+
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "Hey, what’s going on in here?"
+                    }
+
+-- Try to choose as Admirer, in order:
+-- (1) A Thug or Bandit on side 1
+-- (2) Otherwise, any unit other than Tallin, Camerin and Supporter on side 1
+-- (3) If all else fails, Tallin
+
+                    Role{
+                        type: {"Thug", "Bandit"}
+                        role: "Admirer"
+                    }
+
+                    If{
+                        not: {
+                            have_unit: {
+                                role: "Admirer"
+                            }
+                        }
+                        then: ->
+                            Role{
+                                not: {
+                                    id: "Tallin"
+                                }
+                                not: {
+-- unit can have only one role
+                                    role: "Supporter"
+                                }
+                                not: {
+                                    id: "Camerin"
+                                }
+                                side: 1
+                                role: "Admirer"
+                            }
+                        
+                    }
+
+                    If{
+                        not: {
+                            have_unit: {
+                                role: "Admirer"
+                            }
+                        }
+                        then: ->
+-- Supporter and Camerin shouldn’t get Admirer role
+                            Role{
+                                id: "Tallin"
+                                role: "Admirer"
+                            }
+                        
+                    }
+
+                    Message{
+                        role: "Admirer"
+                        message: _ "We are killing lots of trolls and skeletons."
+                    }
+
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "Really! Did you save any for me?"
+                    }
+
+                    Message{
+                        role: "Admirer"
+                        message: _ "Uh, not really..."
+                    }
+
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "Awww!"
+                    }
+
+                    Message{
+                        role: "Admirer"
+                        message: _ "But hey, if you want to join us, I am sure we will be fighting a lot more orcs, trolls and skeletons in the near future."
+                    }
+
+                    Message{
+                        speaker: "Camerin"
+                        message: _ "Really! Oh yeah, I am in!"
+                    }
+
+                    Message{
+                        speaker: "Tallin"
+                        message: _ "... That was rather odd. Who is this guy?"
+                    }
+
+                    Message{
+                        speaker: "Hamel"
+                        message: _ "Oh, dinna’ mind him, that’d be Camerin. He used to be yer usual scholarly mage, and he moved awa’ up here to be alone and study. But then when the orcs invaded he went a little loony. My guess is that some roving orcs ransacked his place and burnt his notes or something. Whatever it was, he couldna’ take it and became fey. Ever since he has been roving these caves destroying any manner of monster that he comes across. They all give him a very wide berth by now. So just be polite, give him some room and you’ll find he is relatively harmless..."
+                        show_if: {
+                            variable: {
+                                name: "found_dwarves"
+                                boolean_equals: true
+                            }
+                        }
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("found_Camerin,found_dwarves")
+    }
+
+    <HERODEATH_TALLIN!
+    <HERODEATH_CAMERIN!
+    <HERODEATH_HAMEL!
+
+    <SUPPORTER_DEATH_HANDLER!
+}

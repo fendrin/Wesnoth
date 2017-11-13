@@ -1,0 +1,30 @@
+--textdomain wesnoth-test
+Textdomain{
+    name: "wesnoth-test"
+}
+
+if TEST
+    Test_Key{
+        define: "test"
+    }
+    TEST_TRANSACTION: () ->
+        Test_Key3{
+            define: "transaction"
+        }
+    
+    TEST_TRANSACTION_PARAM: (FIRST, SECOND) ->
+        Test_Key4{
+            [FIRST]: SECOND
+        }
+    
+
+
+if TEST_DEFINE
+    Test_Key2{
+        define: _ "testing translation reset."
+    }
+
+
+if TEST_MACRO
+    TEST_TRANSACTION!
+    TEST_TRANSACTION_PARAM("defined", "parameter")

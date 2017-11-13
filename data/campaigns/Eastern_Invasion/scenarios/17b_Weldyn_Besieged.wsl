@@ -1,0 +1,710 @@
+--textdomain wesnoth-ei
+--
+-- NOTE: This level is intended as a challenging final scenario.
+--       Players without sufficent high-level troops to recall
+--       are advised to select "The Duel" instead.
+--
+Scenario{
+    id: "17b_Weldyn_Besieged"
+    name: _ "Weldyn Besieged"
+    map: "campaigns/Eastern_Invasion/maps/17b_Weldyn_Besieged.map"
+    turns: -1
+    next_scenario: "18_Epilogue"
+
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("loyalists.ogg", "the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    INCLUDE("campaigns/Eastern_Invasion/utils/final_battle.cfg")
+
+    <EI_TRACK(JOURNEY_17_NEW!)
+
+    side: {
+        type: "Lieutenant"
+        id: "Gweddry"
+        name: _ "Gweddry"
+        side: 1
+        gold: 300
+        canrecruit: true
+        controller: "human"
+        team_name: "wesnothians"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+    }
+
+-- Gweddry gets the villages within the moat.
+-- The ones outside he'll actually have to take.
+    <STARTING_VILLAGES(1, 3)
+
+    side: {
+        type: "Lich"
+        id: "Lich2"
+        name: _ "?"
+        side: 2
+        canrecruit: true
+        facing: "sw"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Soulless", "Walking Corpse"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich3"
+        name: _ "?"
+        side: 3
+        canrecruit: true
+        facing: "sw"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Deathblade"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich4"
+        name: _ "?"
+        side: 4
+        canrecruit: true
+        facing: "nw"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Banebow"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich5"
+        name: _ "?"
+        side: 5
+        canrecruit: true
+        facing: "nw"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Necrophage", "Ghast"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich6"
+        name: _ "?"
+        side: 6
+        canrecruit: true
+        facing: "ne"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Draug"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich7"
+        name: _ "?"
+        side: 7
+        canrecruit: true
+        facing: "se"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Spectre"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        type: "Lich"
+        id: "Lich8"
+        name: _ "?"
+        side: 8
+        canrecruit: true
+        facing: "se"
+        variables: {
+            random_lich: true
+        }
+        controller: "ai"
+        recruit: {"Bone Shooter", "Revenant", "Wraith", "Shadow", "Dark Adept", "Dark Sorcerer"}
+        <GOLD(130, 150, 180)
+        team_name: "bad"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+-- wmllint: recognize Mal-Ravanal
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("liches_to_kill", ON_DIFFICULTY(2, 3, 4))
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Kill #{liches_to_kill liches to reveal Mal-Ravanal"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Defeat Mal-Ravanal while Dacyn is nearby"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Owaec"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Letting any enemy unit onto your keep"
+                    condition: "lose"
+                }
+                <IS_LAST_SCENARIO!
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Dacyn"
+            }
+            Recall{
+                id: "Owaec"
+            }
+            Recall{
+                id: "Grug"
+            }
+            Recall{
+                id: "Konrad"
+            }
+            Recall{
+                id: "Engineer"
+            }
+            Recall{
+                id: "Terraent"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "I can sense Mal-Ravanal is here somewhere... When we attack him I will need to be nearby with the Null Stone to prevent his teleportation. We cannot afford to let him escape."
+            }
+
+            Scroll_To{
+                x: 51, y: 1
+            }
+            Delay{
+                time: 100
+            }
+            Scroll_To{
+                x: 51, y: 25
+            }
+            Delay{
+                time: 100
+            }
+            Scroll_To{
+                x: 1, y: 25
+            }
+            Delay{
+                time: 100
+            }
+            Scroll_To{
+                x: 1, y: 1
+            }
+            Delay{
+                time: 100
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "But how? We don't know which one of them he is."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "They are channeling some dark magic to hide themselves. We have to kill some of them to break the spell."
+            }
+
+            Set_Variables{
+                name: "random_liches"
+
+                value: {
+                    name: _ "Mal-Hadanak"
+                    quote: _ "You dare to attack me? Now you will pay!"
+                }
+                value: {
+                    name: _ "Mal-Katklagad"
+                    quote: _ "I will enjoy watching you suffer!"
+                }
+                value: {
+                    name: _ "Mal-Xaskanat"
+                    quote: _ "Death will only be the beginning of your torment!"
+                }
+                value: {
+                    name: _ "Mal-Akranbral"
+                    quote: _ "You will serve me in death!"
+                }
+                value: {
+                    name: _ "Mal-Larakan"
+                    quote: _ "Allow me to free you from your wretched existence!"
+                }
+                value: {
+                    name: _ "Mal-Drakanal"
+                    quote: _ "My master is merely toying with you!"
+                }
+            }
+
+            Store_Unit{
+                filter: {
+                    type: "Lich"
+                    canrecruit: true
+                }
+
+                kill: false
+                variable: "liches"
+            }
+
+            Foreach{
+                array: "liches"
+
+                do: ->
+                    Object{
+                        silent: true
+
+                        filter: {
+                            x: this_item.x, y: this_item.y
+                        }
+
+                        effect: {
+                            apply_to: "halo"
+                            halo: "halo/holy/light-beam-5.png~CROP(0,0,150,500)~SCALE(108,144)~CS(-159,-255,-159)~MASK(terrain/misc/smoke-A[01~12].png~SCALE(108,144)):100"
+                        }
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("liches")
+    }
+
+-- Reveals the primary unit as Mal-Ravanal
+    event: {
+        name: "reveal ravanal"
+        do: ->
+            Modify_Unit{
+                filter: {
+                    find_in: "unit"
+                }
+                type: "Lich Lord"
+                id: "Mal-Ravanal"
+                name: _ "Mal-Ravanal"
+                profile: "portraits/mal-ravanal.png"
+                hitpoints: 80
+                variables: {
+                    random_lich: false
+                }
+            }
+
+            TEAM_COLOR_OVERRIDE({id: "Mal-Ravanal"}, "blue")
+
+            Object{
+                silent: true
+
+                filter: {
+                    id: "Mal-Ravanal"
+                }
+
+                effect: {
+                    apply_to: "halo"
+                    halo: ""
+                }
+            }
+
+            Allow_Recruit{
+                side: unit.side
+                type: "Bone Shooter,Revenant,Wraith,Shadow,Nightgaunt,Spectre,Draug,Banebow"
+            }
+
+            Gold{
+                amount: 100
+                side: unit.side
+            }
+
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "I shall destroy you personally!"
+            }
+    }
+
+-- When attacking a random lich, reveal it (the last one will be Mal-Ravanal)
+    event: {
+        name: "attack"
+        first_time_only: false
+
+        filter: {
+            side: 1
+        }
+
+        filter_second: {
+            filter_wml: {
+                variables: {
+                    random_lich: true
+                }
+            }
+        }
+
+        filter_condition: {
+            have_unit: {
+                filter_wml: {
+                    variables: {
+                        random_lich: true
+                    }
+                }
+
+                not: {
+                    x: x2, y: y2
+                }
+            }
+        }
+        do: ->
+            RANDOM("0..#{(#{random_liches.length - 1)")
+
+            VARIABLE("second_unit.name", random_liches[random].name)
+            VARIABLE("second_unit.variables.random_lich", false)
+
+            Unstore_Unit{
+                variable: "second_unit"
+                find_vacant: false
+            }
+
+            Object{
+                silent: true
+
+                filter: {
+                    find_in: "second_unit"
+                }
+
+                effect: {
+                    apply_to: "halo"
+                    halo: ""
+                }
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: random_liches[random].quote
+            }
+
+            CLEAR_VARIABLE("random_liches[#{random]")
+    }
+
+-- If only one random lich remains (all others have been attacked but not
+-- enough of them killed to break the spell), then just reveal Mal-Ravanal
+-- since the player already knows where he is
+    event: {
+        name: "attack end"
+
+        filter_condition: {
+            have_unit: {
+                filter_wml: {
+                    variables: {
+                        random_lich: true
+                    }
+                }
+
+                count: 1
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "reveal ravanal"
+
+                primary_unit: {
+                    filter_wml: {
+                        variables: {
+                            random_lich: true
+                        }
+                    }
+                }
+            }
+    }
+
+-- Reveal remaining liches when X of them have been killed
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            canrecruit: true
+            type_tree: "Lich"
+        }
+        do: ->
+            VARIABLE_OP("liches_killed", "add", 1)
+
+            If{
+                variable: {
+                    name: "liches_killed"
+                    greater_than_equal_to: liches_to_kill
+                }
+
+                then: ->
+                    Sound{
+                        name: "magic-dark-big-miss.ogg"
+                    }
+
+                    Color_Adjust{
+                        red: 127, green: 64, blue: 127
+                    }
+                    Delay{
+                        time: 100
+                    }
+                    Color_Adjust{
+                        red: -127, green: -191, blue: -127
+                    }
+                    Delay{
+                        time: 100
+                    }
+                    Color_Adjust{
+                        red: 127, green: 64, blue: 127
+                    }
+                    Delay{
+                        time: 100
+                    }
+                    Color_Adjust{
+                        red: 0, green: 0, blue: 0
+                    }
+
+                    Message{
+                        speaker: "Owaec"
+                        message: _ "Their spell is broken! There he is!"
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            filter_wml: {
+                                variables: {
+                                    random_lich: true
+                                }
+                            }
+
+                            not: {
+                                x: x2, y: y2
+                            }
+                        }
+
+                        kill: false
+                        variable: "remaining_random_liches"
+                    }
+
+                    VARIABLE("longest_path_to_dacyn", 0)
+                    VARIABLE("farthest_lich_side", "")
+
+                    Foreach{
+                        array: "remaining_random_liches"
+
+                        do: ->
+                            Find_Path{
+                                traveler: {
+                                    canrecruit: true
+                                    side: this_item.side
+                                }
+
+                                destination: {
+                                    filter: {
+                                        id: "Dacyn"
+                                    }
+                                }
+
+                                allow_multiple_turns: true
+                                check_zoc: false
+                                variable: "path_to_dacyn"
+                            }
+
+                            If{
+                                variable: {
+                                    name: "longest_path_to_dacyn"
+                                    less_than: path_to_dacyn.hexes
+                                }
+
+                                then: ->
+                                    VARIABLE("longest_path_to_dacyn", path_to_dacyn.hexes)
+                                    VARIABLE("farthest_lich_side", this_item.side)
+                                
+                            }
+                        
+                    }
+
+                    Scroll_To_Unit{
+                        canrecruit: true
+                        side: farthest_lich_side
+                    }
+
+                    Fire_Event{
+                        name: "reveal ravanal"
+
+                        primary_unit: {
+                            canrecruit: true
+                            side: farthest_lich_side
+                        }
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            find_in: "remaining_random_liches"
+
+                            not: {
+                                side: farthest_lich_side
+                            }
+                        }
+
+                        kill: false
+                        variable: "remaining_random_liches"
+                    }
+
+                    Foreach{
+                        array: "remaining_random_liches"
+
+                        do: ->
+                            RANDOM("0..#{(#{random_liches.length - 1)")
+
+                            VARIABLE("this_item.name", random_liches[random].name)
+                            VARIABLE("this_item.variables.random_lich", false)
+
+                            Unstore_Unit{
+                                variable: "this_item"
+                                find_vacant: false
+                            }
+
+                            Object{
+                                silent: true
+
+                                filter: {
+                                    x: this_item.x, y: this_item.y
+                                }
+
+                                effect: {
+                                    apply_to: "halo"
+                                    halo: ""
+                                }
+                            }
+
+                            CLEAR_VARIABLE("random_liches[#{random]")
+                        
+                    }
+
+                    CLEAR_VARIABLE("longest_path_to_dacyn,farthest_lich_side,path_to_dacyn,liches_killed,remaining_random_liches")
+                
+            }
+    }
+
+-- Don't allow the liches to be baited out of their castles
+    event: {
+        name: "turn refresh"
+        first_time_only: false
+
+        filter_condition: {
+            variable: {
+                name: "side_number"
+                greater_than: 1
+            }
+        }
+        do: ->
+            Modify_Unit{
+                filter: {
+                    side: side_number
+                    canrecruit: true
+                }
+
+                moves: 0
+            }
+    }
+
+-- Enemy unit reaches the Weldyn keep
+    event: {
+        name: "moveto"
+        filter: {
+            x: 24
+            y: 14
+            not: {
+                side: 1
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Kill them all!"
+            }
+            Message{
+                speaker: "Gweddry"
+                message: _ "They killed the royal family... now, even if we save Weldyn, Wesnoth has fallen."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+-- King gets killed
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Konrad"
+        }
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "The Kingdom of Wesnoth dies with me!"
+            }
+            Endlevel{
+                result: "defeat"
+                save: false
+            }
+    }
+
+    <LATE_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+    <HERODEATH_OWAEC!
+    <HERODEATH_GRUG!
+    <HERODEATH_ENGINEER!
+}

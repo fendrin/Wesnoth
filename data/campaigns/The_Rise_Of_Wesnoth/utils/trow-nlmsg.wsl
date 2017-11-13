@@ -1,0 +1,145 @@
+--textdomain wesnoth-trow
+Event{
+    name: "turn 6"
+    do: ->
+        If{
+            variable: {
+                name: "last_done"
+                equals: "Dragon"
+            }
+            then: ->
+                Message{
+                    speaker: "Prince Haldric"
+-- wmllint: local spelling dragonbane
+                    message: _ "I still think I should be called ‘Dragonbane’."
+                }
+                Message{
+                    speaker: "Lady Jessene"
+                    message: _ "Not in my lifetime."
+                }
+            
+        }
+}
+
+Event{
+    name: "turn 3"
+    do: ->
+        If{
+            variable: {
+                name: "last_done"
+                equals: "Hole"
+            }
+            then: ->
+                Message{
+                    speaker: "Lady Jessene"
+                    message: _ "It could be worse. We could be back in that troll hole!"
+                }
+
+                Message{
+                    speaker: "Burin the Lost"
+                    message: _ "Hey, disparage the trolls, <i>not</i> the holes!"
+                }
+            
+        }
+}
+
+Event{
+    name: "turn 2"
+    do: ->
+        If{
+            variable: {
+                name: "last_done"
+                equals: "Isle"
+            }
+            then: ->
+                Message{
+                    speaker: "Prince Haldric"
+                    message: _ "Well, at least we don’t have to contend with the undead. No offense, Jessene."
+                }
+                Message{
+                    speaker: "Lady Jessene"
+                    message: _ "Don’t worry about it."
+                }
+            
+        }
+}
+
+Event{
+    name: "turn 5"
+    do: ->
+        If{
+            variable: {
+                name: "last_done"
+                equals: "Beach"
+            }
+            then: ->
+                Message{
+                    speaker: "Prince Haldric"
+                    message: _ "Too bad that this isn’t going as well as the beach... I miss the beach."
+                }
+            
+        }
+}
+
+Event{
+    name: "turn 7"
+    do: ->
+        If{
+            variable: {
+                name: "num_done"
+                numerical_equals: 0
+            }
+            then: ->
+                Message{
+                    speaker: "Lady Jessene"
+                    message: _ "Haldric, just before we arrived here I got word that the your ‘third of a fleet’ has departed for our old home, the Green Isle."
+                }
+                Message{
+                    speaker: "Prince Haldric"
+                    message: _ "You were planning on sharing this with me when?"
+                }
+            
+        }
+}
+
+Event{
+    name: "turn 2"
+    do: ->
+        If{
+            variable: {
+                name: "num_done"
+                numerical_equals: 3
+            }
+            then: ->
+                Message{
+                    speaker: "Lady Jessene"
+                    message: _ "Haldric, messengers just informed me that the fleet has returned from our old home. They came back with as nearly as large a fleet as we initially set out with, and Southbay still stands. This is excellent news. As per your orders a third of the fleet has headed back out."
+                }
+                Message{
+                    speaker: "Prince Haldric"
+                    message: _ "That is excellent news indeed. Our numbers have doubled. Now on to the business at hand."
+                }
+            
+        }
+}
+
+--Incorporate the return of the fleet in final scenarios
+--[event]
+--	name=turn 2
+--	[if]
+--		[variable]
+--			name=num_done
+--			numerical_equals=3
+--		[/variable]
+--		[then]
+--		[message]
+--			id=Lady Jessene
+--			message= _ "Haldric, the fleet made it back again. A few more ships, -But they report that the whole of the coast was teeming with Orcs. All that was seen of -Southbay was a cloud of smoke."
+--		[/message]
+--		[message]
+--			id=Prince Haldric
+--			message= _ "A sad end to our home. We must save our mourning for later, -for battle awaits us now."
+--		[/message]
+--		[/then]
+--	[/if]
+--[/event]

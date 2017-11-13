@@ -1,0 +1,118 @@
+--textdomain wesnoth-dm
+KALENZ = () -> {
+    id: "Kalenz"
+    name: _ "Kalenz"
+    unrenamable: true
+    profile: "portraits/kalenz.png"
+    type: "Elvish High Lord"
+    side: 1
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_RESILIENT!
+    }
+}
+
+YOUNG_DELFADOR = () -> {
+    id: "Delfador"
+    name: _ "Delfador"
+    type: "Journeyman Mage"
+    profile: "portraits/younger_delfador.png"
+    canrecruit: true
+    unrenamable: true
+    modifications: {
+        <TRAIT_RESILIENT!
+        <TRAIT_INTELLIGENT!
+
+        object: {
+            effect: {
+                apply_to: "profile"
+                filter: {
+                    type: {"Mage Commander", "Mage Magister"}
+                }
+                portrait: "portraits/young_delfador.png"
+            }
+        }
+    }
+}
+
+OLD_DELFADOR = () -> {
+    id: "Delfador"
+    name: _ "Delfador"
+    type: "Elder Mage"
+    profile: "portraits/old_delfador.png"
+    canrecruit: true
+    unrenamable: true
+    modifications: {
+        <TRAIT_RESILIENT!
+        <TRAIT_INTELLIGENT!
+    }
+}
+
+CHANTAL = () -> {
+    type: "Elvish Druid"
+    id: "Chantal"
+    name: _ "Chantal"
+    unrenamable: true
+    profile: "portraits/chantal-druid.png"
+    side: 3
+    canrecruit: true
+    controller: "ai"
+    recruit: {"Elvish Ranger", "Elvish Rider"}
+    modifications: {
+        <TRAIT_INTELLIGENT!
+        <TRAIT_RESILIENT!
+        object: {
+            effect: {
+                apply_to: "profile"
+                filter: {
+                    type: "Elvish Shyde"
+                }
+                portrait: "portraits/chantal-shyde.png"
+            }
+        }
+    }
+}
+
+LIONEL = () -> {
+    type: "General"
+    id: "Lionel"
+    name: _ "Lionel"
+    unrenamable: true
+    profile: "portraits/lionel.png"
+    <IS_HERO!
+    modifications: {
+        <TRAIT_FEARLESS!
+        <TRAIT_STRONG!
+    }
+}
+
+ULREK = () -> {
+    type: "Dwarvish Lord"
+    id: "Ulrek"
+    name: _ "Ulrek"
+    unrenamable: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_STRONG!
+    }
+}
+
+METHOR = () -> {
+    id: "Methor"
+    name: _ "Methor"
+    unrenamable: true
+    profile: "portraits/methor.png"
+    type: "Mage of Light"
+    modifications: {
+        <TRAIT_INTELLIGENT!
+        <TRAIT_AGED!
+    }
+}
+
+ILIAH_MALAL = (TYPE) -> {
+    id: "Iliah-Malal"
+    name: _ "Iliah-Malal"
+-- TODO maybe get custom portraits? Default ones may be fine.
+    type: TYPE
+    canrecruit: true
+}

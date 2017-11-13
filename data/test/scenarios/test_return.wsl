@@ -1,0 +1,18 @@
+-- Tests that return true works.
+-- This is a sanity check of the unit testing mechanism.
+GENERIC_UNIT_TEST("test_return", {
+        event: {
+            name: "start"
+            do: ->
+                RETURN({true: {}})
+        }
+})
+
+-- Tests that return false fails.
+-- This is a sanity check of the unit testing mechanism.
+GENERIC_UNIT_TEST("test_return_fail", {
+        event: {
+            name: "start"
+err: ../attic/data/test/scenarios/test_return.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 15:         {RETURN ([not][true][/true][/not])}
+        }
+})

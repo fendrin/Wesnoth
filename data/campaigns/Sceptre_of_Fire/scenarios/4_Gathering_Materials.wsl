@@ -1,0 +1,1056 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "Gathering Materials"
+    id: "4_Gathering_Materials"
+    map_generation: "lua"
+    next_scenario: "4t_The_Jeweler"
+
+    story: {
+        part: {
+            story: _ "Those who went to the eastern mines were brave indeed. They were infested with trolls and other vile creatures, who thrived in the dark and gloom of the caves."
+        }
+        part: {
+            story: _ "And braver still were Rugnur and his companions, who had to spend two years in those tunnels. For mining is a lengthy business. But they could for the most part avoid the enemy. They only once had to venture into the very heart of the trolls’ territory."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_04_NEW!)
+
+    generator: {
+        id: "cavegen"
+        config_name: "Lua Cave Generator"
+        create_map: [[ return wesnoth.require("cave_map_generator").generate_map(...) ]]
+
+        map_width: 45
+        map_height: 45
+        village_density: 60
+
+        terrain_wall: "Xu"
+        terrain_clear: "Uu"
+        terrain_keep: "Kud"
+        terrain_castle: "Cud"
+        terrain_village: "Uu^Vud"
+
+--the chamber with the player. Near the south-west corner
+        chamber: {
+            id: "player"
+            x: "10-15"
+            y: "32-38"
+            size: 7
+            jagged: 40
+            item_location: {
+                id: 1
+                place_castle: true
+            }
+        }
+
+--the chamber with the coal. Somewhere in the southeast.
+        chamber: {
+            id: "coal1"
+            x: "28-35"
+            y: "28-35"
+            size: 8
+            passage: {
+                chance: 70
+                width: 1
+                windiness: 5
+                destination: "gold"
+            }
+            passage: {
+                chance: 50
+                width: 2
+                windiness: 5
+                destination: "coal2"
+            }
+            passage: {
+                chance: 50
+                width: 2
+                windiness: 5
+                destination: "gold"
+            }
+            passage: {
+                chance: 50
+                width: 2
+                windiness: 10
+                destination: "coal2"
+            }
+            item_location: {
+                id: 2
+                place_castle: true
+            }
+        }
+
+--the northern chamber with only bad guys. Somewhere in the north-east.
+        chamber: {
+            id: "gold"
+            x: "28-35"
+            y: "5-12"
+            size: 8
+            jagged: 50
+            passage: {
+                chance: 100
+                width: 2
+                windiness: 10
+                destination: "coal1"
+            }
+            passage: {
+                chance: 100
+                width: 2
+                windiness: 10
+                destination: "coal2"
+            }
+            passage: {
+                chance: 50
+                width: 1
+                windiness: 5
+                destination: "coal1"
+            }
+            passage: {
+                chance: 50
+                width: 1
+                windiness: 5
+                destination: "coal2"
+            }
+            item_location: {
+                id: 3
+                place_castle: true
+            }
+        }
+
+--chamber with the second coal mine. Somewhere in the north-west.
+        chamber: {
+            id: "coal2"
+            x: "8-12"
+            y: "8-12"
+            size: 7
+            passage: {
+                chance: 70
+                width: 1
+                windiness: 5
+                destination: "gold"
+            }
+            passage: {
+                chance: 50
+                width: 2
+                windiness: 5
+                destination: "coal1"
+            }
+            passage: {
+                chance: 50
+                width: 2
+                windiness: 5
+                destination: "gold"
+            }
+            passage: {
+                chance: 50
+                width: 1
+                windiness: 5
+                destination: "coal1"
+            }
+            item_location: {
+                id: 4
+                place_castle: true
+            }
+        }
+
+--chamber with gold in it that connects to all the others
+        chamber: {
+            id: "connector"
+            x: "15-20"
+            y: "15-20"
+            size: 4
+--passages to both the troll's chamber and the player’s chamber
+            passage: {
+                destination: "player"
+                width: 2
+                windiness: 10
+            }
+            passage: {
+                destination: "coal1"
+                width: 2
+                windiness: 10
+            }
+            passage: {
+                destination: "coal2"
+                width: 2
+                windiness: 10
+            }
+            passage: {
+                destination: "gold"
+                width: 2
+                windiness: 10
+            }
+        }
+    }
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        side: 1
+        canrecruit: true
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout", "Gryphon Rider", "Dwarvish Miner"}
+        controller: "human"
+        shroud: true
+        <FLAG_VARIANT("knalgan")
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+    }
+    side: {
+        <if HARD then {
+            type: "Troll Warrior"
+        } else {
+            type: "Troll"
+        }
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        ai: {
+            leader_value: 2
+            village_value: 0.2
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 2
+            }
+        }
+        recruit: {"Troll Whelp", "Goblin Spearman", "Troll Rocklobber"}
+        team_name: "trolls1"
+        user_team_name: _ "Trolls"
+        <GOLD(75, 125, 175)
+    }
+    side: {
+        <if HARD then {
+            type: "Troll Warrior"
+        } else {
+            type: "Troll"
+        }
+        side: 3
+        canrecruit: true
+        controller: "ai"
+        ai: {
+            leader_value: 2
+            village_value: 0.2
+            recruitment_pattern: "fighter"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 2
+            }
+        }
+        recruit: {"Troll Whelp", "Goblin Spearman", "Young Ogre", "Ogre"}
+        team_name: "trolls2"
+        user_team_name: _ "Trolls"
+        <GOLD(75, 125, 175)
+    }
+    side: {
+        <if HARD then {
+            type: "Troll Warrior"
+        } else {
+            type: "Troll"
+        }
+        side: 4
+        canrecruit: true
+        controller: "ai"
+        ai: {
+            leader_value: 2
+            village_value: 0.2
+            recruitment_pattern: "fighter"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 2.0
+            }
+        }
+        recruit: {"Goblin Spearman", "Goblin Rouser", "Goblin Impaler"}
+        team_name: "trolls3"
+        user_team_name: _ "Trolls"
+        <GOLD(75, 125, 175)
+    }
+
+    <TURNS(40, 37, 34)
+    victory_when_enemies_defeated: false
+
+    <SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+
+    <UNDERGROUND!
+
+    <SOF_DEATHS!
+
+-- wmllint: recognize Rugnur
+
+-- Note: these event-containing macros are placed here instead of
+-- next to the corresponding [side]s because I seemed to run into
+-- unexplainable problems when I tried that
+
+    <STARTING_VILLAGES(1, 5)
+    <STARTING_VILLAGES(2, 8)
+    <STARTING_VILLAGES(3, 8)
+    <STARTING_VILLAGES(4, 8)
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Troll Rocklobber", 1)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Ogre", 1)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Goblin Rouser", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Goblin Impaler", 2)
+
+    event: {
+        name: "prestart"
+
+-- Alanin and Krawg are taking a break
+-- wmllint: recognize Alanin
+-- wmllint: recognize Krawg
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Alanin"
+                }
+
+                variable: "alanin"
+                kill: true
+            }
+            Store_Unit{
+                filter: {
+                    id: "Krawg"
+                }
+
+                variable: "krawg"
+                kill: true
+            }
+
+            Store_Locations{
+                and: {
+                    filter: {
+                        side: 1
+                        canrecruit: true
+                    }
+
+                    radius: 1
+
+                    filter_radius: {
+                        terrain: "X*"
+                    }
+                }
+
+                not: {
+                    filter: {
+                        side: 1
+                        canrecruit: true
+                    }
+                }
+
+                variable: "adjacent_cavewall"
+            }
+
+            Foreach{
+                array: "adjacent_cavewall"
+                do: ->
+                    Terrain{
+                        x: this_item.x, y: this_item.y
+                        terrain: "Uu"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("adjacent_cavewall")
+
+            Store_Locations{
+                filter: {
+                    side: 1
+                    canrecruit: true
+                }
+
+                radius: 4
+
+                filter_radius: {
+                    terrain: {"Cud", "Kud"}
+                }
+
+                variable: "resource_return_locations"
+            }
+
+-- Here we need to randomize the coal and gold locations by
+-- hand, because the map generator can otherwise sometimes place
+-- them inside cavewall.
+
+-- The first coal pile is somewhere near where side 2 starts
+
+            Store_Locations{
+                filter: {
+                    side: 2
+                    canrecruit: true
+                }
+
+                radius: 5
+
+                filter_radius: {
+                    terrain: {"!", "Xu", "Qxu"}
+                }
+
+                variable: "possible_coal_1_locations"
+            }
+
+            RANDOM("1..#{possible_coal_1_locations.length")
+            VARIABLE_OP("random", "sub", 1)
+
+            VARIABLE("coal_1.x", possible_coal_1_locations[random].x)
+            VARIABLE("coal_1.y", possible_coal_1_locations[random].y)
+
+-- The second coal pile is somewhere near where side 4 starts
+
+            Store_Locations{
+                filter: {
+                    side: 4
+                    canrecruit: true
+                }
+
+                radius: 5
+
+                filter_radius: {
+                    terrain: {"!", "Xu", "Qxu"}
+                }
+
+                variable: "possible_coal_2_locations"
+            }
+
+            RANDOM("1..#{possible_coal_2_locations.length")
+            VARIABLE_OP("random", "sub", 1)
+
+            VARIABLE("coal_2.x", possible_coal_2_locations[random].x)
+            VARIABLE("coal_2.y", possible_coal_2_locations[random].y)
+
+-- And the gold pile is 8-12 hexes away from where side 3 starts
+
+            Store_Locations{
+                and: {
+                    filter: {
+                        side: 3
+                        canrecruit: true
+                    }
+
+                    radius: 12
+
+                    filter_radius: {
+                        terrain: {"!", "Xu", "Qxu"}
+                    }
+                }
+
+                not: {
+                    filter: {
+                        side: 3
+                        canrecruit: true
+                    }
+
+                    radius: 8
+
+                    filter_radius: {
+                        terrain: {"!", "Xu", "Qxu"}
+                    }
+                }
+
+                variable: "possible_gold_locations"
+            }
+
+            RANDOM("1..#{possible_gold_locations.length")
+            VARIABLE_OP("random", "sub", 1)
+
+            VARIABLE("gold_1.x", possible_gold_locations[random].x)
+            VARIABLE("gold_1.y", possible_gold_locations[random].y)
+
+            Item{
+                image: "items/gold.png"
+                x: gold_1.x, y: gold_1.y
+            }
+
+            Item{
+                image: "items/coal.png"
+                x: coal_1.x, y: coal_1.y
+            }
+
+            Item{
+                image: "items/coal.png"
+                x: coal_2.x, y: coal_2.y
+            }
+
+            VARIABLE("coalin", 0)
+            VARIABLE("goldin", 0)
+
+            CLEAR_VARIABLE("possible_coal_1_locations")
+            CLEAR_VARIABLE("possible_coal_2_locations")
+            CLEAR_VARIABLE("possible_gold_locations")
+
+-- Here we overlay a mask containing a rather random pattern of
+-- suitable terrains on the map, because the map generator itself
+-- only places the very basic terrains (floor, walls, etc)
+
+            Terrain_Mask{
+                x: 1, y: 1
+                mask: "#{campaigns/Sceptre_of_Fire/maps/4_Gathering_Materials-random.mask}"
+
+                rule: {
+                    old: "Uu"
+                    new: {"Uu^Ii", "Uu^Uf", "Uh", "Ww", "Cud"}
+                }
+
+                rule: {
+                    old: {"Xu", "Cud", "Kud"}
+                    use_old: true
+                }
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Bring the necessary gold and coal to create the sceptre to the starting castle"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "1 load of gold and 2 loads of coal are needed"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Thursagan"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Baglur"
+            }
+            Recall{
+                id: "Thursagan"
+            }
+            Recall{
+                id: "Kinan"
+            }
+            Recall{
+                id: "Rynan"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, these are the eastern mines. Trolls and ogres live here, be prepared to fight them; also be prepared to spend quite some time here — mining can take a while."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "For me to make the artifact Haldric wants, I need a special type of gold. I do not know where it was found, but Baglur said these mines were the source of it."
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Also, the only coal that wi’ melt this gold is here."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "So we’re down here to, what, mine this gold and coal? That should be easy enough."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Yes, although we will have to hire the miners — they don’t work for free. But beware, there are trolls and such down here..."
+            }
+    }
+
+    event: {
+        name: "turn 3"
+
+        filter_condition: {
+            not: {
+                have_unit: {
+                    type: "Dwarvish Miner"
+                }
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Thursagan"
+                message: _ "Don’t forget to recruit the miners. Our warriors can clear the tunnels of trolls and worse, but once we find the gold and coal we need the miners to acquire it."
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: coal_1.x, y: coal_1.y
+
+            or: {
+                x: coal_2.x, y: coal_2.y
+            }
+
+            and: {
+                side: 1
+
+                not: {
+                    type: "Dwarvish Miner"
+                }
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Here is some of the coal that we need! Bring the miners to take it!"
+            }
+
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: coal_1.x, y: coal_1.y
+            side: 1
+            type: "Dwarvish Miner"
+
+            not: {
+                role: "has_coal"
+            }
+
+            not: {
+                role: "has_gold"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I have all the coal I can carry..."
+            }
+            VARIABLE("unit.role", "has_coal")
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+            Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/coal-icon.png"
+            }
+            Remove_Item{
+                x: x1, y: y1
+            }
+            VARIABLE("coal_1.x", 0)
+            VARIABLE("coal_1.y", 0)
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: coal_2.x, y: coal_2.y
+            side: 1
+            type: "Dwarvish Miner"
+
+            not: {
+                role: "has_coal"
+            }
+
+            not: {
+                role: "has_gold"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I have all the coal I can carry..."
+            }
+            VARIABLE("unit.role", "has_coal")
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+            Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/coal-icon.png"
+            }
+            Remove_Item{
+                x: x1, y: y1
+            }
+            VARIABLE("coal_2.x", 0)
+            VARIABLE("coal_2.y", 0)
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: gold_1.x, y: gold_1.y
+            side: 1
+
+            not: {
+                type: "Dwarvish Miner"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Here is the mine of precious gold! Send the miners this way."
+            }
+
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: gold_1.x, y: gold_1.y
+            side: 1
+            type: "Dwarvish Miner"
+
+            not: {
+                role: "has_coal"
+            }
+
+            not: {
+                role: "has_gold"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I have all the gold I can carry..."
+            }
+            VARIABLE("unit.role", "has_gold")
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+            Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/gold-icon.png"
+            }
+            Remove_Item{
+                x: x1, y: y1
+            }
+            VARIABLE("gold_1.x", 0)
+            VARIABLE("gold_1.y", 0)
+    }
+
+-- If a miner carrying coal dies, we let others pick it up
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: 1
+            type: "Dwarvish Miner"
+            role: "has_coal"
+        }
+        do: ->
+            Item{
+                x: x1, y: y1
+                image: "items/coal.png"
+            }
+
+            VARIABLE("hex_#{x1}_#{y1}_coal", true)
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            side: 1
+            type: "Dwarvish Miner"
+
+            not: {
+                role: "has_coal"
+            }
+
+            not: {
+                role: "has_gold"
+            }
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "hex_#{x1}_#{y1}_coal"
+                    equals: true
+                }
+
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "I have all the coal I can carry..."
+                    }
+
+                    VARIABLE("unit.role", "has_coal")
+
+                    Unstore_Unit{
+                        variable: "unit"
+                        find_vacant: false
+                    }
+
+                    Unit_Overlay{
+                        x: x1, y: y1
+                        image: "misc/coal-icon.png"
+                    }
+
+                    Remove_Item{
+                        x: x1, y: y1
+                    }
+
+                    CLEAR_VARIABLE("hex_#{x1}_#{y1}_coal")
+                
+
+                else: ->
+                    Allow_Undo{}
+                
+            }
+    }
+
+-- Exactly same as above, but for gold
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: 1
+            type: "Dwarvish Miner"
+            role: "has_gold"
+        }
+        do: ->
+            Item{
+                x: x1, y: y1
+                image: "items/gold.png"
+            }
+
+            VARIABLE("hex_#{x1}_#{y1}_gold", true)
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            side: 1
+            type: "Dwarvish Miner"
+
+            not: {
+                role: "has_coal"
+            }
+
+            not: {
+                role: "has_gold"
+            }
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "hex_#{x1}_#{y1}_gold"
+                    equals: true
+                }
+
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "I have all the gold I can carry..."
+                    }
+
+                    VARIABLE("unit.role", "has_gold")
+
+                    Unstore_Unit{
+                        variable: "unit"
+                        find_vacant: false
+                    }
+
+                    Unit_Overlay{
+                        x: x1, y: y1
+                        image: "misc/gold-icon.png"
+                    }
+
+                    Remove_Item{
+                        x: x1, y: y1
+                    }
+
+                    CLEAR_VARIABLE("hex_#{x1}_#{y1}_gold")
+                
+
+                else: ->
+                    Allow_Undo{}
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            type: "Dwarvish Miner"
+            role: "has_coal"
+
+            filter_location: {
+                find_in: "resource_return_locations"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "My load of coal is delivered!"
+            }
+
+            CLEAR_VARIABLE("unit.role")
+
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+
+            Remove_Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/coal-icon.png"
+            }
+
+            Set_Variable{
+                name: "coalin"
+                add: 1
+            }
+
+            If{
+                variable: {
+                    name: "coalin"
+                    greater_than_equal_to: 2
+                }
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "That’s the last load of coal we need."
+                    }
+                    If{
+                        variable: {
+                            name: "goldin"
+                            greater_than_equal_to: 1
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Thursagan"
+                                message: _ "This is all we need from these mines. Now we should go back further west, where there are no trolls and ogres, and mine there."
+                            }
+
+                            Endlevel{
+                                result: "victory"
+                                bonus: true
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            type: "Dwarvish Miner"
+            role: "has_gold"
+
+            filter_location: {
+                find_in: "resource_return_locations"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Here’s the gold."
+            }
+
+            CLEAR_VARIABLE("unit.role")
+
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+
+            Remove_Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/gold-icon.png"
+            }
+
+            Set_Variable{
+                name: "goldin"
+                add: 1
+            }
+
+            If{
+                variable: {
+                    name: "goldin"
+                    greater_than_equal_to: 1
+                }
+                then: ->
+                    If{
+                        variable: {
+                            name: "coalin"
+                            greater_than_equal_to: 2
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Thursagan"
+                                message: _ "This is all we need from these mines. Now we should go back further west, where there are no trolls and ogres, and mine there."
+                            }
+
+                            Endlevel{
+                                result: "victory"
+                                bonus: true
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Unstore_Unit{
+                variable: "alanin"
+            }
+
+            Unstore_Unit{
+                variable: "krawg"
+            }
+
+            CLEAR_VARIABLE("alanin")
+            CLEAR_VARIABLE("krawg")
+
+            CLEAR_VARIABLE("coalin")
+            CLEAR_VARIABLE("goldin")
+            CLEAR_VARIABLE("coal_1")
+            CLEAR_VARIABLE("coal_2")
+            CLEAR_VARIABLE("gold_1")
+            CLEAR_VARIABLE("resource_return_locations")
+
+            Kill{
+                type: "Dwarvish Miner"
+            }
+
+            Disallow_Recruit{
+                side: 1
+                type: "Dwarvish Miner"
+            }
+    }
+}

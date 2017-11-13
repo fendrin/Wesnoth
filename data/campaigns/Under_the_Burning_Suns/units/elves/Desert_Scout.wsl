@@ -1,0 +1,127 @@
+--textdomain wesnoth-utbs
+
+Unit_Type{
+    id: "Desert Scout"
+    name: _ "Desert Scout"
+    image: "units/elves-desert/scout.png"
+    race: "elf"
+    hitpoints: 32
+    movement_type: "desert_elf"
+--desert elves move fast across the sands, but are not used to forests
+    movement_costs: {
+        frozen: 4
+    }
+--mostly like a foot Elf, but they are bad at defending in villages
+    defense: {
+        village: 60
+    }
+--they are weak against piercing attacks
+    resistance: {
+        pierce: 120
+    }
+    movement: 9
+    experience: 37
+    level: 1
+    alignment: "lawful"
+    advances_to: {"Desert Rider", "Desert Horseman"}
+    cost: 18
+    usage: "scout"
+    description: _ "Desert Scouts move swiftly across the sands. Their skill on horseback is virtually unmatched, although they do lack power in combat."
+    die_sound: "horse-die.ogg"
+-- melee attack increased from 4-3 to 5-3
+-- ranged attack decreased from 6-2 to 5-2
+    attack: {
+        name: "sword"
+--textdomain wesnoth-units
+        description: _ "sword"
+        type: "blade"
+        range: "melee"
+        damage: 5
+        number: 3
+        icon: "attacks/sword-elven.png"
+    }
+    attack: {
+        name: "bow"
+        description: _ "bow"
+--textdomain wesnoth-utbs
+        type: "pierce"
+        range: "ranged"
+        damage: 5
+        number: 2
+        icon: "attacks/bow-elven.png"
+    }
+    <DEFENSE_ANIM("units/elves-desert/scout-defend.png", "units/elves-desert/scout.png", SOUND_LIST.HORSE_HIT!)
+    movement_anim: {
+        frame: {
+            image: "units/elves-desert/scout-moving.png:150"
+        }
+    }
+    idle_anim: {
+        <STANDARD_IDLE_FILTER!
+        start_time: 0
+        frame: {
+            image: "units/elves-desert/scout-idle-[1~8,7,8,7~16].png:[125*9,150,175,150,175*8]"
+        }
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "bow"
+        }
+        missile_start_time: -150
+        missile_frame: {
+            duration: 150
+            image: "projectiles/missile-n.png"
+            image_diagonal: "projectiles/missile-ne.png"
+        }
+        start_time: -400
+        <SOUND.HIT_AND_MISS("bow.ogg", "bow-miss.ogg", -400)
+        frame: {
+            image: "units/elves-desert/scout-attack[1~2].png:[100,250]"
+        }
+        frame: {
+            image: "units/elves-desert/scout-moving.png:100"
+        }
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "sword"
+        }
+        start_time: -200
+        frame: {
+            image: "units/elves-desert/scout.png:25"
+            sound: "horse-elf-canter.wav"
+        }
+        frame: {
+            image: "units/elves-desert/scout-[moving,attack,moving].png:[75,200,100]"
+        }
+        frame: {
+            image: "units/elves-desert/scout.png:50"
+        }
+        <SOUND.HIT_AND_MISS(SOUND_LIST.SWORD_SWISH!, SOUND_LIST.MISS!, -100)
+    }
+}
+
+DESERT_SCOUT_VARIANT = (SUFFIX_NUMBER, COST) -> {
+    unit_type: {
+        id: "Desert Scout#{SUFFIX_NUMBER}"
+        base_unit: {
+            id: "Desert Scout"
+        }
+        hide_help: true
+        do_not_list: true
+        cost: COST
+    }
+}
+
+DESERT_SCOUT_VARIANT(1, 19)
+DESERT_SCOUT_VARIANT(2, 20)
+DESERT_SCOUT_VARIANT(3, 21)
+DESERT_SCOUT_VARIANT(4, 22)
+DESERT_SCOUT_VARIANT(5, 23)
+DESERT_SCOUT_VARIANT(6, 24)
+DESERT_SCOUT_VARIANT(7, 25)
+DESERT_SCOUT_VARIANT(8, 26)
+DESERT_SCOUT_VARIANT(9, 27)
+DESERT_SCOUT_VARIANT(10, 28)
+
+DESERT_SCOUT_VARIANT = nil

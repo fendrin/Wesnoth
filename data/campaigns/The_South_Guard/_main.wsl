@@ -1,0 +1,92 @@
+--textdomain wesnoth-tsg
+Textdomain{
+    name: "wesnoth-tsg"
+}
+
+-- wmlscope: set export=no
+Campaign{
+    id: "The_South_Guard"
+    name: _ "The South Guard"
+    abbrev: _ "TSG"
+
+    define: "CAMPAIGN_THE_SOUTH_GUARD"
+    rank: 15
+    start_year: "607 YW"
+    end_year: "608 YW"
+
+    icon: "data/campaigns/The_South_Guard/images/deoran/horseman-commander-defend.png"
+    image: "data/campaigns/The_South_Guard/images/campaign_image.png"
+    description: _ "A young Knight, Deoran, is dispatched to take command of the South Guard... Note: This campaign is designed as an introduction to Wesnoth. The ‘Civilian’ difficulty level is aimed at first-time players.
+
+" .. _ "(Novice level, 9 scenarios.)"
+
+    <CAMPAIGN_DIFFICULTY("EASY", "units/human-peasants/peasant.png~RC(magenta>red)", _ "Civilian", _ "Beginner")
+    <CAMPAIGN_DIFFICULTY("NORMAL", "units/human-loyalists/spearman.png~RC(magenta>red)", _ "Recruit", _ "Easy"), <DEFAULT_DIFFICULTY!
+    <CAMPAIGN_DIFFICULTY("HARD", "units/human-loyalists/javelineer.png~RC(magenta>red)", _ "Soldier", _ "Normal")
+
+    first_scenario: "01_Born_to_the_Banner"
+
+    about: {
+        title: _ "Campaign Design"
+        entry: {
+            name: "William Carey (aelius)"
+        }
+    }
+    about: {
+        title: _ "Campaign Maintenance"
+        entry: {
+            name: "Lari Nieminen (zookeeper)"
+            comment: "current maintainer"
+        }
+        entry: {
+            name: "Eric S. Raymond (ESR)"
+        }
+        entry: {
+            name: "Wintermute"
+        }
+    }
+    about: {
+        title: _ "Artwork and Graphics Design"
+        entry: {
+            name: "J.W. Bjerk (eleazar)"
+        }
+        entry: {
+            name: "Kathrin Polikeit (Kitty)"
+            comment: "portraits"
+        }
+        entry: {
+            name: "Lari Nieminen (zookeeper)"
+        }
+        entry: {
+            name: "Scavenger"
+            comment: "new story images and Mal M'Brin portrait"
+        }
+        entry: {
+            name: "rhyging5"
+        }
+        entry: {
+            name: "Shadow"
+        }
+        entry: {
+            name: "William Carey (aelius)"
+        }
+    }
+}
+
+if CAMPAIGN_THE_SOUTH_GUARD
+
+    Binary_Path{
+        path: "data/campaigns/The_South_Guard"
+    }
+
+    INCLUDE("campaigns/The_South_Guard/utils")
+
+    Units{
+        INCLUDE("campaigns/The_South_Guard/units")
+    }
+    INCLUDE("campaigns/The_South_Guard/scenarios")
+
+
+
+-- wmllint: directory spelling Deoran Hylas Gerrick Typhon Ethiliel
+-- wmllint: directory spelling Mebrin M'Brin Urza Afalas Mathin Kerlath

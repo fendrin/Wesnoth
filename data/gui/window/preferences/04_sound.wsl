@@ -1,0 +1,161 @@
+--textdomain wesnoth-lib
+----
+---- Preferences dialog, Sound page
+----
+
+_GUI_SOUND_SLIDER_CONTROL = (_TOGGLE_ID, _TOGGLE_LABEL, _TOGGLE_TOOLTIP, _SLIDER_ID, _SLIDER_TOOLTIP) -> {
+    grid: {
+        row: {
+            column: {
+                border: "top,left,right"
+                border_size: 5
+                horizontal_alignment: "left"
+
+                toggle_button: {
+                    id: _TOGGLE_ID
+                    label: _TOGGLE_LABEL
+                    tooltip: _TOGGLE_TOOLTIP
+                }
+            }
+        }
+        row: {
+            column: {
+                horizontal_grow: true
+                grid: {
+                    row: {
+                        column: {
+                            <_GUI_PREFERENCES_CHECKBOX_ALIGN_SPACER!
+                        }
+
+                        column: {
+                            grow_factor: 0
+                            border: "all"
+                            border_size: 5
+                            horizontal_grow: true
+
+                            label: {
+                                definition: "default_small"
+                                label: _ "Volume:"
+                            }
+                        }
+
+                        column: {
+                            grow_factor: 1
+                            border: "all"
+                            border_size: 5
+                            horizontal_grow: true
+
+                            slider: {
+                                id: _SLIDER_ID
+                                definition: "minimal"
+                                minimum_value: 0
+                                maximum_value: 128
+                                step_size: 1
+                                tooltip: _SLIDER_TOOLTIP
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+_GUI_AUTO_MUTE_MUSIC_CHECKBOX = () -> {
+    row: {
+        column: {
+            horizontal_grow: true
+            grid: {
+                row: {
+                    column: {
+                        <_GUI_PREFERENCES_CHECKBOX_ALIGN_SPACER!
+                    }
+
+                    column: {
+                        grow_factor: 0
+                        border: "all"
+                        border_size: 5
+                        horizontal_grow: true
+
+                        toggle_button: {
+                            id: "sound_toggle_stop_music_in_background"
+                            label: _ "Pause music on focus loss"
+                            tooltip: _ "Pause the music when you switch to any other window"
+                        }
+                    }
+
+                    column: {
+                        grow_factor: 1
+                        spacer: {
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+_GUI_PREFERENCES_SOUND_GRID = () -> {
+    row: {
+        column: {
+            horizontal_grow: true
+            vertical_alignment: "top"
+            <_GUI_SOUND_SLIDER_CONTROL!
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 104: 				sound_toggle_sfx ( _ "Sound effects") ( _ "Sound effects on/off")
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 105: 				sound_volume_sfx ( _ "Change the sound effects volume")
+            )
+        }
+    }
+
+    row: {
+        column: {
+            horizontal_grow: true
+            vertical_alignment: "top"
+            <_GUI_SOUND_SLIDER_CONTROL!
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 115: 				sound_toggle_music ( _ "Music") ( _ "Music on/off")
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 116: 				sound_volume_music ( _ "Change the music volume")
+            )
+        }
+    }
+
+    <_GUI_AUTO_MUTE_MUSIC_CHECKBOX!
+
+    row: {
+        column: {
+            horizontal_grow: true
+            <_GUI_SOUND_SLIDER_CONTROL!
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 127: 				sound_toggle_bell ( _ "Turn bell") ( _ "Play a bell sound at the beginning of your turn")
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 128: 				sound_volume_bell ( _ "Change the bell volume")
+            )
+        }
+    }
+
+    row: {
+        column: {
+            horizontal_grow: true
+            <_GUI_SOUND_SLIDER_CONTROL!
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 137: 				sound_toggle_uisfx ( _ "User interface sounds") ( _ "Turn menu and button sounds on/off")
+err: ../attic/data/gui/window/preferences/04_sound.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 138: 				sound_volume_uisfx ( _ "Change the sound volume for button clicks, etc.")
+            )
+        }
+    }
+}
+
+Layer{
+
+    row: {
+        column: {
+            horizontal_grow: true
+            vertical_alignment: "top"
+
+            grid: {
+                <_GUI_PREFERENCES_SOUND_GRID!
+            }
+        }
+    }
+
+}
+
+_GUI_PREFERENCES_SOUND_GRID = nil
+--under _GUI_AUTO_MUTE_MUSIC_CHECKBOX
+_GUI_SOUND_SLIDER_CONTROL = nil

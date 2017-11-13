@@ -1,0 +1,663 @@
+--textdomain wesnoth-sota
+
+-- During the opening, characters move in and out of the trapdoors leading below decks,
+-- and into the passenger cabin doors as well. Macros open and close the various doors as
+-- necessary. A menu item is provided to remove the terrain image that
+-- contains the ship's sails. The macro for that is in utils because it is also used for
+-- the next scenario. The ship terrain is fairly complicated, but the terrain files have
+-- more details. The ship is the reason for SotA-only bats: Normal bats are drawn above
+-- all terrain, but that looks wrong with the ship sails, so SotA bats are drawn on a
+-- lower z-level.
+
+Scenario{
+    name: _ "Becalmed"
+    map: "campaigns/Secrets_of_the_Ancients/maps/04_Becalmed.map"
+
+    id: "04_Becalmed"
+    next_scenario: "05_Blackwater"
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/book.png"
+                scale: false
+            }
+            story: _ "22 III, 23 YW
+
+Research sometimes requires experiments, so I began. I forced my will into the life-force pathways of the bandit, thus turning him into my puppet. He resisted, but on account of my recent practice, my will proved the stronger. More strangely, the inside of his body also resisted, attacking me, the invader. However, since I wasn’t physically there, it ended up attacking itself! Over a period of hours, slabs of flesh became weak and threatened to fall off his frame. I was obliged to stitch them in place."
+        }
+        part: {
+            background_layer: {
+                image: "story/black-background.png"
+                scale: false
+                base_layer: true
+            }
+            image: {
+                file: "portraits/ardonna.png"
+                x: 64, y: 0
+                scale: false
+            }
+            image: {
+                file: "portraits/undead/ghoul.png~FL()"
+                x: 320, y: 0
+                scale: false
+            }
+            story: _ "Some of the bandit’s companions had perished in better condition than the leader, and I got the idea to add their flesh to my puppet. I stitched on muscles where they seemed to fit, and used enchantments to improve the bonding, thus improving the strength of the creature. At first, each new piece of flesh caused another violent reaction from the body’s defenses. Eventually, the reactions weakened, and the body stabilized in its new configuration, though by this time it was suppurating and unrecognizable. The mind inside gibbered at what it had become, but the bandit had wished for me a fate worse than death, so it didn’t seem unfair."
+        }
+        part: {
+            background_layer: {
+                image: "story/alduin-dock.jpg"
+                scale: false
+            }
+            story: _ "Working through the next day in the bandit’s own keep, I repeated the procedure on several of his gravely wounded companions, though none of them became as strong a specimen as the leader. One of them didn’t survive, but it was no loss — I conscripted him into my army anyway. Then, I made my way to the docks, and under the cover of night, loaded my army into the hold of the waiting ship. The following afternoon, I embarked as a normal passenger."
+        }
+        part: {
+            background_layer: {
+                image: "story/becalmed.jpg"
+                scale: false
+            }
+            story: _ "25 III, 23 YW
+
+The journey started well enough, but on the dawn following our departure, the wind died completely, and we were stranded. There was enough food for the paying passengers for a couple days of this, but none for my companions, and the living ones soon got hungry. When one of the crew disappeared on the second evening, I suspected the cause. I was not wrong."
+        }
+        <JOURNEY_PART(4)
+    }
+
+-- This is the same as the default schedule, but starts at dusk.
+    <DUSK!
+    <FIRST_WATCH!
+    <SECOND_WATCH!
+    <DAWN!
+    <MORNING!
+    <AFTERNOON!
+
+    time_area: {
+        time: {
+            id: "lower_deck"
+            name: _ "Underground"
+            image: "misc/time-schedules/schedule-underground.png"
+            lawful_bonus: -25
+            red: -35
+            green: -30
+            blue: -25
+        }
+        x: {14, "0-99"}
+        y: {12, "13-99"}
+    }
+
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(14, 15, 16)
+
+    side: {
+        <SIDE_1_ARDONNA!
+-- We are assuming substantial gold from the previous scenario:
+        <GOLD(60, 40, 20)
+        facing: "ne"
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        team_name: "bad"
+        user_team_name: _ "Ship’s Crew"
+        type: "Sea Captain"
+        name: _ "Rudic"
+        id: "Rudic"
+        profile: "portraits/captain.png"
+        recruit: "Sailor"
+        <GOLD(80, 110, 150)
+        income: 6
+        facing: "sw"
+        color: "white"
+    }
+
+-- These two sides are only to provide color and ellipses for the other ship
+-- passengers. The units look out of place without them.
+    side: {
+        side: 3
+        team_name: "good"
+        controller: "null"
+        hidden: true
+        color: "teal"
+        unit: {
+            type: "Noble"
+            x: 11, y: 7
+            facing: "se"
+        }
+    }
+
+    side: {
+        side: 4
+        team_name: "good"
+        controller: "null"
+        hidden: true
+        color: "orange"
+        unit: {
+            type: "Khalif"
+            x: 12, y: 16
+            facing: "se"
+        }
+    }
+
+    <STARTING_VILLAGES(2, 8)
+
+    OPEN_TRAP_DOORS: (X, Y) -> {
+        remove_item: {
+            x: X, y: Y
+            image: "items/trap-doors-closed.png"
+        }
+        item: {
+            x: X, y: Y
+            image: "items/trap-doors-open.png"
+        }
+    }
+
+    CLOSE_TRAP_DOORS: (X, Y) -> {
+        remove_item: {
+            x: X, y: Y
+            image: "items/trap-doors-open.png"
+        }
+        item: {
+            x: X, y: Y
+            image: "items/trap-doors-closed.png"
+        }
+    }
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            FREEZE_UNIT("Rudic")  -- Otherwise, he attacks suicidally on the first turn!
+
+            Item{
+                x: 10, y: 8
+                image: "items/trap-doors-closed.png"
+            }
+            Item{
+                x: 14, y: 6
+                image: "items/trap-doors-closed.png"
+            }
+            Item{
+                x: 13, y: 15
+                image: "items/trap-doors-closed.png"
+            }
+
+            Unit{
+                type: "Ghoul"
+                side: 1
+                name: _ "Garcyn"
+                x: "recall", y: "recall"
+                modifications: {
+                    <TRAIT_STRONG!
+                }
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the enemy leader"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_ARDONNA!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                note: {
+                    description: _ "You can recruit from anywhere on the two highest decks."
+                }
+                note: {
+                    description: _ "Barrels act as villages."
+                }
+                note: {
+                    description: _ "Right-click to simplify the ship graphics."
+                }
+            }
+
+            Set_Variable{
+                name: "sails_hidden"
+                value: false
+            }
+            SHOW_SAILS_MENU_ITEM(-1)
+            HIDE_SAILS_MENU_ITEM(-1)
+
+            Tunnel{
+                source: {
+                    x: 10, y: 8
+                }
+                target: {
+                    x: 10, y: 16
+                }
+                filter: {
+                }
+                pass_allied_units: true
+            }
+            Tunnel{
+                source: {
+                    x: 14, y: 6
+                }
+                target: {
+                    x: 14, y: 14
+                }
+                filter: {
+                }
+                pass_allied_units: true
+            }
+
+            Item{
+                x: 11, y: 12
+                halo: "map-border.png"
+            }
+    }
+
+-- *************************** PLAY ***************************
+    MOVE_TO_LOWER_DECK: (X, Y) -> {
+        move_unit: {
+            x: X, y: Y
+            to_x: 14
+            to_y: 6
+        }
+        teleport: {
+            filter: {
+                x: 14, y: 6
+            }
+            x: 14, y: 14
+            animate: true
+        }
+        move_unit: {
+            x: 14, y: 15
+            to_x: 13
+            to_y: 16
+        }
+    }
+
+-- This next event scripts the first turn AI moves. If we don't do this, sometimes too
+-- many units go to the lower deck, and sometimes none do. This has a large impact on
+-- the difficulty of the scenario. Also, the ai units would box in the player's units and
+-- block the trapdoor.
+    event: {
+        name: "side 2 turn 1 refresh"
+
+-- If Ardonna has (stupidly) moved onto the main deck, the scripted moves
+-- will cause the ai to ignore her zone of control and the ai units could
+-- move behind her. To prevent this, we will skip the scripted moves and let
+-- the ai attack her if she has moved off her deck or in range.
+        do: ->
+            If{
+                have_unit: {
+                    id: "Ardonna"
+                    filter_location: {
+                        terrain: "*^Zfoc"  -- Ship forecastle
+                        or: {
+-- She can take one of the first two barrels on the
+-- lower deck. The AI can't possibly kill her, so it
+-- will stick to the script. She's fair game on the
+-- third barrel though.
+                            x: "1-10"
+                            y: "11-99"
+                        }
+                        or: {
+-- She also doesn't get *immediately* attacked if she
+-- is just guarding her trapdoor.
+                            x: {9, 10}
+                            y: 8
+                        }
+                    }
+                }
+
+                then: ->
+                    Move_Unit{
+                        x: 15, y: 6
+                        to_x: 11
+                        to_y: 7
+                    }
+                    Move_Unit{
+                        y: 6
+                        to_x: 13
+                        to_y: 8
+                    }
+                    MOVE_TO_LOWER_DECK(14, 5)
+                    MOVE_TO_LOWER_DECK(15, 5)
+
+                    Modify_Unit{
+                        filter: {
+                            side: 2
+                        }
+                        moves: 0
+                    }
+                
+            }
+    }
+
+    MOVE_TO_LOWER_DECK = nil
+
+-- Force more newly-recruited units to guard the lower deck:
+    event: {
+        name: "side 2 turn 1 end"
+        micro_ai: {
+            side: 2
+            ai_type: "zone_guardian"
+            action: "add"
+            filter: {
+                y: 6
+            }
+            filter_location: {
+                x: "0-99"
+                y: "0-12"
+            }
+            filter_location_enemy: {
+                x: "0-99"
+                y: "13-99"
+            }
+        }
+    }
+
+-- We need an event for each trap door, going each direction. The code for each is very
+-- similar so we can make all four with one macro.
+    CREATE_TRAP_DOOR: (Y1, Y2, TRAP_X, TRAP_Y) -> {
+        event: {
+            name: "exit_hex"
+            first_time_only: false
+            do: ->
+                If{
+-- Checking the unit's x position is not necessary. There is only one
+-- way the unit's y position can change by the amount being used here:
+                    variable: {
+                        name: "y1"
+                        equals: Y1
+                    }
+                    and: {
+                        variable: {
+                            name: "y2"
+                            equals: Y2
+                        }
+                    }
+                    then: ->
+                        OPEN_TRAP_DOORS(TRAP_X, TRAP_Y)
+                    
+                }
+                Allow_Undo{}
+        }
+    }
+
+    <CREATE_TRAP_DOOR(8, 16, 10, 8)
+    <CREATE_TRAP_DOOR(16, 8, 10, 8)
+    <CREATE_TRAP_DOOR(6, 14, 14, 6)
+    <CREATE_TRAP_DOOR(14, 6, 14, 6)
+
+    CREATE_TRAP_DOOR = nil
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        do: ->
+            CLOSE_TRAP_DOORS(10, 8)
+            CLOSE_TRAP_DOORS(14, 6)
+            Allow_Undo{}
+    }
+
+-- *************************** OPENING / ENDING ***************************
+    OPEN_DOOR: (X, Y) -> {
+        item: {
+            x: X, y: Y
+            image: "items/door-open-bottom.png"
+            redraw: false
+        }
+        item: {
+            x: X
+            y: "#{(#{Y}-1)"
+            image: "items/door-open-top.png"
+        }
+        redraw: {}
+    }
+
+    CLOSE_DOOR: (X, Y) -> {
+        remove_item: {
+            x: X
+            y: "#{(#{Y}-1)"
+        }
+        remove_item: {
+            x: X, y: Y
+        }
+    }
+
+    PLACE_SAILOR: () -> {
+        <NEAREST_HEX(16, 6, 3, {terrain: "*^Zpoo"}
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/04_Becalmed.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 425:     [not][filter][/filter][/not]) location}
+            unit: {
+                x: location.x
+                y: location.y
+                type: "Sailor"
+                side: 2
+                facing: "sw"
+            }
+            clear_variable: {
+                name: "location"
+            }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/04_Becalmed.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by define at line 435
+
+            event: {
+                name: "start"
+
+                scroll_to: {
+                    x: 12, y: 6
+                }
+                do: ->
+                    Delay{
+                        time: 1000
+                    }
+
+                    Allow_Recruit{
+                        side: 1
+                        type: "Ghoul"
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "portraits/undead/ghoul.png~SCALE(93, 93)"
+                        message: _ "You can now recruit ghouls!"
+                    }
+
+                    Scroll_To{
+                        x: 12, y: 15
+                    }
+
+                    Delay{
+                        time: 700
+                    }
+
+-- Joc the sailor comes upstairs to talk to the captain:
+                    OPEN_TRAP_DOORS(13, 15)
+                    Delay{
+                        time: 400
+                    }
+                    Move_Unit_Fake{
+                        type: "Sailor"
+                        side: 2
+                        x: {13, 14}
+                        y: {15, 14}
+                    }
+                    CLOSE_TRAP_DOORS(13, 15)
+                    OPEN_TRAP_DOORS(14, 6)
+                    Move_Unit_Fake{
+                        type: "Sailor"
+                        side: 2
+                        x: {14, 16}
+                        y: {6, 6}
+                    }
+                    Unit{
+                        side: 2
+                        x: 16, y: 6
+                        type: "Sailor"
+                        name: _ "Joc"
+                        id: "Joc"
+                        facing: "nw"
+                    }
+                    CLOSE_TRAP_DOORS(14, 6)
+
+                    Message{
+                        speaker: "Joc"
+                        message: _ "I found Janryn in the hold. Or, ah... some of him. He’s dead. I didn’t stay to find out what killed him, but there was someone shuffling around in the shadows, and he smelled foul."
+                    }
+                    Message{
+                        speaker: "Rudic"
+                        message: _ "Murderous stowaways on my ship? I won’t have it! Go round up the rest of the crew and get them up here. We’re going hunting. All passengers are confined to quarters immediately."
+                    }
+
+-- Joc goes back down and through the bottom trap door:
+                    Kill{
+                        id: "Joc"
+                    }
+                    OPEN_TRAP_DOORS(14, 6)
+                    Move_Unit_Fake{
+                        type: "Sailor"
+                        side: 2
+                        x: {16, 14}
+                        y: {6, 6}
+                    }
+                    CLOSE_TRAP_DOORS(14, 6)
+                    OPEN_TRAP_DOORS(13, 15)
+                    Move_Unit_Fake{
+                        type: "Sailor"
+                        side: 2
+                        x: {14, 13}
+                        y: {14, 15}
+                    }
+                    CLOSE_TRAP_DOORS(13, 15)
+
+-- The other two passengers go through doors and disappear:
+                    Kill{
+                        side: 4
+                    }
+                    OPEN_DOOR(14, 13)
+                    Move_Unit_Fake{
+                        type: "Khalif"
+                        side: 4
+                        x: {12, 14}
+                        y: {16, 13}
+                    }
+                    CLOSE_DOOR(14, 13)
+
+                    OPEN_TRAP_DOORS(10, 8)
+                    Kill{
+                        side: 3
+                    }
+                    Move_Unit_Fake{
+                        type: "Noble"
+                        side: 3
+                        x: {11, 10}
+                        y: {7, 8}
+                    }
+                    CLOSE_TRAP_DOORS(10, 8)
+                    OPEN_DOOR(16, 14)
+                    Move_Unit_Fake{
+                        type: "Noble"
+                        side: 4
+                        x: {10, 16}
+                        y: {16, 14}
+                    }
+                    CLOSE_DOOR(16, 14)
+
+                    REPEAT(5, PLACE_SAILOR!)
+
+                    Message{
+                        speaker: "Rudic"
+                        message: _ "You! Dark girl. Why are you not in your cabin?"
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "What if I said something in defense of the stowaways?"
+                    }
+                    Message{
+                        speaker: "Rudic"
+                        message: _ "I would pitch you over the side with them. What do you know?"
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "They are my companions, and the poor things are just terribly hungry. I’m sorry we didn’t pay the full amount, but maybe we can reach some arrangement."
+                    }
+                    Message{
+                        speaker: "Rudic"
+                        message: _ "They killed my crew member and played me for a fool! The only arrangement that suits me is the lot of you off my ship, preferably at the bottom of the sea."
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Oh dear. We must do this again. Come to me my friends! If you are still hungry, feed on a passenger first."
+                    }
+            }
+
+            event: {
+                name: "die"
+                filter: {
+                    id: "Rudic"
+                }
+                do: ->
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Good riddance. But, with the captain dead, who will sail the ship and guide us into port now?"
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Rise Captain, and please retain your memories."
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            id: "Rudic"
+                        }
+                        variable: "rudic_stored"
+                        kill: true
+                    }
+                    Unit{
+                        type: "Bone Captain"
+                        id: "Bone Captain"
+                        side: 1
+                        x: rudic_stored.x
+                        y: rudic_stored.y
+                        name: _ "Rudic"
+                        <IS_LOYAL!
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+                        animate: true
+                    }
+                    Clear_Variable{
+                        name: "rudic_stored"
+                    }
+
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Can you still sail this ship?"
+                    }
+                    Message{
+                        speaker: "Bone Captain"
+                        image: "portraits/bone-captain1.png"
+                        message: _ "Sail. Yes. Need wind."
+                    }
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Oh! It worked! Take us to port, Captain, as soon as you do have the wind."
+                    }
+            }
+
+            event: {
+                name: "enemies defeated"
+                do: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+            }
+
+            <HERO_DEATHS!
+            <MANAGE_PROFILE!
+
+            PLACE_SAILOR = nil
+            OPEN_DOOR = nil
+            CLOSE_DOOR = nil
+            OPEN_TRAP_DOORS = nil
+            CLOSE_TRAP_DOORS = nil
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/04_Becalmed.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by scenario at line 657

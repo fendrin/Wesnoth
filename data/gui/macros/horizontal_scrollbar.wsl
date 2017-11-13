@@ -1,0 +1,88 @@
+--textdomain wesnoth-lib
+-- Defines the default _horizontal_scrollbar_grid for several widgets.
+
+GUI__HORIZONTAL_SCROLLBAR_GRID = () -> {
+    horizontal_grow: true
+    grid: {
+        id: "_horizontal_scrollbar_grid"
+
+        row: {
+            <if 0 then {
+                column: {
+
+-- note we want a special button definition for this later.
+                    repeating_button: {
+                        id: "_half_page_up"
+                        definition: "scrollbar_left_arrow"
+                    }
+
+                }
+            }
+            column: {
+                grow_factor: 1
+                horizontal_grow: true
+
+                horizontal_scrollbar: {
+                    id: "_horizontal_scrollbar"
+                    definition: "default"
+                }
+
+            }
+            <if 0 then {
+                column: {
+
+-- note we want a special button definition for this later.
+                    repeating_button: {
+                        id: "_half_page_down"
+                        definition: "scrollbar_right_arrow"
+                    }
+
+                }
+            }
+        }
+
+    }
+}
+
+GUI__HORIZONTAL_SCROLLBAR_GRID_TRANSPARENT = () -> {
+    horizontal_grow: true
+    grid: {
+        id: "_horizontal_scrollbar_grid"
+
+        row: {
+            <if 0 then {
+                column: {
+
+-- note we want a special button definition for this later.
+                    repeating_button: {
+                        id: "_half_page_up"
+                        definition: "scrollbar_left_arrow_transparent"
+                    }
+
+                }
+            }
+            column: {
+                grow_factor: 1
+                horizontal_grow: true
+
+                horizontal_scrollbar: {
+                    id: "_horizontal_scrollbar"
+                    definition: "transparent"
+                }
+
+            }
+            <if 0 then {
+                column: {
+
+-- note we want a special button definition for this later.
+                    repeating_button: {
+                        id: "_half_page_down"
+                        definition: "scrollbar_right_arrow_transparent"
+                    }
+
+                }
+            }
+        }
+
+    }
+}

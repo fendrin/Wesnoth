@@ -1,0 +1,99 @@
+--textdomain wesnoth-multiplayer
+
+Multiplayer{
+    id: "multiplayer_Silverhead_Crossing"
+    name: _ "2p — Silverhead Crossing"
+    description: _ "Players must traverse all manner of terrain in pursuit of victory on this multi-fronted duel map."
+    map: "multiplayer/maps/2p_Silverhead_Crossing.map"
+    random_start_time: "no"
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "west"
+        user_team_name: _ "teamname^West"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 2
+        canrecruit: true
+        controller: "human"
+        team_name: "east"
+        user_team_name: _ "teamname^East"
+        fog: true
+    }
+    side: {
+        side: 3
+        team_name: "nani"
+        color: "black"
+        controller: "ai"
+        allow_player: false
+        disallow_observers: true
+        canrecruit: false
+        no_leader: true
+        hidden: true
+        unit: {
+            type: "Tentacle of the Deep"
+            name: "Nani The Shapeshifter"
+            x: 1, y: 1
+        }
+    }
+
+    event: {
+        name: "side 3 turn"
+        first_time_only: false
+        do: ->
+            End_Turn{
+            }
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Object{
+                silent: true
+                filter: {
+                    side: 3
+                    x: 1, y: 1
+                }
+                effect: {
+                    apply_to: "attack"
+                    increase_attacks: -2
+                    increase_damage: 296
+                }
+                effect: {
+                    apply_to: "new_attack"
+                    name: "evil eye"
+                    icon: "attacks/gaze.png"
+                    description: _ "evil eye"
+                    range: "ranged"
+                    type: "arcane"
+                    damage: 100
+                    number: 1
+                    specials: {
+                        <WEAPON_SPECIAL_MAGICAL!
+                    }
+                }
+                effect: {
+                    apply_to: "new_ability"
+                    abilities: {
+                        <ABILITY_SUBMERGE!
+                    }
+                }
+                effect: {
+                    apply_to: "hitpoints"
+                    increase: 472
+                    increase_total: 472
+                }
+            }
+    }
+}

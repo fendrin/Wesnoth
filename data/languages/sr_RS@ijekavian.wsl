@@ -1,0 +1,5 @@
+Locale{
+    name: "Српски (ијекавски)"
+    sort_name: "Srpski (ijekavski)"
+    locale: "sr_RS@ijekavian"
+}

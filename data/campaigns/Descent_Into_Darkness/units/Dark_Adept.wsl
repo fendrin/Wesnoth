@@ -1,0 +1,11 @@
+--textdomain wesnoth-did
+-- Same as normal, except advances to Dark Sorcerer DiD
+Unit_Type{
+    id: "Dark Adept DiD"
+    base_unit: {
+        id: "Dark Adept"
+    }
+    advances_to: "Dark Sorcerer DiD"
+    hide_help: true
+    do_not_list: true
+}

@@ -1,0 +1,215 @@
+
+GENERIC_UNIT_TEST("check_interrupts_break", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("x", 0)
+                While{
+                    true: {}
+                    do: ->
+                        If{
+                            <VARIABLE_CONDITIONAL("x", "greater_than", 5)
+                            then: ->
+                                Break{}
+                            
+                        }
+                        VARIABLE_OP("x", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("x", "equals", 6))
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_return", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("x", 0)
+                While{
+                    true: {}
+                    do: ->
+                        If{
+                            <VARIABLE_CONDITIONAL("x", "greater_than", 5)
+                            then: ->
+                                Return{}
+                            
+                        }
+                        VARIABLE_OP("x", "add", 1)
+                    
+                }
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("x", "equals", 6))
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_continue", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("x", 0)
+                While{
+                    <VARIABLE_CONDITIONAL("x", "less_than", 5)
+                    do: ->
+                        VARIABLE_OP("x", "add", 5)
+                        Continue{}
+                        FAIL!
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("x", "equals", 5))
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_break_global", {
+        event: {
+            name: "start"
+            do: ->
+                Break{}
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_continue_global", {
+        event: {
+            name: "start"
+            do: ->
+                Lua{
+                    code: [[
+				local H = wesnoth.require "helper"
+				local A = H.set_wml_action_metatable{}
+				local function continue()
+					A.continue{}
+				end
+				-- Use pcall() to trap the WML error raised by continue in global scope
+				local err, res = pcall(continue)
+				if err then wesnoth.fire_event "success"
+				else wesnoth.fire_event "fail" end
+			]]
+                }
+        }
+        event: {
+            name: "success"
+            do: ->
+                Endlevel{
+                    result: "victory"
+                    linger_mode: true
+                }
+        }
+        event: {
+            name: "fail"
+            do: ->
+                Endlevel{
+                    result: "defeat"
+                    linger_mode: true
+                }
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_return_nested", {
+        event: {
+            name: "start"
+            command: ->
+                Return{}
+                FAIL!
+            
+            do: ->
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_elseif", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("x", 9)
+                If{
+                    <VARIABLE_CONDITIONAL("x", "greater_than", 10)
+                    then: ->
+                        FAIL!
+                    
+                    elseif: {
+                        <VARIABLE_CONDITIONAL("x", "less_than", 10)
+                        then: ->
+                            Return{}
+                        
+                    }
+                    else: ->
+                        Wml_Message{
+                            message: "Reached the [else] block!"
+                            logger: "error"
+                        }
+                        FAIL!
+                    
+                }
+                Wml_Message{
+                    message: "Passed the [if] block!"
+                    logger: "error"
+                }
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})
+
+GENERIC_UNIT_TEST("check_interrupts_case", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("x", 0)
+                Switch{
+                    variable: "x"
+                    case: {
+                        value: {1, 3, 5, 7, 9}
+                        do: ->
+                            FAIL!
+                    }
+                    case: {
+                        value: {0, 2, 4, 6, 8}
+                        do: ->
+                            Return{}
+                    }
+                    case: {
+                        value: 0
+                        do: ->
+                            Wml_Message{
+                                message: "Reached next [case] block!"
+                                logger: "error"
+                            }
+                            FAIL!
+                    }
+                    else: ->
+                        Wml_Message{
+                            message: "Reached the [else] block!"
+                            logger: "error"
+                        }
+                        FAIL!
+                    
+                }
+                Wml_Message{
+                    message: "Passed the [switch] block!"
+                    logger: "error"
+                }
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})

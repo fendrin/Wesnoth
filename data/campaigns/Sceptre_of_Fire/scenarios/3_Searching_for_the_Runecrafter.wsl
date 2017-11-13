@@ -1,0 +1,654 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "Searching for the Runecrafter"
+    id: "3_Searching_for_the_Runecrafter"
+    turns: 20
+    map: "campaigns/Sceptre_of_Fire/maps/3_Searching_for_the_Runecrafter.map"
+    next_scenario: "3t_The_Council_Regathers"
+    victory_when_enemies_defeated: false
+
+    <SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("elvish-theme.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout"}
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        shroud: true
+        fog: true
+        <FLAG_VARIANT("knalgan")
+    }
+
+    <STARTING_VILLAGES(1, 3)
+
+    side: {
+        no_leader: true
+        side: 2
+        team_name: "monsters"
+        user_team_name: _ "Monsters"
+    }
+
+    story: {
+        part: {
+            story: _ "The journey to the far northern wastelands was long and perilous. For the tunnels were winding and treacherous, and the paths were not safe from orcs, or worse. Nevertheless, they did reach the northlands, and began to search for the runesmith named Thursagan — the sage of fire."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_03_NEW!)
+
+    WINTERENEMY: (X, Y) -> {
+        set_variable: {
+            name: "typeofenemy"
+            rand: {"Wolf", "Ogre", "Troll", "Wose"}
+        }
+        unit: {
+            x: X, y: Y
+            generate_name: true
+            random_traits: true
+            type: typeofenemy
+            side: 2
+        }
+        if: {
+            variable: {
+                name: "typeofenemy"
+                equals: "Wolf"
+            }
+            then: ->
+                Unit{
+                    x: X, y: Y
+                    type: "Wolf"
+                    side: 2
+                }
+                Unit{
+                    x: X, y: Y
+                    type: "Wolf"
+                    side: 2
+                }
+                if HARD
+                    Unit{
+                        x: X, y: Y
+                        type: "Wolf"
+                        side: 2
+                    }
+                
+            
+        }
+        clear_variable: {
+            name: "typeofenemy"
+        }
+    }
+
+    <SOF_DEATHS!
+
+    event: {
+        name: "prestart"
+
+-- TODO: manually add snow detritus
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find Thursagan and convince him to come back to the dwarvish city"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Baglur"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+            WINTERENEMY(5, 5)
+            WINTERENEMY(15, 15)
+            WINTERENEMY(25, 25)
+            WINTERENEMY(25, 10)
+            if NORMAL
+                WINTERENEMY(30, 18)
+            
+            if HARD
+                WINTERENEMY(30, 18)
+                WINTERENEMY(20, 2)
+            
+    }
+
+    event: {
+        name: "turn 5"
+        do: ->
+            WINTERENEMY(10, 10)
+            WINTERENEMY(20, 20)
+            WINTERENEMY(30, 30)
+    }
+
+    event: {
+        name: "turn 15"
+        do: ->
+            WINTERENEMY(18, 6)
+            WINTERENEMY(30, 7)
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Baglur"
+            }
+            Recall{
+                id: "Alanin"
+            }
+
+            MODIFY_UNIT({id: "Alanin"}, "profile", "portraits/alanin.png~BLIT(portraits/alanin-winter-overlay.png,0,0)")
+
+            Message{
+                speaker: "Alanin"
+                message: _ "Now where are we going, anyway? We have been taking wrong turns and fighting orcs for months. This trip better have a good payoff to be worth that."
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "We need to find the mage Thursagan and convince him to return to the citadel with us. He’s somewhere up here."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, how are we supposed to find him?"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "His will probably be the only house up here. No one else is insane enough to live this far north! Even the elves won’t challenge us here."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "Except for trolls and ogres, right? They live in the far northlands. They’re probably lurking around here somewhere."
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Right. We’ll probably have to fight our way through to his house."
+            }
+            RANDOM("1..5")
+            If{
+                variable: {
+                    name: "random"
+                    equals: 1
+                }
+                then: ->
+                    Set_Variable{
+                        name: "thur_x"
+                        value: 2
+                    }
+                    Set_Variable{
+                        name: "thur_y"
+                        value: 6
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    equals: 2
+                }
+                then: ->
+                    Set_Variable{
+                        name: "thur_x"
+                        value: 15
+                    }
+                    Set_Variable{
+                        name: "thur_y"
+                        value: 2
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    equals: 3
+                }
+                then: ->
+                    Set_Variable{
+                        name: "thur_x"
+                        value: 27
+                    }
+                    Set_Variable{
+                        name: "thur_y"
+                        value: 9
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    equals: 4
+                }
+                then: ->
+                    Set_Variable{
+                        name: "thur_x"
+                        value: 28
+                    }
+                    Set_Variable{
+                        name: "thur_y"
+                        value: 16
+                    }
+                
+            }
+            If{
+                variable: {
+                    name: "random"
+                    equals: 5
+                }
+                then: ->
+                    Set_Variable{
+                        name: "thur_x"
+                        value: 29
+                    }
+                    Set_Variable{
+                        name: "thur_y"
+                        value: 30
+                    }
+                
+            }
+            Clear_Variable{
+                name: "random"
+            }
+            Terrain{
+                x: thur_x, y: thur_y
+                terrain: "Aa^Vha"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: {"1-32", "17-32"}
+            y: {"1-21", "1-31"}
+            side: 1
+        }
+        do: ->
+            Move_Unit_Fake{
+                type: "Gryphon"
+                side: 1
+                x: {1, 5}
+                y: {16, 24}
+            }
+            Unit{
+                type: "Gryphon"
+                id: "Krawg"
+                name: _ "Krawg"
+                unrenamable: true
+                <IS_HERO!
+                x: 5, y: 24
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+            }
+            Message{
+                speaker: "Krawg"
+--po: Krawg's speech is purposely very distorted -- he has the
+--po: vocal tract of a bird and is speaking through a beak.
+--po: "Will you speak with us?"
+                message: _ "Kwill yooo spakkk wit uus?!" -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Alanin"
+-- wmllint: local spelling Aah
+                message: _ "Aah! What is that?!"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Is that... is that a gryphon?"
+            }
+            Message{
+                speaker: "Krawg"
+--po: "Yes. You speak with us now?"
+                message: _ "Kwes! Yooo spakkk wit uuus nuu?" -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "It’s talking to us! What do you want, gryphon?"
+            }
+            Message{
+--po: "My name is Krawg. You is looking for a runemaster?"
+                speaker: "Krawg"
+                message: _ "Myy namm ees Krawgg. Yooo ees oooking forr a uunmasta?" -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, um, yes. Why, can you help us?"
+            }
+            Message{
+                speaker: "Krawg"
+--po: "Yes. If you kill the trolls and ogres, we'll help you."
+                message: _ "Ess... if yooo ills ka rolls aan ogras, us’ll elp yoo!" -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Sure, we’ll help you fight trolls and ogres."
+            }
+--[message]
+--    speaker=Krawg
+--    message= _ "Kwe... yoo ants to ide uuus, nooa? Kwe, uus kan..." - wmllint: no spellcheck
+--[/message]
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find Thursagan and convince him to come back to the dwarvish city, then bring him back to the caves"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Baglur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Krawg"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+            Move_Unit_Fake{
+                type: "Gryphon Rider"
+                side: 1
+                x: {1, 5}
+                y: {16, 28}
+            }
+            Unit{
+                id: "Kawn" -- wmllint: ignore
+                name: _ "Kawn"
+                type: "Gryphon Rider"
+                x: 5, y: 28
+                side: 1
+                random_traits: true
+            }
+            Allow_Recruit{
+                side: 1
+                type: "Gryphon Rider"
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 1
+        }
+        filter_condition: {
+            have_location: {
+                x: thur_x, y: thur_y
+                filter_vision: {
+                    visible: true
+                    respect_fog: true
+                    side: 1
+                }
+            }
+        }
+
+        scroll_to: {
+            x: thur_x, y: thur_y
+        }
+        do: ->
+            Delay{
+                time: 250
+            }
+            If{
+                variable: {
+                    name: "unit.id"
+                    equals: "Krawg"
+                }
+                then: ->
+                    Message{
+                        speaker: "Krawg"
+--po: "I see a house in the distance!"
+                        message: _ "Iii zeee hoose iiin eee d’zztaaan’eee!" -- wmllint: no spellcheck
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "I see a house in the distance!"
+                    }
+                
+            }
+    }
+
+-- Birds reach Thursagan's (variable) location
+
+-- wmllint: recognize Thursagan
+    event: {
+        name: "moveto"
+        filter: {
+            x: thur_x, y: thur_y
+            side: 1
+            type: {"Gryphon Rider", "Gryphon"}
+        }
+        do: ->
+            If{
+                not: {
+                    have_unit: {
+                        id: "Thursagan"
+                    }
+                }
+
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        caption: _ "Thursagan"
+                        image: "portraits/thursagan.png"
+                        message: _ "Go away, you birds! Or I shall burn you out of the air!"
+                    }
+                    Message{
+                        speaker: "Baglur"
+                        message: _ "He doesn’t want to talk to the gryphons, apparently. I think we’ll have to get someone there he will talk to..."
+                    }
+                
+            }
+
+            Allow_Undo{}
+    }
+
+-- Something other than a bird reaches Thursagan's (variable) location
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: thur_x, y: thur_y
+            side: 1
+            not: {
+                type: {"Gryphon Rider", "Gryphon"}
+            }
+        }
+        do: ->
+            Music{
+                name: "knolls.ogg"
+                immediate: false
+                append: true
+            }
+
+            Unit{
+                x: thur_x, y: thur_y
+                side: 1
+                type: "Dwarvish Runemaster"
+                id: "Thursagan"
+                name: _ "Thursagan"
+                unrenamable: true
+                <IS_HERO!
+                profile: "portraits/thursagan.png"
+                advances_to: "Dwarvish Arcanister"
+                max_experience: 210
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_STRONG!
+                }
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "What do you people want?! Leave me alone!"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Old mage, we come with a message from Lord Durstorn. He asks you to come back to the city."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Ha! That fool thinks he can order me around. Why does he want me to go back, anyway?"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "We have entered into a bargain with the king of Wesnoth to craft a sceptre for him."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Oh, and now I suppose Durstorn wants me to craft it, eh? Well I’m not going to."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "You don’t want to make a sceptre to contain the power of the ruby of fire? Very well, your choice is made."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "The ruby of fire, what is that, some worthless Wesnothian gem?"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "It is a Wesnothian gem, but it is also supposedly the most powerful magical artifact ever seen. Even an untrained hand can use it to cast fiery bolts as powerful as those of arch mages."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Oh, really? And what does Haldric want us to do with it?"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Contain and intensify its power."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "I see. Fine then, I will help you craft this sceptre... into the most powerful magic artifact ever seen. This will be a true test of my skill. I expect it will take many years."
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Good. Now, there are still wild animals here... We have to get back into the caves."
+            }
+            WINTERENEMY(19, 30)
+            WINTERENEMY(1, 21)
+            WINTERENEMY(31, 21)
+            WINTERENEMY(1, 15)
+            if NORMAL
+                WINTERENEMY(32, 1)
+            
+            if HARD
+                WINTERENEMY(32, 1)
+                WINTERENEMY(32, 30)
+            
+
+            Modify_Turns{
+                add: 10
+            }
+
+            HIGHLIGHT_IMAGE(4, 28, "scenery/signpost.png", {})
+
+            Scroll_To{
+                x: x1, y: y1
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Thursagan to the signpost"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Baglur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Krawg"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Thursagan"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- Thursagan reaches the signpost
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 4, y: 28
+            id: "Thursagan"
+        }
+        do: ->
+            Message{
+                speaker: "Thursagan"
+                message: _ "Well, now we are in the caves again! Come on, back south, to the city."
+            }
+            UNMAKE_HERO("Baglur")
+            Unit_Overlay{
+                id: "Baglur"
+                image: "misc/loyal-icon.png"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Baglur"
+        }
+        do: ->
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

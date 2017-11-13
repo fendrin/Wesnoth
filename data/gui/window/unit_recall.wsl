@@ -1,0 +1,445 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to create units in debug mode.
+----
+
+_GUI_RECALL_LIST = () -> {
+    listbox: {
+        id: "recall_list"
+        definition: "default"
+
+        header: {
+            row: {
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+                    spacer: {
+                        definition: "default"
+                        linked_group: "image"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_0"
+                        definition: "listbox_header"
+                        linked_group: "type"
+
+                        label: _ "Type"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_1"
+                        definition: "listbox_header"
+                        linked_group: "name"
+
+                        label: _ "Name"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_2"
+                        definition: "listbox_header"
+                        linked_group: "level"
+
+                        label: _ "Lvl"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_3"
+                        definition: "listbox_header"
+                        linked_group: "experience"
+
+                        label: _ "XP"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_4"
+                        definition: "listbox_header"
+                        linked_group: "traits"
+
+                        label: _ "Traits"
+                    }
+                }
+            }
+        }
+
+        list_definition: {
+            row: {
+                column: {
+                    vertical_grow: true
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+                        return_value_id: "ok"
+
+                        grid: {
+                            row: {
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    vertical_alignment: "center"
+
+                                    image: {
+                                        id: "unit_image"
+                                        linked_group: "image"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+
+                                    grid: {
+                                        row: {
+                                            column: {
+                                                border: "left,top,right"
+                                                border_size: 5
+                                                horizontal_alignment: "left"
+                                                label: {
+                                                    id: "unit_type"
+                                                    definition: "default"
+                                                    linked_group: "type"
+                                                }
+                                            }
+                                        }
+
+                                        row: {
+                                            column: {
+                                                horizontal_alignment: "left"
+                                                grid: {
+                                                    row: {
+                                                        grow_factor: 1
+
+                                                        column: {
+                                                            border: "left,top,bottom"
+                                                            border_size: 5
+                                                            horizontal_alignment: "left"
+                                                            image: {
+                                                                id: "gold_icon"
+                                                                definition: "default"
+
+                                                                label: "themes/gold.png"
+                                                            }
+                                                        }
+
+                                                        column: {
+                                                            border: "all"
+                                                            border_size: 5
+                                                            horizontal_alignment: "left"
+                                                            label: {
+                                                                id: "unit_recall_cost"
+                                                                definition: "default"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+                                    label: {
+                                        id: "unit_name"
+                                        definition: "default"
+                                        linked_group: "name"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+                                    label: {
+                                        id: "unit_level"
+                                        definition: "default"
+                                        linked_group: "level"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+                                    label: {
+                                        id: "unit_experience"
+                                        definition: "default_small"
+                                        linked_group: "experience"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+                                    label: {
+                                        id: "unit_traits"
+                                        definition: "default_small"
+                                        linked_group: "traits"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+Window{
+    id: "unit_recall"
+    description: "Unit recall dialog."
+
+    resolution: {
+        definition: "default"
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        maximum_height: 750
+
+        linked_group: {
+            id: "image"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "type"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "name"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "level"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "experience"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "traits"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        definition: "title"
+                        id: "title"
+                        label: _ "Recall Unit"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                grow_factor: 0
+                                vertical_grow: true
+                                border: "all"
+                                border_size: 5
+
+                                unit_preview_pane: {
+                                    definition: "default"
+                                    id: "unit_details"
+                                }
+
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "left"
+
+                                            text_box: {
+                                                id: "filter_box"
+                                                definition: "filter"
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            <_GUI_RECALL_LIST!
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "right"
+                    button: {
+                        id: "dismiss"
+                        definition: "default"
+                        label: _ "Dismiss"
+                    }
+                }
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 0
+                    horizontal_grow: true
+                    grid: {
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+                                button: {
+                                    id: "show_help"
+                                    definition: "help"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+                                    label: _ "Recall"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+                                    label: _ "Cancel"
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_RECALL_LIST = nil

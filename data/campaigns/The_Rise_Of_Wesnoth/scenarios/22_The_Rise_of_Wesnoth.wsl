@@ -1,0 +1,1648 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "22_The_Rise_of_Wesnoth"
+    name: _ "The Rise of Wesnoth"
+    next_scenario: "23_Epilogue"
+    victory_when_enemies_defeated: false
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/22_The_Rise_of_Wesnoth.map"
+
+    <TURNS(45, 42, 39)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+-- No story
+    <TROW_GC_TRACK(JOURNEY_22_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        side: 1
+        type: "Noble Commander"
+        unrenamable: true
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+--2 is Jevyan
+--3 is the Sea Castle
+--4 is the Coast Orc
+--5 is the Island Orc
+--6 is the North Orc
+
+    side: {
+        type: "Ancient Lich"
+        id: "Lich-Lord Jevyan"
+        name: _ "Lich-Lord Jevyan"
+        profile: "portraits/jevyan.png"
+        side: 2
+        canrecruit: true
+        recruit: {"Revenant", "Deathblade", "Bone Shooter", "Skeleton", "Skeleton Archer", "Vampire Bat", "Walking Corpse", "Soulless", "Vampire Bat", "Ghoul", "Necrophage"}
+        <GOLD(160, 180, 210)
+        user_team_name: _ "Evil"
+        team_name: "orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "fighter", "archer"}
+            passive_leader: true
+            <ATTACK_DEPTH(5, 6, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.65
+        }
+        ai: {
+            goal: {
+                name: "protect_location"
+                criteria: {
+                    x: 42, y: 40
+                }
+                protect_radius: 8
+                value: 10
+            }
+        }
+        <INCOME(4, 6, 8)
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(2, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Vragish"
+        name: _ "Tan-Vragish"
+        side: 3
+        canrecruit: true
+        recruit: {"Naga Fighter", "Vampire Bat"}
+        <GOLD(130, 150, 180)
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "scout"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(1, 2, 4)
+    }
+
+    <STARTING_VILLAGES(3, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Ut'Tan-Grorag"
+        name: _ "Ut’Tan-Grorag"
+        profile: "portraits/orcs/grunt.png"
+        side: 4
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Troll Whelp", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Troll Whelp", "Troll", "Troll Rocklobber", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(170, 190, 220)
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "fighter", "archer", "mixed fighter"}
+            grouping: "defensive"
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.65
+            grouping: "offensive"
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(4, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Erinak"
+        name: _ "Tan-Erinak"
+        profile: "portraits/orcs/grunt-2.png"
+        side: 5
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Troll Whelp", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Troll Whelp", "Troll", "Troll Rocklobber", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(150, 170, 200)
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "fighter", "archer", "mixed fighter"}
+            grouping: "defensive"
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.65
+            grouping: "offensive"
+        }
+
+        <INCOME(1, 2, 4)
+    }
+
+    <STARTING_VILLAGES(5, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Prodash"
+        name: _ "Tan-Prodash"
+        profile: "portraits/orcs/grunt-3.png"
+        side: 6
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Troll Whelp", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Troll Whelp", "Troll", "Troll Rocklobber", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(150, 170, 200)
+        team_name: "orcs"
+        user_team_name: _ "Evil"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "fighter", "archer", "mixed fighter"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(1, 2, 4)
+    }
+
+    <STARTING_VILLAGES(6, 10)
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>green)", 5, 38)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>purple)", 21, 35)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>black)", 38, 27)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>brown)", 6, 19)
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 21, 37)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 22, 39)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 23, 44)
+
+            Recall{
+                id: "Lady Jessene"
+            }
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+            Recall{
+                id: "Sir Ladoc"
+            }
+            Recall{
+                id: "Minister Edren"
+            }
+            Recall{
+                id: "Commander Aethyr"
+            }
+
+            Unit_Overlay{
+                id: "Commander Aethyr"
+                image: "misc/treaty-icon.png"
+            }
+
+            LIVING_INTEL("Familiar", "Familiar", _ "Familiar", "portraits/familiar.png", 2, 40, 39)
+-- wmllint: whofield clear LIVING_INTEL
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Commander Aethyr sacrifices himself to Lich-Lord Jevyan and"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Destroy Lich-Lord Jevyan and"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Defeat all enemy leaders except for one"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Commander Aethyr by somebody other than Jevyan"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Fail to leave one enemy leader behind"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+                <IS_LAST_SCENARIO!
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Haldric approaches the place where Lich-Lord Jevyan has made landfall. The final confrontation looms before him."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "You cannot win. Give me the Ruby of Fire and I will go in peace."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "This ends here, Jevyan. Even if I believed your words I couldn’t give you the Ruby of Fire."
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Bah! Even if you have learned to conceal the power of the Ruby of Fire you will deliver it unto me in death!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "You’re a fool, Jevyan. How do you think we secured our place here? We had to give the elves the Ruby of Fire. We just signed a treaty with the elves ensuring our place here."
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "No! I don’t believe it. Only a fool would give away an artifact of such power."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "A fool, or a desperate band of refugees!"
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Casting fire is the least of the Ruby’s abilities. You are twice a fool, for having failed to plumb more than its most trivial use and for having given it away."
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "You shouldn’t give such toys to elves! Bah! It matters little to me. I’m no wizard. All I got is my axe. Heh, heh. It’s all I need — prepare to die, orcish scum!"
+            }
+            Message{
+                speaker: "Minister Edren"
+                message: _ "Ha. Let all of the minions of Darkness be cast down!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "It matters little, because here you fall!"
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Sir Ruddry"
+                message: _ "For all of the good people of Clearwater Port!"
+            }
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "For the honor of Southbay!"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "We don’t need some magic trinket to beat you! Prepare to meet your fate, you decrepit sack of bones! For the honor of all of the people of the west-north!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Charge!"
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Ut'Tan-Grorag"
+                message: _ "I hate it when my prey gets chatty! Get them, it’s a long boat ride back home!"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "We shall soon see if you have the Ruby of Fire!"
+            }
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Clack!</i>"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: WHISPER(_ "Commander, you remember the plan right?")
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: WHISPER(_ "Yes, sir. I am ready.")
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            side: 1
+
+            not: {
+                id: {"Prince Haldric", "Lady Jessene", "Commander Aethyr"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "He’s raising our dead! Be careful!"
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: 1
+
+            not: {
+                id: "Commander Aethyr"
+            }
+        }
+
+        filter_second: {
+            not: {
+--Basically not any type that has plague
+                type: {"Walking Corpse", "Soulless"}
+            }
+        }
+        do: ->
+            RISE_UP_RISE_UP!
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Commander Aethyr"
+        }
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Feel my wrath, Jevyan, I’m coming for you! No piece of paper in my pocket is going to stop me from destroying you. For my family! For the people of Clearwater Port!"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "All life is finite; you will be made to serve along with the rest."
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Burin the Lost"
+        }
+        do: ->
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Come on, stay still, just for a second..."
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Lady Jessene"
+        }
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "For the Wesfolk!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            side: {2, 3, 4, 5, 6}
+        }
+        filter_second: {
+            id: "Commander Aethyr"
+        }
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Be careful, Commander!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Familiar"
+        }
+        do: ->
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Clack!</i>"
+            }
+    }
+
+    JEVGOLD: () -> {
+        <if EASY then {
+            gold: {
+                side: 2
+                amount: 40
+            }
+        }
+
+        <if NORMAL then {
+            gold: {
+                side: 2
+                amount: 80
+            }
+        }
+
+        <if HARD then {
+            gold: {
+                side: 2
+                amount: 120
+            }
+        }
+    }
+
+-- If Jevyan dies while Aethyr is still alive, player loses.
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Lich-Lord Jevyan"
+        }
+
+        filter_condition: {
+            have_unit: {
+                id: "Commander Aethyr"
+                side: 1
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "You deny me my honorable death? Our foes are not yet convinced that the elves have the ruby."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+-- When Jevyan dies and there's more than one orcish leader left, have them
+-- taunt the player.
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Lich-Lord Jevyan"
+        }
+
+        filter_condition: {
+            have_unit: {
+                side: {3, 4, 5, 6}
+                canrecruit: true
+                count: "2-4"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Tan-Vragish"
+                message: _ "Da old bag o’ bones is gone, but you haven’t beat us yet!"  -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Ut'Tan-Grorag"
+                message: _ "We took yer home, now we’ll take yer lives!"
+            }
+            Message{
+                speaker: "Tan-Erinak"
+                message: _ "The elfses have da fire ruby, and you have nothing!"    -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Tan-Prodash"
+                message: _ "We will suck the marrow from your bones human!"
+            }
+    }
+
+-- When only Jevyan and one orcish leader remains, have some dialogue.
+    event: {
+        name: "die"
+
+        filter: {
+            side: {3, 4, 5, 6}
+            canrecruit: true
+        }
+
+        filter_condition: {
+            have_unit: {
+                side: {3, 4, 5, 6}
+                canrecruit: true
+                not: {
+                    x: x1, y: y1
+                }
+                count: 1
+            }
+
+            have_unit: {
+                id: "Lich-Lord Jevyan"
+            }
+        }
+
+-- Needed to prevent the dying leader from speaking
+        do: ->
+            Kill{
+                x: x1, y: y1
+            }
+
+            Message{
+                speaker: "Tan-Vragish"
+                message: _ "The battle is going against us!"
+            }
+            Message{
+                speaker: "Ut'Tan-Grorag"
+                message: _ "Our forces are being routed! We should flee back to the Green Isle!"
+            }
+            Message{
+                speaker: "Tan-Erinak"
+                message: _ "It goes poorly for us!"
+            }
+            Message{
+                speaker: "Tan-Prodash"
+                message: _ "Defeated, by humans?"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Fight on, you cowardly orcish worms!"
+            }
+    }
+
+-- When only one orcish leader remains, player wins.
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: {2, 3, 4, 5, 6}
+            canrecruit: true
+        }
+
+        filter_condition: {
+            have_unit: {
+                side: {3, 4, 5, 6}
+                canrecruit: true
+                not: {
+                    x: x1, y: y1
+                }
+                count: 1
+            }
+
+            not: {
+                have_unit: {
+                    id: "Lich-Lord Jevyan"
+                }
+            }
+        }
+        do: ->
+            Store_Unit{
+                filter: {
+                    side: {3, 4, 5, 6}
+                    canrecruit: true
+                }
+
+                kill: false
+                variable: "last_orc_leader"
+            }
+
+            Switch{
+                variable: "last_orc_leader.side"
+
+                case: {
+                    value: 3
+                    do: ->
+                        Message{
+                            speaker: "Tan-Vragish"
+                            message: _ "Da old bag of bones has been crushed, and our cause is lost. We know da elfses have da fire ruby. Retreat!" -- wmllint: no spellcheck
+                        }
+
+                        Set_Variables{
+                            name: "escape_boat"
+
+                            value: {
+                                x1: 5, y1: 38
+                                x2: 1, y2: 38
+                            }
+                        }
+                }
+
+                case: {
+                    value: 4
+                    do: ->
+                        Message{
+                            speaker: "Ut'Tan-Grorag"
+                            message: _ "Da elfses have the fire ruby, we must flee. To da ships!"   -- wmllint: no spellcheck
+                        }
+
+                        Set_Variables{
+                            name: "escape_boat"
+
+                            value: {
+                                x1: 21, y1: 35
+                                x2: 14, y2: 42
+                            }
+                        }
+                }
+
+                case: {
+                    value: 5
+                    do: ->
+                        Message{
+                            speaker: "Tan-Erinak"
+                            message: _ "We have many kinsmen on the Green Isle— we will return for the Ruby of Fire!"
+                        }
+
+                        Set_Variables{
+                            name: "escape_boat"
+
+                            value: {
+                                x1: 38, y1: 27
+                                x2: 12, y2: 27
+                            }
+                        }
+                }
+
+                case: {
+                    value: 6
+                    do: ->
+                        Message{
+                            speaker: "Tan-Prodash"
+                            message: _ "We must get back to the Green Isle. The elfses have the Ruby of Fire and our assault has been stopped." -- wmllint: no spellcheck
+                        }
+
+                        Set_Variables{
+                            name: "escape_boat"
+
+                            value: {
+                                x1: 6, y1: 19
+                                x2: 1, y2: 24
+                            }
+                        }
+                }
+            }
+
+            Kill{
+                side: last_orc_leader.side
+                canrecruit: true
+                fire_event: false
+            }
+
+            Move_Unit_Fake{
+                side: last_orc_leader.side
+                type: last_orc_leader.type
+                x: {last_orc_leader.x, escape_boat.x1}
+                y: {last_orc_leader.y, escape_boat.y1}
+            }
+
+            Remove_Item{
+                x: escape_boat.x1
+                y: escape_boat.y1
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                side: last_orc_leader.side
+                type: "Transport Galleon"
+                x: {escape_boat.x1, escape_boat.x2}
+                y: {escape_boat.y1, escape_boat.y2}
+            }
+
+            Endlevel{
+                result: "victory"
+                carryover_report: false
+                linger_mode: false
+                save: false
+            }
+    }
+
+-- If the player kills all orcish leaders, they lose.
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: {3, 4, 5, 6}
+            canrecruit: true
+        }
+
+        filter_condition: {
+            have_unit: {
+                side: {3, 4, 5, 6}
+                canrecruit: true
+                not: {
+                    x: x1, y: y1
+                }
+                count: 0
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "The plan revolved around some orcs making it back to the Green Isle to tell their kin that the elves have the Ruby of Fire so we wouldn’t have to bear the brunt of the next invasion."
+                image: "portraits/haldric-surprised.png"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "What have we done?"
+                image: "portraits/haldric-surprised.png"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            side: {3, 4, 5, 6}
+            canrecruit: true
+        }
+        do: ->
+            JEVGOLD!
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Commander Aethyr"
+        }
+
+        filter_second: {
+            not: {
+                id: "Lich-Lord Jevyan"
+            }
+        }
+
+-- wmllint: local spelling soo
+-- The idea is that he's dying and cannot finish the word
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "My love, my family, I’ll be there soo—"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Aethyr! No! He was critical for convincing Jevyan that the elves have the Ruby of Fire."
+                image: "portraits/haldric-mad.png"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Commander Aethyr"
+        }
+
+        filter_second: {
+            id: "Lich-Lord Jevyan"
+        }
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Jevyan— I spit upon thee. Your end awaits. My love, my family, I’ll be there soo—"
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Commander Aethyr"
+        }
+
+        filter_second: {
+            id: "Lich-Lord Jevyan"
+        }
+        do: ->
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Fool. You are no match for my power. What! What’s this? A treaty. That’s elf script."
+            }
+
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "No. Why? You fools, you gave the Ruby of Fire to the elves. But that won’t save you from me. I will destroy you, then I will deal with the elves."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ll see about that. For the honor of Commander Aethyr, forward!"
+                image: "portraits/haldric-mad.png"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Lich-Lord Jevyan"
+        }
+        do: ->
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "I am fallen before my plans have reached fruition. A curse upon you Haldric, may you and your descendants know nothing but strife!"
+            }
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+-- Each [if] here determines whether one of the three bridges will be
+-- destroyed on this turn start. If there's a player unit within 8 hexes
+-- of the bridge, but no player within 2 hexes or any unit on the bridge
+-- itself, a cuttle fish will appear and destroy it.
+        do: ->
+            If{
+                have_location: {
+                    x: 23, y: 23
+                    terrain: "*^B*"
+                }
+
+                have_unit: {
+                    side: 1
+
+                    filter_location: {
+                        x: {23, 23}
+                        y: {22, 23}
+                        radius: 8
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        side: 1
+
+                        filter_location: {
+                            x: {23, 23}
+                            y: {22, 23}
+                            radius: 2
+                        }
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        x: {23, 23}
+                        y: {22, 23}
+                    }
+                }
+
+                then: ->
+                    Move_Unit_Fake{
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: {15, 22}
+                        y: {26, 23}
+                    }
+
+                    Unit{
+                        id: "Squiddy"
+                        name: _ "Squiddy"
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: 22
+                        y: 23
+                        facing: "ne"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+-- Omitting {IS_LOYAL} deliberately
+                    }
+
+                    Message{
+                        side: 1
+                        filter_location: {
+                            x: 23, y: 23
+                            radius: 8
+                        }
+                        message: _ "Ack. One of those monsters is destroying the bridge."
+                    }
+
+                    Scroll_To_Unit{
+                        id: "Squiddy"
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Squiddy"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 23, y: 23
+                        }
+
+                        hits: true
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Squiddy"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 23, y: 23
+                        }
+
+                        hits: true
+                    }
+
+                    Sound{
+                        name: "cave-in.ogg"
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+                    Terrain{
+                        x: {23, 23}
+                        y: {22, 23}
+                        terrain: "Ww^Es"
+                    }
+
+                    Redraw{
+                    }
+
+                    Delay{
+                        time: 500
+                    }
+                
+            }
+
+            If{
+                have_location: {
+                    x: 43, y: 17
+                    terrain: "*^B*"
+                }
+
+                have_unit: {
+                    side: 1
+
+                    filter_location: {
+                        x: {43, 43}
+                        y: {17, 18}
+                        radius: 8
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        side: 1
+
+                        filter_location: {
+                            x: {43, 43}
+                            y: {17, 18}
+                            radius: 2
+                        }
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        x: {43, 43}
+                        y: {17, 18}
+                    }
+                }
+
+                then: ->
+                    Move_Unit_Fake{
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: {47, 44}
+                        y: {17, 17}
+                    }
+
+                    Unit{
+                        id: "Inky"
+                        name: _ "Inky"
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: 44
+                        y: 17
+                        facing: "nw"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+-- Omitting {IS_LOYAL} deliberately
+                    }
+
+                    Message{
+                        side: 1
+                        filter_location: {
+                            x: 43, y: 17
+                            radius: 8
+                        }
+                        message: _ "The bridge!"
+                    }
+
+                    Scroll_To_Unit{
+                        id: "Inky"
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Inky"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 43, y: 17
+                        }
+
+                        hits: true
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Inky"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 43, y: 17
+                        }
+
+                        hits: true
+                    }
+
+                    Sound{
+                        name: "cave-in.ogg"
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+                    Terrain{
+                        x: {43, 43}
+                        y: {17, 18}
+                        terrain: "Ww^Es"
+                    }
+
+                    Redraw{
+                    }
+
+                    Delay{
+                        time: 500
+                    }
+                
+            }
+
+            If{
+                have_location: {
+                    x: 42, y: 30
+                    terrain: "*^B*"
+                }
+
+                have_unit: {
+                    side: 1
+
+                    filter_location: {
+                        x: {42, 41}
+                        y: {30, 31}
+                        radius: 8
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        side: 1
+
+                        filter_location: {
+                            x: {42, 41}
+                            y: {30, 31}
+                            radius: 2
+                        }
+                    }
+                }
+
+                not: {
+                    have_unit: {
+                        x: {42, 41}
+                        y: {30, 31}
+                    }
+                }
+
+                then: ->
+                    Move_Unit_Fake{
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: {47, 42}
+                        y: {32, 31}
+                    }
+
+                    Unit{
+                        id: "Beaky"
+                        name: _ "Beaky"
+                        type: "Cuttle Fish"
+                        side: 2
+                        x: 42
+                        y: 31
+                        facing: "nw"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+-- Omitting {IS_LOYAL} deliberately
+                    }
+
+                    Scroll_To_Unit{
+                        id: "Beaky"
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Beaky"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 41, y: 31
+                        }
+
+                        hits: true
+                    }
+
+                    Animate_Unit{
+                        flag: "attack"
+
+                        filter: {
+                            id: "Beaky"
+                        }
+
+                        primary_attack: {
+                            range: "melee"
+                        }
+
+                        facing: {
+                            x: 41, y: 31
+                        }
+
+                        hits: true
+                    }
+
+                    Sound{
+                        name: "cave-in.ogg"
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+                    Terrain{
+                        x: {42, 41}
+                        y: {30, 31}
+                        terrain: "Ww^Es"
+                    }
+
+                    Redraw{
+                    }
+
+                    Message{
+                        side: 1
+                        filter_location: {
+                            x: 42, y: 30
+                            radius: 8
+                        }
+                        message: _ "Our advance is thwarted, that monster has destroyed the bridge!"
+                    }
+
+                    Delay{
+                        time: 500
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "turn 10"
+        do: ->
+            Move_Unit_Fake{
+                type: "Naga Warrior"
+                side: 2
+                x: {1, 4}
+                y: {35, 34}
+            }
+
+            NAMED_LOYAL_UNIT(2, "Naga Warrior", 4, 34, "Abraxas", _ "Abraxas")
+
+            Scroll_To_Unit{
+                id: "Abraxas"
+            }
+
+            Message{
+                speaker: "Abraxas"
+                message: _ "It’s the Prince Haldric! Jevyan, you never said you came to destroy this monster. We will help you."
+            }
+
+            LOYAL_UNIT(3, "Naga Fighter", 3, 34)
+            LOYAL_UNIT(2, "Naga Fighter", 3, 35)
+
+            if NORMAL
+                LOYAL_UNIT(3, "Naga Fighter", 2, 33)
+                LOYAL_UNIT(2, "Naga Fighter", 2, 35)
+            
+            if HARD
+
+                LOYAL_UNIT(3, "Naga Fighter", 2, 33)
+                LOYAL_UNIT(2, "Naga Fighter", 2, 35)
+                LOYAL_UNIT(3, "Naga Fighter", 1, 34)
+                LOYAL_UNIT(2, "Naga Fighter", 1, 35)
+            
+
+            Allow_Recruit{
+                type: "Naga Fighter"
+                side: 3
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Familiar"
+        }
+        do: ->
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Splat</i>!"   -- wmllint: no spellcheck
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Familiar"
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Ahh... That almost makes it all worth while!"
+            }
+
+            If{
+                have_unit: {
+                    id: "Lich-Lord Jevyan"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Lich-Lord Jevyan"
+                        message: _ "You’ll pay for that!"
+                    }
+                    JEVGOLD!
+
+                    Fire_Event{
+                        name: "spawn corpses"
+                    }
+
+                    Fire_Event{
+                        name: "spawn skeletons"
+                    }
+
+                    Message{
+                        speaker: "Lich-Lord Jevyan"
+                        message: _ "Strike down these fools."
+                    }
+                
+            }
+    }
+
+-- This event spawns corpses in the swamps around Jevyan's castle.
+    event: {
+        name: "spawn corpses"
+        first_time_only: false
+        do: ->
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Rise, rise from the ground!"
+            }
+            Random_Placement{
+                variable: "wc_loc"
+                allow_less: true
+                num_items: ON_DIFFICULTY(3, 6, 9)
+                filter_location: {
+                    terrain: "S*"
+
+                    and: {
+                        x: 42, y: 40
+                        radius: 14
+                    }
+
+                    not: {
+                        filter: {
+                        }
+                    }
+                }
+                command: ->
+                    Sound{
+                        name: SOUND_LIST.ZOMBIE_HIT!
+                    }
+
+                    LOYAL_UNIT(2, "Walking Corpse", wc_loc.x, wc_loc.y)
+                    Unit{
+                        amend: true
+                        animate: true
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("wc_loc")
+    }
+
+-- This event spawns skeletons to shallow water bordering deep water.
+    event: {
+        name: "spawn skeletons"
+        first_time_only: false
+        do: ->
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Come in from the deep my loyal soldiers!"
+            }
+            Random_Placement{
+                variable: "skele_loc"
+                allow_less: true
+                num_items: ON_DIFFICULTY(3, 4, 5)
+                filter_location: {
+                    terrain: "Ww"
+
+                    not: {
+                        filter: {
+                        }
+                    }
+
+                    not: {
+                        filter: {
+                            side: 1
+                        }
+
+                        radius: 1
+                    }
+
+                    filter_adjacent_location: {
+                        terrain: "Wo"
+                        adjacent: {"nw", "sw"}
+
+                        not: {
+                            filter: {
+                            }
+                        }
+
+                        not: {
+                            filter: {
+                                side: 1
+                            }
+
+                            radius: 1
+                        }
+                    }
+                }
+                command: ->
+                    Store_Locations{
+                        terrain: "Wo"
+
+                        not: {
+                            filter: {
+                            }
+                        }
+
+                        not: {
+                            filter: {
+                                side: 1
+                            }
+
+                            radius: 1
+                        }
+
+                        filter_adjacent_location: {
+                            x: skele_loc.x, y: skele_loc.y
+                        }
+
+                        variable: "skele_from"
+                    }
+
+-- This makes the type alternate between Skeleton and Skeleton Archer
+                    Switch{
+                        variable: "skele_type"
+
+                        case: {
+                            value: "Skeleton"
+                            do: ->
+                                VARIABLE("skele_type", "Skeleton Archer")
+                        }
+
+                        case: {
+                            value: "Skeleton Archer"
+                            do: ->
+                                VARIABLE("skele_type", "Skeleton")
+                        }
+
+                        else: ->
+                            VARIABLE("skele_type", "Skeleton")
+                        
+                    }
+
+                    Scroll_To{
+                        x: skele_loc.x
+                        y: skele_loc.y
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+-- Note: this doesn't actually get drawn because
+-- of submerge, but it doesn't hurt either; if
+-- at some point it becomes possible to make this
+-- show up again, please do so
+                    Move_Unit_Fake{
+                        side: 2
+                        type: skele_type
+                        x: {skele_from.x, skele_loc.x}
+                        y: {skele_from.y, skele_loc.y}
+                    }
+
+                    LOYAL_UNIT(2, skele_type, skele_loc.x, skele_loc.y)
+                
+            }
+            CLEAR_VARIABLE({"skele_loc", "skele_from", "skele_type"})
+    }
+
+-- This triggers on turns 2,9,16,23,... and sets the next corpse spawn turn
+-- to be one of the next 5 turns, like this:
+-- 1 2 (3 4 5 6 7) 8 9 (10 11 12 13 14) 15 16 (17 18 19 20 21) 22 23 (24 ...
+    event: {
+        name: {"turn 2", "turn 9", "turn 16", "turn 23", "turn 30", "turn 37", "turn 44"}
+        first_time_only: false
+        do: ->
+            VARIABLE_OP("next_corpse_spawn_turn", "rand", "#{(#{turn_number + 1)..#{(#{turn_number + 5)")
+--{DEBUG_MSG "setting next corpse spawn to trigger on turn $next_corpse_spawn_turn"}
+    }
+
+-- This triggers the corpse spawn on the turn determined by the above event.
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        filter_condition: {
+            variable: {
+                name: "turn_number"
+                numerical_equals: next_corpse_spawn_turn
+            }
+
+            have_unit: {
+                id: "Lich-Lord Jevyan"
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "spawn corpses"
+            }
+
+            CLEAR_VARIABLE("next_corpse_spawn_turn")
+    }
+
+-- This triggers on turns 6,16,26,36,... and sets the next skeleton spawn turn
+-- to be one of the next 4 turns, like this:
+-- 1 2 3 4 5 6 (7 8 9 10) 11 12 13 14 15 16 (17 18 19 20) 21...
+    event: {
+        name: {"turn 6", "turn 16", "turn 26", "turn 36"}
+        first_time_only: false
+        do: ->
+            VARIABLE_OP("next_skeleton_spawn_turn", "rand", "#{(#{turn_number + 1)..#{(#{turn_number + 4)")
+--{DEBUG_MSG "setting next skeleton spawn to trigger on turn $next_skeleton_spawn_turn"}
+    }
+
+-- This triggers the skeleton spawn on the turn determined by the above event.
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        filter_condition: {
+            variable: {
+                name: "turn_number"
+                numerical_equals: next_skeleton_spawn_turn
+            }
+
+            have_unit: {
+                id: "Lich-Lord Jevyan"
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "spawn skeletons"
+            }
+
+            CLEAR_VARIABLE("next_skeleton_spawn_turn")
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "We did it! We won!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Jevyan is destroyed, but at a terrible price. Let’s put Commander Aethyr to rest and discuss what is to come in the following days."
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Our strength is waning, and our foes grow stronger by the hour. The battle is lost!"
+                image: "portraits/haldric-surprised.png"
+            }
+    }
+}

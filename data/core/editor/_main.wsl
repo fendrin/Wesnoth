@@ -1,0 +1,24 @@
+--textdomain wesnoth-editor
+-- Main purpose of this file is to ensure that macros get read in first.
+
+-- wmlscope: set export=yes
+
+if EDITOR
+    unless MULTIPLAYER!
+        INCLUDE("multiplayer/")
+    
+    INCLUDE("core/editor/brushes.cfg")
+    INCLUDE("core/editor/music.cfg")
+    INCLUDE("core/editor/terrain-groups.cfg")
+    INCLUDE("core/editor/time-of-day.cfg")
+    INCLUDE("core/editor/items.cfg")
+
+
+Titlescreen_Music{
+    <DEFAULT_MUSIC_PLAYLIST!
+    music: {
+        name: "main_menu.ogg"
+        ms_before: 12000
+        append: true
+    }
+}

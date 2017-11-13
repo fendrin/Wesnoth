@@ -1,0 +1,209 @@
+--textdomain wesnoth-lib
+----
+---- Definition of toggle panels.
+----
+
+_GUI_RECT = (FILL_COLOR) -> {
+    rectangle: {
+        x: 0
+        y: 0
+        w: "(width)"
+        h: "(height)"
+        fill_color: FILL_COLOR
+    }
+}
+
+_GUI_TOGGLE_PANEL_DEFINITION_BASE = (ID, DESCRIPTION, NON_SELECTED_STATE, SELECTED_STATE) -> {
+    toggle_panel_definition: {
+
+        id: ID
+        description: DESCRIPTION
+
+        resolution: {
+
+-- The minimum required height is due to the size required for
+-- {GUI__LISTBOX_SELECTED_CELL}
+-- The issue was found bug -22144
+-- Bug -22046 showed the minimum width should also be set.
+            min_width: 26
+            min_height: 26
+
+            default_width: 0
+            default_height: 0
+
+            max_width: 0
+            max_height: 0
+
+----
+---- Normal
+----
+
+            state: {
+                <NON_SELECTED_STATE
+            }
+
+----
+---- Selected
+----
+
+            state: {
+                <SELECTED_STATE
+            }
+
+        }
+
+    }
+}
+
+_GUI_TOGGLE_PANEL_DEFINITION_BASE("default", "Default panel", {
+        enabled: {
+
+            draw: {
+                <_GUI_RECT(GUI__BACKGROUND_COLOR_ENABLED!)
+            }
+
+        }
+
+        disabled: {
+
+            draw: {
+                <_GUI_RECT(GUI__BACKGROUND_COLOR_DISABLED!)
+            }
+
+        }
+
+        focused: {
+
+            draw: {
+
+                image: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    name: "dialogs/selection-background.png"
+                }
+
+            }
+
+        }
+    },{
+        enabled: {
+
+            draw: {
+                <GUI__LISTBOX_SELECTED_CELL!
+            }
+
+        }
+
+        disabled: {
+
+            draw: {
+                <GUI__LISTBOX_SELECTED_CELL!
+            }
+
+        }
+
+        focused: {
+
+            draw: {
+                <GUI__LISTBOX_SELECTED_CELL!
+            }
+
+        }
+})
+
+
+_GUI_TOGGLE_PANEL_SELECTED_FANCY = () -> {
+    <_GUI_RECT(GUI__BACKGROUND_COLOR_ENABLED!)
+
+    image: {
+        x: 0
+        y: 0
+        w: "(width)"
+        h: "(height)"
+        name: "dialogs/selection-background-fancy.png"
+--name = "dialogs/selection2-background.png~ADJUST_ALPHA(abs(255 - (floor(x / width * 255))))"
+    }
+
+    rectangle: {
+        x: 0
+        y: 0
+        w: 2
+        h: "(height)"
+
+        fill_color: GUI__BORDER_COLOR_DARK!
+    }
+
+    rectangle: {
+        x: 0
+        y: 1
+        w: 2
+        h: "(height - 2)"
+
+        fill_color: GUI__BORDER_COLOR_BRIGHT!
+    }
+}
+
+_GUI_TOGGLE_PANEL_DEFINITION_BASE("fancy", "Fancy panel", {
+        enabled: {
+
+            draw: {
+                <_GUI_RECT(GUI__BACKGROUND_COLOR_ENABLED!)
+            }
+
+        }
+
+        disabled: {
+
+            draw: {
+                <_GUI_RECT(GUI__BACKGROUND_COLOR_DISABLED!)
+            }
+
+        }
+
+        focused: {
+
+            draw: {
+                <_GUI_RECT(GUI__BACKGROUND_COLOR_ENABLED!)
+
+                image: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    name: "dialogs/selection-background-fancy.png~O(75%)"
+                }
+
+            }
+
+        }
+    },{
+        enabled: {
+
+            draw: {
+                <_GUI_TOGGLE_PANEL_SELECTED_FANCY!
+            }
+
+        }
+
+        disabled: {
+
+            draw: {
+                <GUI__LISTBOX_SELECTED_CELL!
+            }
+
+        }
+
+        focused: {
+
+            draw: {
+                <_GUI_TOGGLE_PANEL_SELECTED_FANCY!
+            }
+
+        }
+})
+
+_GUI_RECT = nil
+_GUI_TOGGLE_PANEL_SELECTED_FANCY = nil
+_GUI_TOGGLE_PANEL_DEFINITION_BASE = nil

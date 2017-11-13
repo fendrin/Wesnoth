@@ -1,0 +1,100 @@
+--textdomain wesnoth-utbs
+-- check to see if the Dust Devil is the unit
+-- triggering the event, and if it is, use Nym
+-- as the speaker
+CHECK_EXPLORER = () -> {
+    if: {
+        variable: {
+            name: "unit.type"
+            equals: "Dust Devil"
+        }
+        or: {
+            variable: {
+                name: "unit.type"
+                equals: "Flesh Golem"
+            }
+        }
+        then: ->
+            Store_Unit{
+                variable: "explorer"
+                kill: false
+                filter: {
+                    id: "Nym"
+                }
+            }
+        
+        else: ->
+            Store_Unit{
+                variable: "explorer"
+                kill: false
+                filter: {
+                    x: unit.x
+                    y: unit.y
+                }
+            }
+        
+    }
+}
+-- for second_unit
+CHECK_SPEAKER = () -> {
+    if: {
+        variable: {
+            name: "second_unit.type"
+            equals: "Dust Devil"
+        }
+        or: {
+            variable: {
+                name: "second_unit.type"
+                equals: "Flesh Golem"
+            }
+        }
+        then: ->
+            Store_Unit{
+                variable: "speaking_unit"
+                kill: false
+                filter: {
+                    id: "Nym"
+                }
+            }
+        
+        else: ->
+            Store_Unit{
+                variable: "speaking_unit"
+                kill: false
+                filter: {
+                    x: second_unit.x
+                    y: second_unit.y
+                }
+            }
+        
+    }
+}
+
+MESSAGE_DEPEND_ON_ALLY = (GROG_WML, NOG_WML, ROGRIMIR_WML, JARL_WML) -> {
+    switch: {
+        variable: "ally_name"
+        case: {
+            value: "Grog"
+            do: ->
+                GROG_WML
+        }
+
+        case: {
+            value: "Nog"
+            do: ->
+                NOG_WML
+        }
+
+        case: {
+            value: "Rogrimir"
+            do: ->
+                ROGRIMIR_WML
+        }
+
+        case: {
+            value: "Jarl"
+            do: ->
+                JARL_WML
+        }
+    }
+}

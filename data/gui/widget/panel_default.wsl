@@ -1,0 +1,31 @@
+--textdomain wesnoth-lib
+----
+---- Default definition of a panel.
+----
+
+Panel_Definition{
+
+    id: "default"
+    description: "The default panel, we basically are an 'invisible' grid at the moment."
+
+    resolution: {
+
+        background: {
+
+            draw: {
+
+            }
+
+        }
+
+        foreground: {
+
+            draw: {
+
+            }
+
+        }
+
+    }
+
+}

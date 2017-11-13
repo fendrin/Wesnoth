@@ -1,0 +1,327 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "07_Return_to_Oldwood"
+    next_scenario: "08_Clearwater_Port"
+    bonus: true
+    name: _ "Return to Oldwood"
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/05_The_Oldwood.map"
+    turns: 1
+    theme: "Cutscene_Minimal"
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("traveling_minstrels.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_07_NEW!)
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 0
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Wose"
+        id: "Talodulborentan"
+        name: _ "Talodulborentan"
+        side: 2
+        canrecruit: false
+        team_name: "treefolk"
+        user_team_name: _ "Treefolk"
+    }
+
+    side: {
+        type: "Wose"
+        id: "Gullatendronnorbum"
+        name: _ "Gullatendronnorbum"
+        side: 3
+        canrecruit: false
+        team_name: "treefolk"
+        user_team_name: _ "Treefolk"
+    }
+
+    side: {
+        side: 4
+        type: "Ancient Wose"
+        id: "Elilmaldur-Rithrandil"
+        name: _ "Elilmaldur-Rithrandil"
+        profile: "portraits/rithrandil-winter.png"
+        canrecruit: true
+        team_name: "treefolk"
+        user_team_name: _ "Treefolk"
+    }
+
+    <STARTING_VILLAGES_ALL(4)
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/temple1.png", 23, 22)
+            PLACE_IMAGE("scenery/castle-ruins.png", 5, 5)
+            PLACE_IMAGE("scenery/castle-ruins.png", 6, 5)
+            PLACE_IMAGE("scenery/castle-ruins.png", 6, 6)
+            PLACE_IMAGE("scenery/castle-ruins.png", 5, 7)
+            PLACE_IMAGE("scenery/castle-ruins.png", 4, 6)
+            PLACE_IMAGE("scenery/castle-ruins.png", 4, 5)
+            PLACE_IMAGE("scenery/castle-ruins.png", 29, 2)
+            PLACE_IMAGE("scenery/castle-ruins.png", 29, 3)
+            PLACE_IMAGE("scenery/castle-ruins.png", 27, 3)
+            PLACE_IMAGE("scenery/castle-ruins.png", 27, 2)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 29)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 30)
+            PLACE_IMAGE("scenery/castle-ruins.png", 13, 30)
+            PLACE_IMAGE("scenery/castle-ruins.png", 13, 29)
+            PLACE_IMAGE("scenery/castle-ruins.png", 17, 16)
+            PLACE_IMAGE("scenery/castle-ruins.png", 17, 17)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 17)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 16)
+
+            GUARD_UNIT("Wose", "Orofarnië", _ "Orofarnië", 4, 14, 13)
+            GUARD_UNIT("Wose", "Bolwuldelman", _ "Bolwuldelman", 4, 19, 14)
+            GUARD_UNIT("Wose", "Bregalad", _ "Bregalad", 4, 19, 18)
+            GUARD_UNIT("Wose", "Dolmannumbil", _ "Dolmannumbil", 4, 13, 17)
+
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+            Recall{
+                id: "Sir Ladoc"
+            }
+            Recall{
+                id: "Minister Edren"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Prince Haldric has emerged from the Lich-Lord’s tomb, with the Ruby of Fire. The forest seems particularly bright this day, but there is a cold breeze. It is late into the fall, and the first snows should fall any day. Prince Haldric has returned to his forest keep, and is pondering what to do next..."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "So, you have defeated the lich and returned with his jewel of power. The earth feels happy beneath my toes."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Yes, it was a tough battle, but we prevailed. Now, I’m having a problem. I know not what I should do next."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I have the jewel, but I have no idea what it does. To make matters worse, I have no idea what’s going on outside this forest. The number of refugees is growing daily. We need to get to Southbay, but I dare not lead us onto the plains and risk a slaughter."
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "My eyes do not extend beyond the forest. You have indeed shown yourself a tree-friend, I would there were more I could do to help you."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We can’t all stay here for the winter; we would starve, or freeze. Your hospitality, though generously meant, has barely sufficed. Hold — I see somebody!"
+            }
+
+            Move_Unit_Fake{
+                type: lady_store.type
+                side: 1
+                gender: "female"
+                x: {8, 7, 6}
+                y: {30, 26, 22}
+            }
+
+            VARIABLE("lady_store.x", 6)
+            VARIABLE("lady_store.y", 22)
+
+            Unstore_Unit{
+                variable: "lady_store"
+            }
+
+            FULL_HEAL({id: "Lady Outlaw"})
+
+            If{
+                variable: {
+                    name: "have_lady"
+                    numerical_equals: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "You thought that I ran away, didn’t you?"
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "The thought had crossed my mind."
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Well, I come bearing news of the road to Southbay!"
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Really!"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "The news is not good. The main host of orcs is between the forest and Southbay. We clearly can’t go that way. However, the road to Clearwater Port is free of orcs. Apparently they’re bogged down in the swamp of Esten."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Well, I certainly don’t mind the thought of the orcs floundering around that infernal swamp. But, one question remains."
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "What?"
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Can I trust you, and your information? I don’t even know your name."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "You again!"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "I come bearing news of the road to Southbay!"
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Humph! Your words mean very little to me."
+                        image: "portraits/haldric-annoyed.png"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "It is important, and not good. The main host of orcs is between the forest and Southbay. You clearly can’t go that way. However, the road to Clearwater Port is free of orcs. Apparently they’re bogged down in the swamp of Esten."
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "I propose we join forces, and make a break for Clearwater Port."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Well, I certainly don’t mind the thought of the orcs floundering around that infernal swamp. But, some questions remain."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Lady, why would you let those undead monsters lead your people?"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Haldric, we are an ancient people who lived in a land filled with all manner of man and beast. We needed vision that extended beyond the meager span of human years. The art of necromancy allowed our best and brightest to live forever, and our worst got to serve as mindless slaves."
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Other than losing our war back west, then our refugee war to your people, and this orc thing, it wasn’t such a bad deal."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Uh-huh. Have you considered the possibility that the unholy act of turning your best and brightest into undead is what caused them to fall into darkness?"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "We should save this pointless debate for later. Anything else?"
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Why should I trust you, or your information? I don’t even know your name, and you have this nasty habit of mysteriously vanishing!"
+                    }
+                    Allow_Recruit{
+                        side: 1
+                        type: {"Footpad", "Poacher", "Thief", "Thug"}
+                    }
+                
+            }
+            Message{
+                speaker: "Lady Outlaw"
+                message: _ "Bah, have it your way!"
+            }
+
+            Animate_Unit{
+                filter: {
+                    id: "Lady Outlaw"
+                }
+
+                flag: "levelout"
+                with_bars: true
+            }
+
+            Unit{
+                id: "Lady Jessene"
+                name: _ "Lady Jessene"
+                unrenamable: true
+                type: lady_store.type
+                gender: "female"
+                variation: "unmasked"
+                side: 1
+                x: lady_store.x, y: lady_store.y
+                placement: "map_overwrite"
+                facing: lady_store.facing
+                experience: lady_store.experience
+                overlays: "misc/hero-icon.png"
+                random_traits: false
+                profile: "portraits/jessica.png"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+            }
+
+            Animate_Unit{
+                filter: {
+                    id: "Lady Jessene"
+                }
+
+                flag: "levelin"
+                with_bars: true
+            }
+
+            CLEAR_VARIABLE("lady_store")
+
+            Message{
+                speaker: "Lady Jessene"
+-- wmllint: local spelling un-lives
+                message: _ "I am the Lady Jessene, a noble, a princess of the Wesfolk! I was betrayed by the Lich-Lords’ dark pact with the orcs, in no small part because your fool Prince of Southbay convinced them that their immortal un-lives were over!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "And now, I’m as much a refugee as you. In truth, I don’t know if the Lich-Lords are working with the orcs or not. The orcs may have gotten rid of the Lich-Lords, or they may not have, but I do know that the orcs are not going to tolerate living humans outside of the slave mines or stew pot!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Young prince, it is time to go! We must flee before the winter snow!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Fair enough. We will head for Clearwater Port. Thank you, Elilmaldur-Rithrandil, I will remember your hospitality!"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "Always happy to help a tree-friend. May the Powers of Light guide you on your way!"
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Finally, we’re getting out of this forest!"
+            }
+            CLEAR_VARIABLE("have_lady")
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+                carryover_report: false
+                linger_mode: false
+            }
+    }
+}

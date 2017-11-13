@@ -1,0 +1,427 @@
+--textdomain wesnoth-l
+Scenario{
+    id: "01_The_Raid"
+    name: _ "The Raid"
+    map: "campaigns/Liberty/maps/01_The_Raid.map"
+    <TURNS(24, 18, 14)
+
+    next_scenario: "02_Civil_Disobedience"
+    victory_when_enemies_defeated: false
+
+    <INTRO_AND_SCENARIO_MUSIC("heroes_rite.ogg", "northerners.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+
+    label: {
+        x: 9, y: 1
+        text: _ "Dallben"
+    }
+
+    story: {
+        part: {
+            story: _ "In the Era of Turmoil, during the reign of King Garard II, the border towns of Delwyn and Dallben in the province of Annuvin grew increasingly dissatisfied with the King’s rule. Being preoccupied with the great wars, the King was unable to send adequate forces to protect the frontier."
+            background: "story/frontier.jpg"
+        }
+        part: {
+            story: _ "The hardy people of these marches learned self-reliance and survival skills against the raiding orc hordes and savage saurians. They established their own trading routes and pacts of mutual defense."
+            background: "story/frontier.jpg"
+        }
+        part: {
+            story: _ "Although not permitted to train with proper military weapons, these woodsmen were at home in the forests and swamps of the Western Marches, and became very effective with their simple slings and clubs."
+            background: "story/frontier.jpg"
+        }
+        part: {
+            story: _ "After the betrayal of the King by Queen Asheviere, the new regent of Wesnoth sought to consolidate her ill-gotten power. She sent her armies across Wesnoth to intimidate the provincial rulers and secure her continued reign."
+            background: "story/frontier.jpg"
+        }
+        part: {
+            story: _ "The people of Annuvin were unwilling to relinquish their hard-earned self-rule, especially not to this pretender..."
+            background: "story/frontier.jpg"
+        }
+    }
+
+    <LIBERTY_BIGMAP(JOURNEY_01_NEW!)
+
+    <DEFAULT_SCHEDULE_DUSK!
+
+    side: {
+        type: "Bandit_Peasant"
+        id: "Baldras"
+        name: _ "Baldras"
+        profile: "portraits/baldras.png"
+        side: 1
+        canrecruit: true
+        recruit: 
+        controller: "human"
+        unrenamable: true
+        experience: 25
+        gold: 0
+    }
+
+    <STARTING_VILLAGES(1, 4)
+
+    side: {
+        type: "Goblin Pillager"
+        id: "Fal Khag"
+        name: _ "Fal Khag"
+        side: 2
+        controller: "ai"
+        canrecruit: true
+        facing: "sw"
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        gold: 25
+        <FLAG_VARIANT6("ragged")
+    }
+
+    event: {
+        name: "prestart"
+
+        micro_ai: {
+            side: 2
+            ai_type: "messenger_escort"
+            action: "add"
+
+            id: "Fal Khag"
+            waypoint_x: 9, waypoint_y: 1
+        }
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all of the Goblin marauders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Goblins reach the village of Dallben"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Baldras"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Harper"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 100
+                }
+            }
+
+--sign to mark the village location
+            PLACE_IMAGE("scenery/signpost.png", 9, 3)
+
+            SET_VILLAGE(8, 1, 1)
+            SET_VILLAGE(10, 1, 1)
+
+            DALLBEN_PEASANT = (TYPE, X, Y, ID_STRING, NAME_STRING) -> {
+                unit: {
+                    type: TYPE
+                    id: ID_STRING
+                    name: NAME_STRING  -- wmllint: ignore
+                    x: X, y: Y
+                    side: 1
+                    random_traits: true
+                }
+            }
+
+            GOBLIN_RAIDER = (TYPE, X, Y, NAME_STRING) -> {
+                unit: {
+                    side: 2
+                    type: TYPE
+                    x: X, y: Y
+                    name: NAME_STRING  -- wmllint: ignore
+                    random_traits: true
+                    facing: "sw"
+                }
+            }
+
+            GOBLIN_RAIDER("Goblin Pillager", 19, 29, _ "Gatrakh")
+            GOBLIN_RAIDER("Goblin Pillager", 17, 29, _ "Thurg")
+
+            if EASY
+                GOBLIN_RAIDER("Wolf Rider", 17, 30, _ "Krung")
+                GOBLIN_RAIDER("Wolf Rider", 18, 29, _ "Gorokh")
+            
+
+            if NORMAL
+                GOBLIN_RAIDER("Goblin Pillager", 17, 30, _ "Krung")
+                GOBLIN_RAIDER("Wolf Rider", 18, 29, _ "Gorokh")
+            
+
+            if HARD
+                GOBLIN_RAIDER("Goblin Pillager", 17, 30, _ "Krung")
+                GOBLIN_RAIDER("Goblin Pillager", 18, 29, _ "Gorokh")
+            
+
+            GOBLIN_RAIDER = nil
+
+-- now store the good guys so they are invisible during the
+-- goblin conversation
+            Store_Unit{
+                variable: "goodguys_store"
+                kill: true
+                filter: {
+                    side: 1
+                }
+            }
+    }
+
+-- Starting conversation and actions
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Fal Khag"
+                message: _ "I long to burn human cities, but until our great chieftains provide us with sufficient forces we must look to these villagers to feed our wolves and slake the thirst of our blades."
+            }
+            Message{
+                speaker: "Fal Khag"
+                message: _ "Ride, you worms, I want to finish our raid before the hunting party returns to the human village."
+            }
+
+--Put the leader back and make some other good guys
+            Unstore_Unit{
+                variable: "goodguys_store"
+            }
+            CLEAR_VARIABLE("goodguys_store")
+
+            DALLBEN_PEASANT("Footpad_Peasant", 6, 29, "Jalak", _ "Jalak")
+            DALLBEN_PEASANT("Footpad_Peasant", 5, 29, "Delurin", _ "Delurin")
+            DALLBEN_PEASANT("Footpad_Peasant", 5, 27, "Red", _ "Red")
+            DALLBEN_PEASANT("Bandit_Peasant", 3, 28, "Ordo", _ "Ordo")
+            DALLBEN_PEASANT("Bandit_Peasant", 4, 30, "Novus", _ "Novus")
+            DALLBEN_PEASANT("Thug_Peasant", 5, 30, "Teneor", _ "Teneor")
+            DALLBEN_PEASANT("Poacher_Peasant", 3, 28, "Kembe", _ "Kembe")
+            DALLBEN_PEASANT("Poacher_Peasant", 3, 30, "Treagh", _ "Treagh")
+-- wmllint: recognize Red
+-- wmllint: recognize Kembe
+
+            Unit{
+                type: "Footpad_Peasant"
+                id: "Harper"
+                name: _ "Harper"
+                profile: "portraits/harper.png"
+                x: 6, y: 30
+                side: 1
+                random_traits: false
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_HERO!
+                unrenamable: true
+            }
+
+            Message{
+                speaker: "Red"
+                message: _ "Look, goblin riders approach! You were right, they were going to raid Dallben while we were gone."
+            }
+            Message{
+                speaker: "Baldras"
+                message: _ "We must stop them before they reach the village. Damn the crown, they have long since forgotten about us out here."
+            }
+            Message{
+                speaker: "Harper"
+                message: _ "That goblin leader is heading full-speed straight for Dallben. But we’ll need to chase them all down if we’re going to stop them."
+            }
+            Message{
+                speaker: "Baldras"
+                message: _ "Do it. Try to hold them back until us old-timers can get there and finish them off."
+            }
+            Message{
+                speaker: "Baldras"
+--po: Some languages, including Norwegian and Old English, don't
+--po: have a single word for "uncle", dividing it into
+--po: mother's-brother vs. father's-brother. Baldras is
+--po: Harper's mother's brother.  In some human societies,
+--po: including the Navaho and Akan, this would give him a
+--po: special responsibility for the boy.
+                message: _ "And Harper... don’t get yourself killed. I’m responsible for you now that your father is gone, and I won’t dishonor his memory by breaking my promise to keep you safe."
+            }
+            Message{
+                speaker: "Harper"
+                message: _ "... I know... All right now, let’s stop these goblins!"
+            }
+    }
+
+-- we set a flag on any side 1 death so that Harper doesn't comment on more
+-- having died today unless someone did
+    event: {
+        name: "die"
+
+        filter: {
+            side: 1
+        }
+        do: ->
+            VARIABLE("any_villagers_died", true)
+    }
+
+--
+-- Victory
+--
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            side: 2
+        }
+        do: ->
+            If{
+                not: {
+                    have_unit: {
+                        side: 2
+                    }
+                }
+                then: ->
+                    CLEAR_VARIABLE("town_guards_awakened")
+                    If{
+                        variable: {
+                            name: "any_villagers_died"
+                            boolean_equals: true
+                        }
+
+                        then: ->
+                            CLEAR_VARIABLE("any_villagers_died")
+                            Message{
+                                speaker: "Harper"
+                                message: _ "We are barely able to survive these orc raids. We lost two men last week, more today... yet Weldyn does nothing!"
+                            }
+                        
+
+                        else: ->
+                            Message{
+                                speaker: "Harper"
+                                message: _ "We are barely able to survive these orc raids. We lost two men last week, more could have died today... yet Weldyn does nothing!"
+                            }
+                        
+                    }
+                    Message{
+                        speaker: "Baldras"
+                        message: _ "The King stopped sending patrols out here once the war started. Once that happened, the burden fell to us. We are citizens of Wesnoth, and as long as her banner flies we will resist the horde."
+                    }
+                    Message{
+                        speaker: "Harper"
+                        message: _ "The banner will fly over a ghost town if help does not come soon."
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(100)
+                    }
+                
+            }
+    }
+
+-- Orcs near the villlage
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 2
+
+            filter_location: {
+                x: 9, y: 2
+                radius: 12
+            }
+        }
+        do: ->
+            IF_VAR("town_guards_awakened", "not_equals", true, {
+                    then: ->
+                        Message{
+                            speaker: "Harper"
+                            message: _ "They’re getting closer to our village! What about the town guards, can they help us?"
+                        }
+                        Message{
+                            speaker: "Baldras"
+                            message: _ "They’ll come out when they see those riders, or us, approaching, but there aren’t many of them... I wouldn’t count on them being able to protect the village alone for long."
+                        }
+                    
+            })
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            filter_location: {
+                x: 9, y: 2
+                radius: 9
+            }
+        }
+        do: ->
+            DALLBEN_PEASANT("Thug_Peasant", 10, 2, "Remald", _ "Remald")
+            DALLBEN_PEASANT("Thug_Peasant", 8, 2, "Wolmas", _ "Wolmas")
+-- wmllint: recognize Remald
+-- wmllint: recognize Wolmas
+
+            if EASY
+                DALLBEN_PEASANT("Thug_Peasant", 9, 4, "Jasken", _ "Jasken")
+            
+
+            IF_VAR("unit.side", "equals", 1, {
+                    then: ->
+                        Message{
+                            speaker: "Wolmas"
+                            message: _ "What’s happening here? Why are you running like mad, #{unit.name}?"
+                        }
+                        Message{
+                            speaker: "unit"
+                            message: _ "Goblin riders on the hunt. We must not let any of them to the village!"
+                        }
+                    
+
+                    else: ->
+                        Message{
+                            speaker: "Wolmas"
+                            message: _ "Look! Goblin riders are on the hunt — and heading right for Dallben!"
+                        }
+                        Message{
+                            speaker: "Remald"
+                            message: _ "Halt!"
+                        }
+                    
+            })
+
+            VARIABLE("town_guards_awakened", true)
+    }
+
+--
+-- Loss conditions - the orcs reach the village
+--
+    event: {
+        name: "moveto"
+        filter: {
+            side: 2
+            x: "7-11"
+            y: "1-2"
+        }
+        do: ->
+            Message{
+                speaker: "Baldras"
+                message: _ "The goblins reached the village! There will surely be nothing left when they are done pillaging it."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "defeat"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "None remarked on the passing of the tiny, isolated frontier town. It was but a harbinger of the evil to come under the tyranny of Asheviere."
+            }
+    }
+
+    <LIBERTY_DEATHS!
+}
+
+GOBLIN_RAIDER = nil
+DALLBEN_PEASANT = nil

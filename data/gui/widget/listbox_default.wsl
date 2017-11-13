@@ -1,0 +1,193 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a (horizontal) listbox
+----
+----
+---- NOTE a listbox has multiple scroll button options, these aren't all used
+---- but to show them they are kept here commented out.
+----
+
+_GUI_RESOLUTION = (RESOLUTION, FONT_SIZE, FONT_STYLE, FONT_COLOR_ENABLED, FONT_COLOR_DISABLED) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: 0
+        min_height: 0
+
+        default_width: 0
+        default_height: 0
+
+        max_width: 0
+        max_height: 0
+
+        text_font_size: FONT_SIZE
+        text_font_style: FONT_STYLE
+
+        state_enabled: {
+
+            draw: {
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+            }
+
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    vertical_alignment: "top"
+
+                    grid: {
+                        id: "_header_grid"
+                    }
+
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true -- needed ?
+                    vertical_grow: true -- needed ?
+
+                    grid: {
+                        id: "_content_grid"
+
+                        row: {
+
+                            column: {
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                grid: {
+                                    id: "_list_grid"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                column: {
+                    grow_factor: 0
+
+                    <GUI__VERTICAL_SCROLLBAR_GRID!
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    vertical_alignment: "bottom"
+
+                    grid: {
+                        id: "_footer_grid"
+                    }
+
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+
+
+                    <GUI__HORIZONTAL_SCROLLBAR_GRID!
+
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Listbox_Definition{
+    id: "default"
+    description: "Default listbox."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 156: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 157: 		({GUI_FONT_SIZE_DEFAULT})
+    {}
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 159: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 160: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+Horizontal_Listbox_Definition{
+    id: "default"
+    description: "Default horizontal listbox."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 170: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 171: 		({GUI_FONT_SIZE_DEFAULT})
+    {}
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 173: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 174: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+Grid_Listbox_Definition{
+    id: "default"
+    description: "Default grid listbox."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 184: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 185: 		({GUI_FONT_SIZE_DEFAULT})
+    {}
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 187: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/listbox_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 188: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+_GUI_RESOLUTION = nil

@@ -1,0 +1,680 @@
+--textdomain wesnoth-nr
+
+Scenario{
+    id: "04_Clearing_the_Mines"
+    name: _ "Clearing the Mines"
+    map: "campaigns/Northern_Rebirth/maps/04_Clearing_the_Mines.map"
+    <TURNS(65, 55, 45)
+    next_scenario: "05a_01_The_Pursuit"
+
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+
+    story: {
+        part: {
+            story: _ "When the party finally reached the mines, they were not disappointed."
+        }
+    }
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Peasant", "Woodsman", "Thug", "Poacher", "Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Scout", "Footpad"}
+        <GOLD(450, 400, 350)
+        team_name: "alliance"
+        user_team_name: _ "Alliance"
+
+-- wmllint: recognize Tallin
+        <CHARACTER_STATS_TALLIN!
+    }
+-- wmllint: validate-on
+
+-- Five opposing undead sides
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Dark Adept", "Walking Corpse", "Blood Bat", "Skeleton", "Skeleton Archer", "Ghost"}
+        <GOLD(125, 150, 200)
+        income: 15
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Ancient Lich"
+        id: "Malifor"
+        name: _ "Malifor"
+        profile: "portraits/Malifor.png"
+        canrecruit: true
+
+        <NOTRAIT_UNIT({}, "Skeleton", 29, 8), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 29, 10), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 31, 7), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 31, 11), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 33, 8), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 33, 10), <GUARDIAN!
+
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 34, 4), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 37, 6), <GUARDIAN!
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer", "Vampire Bat"}
+        <GOLD(125, 150, 200)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Draug"
+        id: "Thorin"
+        name: _ "Thorin"
+        canrecruit: true
+
+        <NOTRAIT_UNIT({}, "Skeleton", 11, 22), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 11, 24), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 16, 25), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 4, 26), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 8, 26), <GUARDIAN!
+
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 7, 29), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 17, 21), <GUARDIAN!
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer", "Vampire Bat"}
+        <GOLD(125, 150, 200)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Draug"
+        id: "Herlin"
+        name: _ "Herlin"
+        canrecruit: true
+
+        <NOTRAIT_UNIT({}, "Skeleton", 33, 32), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 34, 35), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 24, 29), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 28, 28), <GUARDIAN!
+
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 17, 34), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 14, 37), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 21, 26), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 24, 24), <GUARDIAN!
+    }
+
+    side: {
+        side: 5
+        controller: "ai"
+        recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer", "Vampire Bat"}
+        <GOLD(125, 150, 200)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Draug"
+        id: "Fervin"
+        name: _ "Fervin"
+        canrecruit: true
+
+        <NOTRAIT_UNIT({}, "Skeleton", 27, 18), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 28, 21), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton", 37, 20), <GUARDIAN!
+
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 21, 22), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 29, 15), <GUARDIAN!
+        <NOTRAIT_UNIT({}, "Skeleton Archer", 33, 15), <GUARDIAN!
+    }
+
+    side: {
+        type: "Draug"
+        id: "Hellian"
+        name: _ "Hellian"
+        canrecruit: true
+        side: 6
+        <GOLD(125, 150, 200)
+        recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer", "Vampire Bat"}
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        <NOTRAIT_UNIT(6, "Skeleton", 9, 9), <GUARDIAN!
+        <NOTRAIT_UNIT(6, "Skeleton", 12, 7), <GUARDIAN!
+        <NOTRAIT_UNIT(6, "Skeleton", 18, 7), <GUARDIAN!
+        <NOTRAIT_UNIT(6, "Skeleton", 18, 9), <GUARDIAN!
+        <NOTRAIT_UNIT(6, "Skeleton", 24, 7), <GUARDIAN!
+        <NOTRAIT_UNIT(6, "Skeleton", 24, 9), <GUARDIAN!
+
+        <NOTRAIT_UNIT(6, "Skeleton Archer", 12, 16), <GUARDIAN!
+    }
+
+    <STARTING_VILLAGES(1, 5)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Time_Area{
+                x: {"0-2", 0, 0, 1, "3-4", "3-6"}
+                y: {"39-41", 37, 38, 38, 40, 41}
+                <DEFAULT_SCHEDULE!
+            }
+
+            RECALL_SUPPORTER!
+
+            Recall{
+                type: "Dwarvish Fighter"
+            }
+
+            Recall{
+                type: "Dwarvish Thunderer"
+            }
+
+            Recall{
+                type: "Dwarvish Scout"
+            }
+
+            Recall{
+                id: "Camerin"
+            }
+
+            Recall{
+                id: "Hamel"
+            }
+
+-- Hide Malifor
+            Hide_Unit{
+                id: "Malifor"
+            }
+
+-- Set initial objectives.
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Clear the mines"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Tallin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Hamel"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- Start event - recall some units, perform initial dialogue and place an army of guardian skeletons
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Hamel"
+                message: _ "Behold! The Dwarven Mines."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "Look at yon canal. Dwarves built it to transport mined metals deeper into Knalga. And d’ye ken those two rooms, one to the north-west and the other to the south-east? If we could capture those, we would gain o’ great tactical advantage."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Grim gods of darkness! The whole place is swarming with undead! They have raised corpses to do their work."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "And they seem to have good security, too. Look, most of the fortifications are repaired and they have those nasty skeletons everywhere."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Fortunately, this entrance seems to be in disrepair. It doesn’t look like they have noticed us yet."
+            }
+
+            Message{
+                speaker: "Thorin"
+                message: _ "WHO GOES THERE?"
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "(<i>Wince</i>)."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Oops, I spoke too soon."
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "Maybe he needs a fireball..."
+            }
+
+            Message{
+                speaker: "Thorin"
+                message: _ "YOU DO NOT ANSWER. ALERT THE MASTER!"
+            }
+
+-- The grand entrance
+            Move_Unit_Fake{
+                type: "Ancient Lich"
+                side: 2
+                x: {40, 35, 35, 31}
+                y: {1, 5, 7, 9}
+            }
+
+            Unhide_Unit{
+                id: "Malifor"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "Who goes there? Ahhh, more slaves, I see."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Others have made that mistake before. Who are you?"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "Who am I? (<i>Cackles wildly</i>) I am Malifor the Great, the master of death! These tunnels, haunted by the ghosts of the dead dwarves of Knalga, are the domain of my power."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "You dared disturb the rest of those brave dwarves? You shall pay in blood!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "HAHAHAHA! Your petty temper tantrums are most amusing, you puny dwarf. Soon I will finish the slaughter that the orcs have begun so promisingly, and Knalga will be all mine! From there I will sweep the whole north of all living creatures, and then swoop down upon Wesnoth!"
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "Quit your ranting, you wretched bag of bones! Prepare to return to the dust!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "HAHAHAHA! Such vast threats from one so small? HAHAHA!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "But– My my, what do we have here? — Tallin."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "He knows your name, Tallin. I don’t like the sound of this."
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "Oh yes, I know you, Tallin. I have been watching you for a long time. You are a perfect candidate to become one of my immortal generals."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "...!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "Look around you, Tallin; see all the power, see all of the wealth, the glory, the pleasure that the realm of death has to offer. Think of the great empire of Knalga; it can be yours. Come, share it with me!"
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Tallin! Get hold of yourself!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "It’s very easy, Tallin... See that little vermin by your side? Take out your knife... cut his throat... feel his hot blood pump over your hands... sacrifice him!"
+            }
+
+-- There was an option to choose an alternative, evil, branch here.
+-- But since it's not finished it is commented out; leaving player
+-- a command that leads to instant defeat is not nice.
+--[message]
+--    speaker=Tallin
+--    message= _ "I... I..."
+--    [option]
+--        label= _ "Die... you... little... dwarf... vermin!"
+--        [command]
+--            [message]
+--                role=Supporter
+--                message= _ "Tallin! No!"
+--            [/message]
+
+--            [message]
+--                id=Hamel
+--                message= _ "Tallin, what are you doing?"
+--            [/message]
+
+--            [message]
+--                id=Tallin
+--                message= _ "... Death...! Blood...!"
+--            [/message]
+
+--            {MODIFY_UNIT id=Tallin profile portraits/Tallin-Evil.png}
+
+--            [sound]
+--                name=dagger-swish.wav
+--            [/sound]
+
+--            [delay]
+--                time=50
+--            [/delay]
+
+--            [sound]
+--                name=dwarf-hit-3.ogg
+--            [/sound]
+
+--            [message]
+--                id=Hamel
+--                message= _ "Ahhh! Treacherous human! Kill him, men!"
+--            [/message]
+
+--            [message]
+--                id=Malifor
+--                message= _ "HAHAHAHA!"
+--            [/message]
+
+--            [sound]
+--                name=fire.wav
+--            [/sound]
+
+--            [sound]
+--                name=ugg.wav
+--            [/sound]
+
+--            [color_adjust]
+--                red=100
+--                green=100
+--                blue=100
+--            [/color_adjust]
+
+--            [delay]
+--                time=10
+--            [/delay]
+
+--            [color_adjust]
+--                red=0
+--                green=0
+--                blue=0
+--            [/color_adjust]
+
+--            [teleport]
+--                [filter]
+--                    id=Tallin
+--                [/filter]
+--                x,y=34,6
+--            [/teleport]
+
+--            [message]
+--                id=Hamel
+--                message= _ "What the—! Where did he go?"
+--            [/message]
+
+--            [message]
+--                id=Malifor
+--                message= _ "Right here with me, fools! He is mine now."
+--            [/message]
+
+--            [disallow_recruit]
+--                side=1
+--                type=Dwarvish Fighter,Dwarvish Thunderer,Peasant,Thug,Poacher,Woodsman,Dwarvish Scout,Footpad
+--            [/disallow_recruit]
+
+--            [store_unit]
+--                [filter]
+--                    role=Supporter
+--                [/filter]
+--                variable=betrayed_friend
+--            [/store_unit]
+
+--            {VARIABLE turned_evil yes}
+
+--            [endlevel]
+--                result=victory
+--                bonus=no
+--                next_scenario=05b_Compelled
+--            [/endlevel]
+--        [/command]
+--    [/option]
+--    [option]
+--        label= _ "(<i>Shakes head</i>) I reject your evil. Attack, men! Let us rid the good green world of this rotting filth!"
+--        [command]
+-- NOTE: remove this message when the alt path is activated
+            Message{
+                speaker: "Tallin"
+                message: _ "(<i>Shakes head</i>) I reject your evil. Attack, men! Let us rid the good green world of this rotting filth!"
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "Aye! That’s the way of it, lad! For the murdered dwarves of Knalga! Attack!"
+            }
+
+            Message{
+                speaker: "Malifor"
+                message: _ "You fool! You will pay for your folly with your life."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Yeah, right, buddy."
+            }
+--        [/command]
+--    [/option]
+--[/message]
+    }
+
+-- Turn 20 - since the army of skeletons is obviously not enough change the moat to swamp and send in an army of ghouls.
+    event: {
+        name: "turn 20"
+        do: ->
+            Message{
+                speaker: "Malifor"
+                message: _ "These little vermin are making progress! This is unacceptable. Rise, my minions — gorge on the flesh of these scurrying little rats!"
+            }
+
+-- Water to swamp
+            Terrain{
+                and: {
+                    terrain: "W**^*"
+                }
+                terrain: "Ss"
+                layer: "base"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Look out everyone, something is coming out of the canals! Already the water is churning and clogging with their filth. Get back and brace yourselves."
+            }
+    }
+
+-- And the slimy army
+    event: {
+        name: "turn 21"
+        do: ->
+            NOTRAIT_UNIT(2, "Ghoul", 15, 11)
+            NOTRAIT_UNIT(2, "Ghoul", 17, 11)
+            NOTRAIT_UNIT(2, "Ghoul", 20, 9)
+            NOTRAIT_UNIT(2, "Ghoul", 25, 9)
+            NOTRAIT_UNIT(2, "Ghoul", 25, 11)
+            NOTRAIT_UNIT(2, "Ghoul", 27, 12)
+            NOTRAIT_UNIT(2, "Ghoul", 26, 15)
+            NOTRAIT_UNIT(2, "Ghoul", 29, 16)
+            NOTRAIT_UNIT(2, "Ghoul", 28, 18)
+            NOTRAIT_UNIT(2, "Ghoul", 27, 7)
+            NOTRAIT_UNIT(2, "Necrophage", 16, 9)
+            NOTRAIT_UNIT(2, "Necrophage", 23, 10)
+            NOTRAIT_UNIT(2, "Necrophage", 26, 8)
+            NOTRAIT_UNIT(2, "Necrophage", 28, 14)
+            NOTRAIT_UNIT(2, "Necrophage", 26, 13)
+            NOTRAIT_UNIT(2, "Necrophage", 26, 17)
+            NOTRAIT_UNIT(2, "Necrophage", 26, 21)
+            NOTRAIT_UNIT(2, "Necrophage", 25, 8)
+
+            Message{
+                type: "Necrophage"
+                message: _ "<i>Fooood</i>!" -- wmllint: no spellcheck
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "Lords of Light, what kind of vile creation are those things!"
+            }
+
+-- TODO: Camerin might be dead by now
+            Message{
+                speaker: "Camerin"
+                message: _ "Out of all of a necromancer’s creations, I must say those things are the most tortured and vile. They have an insatiable hunger for flesh and mindlessly shrug off all manner of damage to get it. Even my fire bolts have a slightly lesser effect on them."
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "Oh, and try to stay away from their claws. If you get even one scratch, and don’t get it treated quickly, you will soon find yourself weak, sick and unable to fight further."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "Bah! They look like fat slugs to me. Come on boys, let’s chop them to pieces before they can leave the canal."
+            }
+    }
+
+-- Victory and death events - liches grand exit
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Malifor"
+        }
+        do: ->
+            Message{
+                speaker: "Malifor"
+                message: _ "HAHAHA, you puny weaklings think you can destroy me? <i>Fools</i>! You will all soon be serving me!"
+            }
+
+            FLASH_RED({
+                    kill: {
+                        id: "Malifor"
+                        fire_event: true -- probably required if he's the last enemy leader
+                        animate: false
+                    }
+            })
+
+            Message{
+                speaker: "second_unit"
+                message: _ "Oh no, he just... disappeared."
+            }
+    }
+
+-- Victory dialog
+    event: {
+        name: "enemies defeated"
+
+--        [if]
+--            [variable]
+--                name=turned_evil
+--                boolean_equals=yes
+--            [/variable]
+--            [then]
+        do: ->
+            Message{
+                speaker: "Tallin"
+                message: _ "We have finally secured the mines. But what should we do about that foul lich? He is a menace to all that lives, and must be ended."
+            }
+
+            Message{
+                speaker: "Hamel"
+-- wmllint: local spelling dwarvenkind
+                message: _ "Aye! We’ll have to lay both his skeletons and himself to final rest before these caves will be fit for dwarvenkind again."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "But I’m sore vexed. We need better weapons. Luck and spirit can carry us only so far."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "Aye. We must do both. I’m thinking it might be best if I muster my folk to start on the weapon-making while you and your followers pursue yon lich. By the time you’ve laid him to final rest and return here, we’ll ha’ made a good start on the work."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "So it shall be."
+            }
+
+            Role{
+                type: {"Dwarvish Steelclad", "Dwarvish Fighter", "Dwarvish Dragonguard", "Dwarvish Thunderguard", "Dwarvish Thunderer", "Dwarvish Explorer", "Dwarvish Pathfinder", "Dwarvish Scout"}
+                role: "follower"
+            }
+
+            Message{
+                role: "follower"
+                message: _ "With all respect, Lord Hamel, some o’ us would like to fare forth with Tallin. He’s lucky, he is — or he makes his own luck."
+            }
+
+            Message{
+                speaker: "Hamel"
+                message: _ "And so it shall be. You’ve my leave and welcome. Try to keep the lad safe..."
+            }
+
+            Message{
+                role: "follower"
+                message: _ "Thank you, Lord Hamel."
+            }
+
+-- Lord Hamel becomes unavailable for following scenarios until the '
+-- big showdown.
+            Kill{
+                id: "Hamel"
+                animate: false
+                fire_event: false
+            }
+
+            Disallow_Recruit{
+                side: 1
+                type: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Scout", "Dwarvish Guardsman"}
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+--            [/then]
+--        [/if]
+    }
+
+-- And hero deaths
+    <HERODEATH_TALLIN!
+    <HERODEATH_CAMERIN!
+    <HERODEATH_HAMEL!
+
+    <SUPPORTER_DEATH_HANDLER!
+}

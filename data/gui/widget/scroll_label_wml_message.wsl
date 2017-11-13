@@ -1,0 +1,113 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a scroll label for the wml_message.
+----
+
+_GUI_RESOLUTION = (RESOLUTION, FONT_SIZE, FONT_STYLE, FONT_COLOR_ENABLED, FONT_COLOR_DISABLED) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: 0
+        min_height: 0
+
+        default_width: 0
+        default_height: 0
+
+        max_width: 0
+        max_height: 0
+
+        text_font_size: FONT_SIZE
+        text_font_style: FONT_STYLE
+
+        state_enabled: {
+
+            draw: {
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+            }
+
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true -- needed ?
+                    vertical_grow: true -- needed ?
+
+                    grid: {
+                        id: "_content_grid"
+
+                        row: {
+
+                            column: {
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                label: {
+                                    id: "_label"
+                                    definition: "default"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                column: {
+
+                    <GUI__VERTICAL_SCROLLBAR_GRID_TRANSPARENT!
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    <GUI__HORIZONTAL_SCROLLBAR_GRID_TRANSPARENT!
+
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Scroll_Label_Definition{
+    id: "wml_message"
+    description: "The scroll label for the wml_message."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/scroll_label_wml_message.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 104: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/scroll_label_wml_message.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 105: 		({GUI_FONT_SIZE_DEFAULT})
+    {}
+err: ../attic/data/gui/widget/scroll_label_wml_message.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 107: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/scroll_label_wml_message.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 108: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+_GUI_RESOLUTION = nil

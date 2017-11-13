@@ -1,0 +1,165 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the loadscreen
+----
+
+Window_Definition{
+
+    id: "loadscreen"
+    description: "The window definition for the loading screen."
+
+    resolution: {
+
+        background: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+
+                    fill_color: "0, 0, 0, 255"
+                }
+
+            }
+
+        }
+
+        foreground: {
+
+            draw: {
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_PADDING = () -> {
+    row: {
+
+        column: {
+
+            spacer: {
+                height: "((screen_height - if(screen_height < 800, 200, 0)) / 3.5)"
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "loading_screen"
+    description: "Loadscreen."
+
+    resolution: {
+        definition: "loadscreen"
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            <_GUI_PADDING!
+
+            row: {
+                grow_factor: 2
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "center"
+                    vertical_alignment: "center"
+
+                    image: {
+                        definition: "logo"
+                        label: "misc/logo-bg.png"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "center"
+                    vertical_alignment: "center"
+
+                    image: {
+                        definition: "decoration"
+                        label: "misc/loadscreen_decor.png"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+                    vertical_alignment: "center"
+
+                    label: {
+                        text_alignment: "center"
+                        definition: "default_large"
+                        id: "test_animation"
+                        label: "                    "
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+                    vertical_alignment: "center"
+
+                    label: {
+                        text_alignment: "center"
+                        definition: "default_large"
+                        id: "status"
+                        label: _ "Loading..."
+                    }
+
+                }
+
+            }
+
+            <_GUI_PADDING!
+
+        }
+
+    }
+
+}
+
+_GUI_PADDING = nil

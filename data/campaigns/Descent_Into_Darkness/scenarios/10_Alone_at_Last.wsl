@@ -1,0 +1,794 @@
+--textdomain wesnoth-did
+
+Scenario{
+    id: "10_Alone_at_Last"
+    name: _ "Alone at Last"
+    map: "campaigns/Descent_Into_Darkness/maps/10_Alone_at_Last.map"
+    turns: 24
+    next_scenario: "11_Descent_into_Darkness"
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE_DUSK!
+
+    <SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    story: {
+        part: {
+            story: _ "As he enters the tunnel underneath Lord Karres’s manor, Darken Volk turns and, with a word and gesture causes the entrance to collapse. The two necromancers turn and begin walking down the pitch-black tunnel, temporarily safe from pursuit."
+            <STORYTXT_BACKGROUND("travel.jpg")
+        }
+        part: {
+            story: _ "They continue walking through the damp, cold air all through the morning and day, finally emerging as the last rays of sun sink below the horizon."
+            <STORYTXT_BACKGROUND("travel.jpg")
+        }
+    }
+
+    <DID_TRACK(JOURNEY_10_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Walking Corpse", "Vampire Bat", "Ghost", "Ghoul", "Skeleton Archer", "Skeleton", "Dark Adept DiD"}
+        gold: 200
+        team_name: "good"
+        user_team_name: _ "Malin Keshar"
+        <FLAG_VARIANT("undead")
+
+-- wmllint: recognize Malin Keshar
+        <CHARACTER_STATS_MALIN_KESHAR!
+
+        facing: "ne"
+    }
+-- wmllint: validate-on
+
+-- Darken Volk
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Blood Bat", "Ghost", "Wraith", "Necrophage", "Skeleton Archer", "Bone Shooter", "Skeleton", "Revenant", "Deathblade", "Dark Adept DiD", "Dark Sorcerer DiD"}
+        <GOLD(300, 340, 380)
+        team_name: "bad"
+        user_team_name: _ "Darken Volk"
+        no_leader: true
+
+        <FLAG_VARIANT("undead")
+        facing: "ne"
+
+        ai: {
+            village_value: 0.2
+            villages_per_scout: 10
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Malin Keshar"
+                }
+                value: 2
+            }
+
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 2
+                    canrecruit: true
+                }
+                value: 4
+            }
+        }
+    }
+
+-- Paladins and co
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Spearman", "Heavy Infantryman", "White Mage", "Mage", "Paladin"}
+        gold: 0
+        team_name: "wesnothians"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+        income: -2
+        no_leader: true
+        hidden: true
+
+        ai: {
+            village_value: 0.1
+            villages_per_scout: 10
+--recruitment_pattern=fighter,healer
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 2
+                }
+                value: 3
+            }
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 2
+            }
+        }
+    }
+
+-- Dela Keshar
+    side: {
+        side: 4
+        controller: "ai"
+        gold: 0
+        recruit: {"Spearman", "Bowman", "Swordsman", "Longbowman", "Thug", "Poacher", "Footpad"}
+        team_name: "wesnothians"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+        income: -2
+        no_leader: true
+        hidden: true
+
+        ai: {
+            passive_leader: true
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Malin Keshar"
+                }
+                value: 2
+            }
+        }
+    }
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Blood Bat", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Wraith", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Necrophage", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Bone Shooter", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Revenant", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Deathblade", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Dark Sorcerer DiD", 1)
+
+    <if EASY then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Paladin", 2)
+    } else {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Paladin", 3)
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Take the book back from Darken Volk"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+
+            Store_Unit{
+                filter: {
+                    filter_wml: {
+                        variables: {
+                            got_inside_manor: true
+                        }
+                    }
+                }
+
+                kill: true
+                variable: "units_inside_manor"
+            }
+
+            Foreach{
+                array: "units_inside_manor"
+                do: ->
+                    VARIABLE("this_item.upkeep", "full")
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                        find_vacant: false
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("units_inside_manor")
+
+-- Scenario variables
+            VARIABLE("bookX", -1)
+            VARIABLE("bookY", -1)
+
+            MODIFY_UNIT({id: "Malin Keshar"}, "profile", "portraits/malin_old-decay.png")
+
+            Recall{
+                id: "Darken Volk"
+                x: 2, y: 26
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Darken Volk"
+                }
+
+                kill: true
+                variable: "stored_Darken"
+            }
+
+            VARIABLE("stored_Darken.side", 2)
+            VARIABLE("stored_Darken.canrecruit", true)
+            VARIABLE("stored_Darken.role", "book_carrier")
+
+-- Removes the loyal trait and other misc stuff
+            CLEAR_VARIABLE("stored_Darken.modifications.trait[0]")
+            CLEAR_VARIABLE("stored_Darken.overlays")
+            CLEAR_VARIABLE("stored_Darken.ellipse")
+
+            Unstore_Unit{
+                variable: "stored_Darken"
+            }
+
+            CLEAR_VARIABLE("stored_Darken")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            MOVE_UNIT({id: "Malin Keshar"}, 7, 22)
+            MOVE_UNIT({id: "Darken Volk"}, 5, 24)
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Well, we made it out. We got your precious book. What’s in it, anyway? And what do we do now?"
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "‘We’? <i>We</i> do nothing. You are no longer my apprentice."
+            }
+
+            MOVE_UNIT({id: "Darken Volk"}, 7, 21)
+
+            MODIFY_UNIT({id: "Darken Volk"}, "facing", "se")
+
+            If{
+                variable: {
+                    name: "hasBook"
+                    equals: "Malin"
+                }
+                then: ->
+-- Malin has the book
+                    Message{
+                        speaker: "Darken Volk"
+                        message: _ "Now give the book to me."
+                    }
+
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Darken Volk grabs the mysterious book from Malin’s hands and stalks away."
+                    }
+                
+                else: ->
+-- DV already has book
+                    Message{
+                        speaker: "Darken Volk"
+                        message: _ "Now go your own way, and I will go mine."
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("hasBook")
+
+            Unit_Overlay{
+                id: "Darken Volk"
+                image: "misc/book-icon.png"
+            }
+
+            MODIFY_UNIT({id: "Darken Volk"}, "facing", "ne")
+
+            MOVE_UNIT({id: "Darken Volk"}, 19, 19)
+
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "You can’t just leave me here!"
+            }
+
+            MOVE_UNIT({id: "Malin Keshar"}, 9, 20)
+
+            CREATE_ADVISOR!
+
+            Message{
+                role: "advisor"
+                message: _ "Master, do you not see? He has merely been using you to get that book!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "What do you mean?"
+            }
+
+            Message{
+                role: "advisor"
+                message: _ "He cares not about your noble quest to push back the orcs. He needed your help to fight the mages! The book is rightfully yours!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Wait!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "All of the training you gave me, that was just so I would help you get that book! Return it to me now, or I will take it by force."
+            }
+
+            MODIFY_UNIT({id: "Darken Volk"}, "facing", "sw")
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "You are even more of a fool than I thought."
+            }
+
+            MOVE_UNIT({id: "Malin Keshar"}, 5, 17)
+
+            MODIFY_UNIT({id: "Malin Keshar"}, "facing", "ne")
+
+            MOVE_UNIT({id: "Darken Volk"}, 26, 10)
+
+-- Make camp
+            Terrain{
+                x: 26, y: 10
+                radius: 1
+                terrain: "Ce"
+            }
+
+            Terrain{
+                x: 26, y: 10
+                terrain: "Ke"
+            }
+
+            MODIFY_UNIT({id: "Darken Volk"}, "facing", "sw")
+    }
+
+-- This helps prevent Darken from getting himself killed easily by preventing
+-- him from leaving his castle
+    event: {
+        name: "side 2 turn refresh"
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Darken Volk"
+                }
+
+                movement_costs: {
+                    flat: 99
+                }
+            }
+    }
+
+    event: {
+        name: "side 2 turn end"
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Darken Volk"
+                }
+
+                movement_costs: {
+                    flat: 1
+                }
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            side: 1
+        }
+        filter_second: {
+            side: 2
+        }
+
+-- Let's check for whether he's still alive, just in case the
+-- paladins somehow killed him already
+        filter_condition: {
+            have_unit: {
+                id: "Darken Volk"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "You let me believe Parthyn would accept me back so when they didn’t I would be willing to attack my own countrymen!"
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "What you let yourself believe is no fault of mine. Cease your foolish prattle. I gave you more power than you could have possibly dreamed. Use it to fight the orcs that annoy you so, not me."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "So it is true! You took my home away from me. You took Drogan away. Now that all of that is gone, I will at least keep the fruits of my labors."
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "Hardly. I will crush you easily."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Perhaps, but I have nothing left to lose."
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            side: 1
+        }
+        filter_second: {
+            id: "Darken Volk"
+        }
+        do: ->
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Now you shall pay for what you have done to me."
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "Done? I have done nothing but give you an opportunity. You have chosen your own path. Now leave me alone!"
+            }
+    }
+
+-- Paladins!
+    event: {
+        name: "turn 8"
+
+-- Fake move the paladin in, set up a camp, have some
+-- dialog, and give him another paladin and a mage of light
+        do: ->
+            INCIDENTAL_MUSIC("loyalists.ogg")
+
+            Move_Unit_Fake{
+                type: "Paladin"
+                x: {34, 33}
+                y: {27, 26}
+                side: 3
+            }
+
+            Unit{
+                type: "Paladin"
+                side: 3
+                x: 33, y: 26
+                id: "Sir Cadaeus"
+                name: _ "Sir Cadaeus"
+                canrecruit: true
+                animate: false
+                facing: "nw"
+            }
+
+            GENERIC_UNIT(3, "Paladin", 34, 25), FACING("nw")
+            GENERIC_UNIT(3, "Paladin", 33, 27), FACING("nw")
+            GENERIC_UNIT(3, "Mage of Light", 32, 25), FACING("nw")
+
+-- Make camp
+            Terrain{
+                x: 33, y: 26
+                radius: 1
+                terrain: "Ce"
+            }
+
+            Terrain{
+                x: 33, y: 26
+                terrain: "Ke"
+            }
+
+            Redraw{}
+
+            Modify_Side{
+                side: 3
+                <QUANTITY("gold", 100, 150, 200)
+                income: 20
+                hidden: false
+            }
+
+            Message{
+                speaker: "Sir Cadaeus"
+                message: _ "Your travels in this region have not gone unnoticed, foul necromancers! We have been tracking you for weeks, with our purpose renewed this morning upon hearing of the disaster you wreaked upon the goodly city of Tath."
+            }
+
+            Message{
+                speaker: "Sir Cadaeus"
+                message: _ "Do not even think of running away — my horsemen can easily catch you. Yes, on this day you shall have to answer for your innumerable crimes."
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "We’ll see how well your pompous words protect you from the blades of the undead once I have finished this upstart."
+            }
+    }
+
+-- Dela joins the party
+    event: {
+        name: "side 4 turn 11"
+
+-- Find a good location with no adjacent enemies for Dela to set up camp at
+        do: ->
+            Store_Locations{
+                x: "20-25"
+                y: "2-3"
+
+                not: {
+                    filter_adjacent_location: {
+                        filter: {}
+                    }
+                }
+
+                variable: "possible_camp_locs"
+            }
+
+            If{
+                variable: {
+                    name: "possible_camp_locs.length"
+                    greater_than: 0
+                }
+
+-- If such locations were found, pick one randomly...
+                then: ->
+                    VARIABLE_OP("camp_loc_i", "rand", "0..#{(#{possible_camp_locs.length - 1)")
+                
+
+-- ...but if not, then just pick any non-occupied location
+                else: ->
+                    Store_Locations{
+                        x: "20-25"
+                        y: "2-3"
+
+                        not: {
+                            filter: {}
+                        }
+
+                        variable: "possible_camp_locs"
+                    }
+
+                    VARIABLE_OP("camp_loc_i", "rand", "0..#{(#{possible_camp_locs.length - 1)")
+                
+            }
+
+-- Fake move Dela in, set up camp, have some dialog.
+-- She doesn't bring anyone with her.
+            INCIDENTAL_MUSIC("legends_of_the_north.ogg")
+
+            Move_Unit_Fake{
+                type: "Frontier Baroness"
+                x: {23, possible_camp_locs[camp_loc_i].x}
+                y: {1, possible_camp_locs[camp_loc_i].y}
+                side: 4
+            }
+
+            Unit{
+                side: 4
+                x: possible_camp_locs[camp_loc_i].x
+                y: possible_camp_locs[camp_loc_i].y
+
+                animate: false
+                moves: 0
+                facing: "sw" -- We don't know where she'll come in, but sw seems a good general facing
+
+-- wmllint: recognize Dela Keshar
+                <CHARACTER_STATS_DELA_KESHAR!
+            }
+
+-- Make camp
+            Terrain{
+                x: possible_camp_locs[camp_loc_i].x
+                y: possible_camp_locs[camp_loc_i].y
+                radius: 1
+                terrain: "Ce"
+            }
+
+            Terrain{
+                x: possible_camp_locs[camp_loc_i].x
+                y: possible_camp_locs[camp_loc_i].y
+                terrain: "Ke"
+            }
+
+            Redraw{}
+
+            CLEAR_VARIABLE("possible_camp_locs,camp_loc_i,camp_hexes")
+
+            Modify_Side{
+                side: 4
+                <QUANTITY("gold", 150, 200, 250)
+                income: 20
+                hidden: false
+            }
+
+            Message{
+                speaker: "Dela Keshar"
+                message: _ "I told you, Malin, that I would find you again, and I have kept my word. I will not suffer you to bring any further harm to my people, and so you will not live to see another sunset."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "You wrong me, sister. I have only tried to help. Have you not seen fewer orcs this past summer?"
+            }
+
+            Message{
+                speaker: "Dela Keshar"
+                message: _ "I will not listen to any more of your lies. Men, attack!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Darken Volk"
+        }
+        do: ->
+            Message{
+                speaker: "Darken Volk"
+                message: _ "With my dying breath I curse you, Malin the Damned!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Now I’ve just got to get that book off the battlefield!"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Bring the book back to Malin’s castle"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Pick up the book by moving a unit onto it. Bats and ghosts cannot carry the book."
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            role: "book_carrier"
+        }
+        do: ->
+            VARIABLE("bookX", x1)
+            VARIABLE("bookY", y1)
+
+            PLACE_IMAGE("items/book5.png", bookX, bookY)
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            x: bookX, y: bookY
+            side: 1
+            not: {
+                type: {"Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt", "Vampire Bat", "Blood Bat", "Dread Bat"}
+            }
+        }
+        do: ->
+            Remove_Item{
+                x: x1, y: y1
+                image: "items/book5.png"
+            }
+
+            Role{
+                x: x1, y: y1
+                role: "book_carrier"
+            }
+
+            Unit_Overlay{
+                x: x1, y: y1
+                image: "misc/book-icon.png"
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "I have the book!"
+            }
+
+            VARIABLE("bookX", -1)
+            VARIABLE("bookY", -1)
+    }
+
+-- Inform the player if a unit cannot pick up the book
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            x: bookX
+            y: bookY
+            side: 1
+            type: {"Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt", "Vampire Bat", "Blood Bat", "Dread Bat"}
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I am sorry, master, but that is too heavy for me."
+            }
+
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "time over"
+
+-- TODO: add a message explaining defeat
+    }
+
+-- Victory Condition
+    event: {
+        name: "moveto"
+        filter: {
+            role: "book_carrier"
+            side: 1
+            filter_location: {
+                terrain: {"C*", "K*"}
+                and: {
+                    x: 5, y: 17
+                    radius: 2
+                }
+            }
+        }
+
+        remove_unit_overlay: {
+            role: "book_carrier"
+            image: "misc/book-icon.png"
+        }
+        do: ->
+            MOVE_UNIT({id: "Malin Keshar"}, 1, 12)
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "The paladins will not be able to pursue me through the mountains, and Dela will not dare take the soldiers too far from Parthyn."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("bookX,bookY")
+    }
+
+    <HERODEATH_MALIN!
+}

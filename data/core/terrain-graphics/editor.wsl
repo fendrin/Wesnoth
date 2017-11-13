@@ -1,3 +1,4 @@
+export ^
 -- Macros for terrains that appear differently (or only) in the editor
 
 EDITOR_OVERLAY = (TERRAIN, IMAGE_NAME) ->

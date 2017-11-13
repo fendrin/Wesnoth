@@ -1,0 +1,576 @@
+--textdomain wesnoth-low
+Scenario{
+    name: _ "Bounty Hunters"
+    id: "09_Bounty_Hunters"
+    next_scenario: "10_Cliffs_of_Thoria"
+
+    random_start_time: false
+    allow_new_game: true
+    new_game_title: _ "Chapter Three: The Book of Crelanu"
+    force_lock_settings: true
+
+    experience_modifier: 100
+
+    <LOW_MAP("09_Bounty_Hunters.map")
+    <TURNS(32, 28, 24)
+    victory_when_enemies_defeated: false
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("northerners.ogg", "traveling_minstrels.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+--TODO redo music playlist
+
+    story: {
+        <if MULTIPLAYER then {
+            part: {
+                delay: 4000
+                title: _ "<i>The Legend of Wesmere</i>
+Chapter Three"
+--  show_title=yes
+            }
+        }
+        part: {
+            delay: 4000
+            title: _ "Chapter Three
+<i>The Book of Crelanu</i>"
+            show_title: true
+        }
+        part: {
+            delay: 4000
+            story: _ "Believing that Wesmere’s seeming safety might prove a costly illusion, Kalenz, Landar and Olurf left enough troops and resources to guard it strongly before starting off on the long and dangerous trip to the great mage of Thoria. They would soon find that peril was closer than they had reckoned."
+        }
+    }
+    <LOW_TRACK(FLIGHT_COMPLETE!, TREASURY_COMPLETE!, BOOK_STAGE2!)
+
+    PLAYER_GOLD: () -> {
+        <GOLD(280, 260, 220)
+    }
+    MULTIPLAYER_GOLD: () -> {
+        <GOLD(70, 65, 55)
+    }
+
+    side: {
+        side: 1
+        save_id: "Kalenz"
+        no_leader: true
+        <PLAYABLE!
+        <KALENZ!
+        <unless MULTIPLAYER! then {
+            <PLAYER_GOLD!
+            unit: {
+                <LANDAR!
+                x: 14
+                y: 33
+            }
+            unit: {
+                <OLURF!
+                x: 18
+                y: 31
+            }
+            unit: {
+                <CLEODIL!
+                x: 18
+                y: 33
+            }
+        } else {
+            <MULTIPLAYER_GOLD!
+            recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Scout"}
+        }
+    }
+
+--Landar's side
+-- wmllint: skip-side
+    <MP_SIDE(2, {
+            <PLAYABLE!
+            save_id: "Landar"
+            <MULTIPLAYER_GOLD!
+            no_leader: true
+            unit: {
+                <LANDAR!
+                x: 14
+                y: 33
+            }
+    })
+
+--Olurf's side
+-- wmllint: skip-side
+    <MP_SIDE(3, {
+            <PLAYABLE!
+            save_id: "Olurf"
+--TODO give Olurf more gold?
+            <MULTIPLAYER_GOLD!
+            no_leader: true
+            <DWARF_SETUP!
+            unit: {
+                <OLURF!
+                x: 18
+                y: 31
+            }
+    })
+
+--Cleodil's side
+-- wmllint: skip-side
+    <MP_SIDE(4, {
+            <PLAYABLE!
+            save_id: "Cleodil"
+            <MULTIPLAYER_GOLD!
+            no_leader: true
+            unit: {
+                <CLEODIL!
+                x: 18
+                y: 33
+            }
+    })
+
+    side: {
+        side: 5
+        <SAURIAN_SETUP!
+        allow_player: false
+        controller: "ai"
+        type: "Saurian Flanker"
+        id: "Huurgh"
+        name: _ "Huurgh"
+
+        canrecruit: true
+--            {GOLD 200 240 290}
+        <GOLD(400, 480, 580)
+        <INCOME(4, 8, 12)
+        team_name: "Liz"
+        user_team_name: _ "Enemies"
+        <if EASY then {
+            recruit: {"Saurian Augur", "Saurian Skirmisher", "Saurian Ambusher"}
+        } else {
+            recruit: {"Saurian Augur", "Saurian Skirmisher", "Saurian Ambusher", "Saurian Oracle", "Saurian Soothsayer", "Saurian Flanker"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            <if EASY then {
+                recruitment_pattern: {"scout", "scout", "healer", "scout"}
+            } else {
+                recruitment_pattern: {"scout", "scout", "healer", "archer", "archer", "scout"}
+            }
+            grouping: "offensive"
+            aggression: 0.75
+        }
+    }
+    side: {
+        side: 6
+        <SAURIAN_SETUP!
+        allow_player: false
+        controller: "ai"
+        type: "Saurian Oracle"
+        id: "Shhar"
+        name: _ "Shhar"
+
+        canrecruit: true
+--            {GOLD 300 340 400}
+        <GOLD(400, 480, 580)
+        <INCOME(4, 8, 12)
+        team_name: "Liz"
+        user_team_name: _ "Enemies"
+        <if EASY then {
+            recruit: {"Saurian Augur", "Saurian Skirmisher", "Saurian Ambusher"}
+        } else {
+            recruit: {"Saurian Augur", "Saurian Skirmisher", "Saurian Ambusher", "Saurian Oracle", "Saurian Soothsayer", "Saurian Flanker"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            <if EASY then {
+                recruitment_pattern: {"scout", "scout", "healer", "scout"}
+            } else {
+                recruitment_pattern: {"scout", "scout", "healer", "archer", "archer", "scout"}
+            }
+            grouping: "offensive"
+            aggression: 0.75
+        }
+    }
+
+    side: {
+        side: 7
+        allow_player: false
+        controller: "ai"
+        hidden: true
+        no_leader: true
+        team_name: "creatures"
+        user_team_name: _ "Creatures"
+        faction: "Custom"
+        ai: {
+            aggression: 1.0
+            caution: -100.0
+            grouping: false
+            avoid: {
+                x: {"1-37", "1-17", "21-37", "1-5", "23-37", "1-3", "28-37", "34-37"}
+                y: {"1-4", 5, 5, 6, 6, 7, 7, 8}
+            }
+            avoid: {
+                x: "1-37"
+                y: "14-34"
+            }
+            avoid: {
+                x: {"1-4", "13-17", "26-37"}
+                y: {13, 13, 13}
+            }
+            avoid: {
+                x: {"9-10", "8-13", "10-13", "9-12", "21-24", "22-23", "22-24"}
+                y: {7, 8, 9, 10, 10, 11, 9}
+            }
+            village_value: 0
+        }
+    }
+
+----- Concentrated every wml related to the game setup into this single event ----
+    event: {
+        name: "start"
+
+-- wmllint: recognize Arkildur
+-- wmllint: recognize Tameril-Isimeril
+-- wmllint: recognize Laril
+-- wmllint: recognize Anduilas
+
+        command: ->
+            if MULTIPLAYER
+                Persistent_Carryover_Unstore{
+                    scenario_id: "LoW_Chapter_Two"
+                }
+            
+
+            LEAVE_BEHIND_L3: (NAME, SIDE) -> {
+-- these have been left behind to guard the Ka'lian
+                store_unit: {
+                    variable: "l3_store_#{NAME}"
+                    kill: true
+                    filter: {
+                        side: SIDE
+                        type: {"Elvish Marshal", "Elvish Champion", "Elvish Avenger", "Elvish Sharpshooter"}
+                        not: {
+                            id: "Kalenz"
+                        }
+                        not: {
+                            id: "Anduilas"
+                        }
+                        not: {
+                            id: "Arkildur"
+                        }
+                        not: {
+                            id: "Landar"
+                        }
+                        not: {
+                            id: "Cleodil"
+                        }
+                        not: {
+                            <FILTER_LOYALS!
+                        }
+                    }
+                }
+                switch: {
+                    variable: "l3_store_#{NAME}.length"
+                    case: {
+                        value: 0
+                        do: ->
+                            Set_Variable{
+                                name: "left_behind_#{NAME}"
+                                value: _ "some experienced warriors" -- wmllint: ignore
+                            }
+                    }
+                    case: {
+                        value: 1
+                        do: ->
+                            Set_Variable{
+                                name: "left_behind_#{NAME}"
+err: ../attic/data/campaigns/Legend_of_Wesmere/scenarios/chapter3/09_Bounty_Hunters.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 279:                 value=$l3_store_{NAME}[0].name
+                            }
+                    }
+                    else: ->
+err: ../attic/data/campaigns/Legend_of_Wesmere/scenarios/chapter3/09_Bounty_Hunters.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 283:             {VARIABLE l3_length $l3_store_{NAME}.length}
+                        VARIABLE_OP("l3_length", "sub", 1)
+                        For{
+                            array: "l3_store_#{NAME}"
+-- for-case, what a great anti-pattern
+                            do: ->
+                                Switch{
+                                    variable: "i"
+                                    case: {
+                                        value: 0
+                                        do: ->
+                                            Set_Variable{
+                                                name: "left_behind_#{NAME}"
+err: ../attic/data/campaigns/Legend_of_Wesmere/scenarios/chapter3/09_Bounty_Hunters.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 295:                                 value=$l3_store_{NAME}[$i].name
+                                            }
+                                    }
+                                    case: {
+                                        value: l3_length
+                                        do: ->
+                                            Set_Variable{
+                                                name: "left_behind_#{NAME}"
+                                                value: _ "#{left_behind_#{NAME} and #{l3_store_#{NAME}[#{i].name" -- wmllint: ignore
+                                            }
+                                    }
+                                    else: ->
+                                        Set_Variable{
+                                            name: "left_behind_#{NAME}"
+                                            value: _ "#{left_behind_#{NAME}}, #{l3_store_#{NAME}[#{i].name" -- wmllint: ignore
+                                        }
+                                    
+                                }
+                            
+                        }
+                        CLEAR_VARIABLE("l3_length")
+                    
+                }
+            }
+
+            LEAVE_BEHIND_L3("kalenz", 1)
+            if MULTIPLAYER
+                LEAVE_BEHIND_L3("landar", 2)
+            
+            RECALL_LOYALS!
+
+            Objectives{
+                side: 0
+                objective: {
+                    description: _ "Kalenz crosses the river"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Landar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Cleodil"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Olurf"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 80
+                }
+            }
+
+            Message{
+                id: "Huurgh"
+-- wmllint: local spelling Yess
+                message: _ "Yess! It’s the elves who stole our gold! The bounty is mine!"
+            }
+            Message{
+                id: "Shhar"
+                message: _ "I saw them first, fool! The bounty is all mine."
+            }
+            Message{
+                id: "Olurf"
+                message: _ "What are they talking about?"
+            }
+            Message{
+                id: "Landar"
+                message: _ "It would seem the Saurians put a bounty on our heads for having the effrontery to take our gold back after they stole it. Are you interested?"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "No, but my axe is interested in some saurian heads! They ha’ been too friendly with the Orcs for my liking!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Remember, we are here on a mission. We will fight these saurians if we must, but our mission is to get to Thoria."
+            }
+            Message{
+                id: "Landar"
+                message: _ "They are far too numerous to risk battle with. Let’s cross the river!"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "We can outrun them in the woods and mountains beyond the north shore. But crossing the river without a bridge? We dwarves know water is a very dangerous thing!"
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "Indeed, this river is, I believe, Arkan-Thoria. There are fell legends about it. Maybe they are but children’s tales... Still, be very careful when you cross it."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "You speak my thought, Cleodil. Close in behind me; I’ll guard you from harm myself. Look to your weapons as we cross, all! And be wary."
+            }
+
+            Message{
+                side_for: 1
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Before Kalenz left the Ka’lian he had ordered #{left_behind_kalenz to stay and guard it."
+            }
+            CLEAR_VARIABLE("left_behind_kalenz")
+            if MULTIPLAYER
+                Message{
+                    side_for: 2
+                    speaker: "narrator"
+                    image: "wesnoth-icon.png"
+                    message: _ "Before Landar left the Ka’lian he had ordered #{left_behind_landar to stay and guard it."
+                }
+                CLEAR_VARIABLE("left_behind_landar")
+            
+        
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: {"1-37", "1-17", "21-37", "1-5", "23-37", "1-3", "28-37", "35-37"}
+            y: {"1-4", 5, 5, 6, 6, 7, 7, 8}
+            and: {
+                id: "Kalenz"
+                <if MULTIPLAYER then {
+                    or: {
+                        id: "Landar"
+                    }
+                    or: {
+                        id: "Olurf"
+                    }
+                }
+            }
+        }
+
+        command: ->
+            Message{
+                speaker: "unit"
+                message: _ "We made it. Onwards to Thoria!"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "At last!"
+            }
+            Message{
+                id: "Landar"
+                message: _ "We’ll need to settle things with these saurians once and for all!"
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "Hasn’t enough blood been shed? I think we can compose matters with them after the threat of the orcs has been met."
+            }
+
+            Endlevel{
+                result: "victory"
+                <if MULTIPLAYER then {
+                    bonus: 0.3
+                } else {
+                    bonus: true
+                }
+            }
+        
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: {1, 2, 3, 4}
+            x: "1-37"
+            y: "8-11"
+        }
+        do: ->
+            RANDOM_PLACEMENT(32, 9, 1, {
+                    type: "Water Serpent"
+                    id: "Sealurr"
+                    name: _ "Sealurr"
+                    side: 7
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+            })
+
+            Message{
+                speaker: "unit"
+                message: _ "The legends are true! Sea creatures are upon us!"
+            }
+
+            Scroll_To_Unit{
+                id: "Sealurr"
+            }
+
+            RANDOM_PLACEMENT(3, 10, 2, {
+                    type: "Cuttle Fish"
+                    id: "Kallub"
+                    name: _ "Kallub"
+                    side: 7
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+            })
+
+            Message{
+                speaker: "unit"
+                message: _ "They are coming at us from all sides!"
+            }
+
+            Scroll_To_Unit{
+                id: "Kallub"
+            }
+
+            unless EASY!
+                RANDOM_PLACEMENT(3, 11, 2, {
+                        type: "Water Serpent"
+                        id: "Scardeep"
+                        name: _ "Scardeep"
+                        side: 7
+                        modifications: {
+                            <TRAIT_RESILIENT!
+                            <TRAIT_STRONG!
+                        }
+                })
+
+                Message{
+                    speaker: "unit"
+                    message: _ "Watch for the serpent!"
+                }
+
+                Scroll_To_Unit{
+                    id: "Scardeep"
+                }
+
+                RANDOM_PLACEMENT(16, 8, 2, {
+                        type: "Cuttle Fish"
+                        id: "Kalimar"
+                        name: _ "Kalimar"
+                        side: 7
+                        modifications: {
+                            <TRAIT_RESILIENT!
+                            <TRAIT_STRONG!
+                        }
+                })
+
+                Scroll_To_Unit{
+                    id: "Kalimar"
+                }
+            
+
+            if HARD
+                RANDOM_PLACEMENT(34, 10, 1, {
+                        type: "Cuttle Fish"
+                        id: "Alkamar"
+                        name: _ "Alkamar"
+                        side: 7
+                        modifications: {
+                            <TRAIT_RESILIENT!
+                            <TRAIT_STRONG!
+                        }
+                })
+
+                Scroll_To_Unit{
+                    id: "Alkamar"
+                }
+            
+    }
+
+    <DEFAULT_VICTORY(0.3)
+    INCLUDE("campaigns/Legend_of_Wesmere/utils/deaths.cfg")
+}
+
+PLAYER_GOLD = nil
+MULTIPLAYER_GOLD = nil

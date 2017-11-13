@@ -1,0 +1,96 @@
+--textdomain wesnoth-tutorial
+
+PRINT = (STRING) -> {
+    print: {
+        text: STRING
+        size: 18
+        duration: 10000
+        red: 255, green: 255, blue: 255
+    }
+}
+
+CLEAR_PRINT = () -> {
+    print: {
+        text: ""	-- wmllint: ignore
+    }
+}
+
+GENDER = (MALE_WML, FEMALE_WML) -> {
+    if: {
+        have_unit: {
+            id: "student"
+            gender: "male"
+        }
+        then: ->
+            MALE_WML
+        
+        else: ->
+            FEMALE_WML
+        
+    }
+}
+
+ALLOW_END_TURN_AFTER_ATTACK = () -> {
+-- for the case the player disobeys delfador's order and attacks
+    event: {
+        name: "attack_end"
+        id: "prevent deadlock"
+        filter: {
+            id: "student"
+        }
+        do: ->
+            Allow_End_Turn{}
+    }
+    event: {
+        name: "turn end"
+        do: ->
+            Remove_Event{
+                id: "prevent deadlock"
+            }
+    }
+}
+
+UNDO_REMINDER = () -> {
+    message: {
+        speaker: "narrator"
+        caption: _ "Undo"
+        image: "wesnoth-icon.png"
+        message: _ "Don’t forget, you can press <b>u</b> to undo most things if you make a mistake."
+    }
+
+    allow_undo: {}
+}
+
+TALK_ABOUT = (ID_STRING, MESSAGE_TEXT) -> {
+    scroll_to_unit: {
+        id: ID_STRING
+        highlight: true
+    }
+
+    message: {
+        speaker: "Galdrad"
+        scroll: false
+        highlight: false
+        message: MESSAGE_TEXT
+    }
+}
+
+TALK_ABOUT_LOC = (POSITION, MESSAGE_TEXT) -> {
+    scroll_to: {
+        x: POSITION[1], y: POSITION[2]
+        highlight: true
+    }
+
+    message: {
+        speaker: "Galdrad"
+        scroll: false
+        highlight: false
+        message: MESSAGE_TEXT
+    }
+}
+
+-- Note: we would not like the user to "press any key" (for example, Esc)
+CONTINUE_MSG = () -> {
+    _ "
+<big>Click a mouse button or press the spacebar to continue...</big>"
+}

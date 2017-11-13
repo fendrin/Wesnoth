@@ -1,0 +1,38 @@
+--textdomain wesnoth
+-- This is a sample file to demonstrate the format for providing additional WML
+-- information to wesnoth-mode.  The format is an outline of a valid element
+-- structure in WML; attributes do not currently require a value.
+
+Multiplayer{
+    music: {
+    }
+    event: {
+        do: ->
+            Message{
+                side_for: 
+                duration: 
+            }
+            Set_Variable{
+                modulo: 
+            }
+            Unit{
+                status: {
+                }
+                modifications: {
+                    object: {
+                        effect: {
+                            attack_weight: 
+                        }
+                    }
+                }
+            }
+    }
+}
+
+Era{
+    require_era: 
+    multiplayer_side: {
+    }
+}
+
+-- wesnoth-wml-additions.cfg ends here

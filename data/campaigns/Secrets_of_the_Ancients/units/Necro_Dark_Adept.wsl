@@ -1,0 +1,11 @@
+--textdomain wesnoth-units
+-- Same as normal, except advances to Dark Sorcerer SotA
+Unit_Type{
+    id: "Dark Adept SotA"
+    base_unit: {
+        id: "Dark Adept"
+    }
+    advances_to: "Dark Sorcerer SotA"
+    hide_help: true
+    do_not_list: true
+}

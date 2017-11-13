@@ -1,0 +1,289 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "The Council Regathers"
+    id: "3t_The_Council_Regathers"
+    turns: 1
+    map: "campaigns/Sceptre_of_Fire/maps/3t_The_Council_Regathers.map"
+    next_scenario: "4_Gathering_Materials"
+    theme: "Cutscene_Minimal"
+
+    <SCENARIO_MUSIC("underground.ogg")
+
+    <UNDERGROUND!
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout", "Gryphon Rider"}
+        gold: 0
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        <FLAG_VARIANT("knalgan")
+    }
+
+    side: {
+        type: "Dwarvish Lord"
+        id: "Durstorn"
+        name: _ "Durstorn"
+        side: 2
+        canrecruit: true
+        profile: "portraits/durstorn.png"
+        recruit: {"Dwarvish Fighter", "Dwarvish Guardsman"}
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        <FLAG_VARIANT("knalgan")
+    }
+
+    <STARTING_VILLAGES(2, 20)
+
+    story: {
+        part: {
+            story: _ "The path back was less dangerous than it was a year earlier. It did not take them so long. So they quickly returned to the dwarven city, with two new members of their party — one expected, and one not."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_03T_NEW!)
+
+    event: {
+        name: "prestart"
+
+--Durstorn's guard
+        do: ->
+            Unit{
+                x: 9, y: 10
+                side: 2
+                type: "Dwarvish Stalwart"
+                id: "Neglur"
+                name: _ "Neglur"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                x: 13, y: 12
+                side: 2
+                type: "Dwarvish Runesmith"
+                id: "Glinar"
+                name: _ "Glinar"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_QUICK!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                x: 9, y: 13
+                side: 2
+                type: "Dwarvish Thunderguard"
+                id: "Noiraran"
+                name: _ "Noiraran"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                x: 11, y: 14
+                side: 2
+                type: "Dwarvish Steelclad"
+                id: "Kuhnar"
+                name: _ "Kuhnar"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_STRONG!
+                }
+                <IS_LOYAL!
+            }
+
+            Item{
+                x: 8, y: 9
+                image: "items/brazier-lit1.png"
+            }
+
+            Item{
+                x: 14, y: 9
+                image: "items/brazier-lit2.png"
+            }
+
+            Item{
+                x: 14, y: 12
+                image: "items/brazier-lit3.png"
+            }
+
+            Item{
+                x: 8, y: 12
+                image: "items/brazier-lit4.png"
+            }
+    }
+
+    event: {
+        name: "start"
+--thursagan, baglur and alanin
+        do: ->
+            MOVE_UNIT({id: "Rugnur"}, 13, 10)
+            Recall{
+                id: "Thursagan"
+                x: 12, y: 8
+            }
+            Recall{
+                id: "Baglur"
+                x: 15, y: 8
+            }
+            Recall{
+                id: "Alanin"
+                x: 16, y: 9
+            }
+            Recall{
+                id: "Krawg"
+                x: 16, y: 11
+            }
+--dialogue starts
+            Message{
+                speaker: "Rugnur"
+                message: _ "Lord Durstorn, we have succeeded in our mission. Thursagan is here."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "What? You mean you found Thursagan and got him to return with you? Astounding! But what is that gryphon doing there?"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Yes, we did. And that is Krawg, who helped us in the northlands."
+            }
+            Message{
+                speaker: "Krawg"
+--po: "Yeah! Me Krawg!"
+                message: _ "Yaa! Mee Krawg!"	-- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Now, where is this ruby that I am to work with, eh Durstorn?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "In the treasury. And leave it there until you’re ready to work with it — I still don’t trust you."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Ha! <i>You</i> don’t trust <i>me</i>?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Exactly! Why would I? And I order you to stay out of the treasury, away from that ruby!"
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "You don’t dictate what I am to do, Durstorn! I will do as I please, and don’t stop me if you want me to make this sceptre."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "The ruby is mine, and don’t touch it!"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Uh, technically it’s Haldric’s, and I think that if Thursagan needs to see it to plan this sceptre, we must allow it."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "It will be as it must, then. (<i>Grumble grumble</i>)"
+            }
+            MOVE_UNIT({id: "Thursagan"}, 11, 4)
+            MOVE_UNIT({id: "Thursagan"}, 12, 8)
+            Message{
+                speaker: "Thursagan"
+                message: _ "Hm... a most interesting jewel. I can feel its magical power. I will start drawing up plans for the sceptre immediately."
+            }
+--[message]
+--speaker=narrator
+--caption= _ "The Ruby of Fire"
+--image=story/ruby_of_fire.png
+--[/message]
+            Message{
+                speaker: "Thursagan"
+                message: _ "Now, I will need certain materials to make this sceptre."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Oh, what?"
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "I would say probably ten stone of artifact-quality gold and twenty stone of the finest coal, and many of the finest jewels in the land — we’ll need others to search for those, though. I’ll also need to have the jeweler cut the ruby once I have the plans done."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Just use my gold and coal, I have enough! Or, if they’re not ‘good enough’ for you, find them yourself."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "You try my patience, Durstorn. You know yours aren’t acceptable, but you have to give me something or I can’t make the sceptre!"
+            }
+            Message{
+                speaker: "Baglur"
+                message: _ "Wait, wait. The gold and coal... I think we can find those in the abandoned eastern mines, north of the Arkan-thoria. Trolls ha’ overrun them, but earlier they were the source of the finest smithing materials."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "So, we will go to the eastern mines!"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Fine. As for the jewels, I will have others obtain those. That will cost quite a bit of our payment, but it can’t be helped. Our people do not mine jewels."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "That is acceptable. Durstorn, send some miners along with us to the eastern mines, and I will bring some runecrafters-in-training from the academy to help fight these enemies."
+            }
+            Unit{
+                type: "Dwarvish Runesmith"
+                x: 10, y: 8
+                side: 1
+                id: "Kinan"    -- wmllint: ignore
+                name: _ "Kinan"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_QUICK!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Dwarvish Runesmith"
+                x: 12, y: 6
+                side: 1
+                id: "Rynan"    -- wmllint: ignore
+                name: _ "Rynan"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_LOYAL!
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "Two runesmiths from the academy have joined you!"
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "Fine, you all go to the eastern mines. Me, I’ll stay here. No point going where I can’t help!"
+            }
+            Message{
+                speaker: "Krawg"
+--po: "Me, too!"
+                message: _ "M’ ’u!"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+                carryover_report: false
+                linger_mode: false
+            }
+    }
+}

@@ -1,0 +1,193 @@
+--textdomain wesnoth-utbs
+-- This file contains message to display when heroes die
+-- Some of these are conditional on in_final_fight, which
+-- will be set to true for the final battle.
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Kaleh"
+    }
+
+    <if UTBS_IN_FINAL_FIGHT then {
+        message: {
+            speaker: "unit"
+            message: _ "To die on the cusp of victory. Oh, the irony!"
+        }
+    } else {
+        message: {
+            speaker: "unit"
+            message: _ "I’m too young to die. What will happen to my people?"
+        }
+    }
+    do: ->
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+
+    filter: {
+        id: "Nym"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "Save me, Kaleh, I’m dying..."
+        }
+
+        if UTBS_IN_FINAL_FIGHT
+            VARIABLE_OP("allies_killed", "add", 1)
+        } else {
+            Endlevel{
+                result: "defeat"
+            }
+        
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Zhul"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "Eloh protect us, I have fallen."
+        }
+
+        if UTBS_IN_FINAL_FIGHT
+            VARIABLE_OP("allies_killed", "add", 1)
+        } else {
+            Endlevel{
+                result: "defeat"
+            }
+        
+}
+
+if UTBS_GARAK_MUST_LIVE
+    Event{
+        name: "last breath"
+
+        filter: {
+            id: "Garak"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Aaargh! Curse you!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+
+Event{
+    name: "last breath"
+
+    filter: {
+        id: {"Grog", "Nog", "Rogrimir", "Jarl"}
+    }
+    do: ->
+        If{
+            variable: {
+                name: "ally_race"
+                equals: "dwarf"
+            }
+
+            then: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "I go now to join my forefathers..."
+                }
+            
+
+            else: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "No, #{unit.name can’t die now!"
+                }
+            
+        }
+
+        if UTBS_IN_FINAL_FIGHT
+            VARIABLE("ally_died_in_final_fight", true)
+            VARIABLE_OP("allies_killed", "add", 1)
+        } else {
+            If{
+                variable: {
+                    name: "ally_must_live"
+                    numerical_equals: 1
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Without his guidance, how can we escape from these infernal caves? We are lost without him!"
+                    }
+
+                    Endlevel{
+                        result: "defeat"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "He was a brave warrior and a true ally. He will be missed."
+                    }
+                
+            }
+        
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Esanoo"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "Farewell Nym, I go to the sea god. You elves must go on without me."
+        }
+
+        Message{
+            speaker: "Nym"
+            message: _ "Farewell Esanoo. You were my favorite of the merfolk."
+        }
+}
+
+unless UTBS_IN_FINAL_FIGHT!
+    Event{
+        name: "last breath"
+        filter: {
+            id: "Kromph"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Aaurrgghh!!"
+            }
+    }
+
+    Event{
+        name: "last breath"
+
+        filter: {
+            id: "Elyssa"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "This can’t be the end, I have too much left to see."
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "How could we have let her die? I’ve never seen fire magic like that before. She will be sorely missed."
+            }
+    }

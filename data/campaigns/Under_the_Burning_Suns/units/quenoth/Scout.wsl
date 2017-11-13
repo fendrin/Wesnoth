@@ -1,0 +1,108 @@
+--textdomain wesnoth-utbs
+
+Unit_Type{
+    id: "Quenoth Scout"
+    name: _ "Quenoth Scout"
+    image: "units/quenoth/scout.png"
+    <MAGENTA_IS_THE_TEAM_COLOR!
+    race: "elf"
+    hitpoints: 29
+    movement_type: "quenoth_horse"
+    movement: 8
+    experience: 37
+    level: 1
+    alignment: "lawful"
+    advances_to: {"Quenoth Horseman", "Quenoth Archer"}
+    cost: 17
+    usage: "scout"
+    description: _ "The Quenoth Scouts move swiftly across the sands. Their skill on horseback is virtually unmatched, which they use to harry and incapacitate enemies." .. SPECIAL_NOTES! .. SPECIAL_NOTES_DISENGAGE! .. SPECIAL_NOTES_SLOW!
+    die_sound: "horse-die.ogg"
+    abilities: {
+        <ABILITY_DISENGAGE!
+    }
+    attack: {
+        name: "sword"
+--textdomain wesnoth-units
+        description: _ "sword"
+--textdomain wesnoth-utbs
+        type: "blade"
+        range: "melee"
+        damage: 6
+        number: 3
+        icon: "attacks/sword-elven.png"
+        movement_used: 0
+    }
+    attack: {
+        name: "sling"
+--textdomain wesnoth-units
+        description: _ "sling"
+--textdomain wesnoth-utbs
+        type: "impact"
+        range: "ranged"
+        damage: 8
+        number: 2
+        icon: "attacks/sling.png"
+        movement_used: 0
+    }
+    <DEFENSE_ANIM("units/quenoth/scout.png", "units/quenoth/scout.png", SOUND_LIST.HORSE_HIT!)
+    attack_anim: {
+        filter_attack: {
+            name: "sword"
+        }
+        offset: {"0.0~0.3", "0.3~0.5", "0.5~0.60", "0.60~0.3", "0.3~0.0"}
+        start_time: -300
+        frame: {
+            duration: 450
+            image: "units/quenoth/scout.png"
+        }
+        <SOUND.HIT_AND_MISS(SOUND_LIST.SWORD_SWISH!, SOUND_LIST.MISS!, -100)
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "sling"
+        }
+        offset: 0.0
+        start_time: -400
+        if: {
+            hits: true
+            <MISSILE_FRAME_STONE_HIT(5, -6)
+            frame: {
+                image: "units/quenoth/scout.png:450"
+                sound: "sling.ogg"
+            }
+        }
+        else: ->
+            hits: false
+            MISSILE_FRAME_STONE_MISS(5, -6)
+            Frame{
+                image: "units/quenoth/scout.png:450"
+                sound: "sling-miss.ogg"
+            }
+        
+    }
+}
+
+QUENOTH_SCOUT_VARIANT = (SUFFIX_NUMBER, COST) -> {
+    unit_type: {
+        id: "Quenoth Scout#{SUFFIX_NUMBER}"
+        base_unit: {
+            id: "Quenoth Scout"
+        }
+        hide_help: true
+        do_not_list: true
+        cost: COST
+    }
+}
+
+QUENOTH_SCOUT_VARIANT(1, 18)
+QUENOTH_SCOUT_VARIANT(2, 19)
+QUENOTH_SCOUT_VARIANT(3, 20)
+QUENOTH_SCOUT_VARIANT(4, 21)
+QUENOTH_SCOUT_VARIANT(5, 22)
+QUENOTH_SCOUT_VARIANT(6, 23)
+QUENOTH_SCOUT_VARIANT(7, 24)
+QUENOTH_SCOUT_VARIANT(8, 25)
+QUENOTH_SCOUT_VARIANT(9, 26)
+QUENOTH_SCOUT_VARIANT(10, 27)
+
+QUENOTH_SCOUT_VARIANT = nil

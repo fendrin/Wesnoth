@@ -1,0 +1,19 @@
+--textdomain wesnoth-sota
+-- used as passenger
+Unit_Type{
+    id: "Noble"
+    name: _ "Noble"
+    race: "human"
+    image: "units/noble.png"
+    hitpoints: 30
+    movement_type: "smallfoot"
+    movement: 5
+    experience: 30
+    level: 1
+    alignment: "lawful"
+    advances_to: "null"
+    usage: "null"
+    cost: 12
+    hide_help: true
+    do_not_list: true
+}

@@ -1,0 +1,193 @@
+--textdomain wesnoth-low
+
+if MULTIPLAYER
+    MP_SIDE: (NUM, WML) -> {
+        side: {
+            side: NUM
+            <WML
+        }
+    }
+} else {
+    MP_SIDE: (NUM, WML) -> {
+        side: {
+            side: NUM
+            hidden: true
+            controller: "null"
+            allow_player: false
+            no_leader: true
+        }
+    }
+
+
+DEFAULT_VICTORY = (MP_BONUS) -> {
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                <if MULTIPLAYER then {
+                    bonus: MP_BONUS
+                } else {
+                    bonus: true
+                }
+            }
+    }
+}
+
+FILTER_LOYALS = () -> {
+    filter_wml: {
+        upkeep: "loyal"
+    }
+}
+
+RECALL_LOYALS = () -> {
+    store_unit: {
+        variable: "loyals"
+        filter: {
+            <FILTER_LOYALS!
+            not: {
+                canrecruit: true
+            }
+            x: "recall", y: "recall"
+        }
+    }
+
+    foreach: {
+        array: "loyals"
+        do: ->
+            Recall{
+                id: this_item.id
+            }
+        
+    }
+    <CLEAR_VARIABLE("loyals")
+}
+
+ELVES_SCOUTS = () -> {
+err: ../attic/data/campaigns/Legend_of_Wesmere/utils/low-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    ELVES_STEEL = () -> {
+err: ../attic/data/campaigns/Legend_of_Wesmere/utils/low-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+        ELVES_NON_STEEL = () -> {
+err: ../attic/data/campaigns/Legend_of_Wesmere/utils/low-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+            NORTH_ELVES_VILLAGES = () -> {
+                <STARTING_VILLAGES_AREA(2, 24, 7, 12)
+                <STARTING_VILLAGES_AREA(2, 38, 25, 12)
+                <STARTING_VILLAGES_AREA(2, 55, 36, 7)
+
+                <VILLAGE_SIDE(2, 11, 27)
+                <VILLAGE_SIDE(2, 48, 8)
+            }
+
+            VILLAGE_SIDE = (SIDE, X, Y) -> {
+                event: {
+                    name: "prestart"
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            x: X
+                            y: Y
+                        }
+                }
+            }
+
+            STARTING_VILLAGES_ORC = (SIDE) -> {
+                event: {
+                    name: "prestart"
+
+--{CAPTURE_VILLAGES_OF_TYPE (*^Vhh) {SIDE} 1 1 {INFINITY}}
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            terrain: "*^Vo*"
+                        }
+                }
+            }
+
+            STARTING_VILLAGES_ELF = (SIDE) -> {
+                event: {
+                    name: "prestart"
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            terrain: "*^Ve*"
+                        }
+                }
+            }
+
+            STARTING_VILLAGES_DWARF = (SIDE) -> {
+                event: {
+                    name: "prestart"
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            terrain: "*^Vhh*"
+                        }
+                }
+            }
+
+            STARTING_VILLAGES_HUMAN = (SIDE) -> {
+                event: {
+                    name: "prestart"
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            terrain: {"*^Vh", "*^Vha", "*^Vhc", "*^Vl*"}
+                        }
+                }
+            }
+
+            STARTING_VILLAGES_TROLL = (SIDE) -> {
+                event: {
+                    name: "prestart"
+                    do: ->
+                        Capture_Village{
+                            side: SIDE
+                            terrain: "*^Vc*"
+                        }
+                }
+            }
+
+-- Thanks to Shadow Master for this macro
+-- !***Macro to random place unit within area***
+            RANDOM_PLACEMENT = (_X, _Y, _RADIUS, _WML) -> {
+                random_placement: {
+                    num_items: 1
+                    variable: "random_placement_location"
+                    filter_location: {
+                        x: _X, y: _Y
+                        radius: _RADIUS
+                    }
+                    command: ->
+                        Unit{
+                            <_WML
+                            x: random_placement_location.x, y: random_placement_location.y
+                        }
+                    
+                }
+            }
+
+            ELF_SETUP = () -> {
+                <FLAG_VARIANT("wood-elvish")
+            }
+
+            SAURIAN_SETUP = () -> {
+                <FLAG_VARIANT("undead")
+            }
+
+            ORC_SETUP = () -> {
+                <FLAG_VARIANT6("ragged")
+            }
+
+            DWARF_SETUP = () -> {
+                <FLAG_VARIANT("knalgan")
+            }
+
+            LOYALIST_SETUP = () -> {
+                <FLAG_VARIANT("loyalist")
+            }
+
+            TROLL_SETUP = () -> {
+                <FLAG_VARIANT("undead")
+            }

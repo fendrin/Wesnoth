@@ -1,0 +1,69 @@
+--textdomain wesnoth-thot
+
+HERODEATH_AIGLONDUR = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Aiglondur"
+        }
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "I fall!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_ANGARTHING = () -> {
+    event: {
+        name: "die"
+        filter: {
+            id: "Angarthing"
+        }
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Oh no! Without a loremaster we cannot complete our mission!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+HERODEATH_RATHELN = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Ratheln"
+        }
+        do: ->
+            Message{
+                speaker: "Ratheln"
+                message: _ "Aaarrgh! My students... What will become of them?"
+            }
+    }
+}
+
+HERODEATH_DULCATULOS = () -> {
+    event: {
+        name: "die"
+        filter: {
+            id: "Dulcatulos"
+        }
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Without Dulcatulos to explain our actions to the Kal Karthans we’ll have to fight them, too. Our mission has failed."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

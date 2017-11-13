@@ -1,0 +1,411 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "19b_Swamp_Of_Dread"
+    name: _ "Swamp Of Dread"
+    map: "campaigns/Heir_To_The_Throne/maps/19b_Swamp_Of_Dread.map"
+    <TURNS(33, 30, 27)
+
+    next_scenario: "20a_North_Elves"
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+
+    <HTTT_TRACK(JOURNEY_19B_NEW!)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the Lich-Lord Aimucasur"
+                    condition: "win"
+                }
+                objective: {
+                    <BONUS_OBJECTIVE_CAPTION!
+                    description: _ "Defeat all Death Knights first"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        controller: "human"
+        gold: 200
+        <FLAG_VARIANT("long")
+    }
+
+    SWAMP_DREAD_AI_PARAMS: () -> {
+        ai: {
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: "dusk"
+            turns: "8-100"
+            caution: 0.25
+            aggression: 0.8
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            caution: 0.0
+            aggression: 1.0
+        }
+    }
+
+    side: {
+        type: "Death Knight"
+        id: "Clarustus"
+        name: _ "Clarustus"
+        side: 2
+        controller: "ai"
+        canrecruit: true
+        recruit: "Walking Corpse"
+        <GOLD(140, 200, 260)
+        ai: {
+            <NO_SCOUTS!
+        }
+        <SWAMP_DREAD_AI_PARAMS!
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(2, 7)
+
+    side: {
+        type: "Death Knight"
+        id: "Merlunius"
+        name: _ "Merlunius"
+        side: 3
+        controller: "ai"
+        canrecruit: true
+        recruit: {"Ghost", "Skeleton", "Walking Corpse"}
+        <GOLD(140, 200, 260)
+        <SWAMP_DREAD_AI_PARAMS!
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(3, 7)
+
+    side: {
+        type: "Lich"
+        id: "Aimucasur"
+        name: _ "Aimucasur"
+        side: 4
+        controller: "ai"
+        canrecruit: true
+        recruit: {"Wraith", "Vampire Bat", "Skeleton"}
+        <GOLD(140, 200, 260)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <SWAMP_DREAD_AI_PARAMS!
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(4, 7)
+
+    side: {
+        type: "Death Knight"
+        id: "Secadius"
+        name: _ "Secadius"
+        side: 5
+        controller: "ai"
+        canrecruit: true
+        recruit: {"Skeleton", "Walking Corpse", "Ghoul"}
+        ai: {
+            <NO_SCOUTS!
+        }
+        <SWAMP_DREAD_AI_PARAMS!
+        <GOLD(90, 150, 210)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(5, 7)
+
+    side: {
+        type: "Death Knight"
+        id: "Dafeis"
+        name: _ "Dafeis"
+        side: 6
+        controller: "ai"
+        canrecruit: true
+        recruit: {"Skeleton Archer", "Walking Corpse", "Ghost"}
+        <GOLD(90, 150, 210)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <SWAMP_DREAD_AI_PARAMS!
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(6, 7)
+
+    event: {
+        name: "prestart"
+
+--For Home of the Northern Elves: where do we come from?
+        do: ->
+            Set_Variable{
+                name: "A_Choice_Was_Made"
+                value: "b"
+            }
+            NEED_DELFADOR({placement: "leader"})
+            NEED_LISAR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "This land is cursed. Liches have existed here for ages, luring adventurers and soldiers to their deaths and amassing great armies and fortunes."
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("concerned")
+                message: _ "Look there! The swamp is infested with all manner of skeletons, corpses, and worse. I hope I have made a wise choice in taking this path."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "These Death Knights appear to be minions enslaved by the Lich-Lord. This one must be particularly powerful, since Death Knights are usually strong-willed spirits on their own."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "I believe we can destroy the master and release the minions. There is much fighting to be done before we can pass through these swamps in peace. May our bones not join these fallen warriors who now oppose us."
+            }
+    }
+
+    ENDOWED_KNIGHT: (ID_STRING) -> {
+        event: {
+            name: "die"
+            filter: {
+                id: ID_STRING
+                type: "Death Knight"
+            }
+            do: ->
+                Message{
+                    speaker: "narrator"
+                    image: "wesnoth-icon.png"
+                    message: _ "The Death Knight explodes into a cloud of dust as it is eradicated. Its armor, however, drops to the ground and remains intact. The heavy black steel is polished to a mirror shine."
+                }
+                Message{
+                    speaker: "Li'sar"
+                    message: _ "Delfador... that breastplate... how did it end up here?"
+                }
+                Message{
+                    speaker: "Delfador"
+                    message: _ "Its owner was surely a famous warrior in life. I wonder who it was. That plate must have a powerful enchantment to have resisted centuries of decay. Choose wisely who will bear it."
+                }
+                VARIABLE("temp_armor_x", x1)
+                VARIABLE("temp_armor_y", y1)
+                OBJ_VOID_ARMOR(temp_armor_x, temp_armor_y, "void_armor")
+        }
+    }
+
+--
+-- 1.1.7 PROBLEMS: if you kill the endowed knight last, the lich event doesn't fire.
+--
+
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE_OP("armored_knight", "rand", {"Clarustus", "Merlunius", "Secadius", "Dafeis"})
+            ENDOWED_KNIGHT(armored_knight)
+    }
+
+--
+-- Reward the player for killing all 4 Death Knights - the lich is weaker
+--
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("dk_kill_count", 0)
+    }
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            type: "Death Knight"
+        }
+        do: ->
+            VARIABLE_OP("dk_kill_count", "add", 1)
+
+            If{
+                variable: {
+                    name: "dk_kill_count"
+                    numerical_equals: 4
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "As the last of its generals falls, an ear-splitting screech escapes from the lich. It is clear that controlling such powerful spirits has drained it significantly, and it is seething in anger towards you."
+                    }
+                    Store_Unit{
+                        variable: "Lich_store"
+                        filter: {
+                            type: "Lich"
+                        }
+                    }
+                    VARIABLE_OP("Lich_store.hitpoints", "multiply", 0.4)
+                    Unstore_Unit{
+                        variable: "Lich_store"
+                    }
+                    CLEAR_VARIABLE("Lich_store")
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            type: "Lich"
+        }
+        do: ->
+            Kill{
+                type: "Death Knight"
+            }
+            If{
+                variable: {
+                    name: "dk_kill_count"
+                    numerical_equals: 4
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "A final blow destroys the lich, releasing a small shock wave of energy outwards. A giant cloud of dust billows out as the remnants of the lich’s once-mortal body disintegrate for the last time."
+                    }
+                
+                elseif: {
+                    variable: {
+                        name: "dk_kill_count"
+                        numerical_equals: 3
+                    }
+                    then: ->
+                        Message{
+                            speaker: "narrator"
+                            image: "wesnoth-icon.png"
+                            message: _ "A final blow destroys the lich, releasing a small shock wave of energy outwards. The last of his minions silently falls like a puppet with its strings cut. A cloud of dust billows outwards as the remnants of the lich’s once-mortal body disintegrate for the last time."
+                        }
+                    
+                }
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "A final blow destroys the lich, releasing a small shock wave of energy outwards. His minions fall like puppets with their strings cut. A cloud of dust billows out as the remnants of the lich’s once-mortal body disintegrate for the last time."
+                    }
+                
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Aimucasur’s lordship over this cursed ground is broken."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Aimucasur? So you know of this Lich-Lord? Did you know him? He was a powerful mage?"
+            }
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING!
+                message: _ "Yes, very powerful. I was not certain of his identity at first, but it is certain now. He lived centuries ago... he appears in our histories, a former headmaster on Alduin. He was reported to have disappeared, and now we know what happened to him."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "He was just someone who couldn’t handle the power given to him."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "You would do well to learn the lesson he did not."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Move along, Elf, unless you enjoy making camp in this slimy bog. I, for one, do not!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Indeed..."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Listen, you whose eyes are fair but hide a vacuum, do you not think I know what power does to one’s soul? What evils a person is capable of when truth and righteousness are but scrolls that can be rewritten when a queen grows tired of them?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I spent my entire childhood listening to my mother give orders and command armies around. I hid in the throne room as a little girl as she met with her generals. I now know she was having people killed... entire towns of people killed!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I became my mother’s most trusted aide-de-camp. I was sent to quiet the worst of the rebellion. Of course they fought back. I never knew who these people were or why they fought my mother. Konrad, you are lucky. You do not know what Wesnoth has been like these past many years. There is no peace. I have never known peace."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I do know the cup of bitterness poured out on Wesnoth by your mother, child. The land has been torn apart. The elves know this. The orcs know this. Undead can feel it. Large armies of men march across the plains hunting each other, and when no men remain, outsiders will claim Wesnoth as their home."
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("mad")
+                message: _ "Enough! I can listen to no more of this. Princess, you may want to end your mother’s rule, but I will end her life as she ended the life of my father and my brothers. Asheviere’s masterwork of treachery will end, and it will end by my blade!"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("temp_armor_x")
+            CLEAR_VARIABLE("temp_armor_y")
+            CLEAR_VARIABLE("armor_taken")
+            CLEAR_VARIABLE("armored_knight,dk_kill_count")
+    }
+}
+
+SWAMP_DREAD_AI_PARAMS = nil
+ENDOWED_KNIGHT = nil

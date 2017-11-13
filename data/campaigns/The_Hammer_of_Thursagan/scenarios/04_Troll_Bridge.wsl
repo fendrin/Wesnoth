@@ -1,0 +1,179 @@
+--textdomain wesnoth-thot
+
+Scenario{
+    id: "04_Troll_Bridge"
+    name: _ "Troll Bridge"
+    map: "campaigns/The_Hammer_of_Thursagan/maps/04_Troll_Bridge.map"
+    <TURNS(20, 16, 12)
+    next_scenario: "05_Invaders"
+    victory_when_enemies_defeated: true
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+
+    story: {
+        part: {
+            <THOT_BIGMAP!
+            music: "elvish-theme.ogg"
+            story: _ "Aiglondur and his troop, some still shaking their heads dubiously at the very notion of fighting alongside orcs rather than against them, continued east to the easternmost edge of the Northern Alliance’s lands."
+        }
+    }
+
+    <THOT_TRACK(JOURNEY_STAGE4!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: "Dwarvish Fighter,Dwarvish Thunderer,Dwarvish Guardsman, Dwarvish Scout"
+        <GOLD(100, 80, 60)
+        team_name: "northern_alliance"
+        user_team_name: _ "Alliance"
+        <FLAG_VARIANT("knalgan")
+
+-- wmllint: recognize Aiglondur
+        <CHARACTER_STATS_AIGLONDUR!
+
+        facing: "se"
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        <if EASY then {
+            recruit: "Troll Whelp"
+        }
+        <if NORMAL then {
+            recruit: {"Troll Whelp", "Troll"}
+        }
+        <if HARD then {
+            recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        }
+        <GOLD(70, 100, 130)
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        type: "Troll"
+        id: "Gronk"
+        name: _ "Gronk"
+        canrecruit: true
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_QUICK!
+        }
+
+        facing: "sw"
+
+        ai: {
+            passive_leader: true
+            <unless HARD! then {
+                recruitment_pattern: "fighter"
+            } else {
+                recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            }
+            grouping: "defensive"
+            <QUANTITY("aggression", 0.3, 0.4, 0.5)
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+    }
+
+    <if NORMAL then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Troll", 1)
+    }
+
+    <if HARD then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Troll Rocklobber", 1)
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Gronk"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Aiglondur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Angarthing"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Recall{
+                id: "Angarthing"
+                x: 2, y: 9
+            }
+
+            MODIFY_UNIT({side: 1}, "facing", "se")
+    }
+
+    event: {
+        name: "start"
+
+-- wmllint: local spelling dat Er
+        do: ->
+            Message{
+                speaker: "Gronk"
+                message: _ "Dis a troll bridge. You pay toll. Er..."
+            }
+
+            Message{
+                speaker: "Gronk"
+                message: _ "Dat not right. Dis a toll bridge. You pay troll. Er..."
+            }
+
+            Message{
+                speaker: "Gronk"
+                message: _ "Dat not right either. Big words confuse Gronk. You pay now or we smash you."
+            }
+
+            Message{
+                speaker: "Angarthing"
+                message: _ "The stonework of yon bridge is not good enough to be dwarf-made, but it is nowhere near crude enough to be troll-work."
+            }
+
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Then it will be of the Alliance’s making, right enough, like this road that leads to it. It won’t do to have wild trolls squatting on it. Axes up!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Gronk"
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Hey! That troll was sitting on some treasure!"
+            }
+
+            LOOT(200, 1)
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERODEATH_AIGLONDUR!
+    <HERODEATH_ANGARTHING!
+}

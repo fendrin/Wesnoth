@@ -1,0 +1,191 @@
+--textdomain wesnoth-low
+
+-- wmlscope: set export=no
+Textdomain{
+    name: "wesnoth-low"
+}
+
+if CAMPAIGN_LOW
+    Binary_Path{
+        path: "data/campaigns/Legend_of_Wesmere/"
+    }
+
+    INCLUDE("campaigns/Legend_of_Wesmere/utils")
+
+    INCLUDE("campaigns/Legend_of_Wesmere/scenarios/chapter1")
+    INCLUDE("campaigns/Legend_of_Wesmere/scenarios/chapter2")
+    INCLUDE("campaigns/Legend_of_Wesmere/scenarios/chapter3")
+    INCLUDE("campaigns/Legend_of_Wesmere/scenarios/chapter4")
+    INCLUDE("campaigns/Legend_of_Wesmere/scenarios/chapter5")
+
+    Units{
+        INCLUDE("campaigns/Legend_of_Wesmere/units/ogres")
+    }
+
+    Lua{
+        code: "wesnoth.dofile 'campaigns/Legend_of_Wesmere/lua/wml_tags.lua'"
+    }
+
+
+Campaign{
+    extra_defines: "ENABLE_DWARVISH_RUNESMITH"
+    id: "LOW"
+    define: "CAMPAIGN_LOW"
+    rank: 125
+    start_year: "20 YW"
+    end_year: "93 YW"
+
+    type: "hybrid"
+
+    min_players: 2
+    max_players: 4
+
+    allow_era_choice: false
+
+    icon: "units/elves-wood/high-lord.png~RC(magenta>brown)"
+    image: "data/campaigns/Legend_of_Wesmere/images/campaign_image.png"
+    first_scenario: "01_The_Uprooting"
+
+    abbrev: _ "LoW"
+    name: _ "Legend of Wesmere"
+    description: _ "The tale of Kalenz, the High Lord who rallied his people after the second orcish invasion of the Great Continent and became the most renowned hero in the recorded history of the Elves.
+
+" .. _ "(Intermediate level, 18 scenarios.)"
+
+    <CAMPAIGN_DIFFICULTY("EASY", "units/elves-wood/fighter.png~RC(magenta>brown)", _ "Soldier", _ "Easy")
+    <CAMPAIGN_DIFFICULTY("NORMAL", "units/elves-wood/lord.png~RC(magenta>brown)", _ "Lord", _ "Normal"), <DEFAULT_DIFFICULTY!
+    <CAMPAIGN_DIFFICULTY("HARD", "units/elves-wood/high-lord.png~RC(magenta>brown)", _ "High Lord", _ "Challenging")
+
+    about: {
+        title: _ "Creator and Lead Designer"
+        entry: {
+            name: _ "Spiros, George and Alexander Alexiou (Santi/fnaek)"
+            email: "moka1_AT_otenet_DOT_gr"
+            wikiuser: "Santi"
+            comment: "Main designers, former maintainers."
+        }
+    }
+    about: {
+        title: _ "Campaign Maintenance"
+        entry: {
+            name: "Fabi/Fendrin"
+            comment: "Current maintainer"
+        }
+        entry: {
+            name: _ "Spiros, George and Alexander Alexiou (Santi/fnaek)"
+        }
+    }
+    about: {
+        title: _ "Prose-doctoring and adaptation for mainline"
+        entry: {
+            name: "Eric S. Raymond (esr)"
+        }
+        entry: {
+            name: "Fabi/Fendrin"
+            comment: "Major WML rewrite for mainline"
+        }
+    }
+    about: {
+        title: _ "WML Assistance"
+        entry: {
+            name: "Alexander van Gessel (AI/AI0867)"
+            comment: "bugfixing and general WML cleanups"
+        }
+        entry: {
+            name: "Ignacio R. Morelle (shadowm)"
+            comment: "for A LOT of help with WML and interesting campaign suggestions"
+        }
+        entry: {
+            name: "Lari Nieminen (zookeeper)"
+            comment: "for A LOT of help with WML"
+        }
+    }
+    about: {
+        title: _ "Artificial Intelligence"
+        entry: {
+            name: "Yurii Chernyi (crab)"
+            comment: "coding of the new ai and help with corresponding redesigns"
+        }
+    }
+    about: {
+        title: _ "Graphics"
+        entry: {
+            name: "Bora Orcal (bera)"
+            comment: "goblin horn rouser"
+        }
+        entry: {
+            name: "Kathrin Polikeit (Kitty)"
+            comment: "who did a great job with portraits and other graphics
+-the main reason for having a polished campaign"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+            comment: "map artist"
+        }
+    }
+    about: {
+        title: _ "Additional thanks to"
+        entry: {
+            name: "Scott"
+            comment: "for help with WML, especially the use of store/unstore"
+        }
+        entry: {
+            name: "WhiteWizard"
+            comment: "Initial porting to 1.2"
+        }
+        entry: {
+            name: "Disto"
+            comment: "for elvish units"
+        }
+        entry: {
+            name: "RedLTeut"
+            comment: "for great improvements to the initial invisible elvish units"
+        }
+        entry: {
+            name: "Dacyn"
+            comment: "who was of great help in the beginning of this project"
+        }
+        entry: {
+            name: "Big Bad Joe"
+        }
+        entry: {
+            name: "breversa"
+        }
+        entry: {
+            name: "Invisible Philosopher"
+        }
+        entry: {
+            name: "js138"
+        }
+        entry: {
+            name: "l'ultimo cruco"
+        }
+        entry: {
+            name: "Mad Max"
+        }
+        entry: {
+            name: "Rhuvaen"
+        }
+        entry: {
+            name: "SelfishWeirdo"
+        }
+        entry: {
+            name: "Scott"
+        }
+        entry: {
+            name: "Sly"
+        }
+        entry: {
+            name: "Teldar"
+        }
+        entry: {
+            name: "Turin"
+        }
+        entry: {
+            name: _ "And the rest of the Wesnoth community for feedback,
+criticism, help with WML code and graphics."
+        }
+    }
+}
+-- wmllint: directory spellings Cleodil Kalenz Galtrid Crelanu Uraredia
+-- wmllint: directory spellings Landar Olurf Aldar Grubr El'Isomithir Aquagar

@@ -1,0 +1,11 @@
+--textdomain wesnoth-test
+
+Textdomain{
+    name: "wesnoth-test"
+}
+
+--Load test macros
+INCLUDE("test/multiplayer/macros")
+
+--Load mp test scenarios
+INCLUDE("test/multiplayer/scenarios")

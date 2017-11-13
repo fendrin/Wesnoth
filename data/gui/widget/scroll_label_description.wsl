@@ -1,0 +1,138 @@
+--textdomain wesnoth-lib
+
+_GUI_RESOLUTION = (RESOLUTION, FONT_SIZE, DEFINITION, FONT_STYLE, FONT_COLOR_ENABLED, FONT_COLOR_DISABLED) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: 0
+        min_height: 0
+
+        default_width: 0
+        default_height: 0
+
+        max_width: 0
+        max_height: 0
+
+        text_font_size: FONT_SIZE
+        text_font_style: FONT_STYLE
+
+        state_enabled: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    fill_color: GUI__BACKGROUND_COLOR_ENABLED!
+                }
+
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+            }
+
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true -- needed ?
+                    vertical_grow: true -- needed ?
+
+                    grid: {
+                        id: "_content_grid"
+
+                        row: {
+
+                            column: {
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                border: "all"
+                                border_size: 5
+
+                                label: {
+                                    id: "_label"
+                                    definition: DEFINITION
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                column: {
+
+                    <GUI__VERTICAL_SCROLLBAR_GRID!
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    <GUI__HORIZONTAL_SCROLLBAR_GRID!
+
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Scroll_Label_Definition{
+    id: "description"
+    description: "A scroll label type used for description boxes."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 113: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 114: 		({GUI_FONT_SIZE_DEFAULT})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 115: 		("default")
+    {}
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 117: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 118: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+Scroll_Label_Definition{
+    id: "description_small"
+    description: "A small scroll label type used for description boxes."
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 128: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 129: 		({GUI_FONT_SIZE_SMALL})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 130: 		("default_small")
+    {}
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 132: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/scroll_label_description.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 133: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+_GUI_RESOLUTION = nil

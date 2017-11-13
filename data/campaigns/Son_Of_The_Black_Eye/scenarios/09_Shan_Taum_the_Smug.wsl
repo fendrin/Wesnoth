@@ -1,0 +1,270 @@
+--textdomain wesnoth-sotbe
+Scenario{
+    id: "09_Shan_Taum_the_Smug"
+    name: _ "Shan Taum the Smug"
+    map: "campaigns/Son_Of_The_Black_Eye/maps/09_Shan_Taum_the_Smug.map"
+    turns: 20
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "10_Saving_Inarix"
+
+    <SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Survive the Shan Taum menace for 20 turns"
+                    condition: "win"
+                    show_turn_counter: true
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat Shan Taum")
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Grüü"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of a Shaman"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    side: {
+        side: 1
+        id: "Kapou'e"
+        type: "Orcish Leader"
+        controller: "human"
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        gold: 200
+        <BLACK_FLAG!
+    }
+
+    <STARTING_VILLAGES(1, 4)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Shan Taum"
+        name: _ "Shan Taum"
+        profile: "portraits/shan_taum.png"
+        side: 2
+        canrecruit: true
+        facing: "sw"
+        ai: {
+            aggression: 1.0
+        }
+        recruit: {"Ogre", "Orcish Grunt", "Orcish Warrior", "Orcish Crossbowman", "Orcish Assassin", "Wolf Rider"}
+        <GOLD(400, 500, 600)
+    }
+
+    <STARTING_VILLAGES(2, 28)
+
+    story: {
+        part: {
+            story: _ "After clearing out the elves from the Silent Forest, Kapou’e and his party set out on the last leg of their journey. Within a few days they finally reached the city of Lmarig in the Mourned Hills, which was then ruled by Shan Taum the Smug."
+            <SOTBE_BIGMAP!
+            <JOURNEY_08_OLD!
+        }
+    }
+
+    <SOTBE_TRACK(JOURNEY_09_NEW!)
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Grüü"
+            }
+            Recall{
+                id: "Jetto"
+            }
+            Recall{
+                id: "Pirk"
+            }
+            Recall{
+                id: "Gork"
+            }
+            Recall{
+                id: "Vraurk"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                image: "portraits/kapoue.png~FL()"
+                message: _ "At last, here are the Mourned Hills! We can only hope for the best."
+            }
+            Message{
+                speaker: "Grüü"
+                image: "portraits/gruu.png~FL()"
+                message: _ "Why?"
+            }
+            Message{
+                speaker: "Gork"
+                image: "portraits/old_orcish_shaman.png~FL()"
+                message: _ "You are a troll, so you don’t know. These lands are ruled by Shan Taum the Smug, who was a rival of Black-Eye Karun."
+            }
+            Message{
+                speaker: "Pirk"
+                image: "portraits/orcish_shaman.png~FL()"
+                message: _ "I doubt he would welcome the son of the Black-Eye."
+            }
+            Message{
+                speaker: "Shan Taum"
+                message: _ "Who is that? Kapou’e! What are you doing in my lands, you weakling runt?"
+            }
+            Message{
+                speaker: "Kapou'e"
+                image: "portraits/kapoue.png~FL()"
+                message: _ "Hold on, Shan Taum. We seek the Great Council, not a quarrel with you."
+            }
+            Message{
+                speaker: "Shan Taum"
+-- wmllint: local spelling Bwahaha
+                message: _ "Bwahaha! You are nothing! Where is your land? You became a beggar. You are as pathetic as your father!"
+            }
+            Message{
+                speaker: "Kapou'e"
+                image: "portraits/kapoue-angry.png~FL()"
+                message: _ "How can you talk that way about my father, you miserable coward?! I’ll make a mug from your skull!"
+            }
+            Message{
+                speaker: "Shan Taum"
+                message: _ "Really? What would you drink with it? Mint cordial?"
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Exasperated, Kapou’e launched an attack on his fellow orc Shan Taum the Smug."
+            }
+    }
+
+    event: {
+        name: "victory cutscene"
+        do: ->
+            OLD_ORCISH_SHAMAN(1, 32, 30, "Fabstep", _ "Fabstep")
+            OLD_ORCISH_SHAMAN(1, 32, 30, "Klebar", _ "Klebar")
+            OLD_ORCISH_SHAMAN(1, 32, 30, "Echarp", _ "Echarp")
+            Message{
+                speaker: "Echarp"
+                message: _ "What is this? Are you mad?! Humans are to besiege our fortress at Prestim and you are fighting each other?!"
+            }
+            Message{
+                speaker: "Kapou'e"
+--wmllint: local spelling ermmm
+                message: _ "Well, ermmm..."
+            }
+            Message{
+                speaker: "Echarp"
+                message: _ "Kapou’e, rumors tell of you making a long trip to seek assistance from us, and escorting Pirk, Gork and Vraurk. The council is grateful for that."
+            }
+            Message{
+                speaker: "Fabstep"
+                message: _ "I know what you want from us but I’m afraid we can’t help you."
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "But my people..."
+            }
+            Message{
+                speaker: "Echarp"
+                message: _ "You don’t understand. Orcs have been divided for ages. The only one who gave us some unity was your father, Black-Eye Karun. Hearing rumors of your exploits, we understood you are a worthy son of your father."
+            }
+            Message{
+                speaker: "Vraurk"
+                message: _ "This is true. Now we are pressed from all sides by humans and elves; we need a leader that can unite all banners. This one is <i>you</i>!"
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Thank you."
+            }
+            Message{
+                speaker: "Grüü"
+                message: _ "Did you hear? There is a battle waiting for us at Prestim!"
+            }
+            Message{
+                speaker: "Echarp"
+                message: _ "Kapou’e, if Prestim falls, humans will have a strong bridgehead on this side of the river and your people won’t be safe. You are the only one that can help us defend Prestim!"
+            }
+            Message{
+                speaker: "Pirk"
+                message: _ "Leave your people here Kapou’e — they are safe for the moment — and go defend Prestim. In the meantime, now that the council is complete again, we will decide. We may have to form the Great Horde again, and give you the leadership of it."
+            }
+            Kill{
+                id: "Pirk"
+            }
+            Kill{
+                id: "Gork"
+            }
+            Kill{
+                id: "Vraurk"
+            }
+            Kill{
+                id: "Fabstep"
+            }
+            Kill{
+                id: "Klebar"
+            }
+            Kill{
+                id: "Echarp"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Fire_Event{
+                name: "victory cutscene"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Shan Taum"
+        }
+        do: ->
+            Message{
+                speaker: "Shan Taum"
+                message: _ "Nooo! Don’t kill me, I surrender to you little earthworm."
+            }
+
+            VARIABLE("unit.hitpoints", 1)
+
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+
+            Fire_Event{
+                name: "victory cutscene"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+}

@@ -1,0 +1,5 @@
+Locale{
+    name: "Ελληνικά (Ellinika)"
+    sort_name: "Ellinika"
+    locale: "el_GR"
+}

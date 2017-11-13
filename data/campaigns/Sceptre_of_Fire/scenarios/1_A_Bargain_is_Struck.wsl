@@ -1,0 +1,711 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "A Bargain is Struck"
+    id: "1_A_Bargain_is_Struck"
+    turns: 24
+    map: "campaigns/Sceptre_of_Fire/maps/1_A_Bargain_is_Struck.map"
+    next_scenario: "2_Closing_the_Gates"
+
+    <SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        name: _ "Rugnur"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        facing: "sw"
+        profile: "portraits/rugnur.png"
+        controller: "human"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout"}
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        <FLAG_VARIANT("knalgan")
+    }
+
+    <STARTING_VILLAGES(1, 4)
+
+    side: {
+        type: "Haldric II"
+        id: "Haldric II"
+        name: _ "Haldric II"
+        side: 2
+        canrecruit: true
+        facing: "ne"
+        profile: "portraits/haldric-ii.png"
+        <RECRUIT({"Swordsman", "Longbowman", "Dragoon", "Cavalryman", "Red Mage", "Mage"}, {"Swordsman", "Longbowman", "Cavalryman", "Red Mage", "Mage"}, {"Swordsman", "Longbowman", "Cavalryman", "Mage"})
+        <GOLD(300, 250, 200)
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        INCLUDE("ai/aliases/stable_singleplayer.cfg")
+        ai: {
+            <AI_SIMPLE_ALWAYS_ASPECT("recruitment_pattern", "fighter,archer")
+            <AI_SIMPLE_ALWAYS_ASPECT("aggression", 0.5)
+            <AI_SIMPLE_ALWAYS_ASPECT("caution", 0.5)
+            <AI_SIMPLE_ALWAYS_ASPECT("leader_value", 0)
+            <AI_SIMPLE_ALWAYS_ASPECT("village_value", 0)
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 1
+                    type: "Caravan"
+                }
+                value: 7
+                protect_radius: 12
+            }
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    type: "Haldric II"
+                }
+                value: 8
+                protect_radius: 7
+            }
+        }
+        <LOYAL_UNIT(2, "Royal Guard", 5, 25), <GUARDIAN!
+        unit: {
+            amend: true
+            facing: "ne"
+        }
+        <LOYAL_UNIT(2, "Royal Guard", 5, 29), <GUARDIAN!
+        unit: {
+            amend: true
+            facing: "se"
+        }
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(2, 5)
+
+    side: {
+        type: "Elvish Captain"
+        id: "Glildur"
+        name: _ "Glildur"
+        side: 3
+        canrecruit: true
+        facing: "sw"
+        <RECRUIT({"Elvish Fighter", "Elvish Scout", "Elvish Archer"}, {"Elvish Fighter", "Elvish Scout", "Elvish Archer", "Elvish Shaman"}, {"Elvish Fighter", "Elvish Scout", "Elvish Archer", "Elvish Shaman"})
+        <GOLD(175, 225, 250)
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        INCLUDE("ai/aliases/stable_singleplayer.cfg")
+        ai: {
+            <AI_SIMPLE_ALWAYS_ASPECT("grouping", "offensive")
+            <AI_SIMPLE_ALWAYS_ASPECT("passive_leader", true)
+            goal: {
+                criteria: {
+                    side: 1
+                    type: "Caravan"
+                }
+                value: 7
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    <STARTING_VILLAGES(3, 6)
+
+    story: {
+        part: {
+-- wmllint: local spelling Ay
+            story: _ "Ay, the Sceptre of Fire. The sceptre has a long, glorious, and fearful history. But I am not here to tell you how the jewel within it was brought over the ocean by Haldric the Great. Nor will I tell the story of Garard I, and the challenge he set, or that of Konrad, king of Wesnoth by virtue of the Sceptre."
+        }
+        part: {
+            story: _ "I am here to tell you of its making. Of its crafting, deep in the caverns of dwarfdom. And of the dwarves who made it; for they were great, they were. They are counted among the greatest of the heroes of ancient Knalga."
+        }
+        part: {
+            story: _ "Our story begins in a small border outpost in the southern hills of Knalga, with a young dwarf, named Rugnur, in charge of it. And with the second king of Wesnoth, Haldric II, riding up the road from the Ford of Abez with an army behind him..."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_01_NEW!)
+
+    <SOF_DEATHS!
+
+    event: {
+        name: "prestart"
+
+-- TODO: manually add snow detritus
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    <if HARD then {
+                        description: _ "Transport 5 caravans full of silver back to the dwarvish castle"
+                    } else {
+                        description: _ "Transport 4 caravans full of silver back to the dwarvish castle"
+                    }
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Bring Alanin, who has the Ruby of Fire, to the dwarvish castle"
+                    condition: "win"
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat Glildur")
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Haldric II"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Loss of a caravan"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+
+            if HARD
+                Terrain{
+                    terrain: "Ha"
+                    x: 12, y: 3
+                }
+            
+
+            if EASY
+            } else {
+                Terrain{
+                    terrain: "Aa^Fpa"
+                    x: 1, y: 4
+                }
+                Terrain{
+                    terrain: "Aa^Fpa"
+                    x: 3, y: 8
+                }
+            
+
+            Capture_Village{
+                side: 1
+                x: "1-31"
+                y: "1-10"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Rugnur"
+                message: _ "Humans, halt! Who dares bring an army into the dwarvish hills?"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "We come to make a bargain with you."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, state your business and be done with it. And if we don’t like what you say, you leave!"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Have you heard of the Ruby of Fire?"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Yes... your first king brought it from over the sea, right? You own it."
+                scroll: false
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Correct. However, we have a problem with it."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "What sort of problem?"
+                scroll: false
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Some form of magical aura makes those around the stone act... strangely. I noticed it with my father. The longer he stayed near the stone, the more arrogant, almost evil, he became."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "So, what do you want me to do? I don’t see how this relates to us dwarves."
+                scroll: false
+            }
+-- Historical note:
+-- The conversation Haldric alludes to took place in the Legend of
+-- Wesmere scenario "The Treaty", which is thus pinned to 15YW.
+-- This scenario establishes that Landar is already leading a
+-- Xenophobic faction at start of this campaign, e.g 25YW.  This
+-- development is noted as having begun on the main timeline in 24YW.
+-- Be careful to change this chronology consistently, if you do so.
+            Message{
+                speaker: "Haldric II"
+                message: _ "When the elves came to Weldyn, about ten years ago, they spoke of a mage named Crelanu, and of his advice about the ruby. He said that the radiance of the stone could be contained, and that doing so would stop the stone’s effect."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "And what... you want us to do this, contain the radiance of the stone? By making an artifact of some kind?"
+                scroll: false
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Exactly. I want you to craft it into a mighty artifact, that will leverage the stone’s power, but contain it also."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well... I think we can make a deal, but I’m not sure. I’ll have to ask the tribal leaders."
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "If you are not authorized to make a deal, send out someone who is, and I will bargain with him."
+                scroll: false
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "They would refuse to come. You must come into the caves, and go to the city in person, or send a representative."
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "I can always take my offer to another tribe more friendly to its potential patrons. You are not the only smiths in the Northlands!"
+                scroll: false
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Uh, no, wait! Let’s talk business — how much will you pay us to do this for you?"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Five thousand pieces of silver."
+            }
+            Message{
+                speaker: "Rugnur"
+-- wmllint: local spelling playtoy
+                message: _ "You said you wanted a powerful magical artifact, not a child’s playtoy! So... twenty thousand, minimum. The crafting of this will take us many years, you must pay us well."
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Ten thousand."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Nothing below fifteen!"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Then no deal. I’ll gather my things and go to another dwarvish clan now."
+                scroll: false
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Fine then — ten thousand... now, what exactly do you want us to make the stone into?"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "I want you to make it into a sceptre, a sceptre of fire."
+                scroll: false
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "I’ll see what I can do. But I will need five thousand silver in advance, to pay for the materials."
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Very well. I have the silver here, ready to ship, and I will send someone over with the stone itself. He will stay with you as you make the sceptre, and make sure you are going to get it done on time. I expect it done before my reign as king is ended."
+            }
+            Unit{
+                x: 5, y: 30
+                type: "Caravan"
+                side: 1
+                facing: "ne"
+                <IS_HERO!
+            }
+            Unit{
+                x: 6, y: 29
+                type: "Caravan"
+                side: 1
+                facing: "ne"
+                <IS_HERO!
+            }
+            Unit{
+                x: 6, y: 28
+                type: "Caravan"
+                side: 1
+                facing: "ne"
+                <IS_HERO!
+            }
+            Unit{
+                x: 7, y: 28
+                type: "Caravan"
+                side: 1
+                facing: "ne"
+                <IS_HERO!
+            }
+            if HARD
+                Unit{
+                    x: 7, y: 29
+                    type: "Caravan"
+                    side: 1
+                    facing: "ne"
+                    <IS_HERO!
+                }
+            
+            Unit{
+                x: 6, y: 26
+                type: "Dragoon"
+                side: 1
+                id: "Alanin"
+                name: _ "Alanin"
+                unrenamable: true
+                facing: "ne"
+                <IS_HERO!
+                profile: "portraits/alanin.png"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_HERO!
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "That’s right. I’ll be coming over along with the silver."
+            }
+            Message{
+                speaker: "Glildur"
+                message: _ "Hey! You can’t do that — this road is an elvish road. We’re not letting you transport gold and jewels on it without paying a toll."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "What are you talking about?! This road has always been open to all."
+                scroll: false
+            }
+            Message{
+                speaker: "Glildur"
+                message: _ "Yes, we have allowed people to use it, but it is our road."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Not true! This is dwarvish land; if anything, it’s our road!"
+                scroll: false
+            }
+            Message{
+                speaker: "Glildur"
+                message: _ "Nevertheless, if you try to move your caravans here you have to pay the toll, or face our wrath!"
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "We Wesnothians and you elves have a treaty! Do you really mean to break it in defense of a road that is not even yours?!"
+            }
+            Message{
+                speaker: "Glildur"
+                message: _ "I was never among those who agreed to that treaty. Not all of us elves are as low as Kalenz, or make deals with those who betrayed us."
+                scroll: false
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Ah, I see — you are one of the rebels. Our treaty with the elves does not apply to you, so I have no problem with slaying you if you stand in our way. Rugnur, we will proceed with the shipment."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Very well. Glildur, if the high elvish council has made an alliance with the men, I would advise you to follow it, but not doing so is your choice."
+            }
+
+            Set_Variable{
+                name: "incominggold"
+                value: 5000
+            }
+    }
+
+-- This helps prevent Haldric from getting himself killed by preventing him
+-- from leaving his camp
+    event: {
+        name: "side 2 turn refresh"
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Haldric II"
+                }
+
+                movement_costs: {
+                    flat: 99
+                }
+            }
+    }
+    event: {
+        name: "side 2 turn end"
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Haldric II"
+                }
+
+                movement_costs: {
+                    flat: 1
+                }
+            }
+    }
+
+-- Alanin reaches the dwarvish citadel
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Alanin"
+
+            filter_location: {
+                terrain: {"Kud", "Cud"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Alanin"
+                message: _ "Here’s the stone, for you dwarves! Now, if you’ll excuse me, I think I’ll be taking refuge in this castle here... I don’t much like fighting."
+            }
+            Set_Variable{
+                name: "havestone"
+                value: true
+            }
+            Store_Unit{
+                filter: {
+                    x: x1, y: y1
+                }
+                variable: "changealanin"
+                kill: true
+            }
+            If{
+                variable: {
+                    name: "incominggold"
+                    equals: 0
+                }
+                then: ->
+                    Message{
+                        speaker: "Haldric II"
+                        message: _ "All the silver is there too. Proceed with the task, Rugnur!"
+                    }
+                    Unstore_Unit{
+                        variable: "changealanin"
+                        find_vacant: true
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+-- Caravan reaches the dwarvish citadel
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            x: "26-30"
+            y: "3-6"
+            side: 1
+            type: "Caravan"
+        }
+        do: ->
+            Set_Variable{
+                name: "incominggold"
+                <if HARD then {
+                    sub: 1000
+                } else {
+                    sub: 1250
+                }
+            }
+            If{
+                variable: {
+                    name: "incominggold"
+                    greater_than: 0
+                }
+                then: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "Cargo unloaded."
+                    }
+                    If{
+                        variable: {
+                            name: "havestone"
+                            equals: true
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Haldric II"
+                                message: _ "You only need #{incominggold more, then you can begin work."
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Haldric II"
+                                message: _ "You only need #{incominggold more, and the stone, then you can begin work."
+                            }
+                        
+                    }
+                
+                else: ->
+                    If{
+                        variable: {
+                            name: "havestone"
+                            equals: true
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Rugnur"
+                                message: _ "That’s the last caravan! We will commence work immediately."
+                            }
+                            Unstore_Unit{
+                                variable: "changealanin"
+                                find_vacant: true
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Rugnur"
+                                message: _ "We have all of the silver, now all we need is the stone."
+                            }
+                        
+                    }
+                
+            }
+            Kill{
+                x: x1, y: y1
+            }
+    }
+
+    event: {
+        name: "turn 10"
+        do: ->
+            Message{
+                speaker: "Glildur"
+                message: _ "Ha! Our reinforcements have arrived. There is no way you can withstand our combined strength!"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "We cannot match you above ground, but in the caves we may still defeat you."
+            }
+            Message{
+                speaker: "Glildur"
+                message: _ "We will see about that — if you ever get underground, which I doubt. Ha!"
+            }
+            Gold{
+                side: 3
+                amount: 500
+            }
+            Message{
+                speaker: "Haldric II"
+                message: _ "Elvish reinforcements! Where did these come from? I thought the elvish resistance to the treaty was smaller than this. Hurry up and move those caravans!"
+            }
+    }
+
+-- Tie-ins to the Legend of Wesmere.  The elves are xenophobes from
+-- Landar's faction.
+    event: {
+        name: "attack"
+        first_time_only: true
+
+        filter: {
+            side: 3
+        }
+        filter_second: {
+            race: "human"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+-- wmllint: local spelling Landar
+                message: _ "Die, humans, in the name of Landar!"
+            }
+            Message{
+                speaker: "second_unit"
+                message: _ "Landar? Who is this ‘Landar’ you speak of?"
+            }
+    }
+
+    event: {
+        name: "attack"
+        first_time_only: true
+
+        filter: {
+            side: 3
+        }
+        filter_second: {
+            race: "dwarf"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Die, dwarvish scum, in the name of Landar!"
+            }
+            Message{
+                speaker: "second_unit"
+                message: _ "Yer precious Landar can kiss my axe."
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            If{
+                variable: {
+                    name: "havestone"
+                    equals: true
+                }
+
+                then: ->
+                    Unstore_Unit{
+                        variable: "changealanin"
+                        find_vacant: true
+                    }
+                
+            }
+
+            Message{
+                speaker: "Rugnur"
+                message: _ "Good, the road is secured. Let’s move those caravans!"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "scenario_end"
+        do: ->
+            CLEAR_VARIABLE("incominggold,havestone")
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            side: 1
+            type: "Caravan"
+        }
+        do: ->
+            Message{
+                speaker: "Haldric II"
+                message: _ "You just let a caravan, with <i>my</i> money loaded in it, get captured! If I can’t trust you to keep my property secure, the deal’s off."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

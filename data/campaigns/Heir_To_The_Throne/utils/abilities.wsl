@@ -1,0 +1,125 @@
+--textdomain wesnoth-httt
+
+-- NOTE: This code is tailored for Li'sar in this campaign specifically, and will
+-- not work correctly elsewhere without modification.
+
+ABILITY_INITIATIVE = () -> {
+    dummy: {
+        id: "initiative"
+        name: _ "initiative"
+        description: _ "All adjacent friendly units will strike first in melee combat, even when defending."
+    }
+}
+
+SPECIAL_NOTES_INITIATIVE = () -> {
+err: ../attic/data/campaigns/Heir_To_The_Throne/utils/abilities.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    INITIATIVE_OBJECT = (FILTER) -> {
+        object: {
+            silent: true
+
+            filter: {
+                <FILTER
+            }
+
+            effect: {
+                apply_to: "attack"
+                range: "melee"
+
+                set_specials: {
+                    mode: "append"
+
+                    firststrike: {
+                        id: "initiative"
+                        name: ""
+                        description: ""
+                        filter_self: {
+                            filter_adjacent: {
+                                id: "Li'sar"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    LACKS_INITIATIVE_FILTER = () -> {
+        side: {1, 2}
+
+        filter_side: {
+            allied_with: {
+                has_unit: {
+                    id: "Li'sar"
+                }
+            }
+        }
+
+        filter_wml: {
+            attack: {
+                range: "melee"
+            }
+        }
+
+        not: {
+            filter_wml: {
+                attack: {
+                    range: "melee"
+                    specials: {
+                        firststrike: {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    WEAPON_SPECIAL_INITIATIVE_EVENTS = () -> {
+        event: {
+            id: "initiative_1"
+            name: {"prerecruit", "prerecall"}
+            first_time_only: false
+
+            filter: {
+                <LACKS_INITIATIVE_FILTER!
+            }
+            do: ->
+                INITIATIVE_OBJECT({x: x1, y: y1})
+        }
+
+        event: {
+            id: "initiative_2"
+            name: {"side 1 turn", "side 2 turn"}
+            first_time_only: false
+            do: ->
+                Store_Unit{
+                    filter: {
+                        <LACKS_INITIATIVE_FILTER!
+                    }
+
+                    kill: false
+                    variable: "units_lacking_initiative"
+                }
+
+                Foreach{
+                    array: "units_lacking_initiative"
+                    do: ->
+                        INITIATIVE_OBJECT({x: this_item.x, y: this_item.y})
+                    
+                }
+
+                CLEAR_VARIABLE("units_lacking_initiative")
+        }
+
+        event: {
+            id: "initiative_3"
+            name: "attack"
+            first_time_only: false
+
+            filter_second: {
+                <LACKS_INITIATIVE_FILTER!
+            }
+            do: ->
+                INITIATIVE_OBJECT({x: x2, y: y2})
+        }
+    }

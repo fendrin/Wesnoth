@@ -1,0 +1,863 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the lobby screen
+----
+
+GAMELISTBOX = () -> {
+    listbox: {
+        id: "game_list"
+        definition: "default"
+
+        vertical_scrollbar_mode: "always"
+        horizontal_scrollbar_mode: "auto"
+
+        header: {
+
+            row: {
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    border: "bottom,right"
+                    border_size: 5
+
+                    label: {
+                        id: "map"
+                        definition: "default"
+                        label: _ "Games"
+                    }
+                }
+            }
+        }
+
+        list_definition: {
+
+            row: {
+
+                column: {
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        id: "panel"
+                        definition: "default"
+
+                        grid: {
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+                                    vertical_alignment: "center"
+
+                                    <GUI_FORCE_WIDGET_MINIMUM_SIZE(82, 82, {
+                                            border: "all"
+                                            border_size: 5
+                                            minimap: {
+                                                id: "minimap"
+                                                definition: "no_size"
+                                            }
+                                    })
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    grid: {
+
+                                        row: {
+
+                                            column: {
+                                                grow_factor: 1
+                                                border: "all"
+                                                border_size: 3
+                                                horizontal_alignment: "left"
+
+                                                label: {
+                                                    id: "scenario"
+                                                    definition: "default_large"
+                                                }
+                                            }
+                                        }
+
+                                        row: {
+
+                                            column: {
+                                                grow_factor: 1
+                                                horizontal_grow: true
+                                                border: "left,right"
+                                                border_size: 3
+
+                                                label: {
+                                                    id: "name"
+                                                    definition: "default"
+                                                }
+                                            }
+                                        }
+
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_alignment: "right"
+                                    label: {
+                                        id: "status"
+                                        definition: "default_large"
+                                        text_alignment: "right"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_alignment: "right"
+                                    vertical_grow: true
+
+                                    image: {
+                                        id: "game_info"
+                                        definition: "centered"
+                                        label: "icons/icon-info.png"
+                                    }
+                                }
+
+                                column: {
+                                    horizontal_alignment: "right"
+
+                                    grid: {
+
+                                        row: {
+
+                                            column: {
+                                                grow_factor: 0
+                                                horizontal_grow: true
+                                                border: "all"
+                                                border_size: 5
+
+                                                image: {
+                                                    id: "needs_password"
+                                                    definition: "default"
+                                                    label: "misc/key.png"
+                                                    tooltip: _ "Requires a password to join"
+                                                }
+                                            }
+
+                                            column: {
+                                                grow_factor: 1
+                                                horizontal_alignment: "right"
+                                                border: "top,left,right"
+                                                border_size: 5
+
+                                                button: {
+                                                    id: "join"
+                                                    definition: "default"
+                                                    label: _ "Join"
+                                                }
+                                            }
+                                        }
+
+                                        row: {
+
+                                            column: {
+                                                grow_factor: 0
+                                                horizontal_grow: true
+                                                border: "all"
+                                                border_size: 5
+
+                                                image: {
+                                                    id: "observer_icon"
+                                                    definition: "default"
+                                                    label: "misc/eye.png"
+                                                }
+                                            }
+
+                                            column: {
+                                                grow_factor: 1
+                                                horizontal_alignment: "right"
+                                                border: "all"
+                                                border_size: 5
+
+                                                button: {
+                                                    id: "observe"
+                                                    definition: "default"
+                                                    label: _ "Observe"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+PLAYERLISTBOX = () -> {
+    grid: {
+        row: {
+            column: {
+                horizontal_alignment: "left"
+                grid: {
+                    row: {
+                        column: {
+                            grow_factor: 0
+                            horizontal_alignment: "left"
+                            border: "all"
+                            border_size: 5
+                            label: {
+                                definition: "default_small"
+                                label: _ "Sort players:"
+                            }
+                        }
+                        column: {
+                            grow_factor: 1
+                            horizontal_alignment: "left"
+                            border: "left,right"
+                            border_size: 5
+                            toggle_button: {
+                                id: "player_list_sort_relation"
+                                definition: "icon"
+                                icon: "lobby/sort-friend-off.png"
+                                tooltip: _ "Friends first, ignored people last"
+                            }
+                        }
+                        column: {
+                            grow_factor: 1
+                            horizontal_alignment: "left"
+                            border: "left,right"
+                            border_size: 5
+                            toggle_button: {
+                                id: "player_list_sort_name"
+                                definition: "icon"
+                                icon: "lobby/sort-az-off.png"
+                                tooltip: _ "Alphabetically"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                border: "all"
+                border_size: 5
+                vertical_grow: true
+                horizontal_grow: true
+
+                tree_view: {
+                    id: "player_tree"
+                    definition: "default"
+
+                    horizontal_scrollbar_mode: "never"
+                    vertical_scrollbar_mode: "auto"
+
+-- TODO: use 25?
+--indentation_step_size = 25
+                    indentation_step_size: 0
+
+                    node: {
+                        id: "player_group"
+                        node_definition: {
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+
+                                    toggle_button: {
+                                        id: "tree_view_node_toggle"
+                                        definition: "tree_view_node"
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    border: "top,bottom,right"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "tree_view_node_label"
+                                        definition: "default_small"
+                                        label: "group"
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+                                    border: "top,bottom,right"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "player_count"
+                                        definition: "default_small"
+                                        label: "group"
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    node: {
+                        id: "player"
+                        node_definition: {
+
+                            return_value_id: "ok"
+                            row: {
+
+                                column: {
+                                    horizontal_grow: true
+
+                                    toggle_panel: {
+                                        id: "tree_view_node_label"
+                                        definition: "default"
+
+                                        grid: {
+
+                                            row: {
+
+                                                column: {
+                                                    border: "all"
+                                                    border_size: 5
+                                                    vertical_alignment: "top"
+
+                                                    image: {
+                                                        id: "icon"
+                                                        definition: "default"
+                                                    }
+
+                                                }
+
+                                                column: {
+                                                    grow_factor: 1
+                                                    horizontal_grow: true
+
+                                                    border: "right"
+                                                    border_size: 8
+
+                                                    label: {
+                                                        id: "name"
+                                                        definition: "default"
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_FILTER_AREA = () -> {
+    grid: {
+        row: {
+            column: {
+                grow_factor: 0
+                horizontal_grow: true
+                border: "all"
+                border_size: 5
+                text_box: {
+                    definition: "filter"
+                    id: "filter_text"
+                }
+            }
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                toggle_button: {
+                    definition: "default"
+                    id: "filter_with_friends"
+                    label: _ "Friends"
+                }
+            }
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                toggle_button: {
+                    definition: "default"
+                    id: "filter_without_ignored"
+                    label: _ "No ignored"
+                }
+            }
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                toggle_button: {
+                    definition: "default"
+                    id: "filter_vacant_slots"
+                    label: _ "Vacant slots"
+                }
+            }
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+                toggle_button: {
+                    definition: "default"
+                    id: "filter_invert"
+                    label: _ "Invert filter"
+                }
+            }
+        }
+    }
+}
+
+_GUI_CONTROL_AREA = () -> {
+    grid: {
+        row: {
+            column: {
+                horizontal_grow: true
+                grid: {
+                    row: {
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "quit"
+                                definition: "large"
+                                label: _ "Log Out"
+                            }
+                        }
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "refresh"
+                                definition: "large"
+                                label: _ "Refresh"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        row: {
+            column: {
+                horizontal_grow: true
+                grid: {
+                    row: {
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "create"
+                                definition: "large"
+                                label: _ "Create Game"
+                            }
+                        }
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "show_preferences"
+                                definition: "large"
+                                label: _ "Preferences"
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        row: {
+            column: {
+                horizontal_grow: true
+                grid: {
+                    row: {
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "join_global"
+                                definition: "large"
+                                label: _ "Join"
+                            }
+                        }
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            button: {
+                                id: "observe_global"
+                                definition: "large"
+                                label: _ "Observe"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        row: {
+            column: {
+                border: "left,right,top"
+                border_size: 5
+                horizontal_grow: true
+
+                menu_button: {
+                    id: "replay_options"
+                    definition: "default"
+
+                    option: {
+                        label: _ "Normal Replays"
+                    }
+
+                    option: {
+                        label: _ "Quick Replays"
+                        tooltip: _ "Skip quickly to the active turn when observing"
+                    }
+
+                    option: {
+                        label: _ "Enter Blindfolded"
+                        tooltip: _ "Do not show the map until given control of a side"
+                    }
+                }
+            }
+        }
+        <GUI_HORIZONTAL_SPACER_LINE!
+        row: {
+            grow_factor: 1
+            column: {
+                border: "top"
+                border_size: 5
+                horizontal_grow: true
+                vertical_grow: true
+                <PLAYERLISTBOX!
+            }
+        }
+    }
+}
+
+Window{
+    id: "mp_lobby"
+    description: "Lobby screen."
+    resolution: {
+
+        window_height: 600
+
+        definition: "borderless"
+        <GUI_WINDOW_FULLSCREEN!
+        tooltip: {
+            id: "tooltip"
+        }
+        helptip: {
+            id: "tooltip"
+        }
+        grid: {
+            row: {
+                grow_factor: 0
+                column: {
+                    horizontal_grow: true
+                    grid: {
+                        row: {
+                            grow_factor: 0
+                            column: {
+                                grow_factor: 1
+                                horizontal_alignment: "left"
+                                border: "all"
+                                border_size: 5
+                                label: {
+                                    definition: "title"
+                                    label: _ "Multiplayer Lobby"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "left,right,top"
+                                horizontal_alignment: "right"
+                                border_size: 5
+                                button: {
+                                    id: "refresh"
+                                    definition: "default"
+                                    label: _ "Refresh"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                horizontal_alignment: "right"
+                                border: "left,right,top"
+                                border_size: 5
+                                button: {
+                                    id: "quit"
+                                    definition: "default"
+                                    label: _ "Log Out"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            row: {
+                grow_factor: 0
+                column: {
+                    horizontal_grow: true
+                    grid: {
+                        row: {
+                            grow_factor: 0
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                horizontal_alignment: "left"
+                                border_size: 5
+                                button: {
+                                    id: "show_preferences"
+                                    definition: "default"
+                                    label: _ "Preferences"
+                                }
+                            }
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                horizontal_alignment: "right"
+                                border_size: 5
+                                button: {
+                                    id: "create"
+                                    definition: "default"
+                                    label: _ "Create Game"
+                                }
+                            }
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                horizontal_alignment: "right"
+                                border_size: 5
+                                button: {
+                                    id: "join_global"
+                                    definition: "default"
+                                    label: _ "Join"
+                                }
+                            }
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                horizontal_alignment: "right"
+                                border_size: 5
+                                button: {
+                                    id: "observe_global"
+                                    definition: "default"
+                                    label: _ "Observe"
+                                }
+                            }
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                menu_button: {
+                                    id: "replay_options"
+                                    definition: "default"
+
+                                    option: {
+                                        label: _ "Normal Replays"
+                                    }
+
+                                    option: {
+                                        label: _ "Quick Replays"
+                                        tooltip: _ "Skip quickly to the active turn when observing"
+                                    }
+
+                                    option: {
+                                        label: _ "Enter Blindfolded"
+                                        tooltip: _ "Do not show the map until given control of a side"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            row: {
+                grow_factor: 0
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+                    border: "all"
+                    border_size: 5
+                    <GUI_FORCE_WIDGET_MINIMUM_SIZE(0, "((screen_height * 35) / 100)", {
+                            <GAMELISTBOX!
+                    })
+                }
+            }
+            row: {
+                grow_factor: 0
+                column: {
+                    horizontal_grow: true
+                    <_GUI_FILTER_AREA!
+                }
+            }
+            <GUI_HORIZONTAL_SPACER_LINE!
+            row: {
+                grow_factor: 1
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+                    <GUI_FORCE_WIDGET_SIZE(0, "((screen_height * 20) / 100)", {
+                            grid: {
+                                row: {
+                                    grow_factor: 1
+                                    column: {
+                                        grow_factor: 1
+                                        horizontal_grow: true
+                                        vertical_grow: true
+                                        chatbox: {
+                                            id: "chat"
+                                        }
+                                    }
+                                    column: {
+                                        grow_factor: 0
+                                        border: "top"
+                                        border_size: 5
+                                        horizontal_grow: true
+                                        vertical_grow: true
+                                        <PLAYERLISTBOX!
+                                    }
+                                }
+                            }
+                    })
+                }
+            }
+        }
+    }
+    resolution: {
+
+        window_height: 660
+
+        definition: "borderless"
+        <GUI_WINDOW_FULLSCREEN!
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+            row: {
+                grow_factor: 0
+                column: {
+                    grow_factor: 1
+                    horizontal_alignment: "left"
+                    border: "all"
+                    border_size: 5
+                    label: {
+                        definition: "title"
+                        label: _ "Multiplayer Lobby"
+                    }
+                }
+            }
+            row: {
+                grow_factor: 1
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+                    grid: {
+                        row: {
+                            column: {
+                                grow_factor: 1
+                                vertical_grow: true
+                                horizontal_grow: true
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 0
+                                        column: {
+                                            vertical_grow: true
+                                            horizontal_grow: true
+                                            <_GUI_FILTER_AREA!
+                                        }
+                                    }
+
+--{GUI_HORIZONTAL_SPACER_LINE}
+
+                                    row: {
+                                        grow_factor: 1
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            <GAMELISTBOX!
+                                        }
+                                    }
+
+                                    <GUI_HORIZONTAL_SPACER_LINE!
+
+                                    row: {
+                                        grow_factor: 0
+                                        column: {
+                                            horizontal_grow: true
+                                            vertical_grow: true
+                                            <GUI_FORCE_WIDGET_SIZE(0, "((screen_height * 25 / 100))", {
+                                                    chatbox: {
+                                                        id: "chat"
+                                                    }
+                                            })
+                                        }
+                                    }
+                                }
+                            }
+                            column: {
+                                vertical_grow: true
+
+                                <_GUI_CONTROL_AREA!
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+_GUI_CONTROL_AREA = nil
+_GUI_FILTER_AREA = nil
+GAMELISTBOX = nil
+PLAYERLISTBOX = nil

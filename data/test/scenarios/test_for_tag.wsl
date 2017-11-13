@@ -1,0 +1,92 @@
+-- [for] executes once with all for_defaults
+
+GENERIC_UNIT_TEST("for_defaults", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 1))
+        }
+})
+
+GENERIC_UNIT_TEST("for_start2", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    start: 2
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 1))
+        }
+})
+
+GENERIC_UNIT_TEST("for_end2", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    end: 2
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 3))
+        }
+})
+
+GENERIC_UNIT_TEST("for_end2_step2", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    end: 2
+                    step: 2
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 2))
+        }
+})
+
+GENERIC_UNIT_TEST("for_end-2", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    end: -2
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 0))
+        }
+})
+
+GENERIC_UNIT_TEST("for_end-2_step-2", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("count", 0)
+                For{
+                    end: -2
+                    step: -2
+                    do: ->
+                        VARIABLE_OP("count", "add", 1)
+                    
+                }
+                RETURN(VARIABLE_CONDITIONAL("count", "equals", 2))
+        }
+})

@@ -1,0 +1,16 @@
+--textdomain wesnoth-trow
+
+ABILITY_DISTRACT = () -> {
+    skirmisher: {
+        id: "distract"
+        name: _ "distract"
+        description: _ "This unit negates enemy Zones of Control around itself for allied units (but not for itself)."
+        affect_self: false
+        affect_allies: true
+        affect_adjacent: {
+        }
+    }
+}
+
+SPECIAL_NOTES_DISTRACT = () -> {
+err: ../attic/data/campaigns/The_Rise_Of_Wesnoth/utils/trow-abilities.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)

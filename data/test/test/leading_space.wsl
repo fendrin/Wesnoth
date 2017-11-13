@@ -1,0 +1,4 @@
+--textdomain wesnoth-test
+Test_Lead_Space{
+    space: "empty char in middle"
+}

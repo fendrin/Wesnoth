@@ -1,0 +1,446 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to display terrain graphics layers
+----
+
+_GUI_LAYER_LIST = () -> {
+    listbox: {
+        id: "layer_list"
+        definition: "default"
+
+        header: {
+
+            row: {
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "#"
+                        definition: "default_small"
+                        linked_group: "index"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Image"
+                        definition: "default_small"
+                        linked_group: "image_used"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Name"
+                        definition: "default_small"
+                        linked_group: "full_image_and_name"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Loc"
+                        definition: "default_small"
+                        linked_group: "loc"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Layer"
+                        definition: "default_small"
+                        linked_group: "layer"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Base.x"
+                        definition: "default_small"
+                        linked_group: "base_x"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Base.y"
+                        definition: "default_small"
+                        linked_group: "base_y"
+                    }
+                }
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        label: _ "Center"
+                        definition: "default_small"
+                        linked_group: "center"
+                    }
+                }
+
+            }
+
+        }
+
+        list_definition: {
+
+            row: {
+
+                column: {
+                    vertical_grow: true
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+
+                        grid: {
+
+                            row: {
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "index"
+                                        definition: "default"
+                                        linked_group: "index"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    image: {
+                                        id: "image_used"
+                                        definition: "default"
+                                        linked_group: "image_used"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    grid: {
+                                        linked_group: "full_image_and_name"
+
+                                        row: {
+
+                                            column: {
+                                                grow_factor: 0
+                                                horizontal_grow: true
+
+                                                image: {
+                                                    id: "image_full"
+                                                    definition: "default"
+                                                }
+                                            }
+
+                                            column: {
+                                                grow_factor: 1
+                                                border: "all"
+                                                border_size: 5
+                                                horizontal_grow: true
+
+                                                label: {
+                                                    id: "name"
+                                                    definition: "default_small"
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "loc"
+                                        definition: "default_small"
+                                        linked_group: "loc"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "layer"
+                                        definition: "default_small"
+                                        linked_group: "layer"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "base_x"
+                                        definition: "default_small"
+                                        linked_group: "base_x"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "base_y"
+                                        definition: "default_small"
+                                        linked_group: "base_y"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "center"
+                                        definition: "default_small"
+                                        linked_group: "center"
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "terrain_layers"
+    description: "Terrain layers dialog."
+
+    resolution: {
+        definition: "default"
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        maximum_height: 600
+
+        linked_group: {
+            id: "index"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "image_used"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "full_image_and_name"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "loc"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "layer"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "base_x"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "base_y"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "center"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        definition: "title"
+                        label: _ "Terrain Layers"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_LAYER_LIST!
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            label: {
+                                                label: _ "Flags"
+                                                definition: "default"
+                                            }
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            grow_factor: 0
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            label: {
+                                                id: "flags"
+                                                definition: "default"
+                                                wrap: true
+                                            }
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 0
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "right"
+
+                    button: {
+                        id: "ok"
+                        definition: "default"
+                        label: _ "Close"
+                    }
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_LAYER_LIST = nil

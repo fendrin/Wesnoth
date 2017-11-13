@@ -1,0 +1,583 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "20_Return_of_the_Fleet"
+    name: _ "Return of the Fleet"
+    next_scenario: "21_The_Plan"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/20_Return_of_the_Fleet.map"
+
+    <TURNS(45, 42, 39)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("northerners.ogg")
+
+-- No story
+    <TROW_GC_TRACK(JOURNEY_20_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        side: 1
+        type: "Noble Commander"
+        unrenamable: true
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(1, 5)
+
+    side: {
+        type: "Draug"
+        id: "General Heravan"
+        name: _ "General Heravan"
+        side: 2
+        canrecruit: true
+        <GOLD(130, 170, 210)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <if EASY then {
+            recruit: {"Skeleton", "Skeleton Archer", "Vampire Bat"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Revenant", "Deathblade", "Bone Shooter", "Skeleton", "Skeleton Archer", "Vampire Bat"}
+        }
+
+        <if HARD then {
+            recruit: {"Revenant", "Deathblade", "Bone Shooter", "Skeleton", "Skeleton Archer", "Vampire Bat", "Chocobone"}
+        }
+
+        ai: {
+            <NO_SCOUTS!
+            passive_leader: true
+            recruitment_pattern: {"scout", "fighter", "archer"}
+            aggression: 0.4
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.7
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(2, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Halg"
+        name: _ "Tan-Halg"
+        side: 3
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Troll Whelp", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Troll Whelp", "Troll", "Troll Rocklobber", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(170, 210, 250)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(3, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Rinak"
+        name: _ "Tan-Rinak"
+        profile: "portraits/orcs/grunt.png"
+        side: 4
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Troll Whelp", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Troll Whelp", "Troll", "Troll Rocklobber", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Troll Whelp", "Troll", "Troll Warrior", "Troll Rocklobber", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(170, 210, 250)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(4, 10)
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>red)", 10, 27)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>red)", 7, 30)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>red)", 6, 33)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>red)", 5, 36)
+
+            PLACE_IMAGE("scenery/signpost.png", 10, 34)
+
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+            Recall{
+                id: "Sir Ladoc"
+            }
+            Recall{
+                id: "Minister Edren"
+            }
+            Recall{
+                id: "Commander Aethyr"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                    show_if: {
+-- Don't show if she's not back yet
+                        have_unit: {
+                            id: "Lady Jessene"
+                        }
+                    }
+                }
+                objective: {
+                    description: _ "Death of Aethyr"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Haldric reaches the site where the fleet is due to return. Several ships have already docked. The orcs are on the frontier."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Sir, some ships have landed... They look like they’ve been damaged by the voyage. Hmm, it seems that most of the ships are staying at sea."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "They’ve undoubtedly spotted the smoke from the orcish fires. We have to defeat these monsters before everybody starves at sea, or before Jevyan launches an attack with his fleet."
+                image: "portraits/haldric-annoyed.png"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Yes sir! The rest of the refugees have fled south, to our initial landing site. But if we fail here they’ll doubtless be slaughtered."
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Well, that settles it. Enough talking, time to fight!"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "For the glory of the men of the Green Isle!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "No, for the glory of all of the people of the west-north! Charge!"
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Tan-Rinak"
+                message: _ "Bah! Puny human-worm, we will stomp you under our heels!"
+            }
+            Message{
+                speaker: "General Heravan"
+                message: _ "—And raise your dead to serve us forever!"
+            }
+    }
+
+    event: {
+        name: "turn 5"
+        do: ->
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 2
+                x: {29, 28, 28}
+                y: {1, 1, 2}
+            }
+
+            LIVING_INTEL("Familiar", "Familiar", _ "Familiar", "portraits/familiar.png", 2, 28, 2)
+
+            Move_Unit_Fake{
+                type: "Ancient Lich"
+                side: 2
+                x: {25, 25, 25}
+                y: {1, 2, 2}
+            }
+
+            UNDEAD_INTEL("Ancient Lich", "Lich-Lord Jevyan", _ "Lich-Lord Jevyan", "portraits/jevyan.png", 2, 25, 2)
+-- wmllint: whofield clear UNDEAD_INTEL
+
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Give up, boy! You can’t defeat me— Hmm, what’s this? You’ve learned to conceal the power of the Ruby of Fire. It makes little difference, your undead corpse will lay it at my feet."
+            }
+            Message{
+                speaker: "Prince Haldric"
+-- wmllint: local spelling un-life
+                message: _ "We’ll see about that. The Fool Prince of Southbay was wrong to start this war, but you’re the real monster! You sacrificed your own people to preserve your immortal un-life."
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Enough of this. A curse of darkness upon you, young prince."
+            }
+
+            Kill{
+                id: "Lich-Lord Jevyan"
+            }
+
+            Move_Unit_Fake{
+                type: "Ancient Lich"
+                side: 2
+                x: {25, 25, 25}
+                y: {2, 2, 1}
+            }
+
+            LOYAL_UNIT(4, "Chocobone", 1, 18)
+            LOYAL_UNIT(4, "Chocobone", 1, 19)
+            LOYAL_UNIT(4, "Chocobone", 1, 20)
+            if NORMAL
+                LOYAL_UNIT(3, "Chocobone", 1, 21)
+            
+
+            if HARD
+                LOYAL_UNIT(3, "Chocobone", 1, 21)
+                LOYAL_UNIT(3, "Chocobone", 1, 22)
+            
+
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Clack!</i>"
+            }
+
+            Kill{
+                id: "Familiar"
+            }
+
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 2
+                x: {28, 28, 29}
+                y: {2, 1, 1}
+            }
+
+            Modify_Side{
+                side: 1
+                fog: true
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Scroll_To_Unit{
+                id: "Prince Haldric"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "I see masts on the horizon. Jevyan’s fleet is here! It’s all over."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 10
+            y: 34
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Please Disembark in an Orderly Fashion and Proceed South"
+                image: "scenery/signpost.png"
+            }
+            Message{
+                speaker: "unit"
+                message: _ "Hmm, they left off the ‘or the orcs will eat you’ part."
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "turn 7"
+        do: ->
+            Move_Unit_Fake{
+                type: jessica_store.type
+                side: 1
+                x: {16, 15, 14, 14}
+                y: {40, 40, 39, 38}
+            }
+
+            Unstore_Unit{
+                variable: "jessica_store"
+                find_vacant: true
+                x: 14, y: 38
+            }
+
+            CLEAR_VARIABLE("jessica_store")
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "I’m back, things went well! Haldric, I sure hope you know what you’re doing."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Umm, we’ll talk about it later. I’m just a little busy at the moment. I’m glad you made it back in one piece."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Yes, it looks like you could use all of the help you can get."
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve defeated Jevyan’s forces. The ships must disembark their passengers quickly—"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Haldric, what’s going on? What’s the plan?"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’re going to confront Jevyan and destroy him."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "That will be easier said than done. Even if we defeat him, the other Lich-Lords will follow. It’s because of that ruby. If I were paranoid I’d say that our dear old ‘tree-friend’ might have known as much."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We should discuss this in private. Here, come with me."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 1
+
+            filter_location: {
+                x: 11, y: 17
+                radius: 10
+            }
+        }
+
+--No campaign is complete without a cuttlefish
+        do: ->
+            LOYAL_UNIT(3, "Cuttle Fish", 11, 17)
+            if NORMAL
+                LOYAL_UNIT(3, "Cuttle Fish", 11, 18)
+            
+
+            if HARD
+                LOYAL_UNIT(3, "Cuttle Fish", 11, 18)
+                LOYAL_UNIT(3, "Cuttle Fish", 12, 16)
+            
+
+            CLEAR_FOG(1, 12, 17, 2)
+
+            Message{
+                type: "Cuttle Fish"
+                message: _ "<i>Slurp, click, click, click!</i>"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I don’t know what that is, but it doesn’t sound friendly."
+            }
+
+            UNCLEAR_FOG!
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 1
+
+            filter_location: {
+                x: 34, y: 15
+                radius: 10
+            }
+        }
+        do: ->
+            NAMED_LOYAL_UNIT(4, "Saurian Flanker", 34, 14, "Flixta", _ "Flixta")
+            LOYAL_UNIT(4, "Saurian Oracle", 34, 16)
+            LOYAL_UNIT(4, "Saurian Soothsayer", 33, 16)
+            if NORMAL
+                LOYAL_UNIT(4, "Saurian Skirmisher", 35, 15)
+                LOYAL_UNIT(4, "Saurian Skirmisher", 33, 15)
+            
+
+            if HARD
+                LOYAL_UNIT(4, "Saurian Skirmisher", 35, 15)
+                LOYAL_UNIT(4, "Saurian Skirmisher", 34, 16)
+                LOYAL_UNIT(4, "Saurian Skirmisher", 33, 15)
+            
+
+            CLEAR_FOG(1, 34, 15, 2)
+
+            Message{
+                speaker: "Flixta"
+                message: _ "You again! You will sssuffer for your attack against my people! Shek’kahan, our Naga friendsss— You’ll pay! We have new friends now."   -- wmllint: no spellcheck
+            }
+
+            UNCLEAR_FOG!
+
+            Allow_Recruit{
+                type: "Saurian Skirmisher"
+                side: {3, 4}
+            }
+
+            if HARD
+                Allow_Recruit{
+                    type: {"Saurian Skirmisher", "Saurian Ambusher"}
+                    side: {3, 4}
+                }
+            
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Commander Aethyr"
+        }
+        do: ->
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Oh, to join my family again! Do not mourn my passing."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Tan-Halg"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Tan-Halg"
+                message: _ "My people are like a rock slide, you can run, but we will crush you... Ahhck!"
+            }
+
+            Gold{
+                side: 4
+                amount: 80
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Tan-Rinak"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Tan-Rinak"
+                message: _ "I— I die?"
+            }
+
+            Gold{
+                side: 3
+                amount: 80
+            }
+    }
+}

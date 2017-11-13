@@ -258,8 +258,8 @@ Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu, Uu"
             }
             Message{
                 speaker: "unit"
-                message: "Um, \"friend\"? (Hopefully not \"foe\"....)
-" .. ASIDE("This is the second part of a sighted event.")
+err: ../attic/data/scenario-movethrough.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 261:             message="Um, ""friend""? (Hopefully not ""foe""....)
+err: ../attic/data/scenario-movethrough.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 263: " + {ASIDE ("This is the second part of a sighted event.")}
 
             }
             Allow_Undo{

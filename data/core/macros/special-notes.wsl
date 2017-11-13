@@ -1,0 +1,95 @@
+--textdomain wesnoth-help
+SPECIAL_NOTES = () -> {
+    _ "
+
+Special Notes:"
+
+    SPECIAL_NOTES_SPIRIT: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+        SPECIAL_NOTES_ARCANE: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+            SPECIAL_NOTES_HEALS: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                SPECIAL_NOTES_EXTRA_HEAL: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                    SPECIAL_NOTES_CURES: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                        SPECIAL_NOTES_UNPOISON: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                            SPECIAL_NOTES_REGENERATES: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                SPECIAL_NOTES_STEADFAST: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                    SPECIAL_NOTES_LEADERSHIP: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                        SPECIAL_NOTES_SKIRMISHER: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                            SPECIAL_NOTES_ILLUMINATES: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                SPECIAL_NOTES_TELEPORT: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                    SPECIAL_NOTES_AMBUSH: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                        SPECIAL_NOTES_NIGHTSTALK: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                            SPECIAL_NOTES_CONCEALMENT: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                SPECIAL_NOTES_SUBMERGE: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                    SPECIAL_NOTES_FEEDING: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                        SPECIAL_NOTES_BERSERK: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                            SPECIAL_NOTES_BACKSTAB: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                SPECIAL_NOTES_PLAGUE: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                    SPECIAL_NOTES_SLOW: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                        SPECIAL_NOTES_PETRIFY: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                            SPECIAL_NOTES_MARKSMAN: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                SPECIAL_NOTES_MAGICAL: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                    SPECIAL_NOTES_SWARM: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                        SPECIAL_NOTES_CHARGE: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                            SPECIAL_NOTES_DRAIN: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                SPECIAL_NOTES_FIRSTSTRIKE: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                    SPECIAL_NOTES_POISON: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                        SPECIAL_NOTES_DEFENSE_CAP: () -> {
+err: ../attic/data/core/macros/special-notes.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)

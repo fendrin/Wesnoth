@@ -1,0 +1,115 @@
+--textdomain wesnoth-tsg
+-- Heroes and Allies
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Deoran"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            image: "portraits/deoran-sad.png"
+            message: _ "I have failed my kingdom and duty..."
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Deoran"
+    }
+    do: ->
+        If{
+            variable: {
+                name: "cold_steel_tasted"
+                boolean_not_equals: true
+            }
+
+            then: ->
+                Message{
+                    speaker: "Deoran"
+                    image: "portraits/deoran-mad.png"
+                    message: _ "Taste cold steel!"
+                }
+
+                VARIABLE("cold_steel_tasted", true)
+            
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Ethiliel"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I have lost all helping the humans... Now they will surely perish!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Sir Gerrick"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I have given my all for my kingdom! Avenge me, Deoran!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Minister Hylas"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            image: "portraits/hylas.png"
+            message: _ "Now I will never see Westin free again..."
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Jarek"
+    }
+    do: ->
+        If{
+            have_unit: {
+                id: "Deoran"
+            }
+            then: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "Far from home I fall — but not in vain! Guard our people, Deoran!"
+                }
+            
+            else: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "Far from home I fall — but not in vain!"
+                }
+            
+        }
+}
+
+-- Brigands and Enemies

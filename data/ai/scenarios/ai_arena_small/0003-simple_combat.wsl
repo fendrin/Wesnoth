@@ -1,0 +1,38 @@
+--textdomain wesnoth-ai
+Event{
+    name: "preload"
+    first_time_only: false
+    do: ->
+        Lua{
+            code: [[ register_test('0003-simple_combat','Simple combat test'); ]]
+        }
+}
+
+Event{
+    name: "0003-simple_combat"
+    first_time_only: false
+    do: ->
+        Message{
+            speaker: "narrator"
+            image: "wesnoth-icon.png"
+            message: _ "This situation should test the ability of AI to make an attack..."
+        }
+        Unit{
+            side: 2
+            x: 20, y: 7
+            type: "Dwarvish Berserker"
+        }
+        Unit{
+            side: 3
+            x: 20, y: 5
+            type: "Dark Adept"
+            random_traits: "no"
+            modifications: {
+                <TRAIT_RESILIENT!
+            }
+        }
+        Modify_Side{
+            side: 3
+            switch_ai: test_path_to_idle_ai
+        }
+}

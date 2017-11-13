@@ -1,0 +1,454 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "08_The_Princess_of_Wesnoth"
+    name: _ "The Princess of Wesnoth"
+    map: "campaigns/Heir_To_The_Throne/maps/08_The_Princess_of_Wesnoth.map"
+    <TURNS(31, 28, 25)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "09_The_Valley_of_Death"
+
+    <SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Force Li’sar’s surrender" .. OBJECTIVE_FOOTNOTE(_ "(reduce her hitpoints to 0 or lower)")
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    story: {
+        part: {
+            story: _ "...but one of the orcs survived long enough to send the news to the queen..."
+        }
+        part: {
+            story: _ "...and she sent her most able commander."
+        }
+    }
+
+    <HTTT_TRACK(JOURNEY_08_NEW!)
+
+    label: {
+        x: 20, y: 13
+        text: _ "Elmar’s Crossing"    -- wmllint: no spellcheck
+    }
+
+    label: {
+        x: 21, y: 14
+        text: _ "Elbridge"    -- wmllint: no spellcheck
+    }
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        controller: "human"
+        <GOLD(300, 200, 200)
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Princess"
+        id: "Li'sar"
+        name: _ "Li’sar"
+        profile: "portraits/lisar.png"
+        side: 2
+        canrecruit: true
+        facing: "sw"
+
+        <GOLD(140, 190, 280)
+        <INCOME(4, 8, 12)
+
+        recruit: {"Spearman", "Mage", "Bowman", "Fencer", "Cavalryman", "Swordsman", "Red Mage", "Pikeman", "Javelineer", "Longbowman", "Duelist"}
+
+        ai: {
+            passive_leader: true
+--she’s a smart leader and thinks deeply
+            <ATTACK_DEPTH(4, 5, 5)
+            goal: {
+                name: "target"
+-- While assassins target Konrad, all other units target Delfador
+                criteria: {
+                    id: "Delfador"
+                }
+                value: 9.0
+            }
+            leader_value: 6.0
+
+            aspect: {
+                id: "recruitment_instructions"
+
+                facet: {
+                    value: {
+                        recruit: {
+                            type: "Cavalryman"
+                            number: 1
+                            importance: 4
+                            blocker: false
+                        }
+                        recruit: {
+                            type: "Duelist"
+                            number: 1
+                            importance: 3
+                            blocker: false
+                        }
+                        recruit: {
+                            type: "Fencer"
+                            number: 1
+                            importance: 2
+                            blocker: false
+                        }
+                        recruit: {
+                            type: {"Spearman", "Mage", "Bowman", "Swordsman", "Red Mage", "Pikeman", "Javelineer", "Longbowman"}
+                            importance: 1
+                        }
+
+                        limit: {
+                            type: "Duelist"
+                            <if EASY then {
+                                max: 1
+                            } else {
+                                max: 2
+                            }
+                        }
+                        limit: {
+                            type: "Fencer"
+                            max: 2
+                        }
+                        limit: {
+                            type: "Cavalryman"
+                            max: 2
+                        }
+                    }
+                }
+            }
+        }
+        team_name: "asheviere"
+        user_team_name: _ "Asheviere"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(2, 16)
+    <STARTING_VILLAGES_AREA(2, 33, 26, 4)
+
+    event: {
+        name: "prestart"
+
+        micro_ai: {
+            side: 2
+            ai_type: "assassin"
+            action: "add"
+
+            filter: {
+                type_adv_tree: "Fencer"
+                role: "target_Konrad"
+            }
+            filter_second: {
+                id: "Konrad"
+            }
+            prefer: {
+                not: {
+                    x: {"1-43", "29-43"}
+                    y: {"1-7", "30-41"}
+                }
+            }
+        }
+
+        micro_ai: {
+            side: 2
+            ai_type: "assassin"
+            action: "add"
+
+            filter: {
+                type_adv_tree: "Fencer"
+                role: "target_Delfador"
+            }
+            filter_second: {
+                id: "Delfador"
+            }
+            prefer: {
+                not: {
+                    x: {"1-43", "29-43"}
+                    y: {"1-7", "30-41"}
+                }
+            }
+        }
+        do: ->
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            STORE_LISAR!
+            Role{
+                role: "Advisor"
+                auto_recall: {}
+
+                type: "Elvish Sylph,Great Mage," .. 
+
+                "Elvish Marshal,Elvish Champion,Elvish Avenger,Elvish Sharpshooter,Elvish Shyde,Elvish Enchantress,Elvish Outrider," .. 
+                "Paladin,Grand Knight," .. 
+                "Mage of Light,Arch Mage,Silver Mage," .. 
+                "Merman Triton,Merman Hoplite,Merman Javelineer,Merman Entangler,Mermaid Diviner,Mermaid Siren," .. 
+                "Highwayman,Fugitive,Huntsman,Ranger," .. 
+                "Assassin," .. 
+
+                "Elvish Captain,Elvish Hero,Elvish Ranger,Elvish Marksman,Elvish Druid,Elvish Sorceress,Elvish Rider," .. 
+                "Knight,Lancer," .. 
+                "White Mage,Red Mage," .. 
+                "Merman Warrior,Merman Spearman,Merman Netcaster,Mermaid Priestess,Mermaid Enchantress," .. 
+                "Bandit,Outlaw,Trapper," .. 
+                "Rogue," .. 
+
+                "Elvish Fighter,Elvish Archer,Elvish Shaman,Elvish Scout," .. 
+                "Horseman," .. 
+                "Mage," .. 
+                "Merman Fighter,Merman Hunter,Mermaid Initiate," .. 
+                "Thug,Footpad,Poacher," .. 
+                "Thief"
+                else: ->
+                    Unit{
+                        side: 1
+                        type: "Elvish Fighter"
+                        role: "Advisor"
+                        placement: "leader"
+                    }
+                
+            }
+    }
+
+-- The assassins target Konrad, except if they have a chance to hit Delfador
+    event: {
+        name: "side 2 turn"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    side: 2
+                    type_adv_tree: "Fencer"
+                }
+
+                kill: false
+                variable: "assassins"
+            }
+
+            For{
+                array: "assassins"
+
+                do: ->
+                    Store_Reachable_Locations{
+                        filter: {
+                            id: assassins[i].id
+                        }
+
+                        range: "attack"
+                        moves: "max"
+                        variable: "assassin_reach"
+                    }
+
+                    If{
+                        have_unit: {
+                            id: "Delfador"
+
+                            filter_location: {
+                                find_in: "assassin_reach"
+                            }
+                        }
+
+                        then: ->
+                            MODIFY_UNIT({id: assassins[i].id}, "role", "target_Delfador")
+                        
+
+                        else: ->
+                            MODIFY_UNIT({id: assassins[i].id}, "role", "target_Konrad")
+                        
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("assassins,assassin_reach")
+    }
+
+-- Makes assassins more effective by ensuring they're all quick
+    event: {
+        name: "recruit"
+        first_time_only: false
+
+        filter: {
+            side: 2
+            type: {"Fencer", "Duelist"}
+        }
+        do: ->
+            Unit{
+                x: x1, y: y1
+                side: 2
+                type: unit.type
+                placement: "map_overwrite"
+                moves: 0
+                attacks_left: 0
+                modifications: {
+                    <TRAIT_QUICK!
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "On the road to Knalga, the party was opposed by the forces of Asheviere."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "The Queen has sent me to stop you, impostor!"
+            }
+            Message{
+                role: "Advisor"
+                message: _ "That’s the princess, Li’sar. The daughter of the Queen, and her successor!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "I’m no impostor. It seems that your mother has lied to you."
+            }
+            Message{
+                speaker: "Li'sar"
+                <LISAR_VARIATION("mad")
+                message: _ "This is treason! Your lies will perish with you!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "There is no use in reasoning. She will understand only one thing. To arms!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Li'sar"
+        }
+        do: ->
+            VARIABLE("unit.hitpoints", 1)
+
+            Unstore_Unit{
+                variable: "unit"
+            }
+
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "I surrender! Don’t hurt me, impostor."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "I said before I’m not an impostor, but if you yield, I will spare your life."
+            }
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "Let me go!"
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("concerned")
+                message: _ "Think about the story of the old king. Ask somebody who knew of him."
+            }
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "The old king? I have heard about that, but I know it is not true. My mother told me."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Your mother has lied to you, child. Now I suggest you reconsider, and either join us, or flee as an exile. There will be a great battle soon, and if you are on the wrong side of it, we may not have the opportunity to spare your life a second time."
+            }
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "I am not a child, and I do not want to talk about it! You said you would spare me, so be on your way. The northern road should be safe for you."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Good day then, Princess. Come, men, to the northern road!"
+            }
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "(Ha ha, little do they know just how many undead have wandered the northern road of late. Surely they are doomed!)"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("trap_sprung")
+
+            RESTORE_LISAR!
+    }
+
+    SECOND_WAVE: () -> {
+        <if EASY then {
+            gold: {
+                side: 2
+                amount: 90
+            }
+        }
+
+        <if NORMAL then {
+            gold: {
+                side: 2
+                amount: 120
+            }
+        }
+
+        <if HARD then {
+            gold: {
+                side: 2
+                amount: 150
+            }
+        }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}
+
+SECOND_WAVE = nil

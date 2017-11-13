@@ -1,0 +1,111 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a selectable orb button.
+----
+
+_GUI_ICON = (SIZE, STATE) -> {
+    image: {
+        x: 0
+        y: 0
+        w: SIZE
+        h: SIZE
+        name: "('buttons/misc/orb[state].png~RC(magenta>[icon])' where state = '#{STATE}')"
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, SIZE) -> {
+    resolution: {
+        <RESOLUTION
+
+        min_width: SIZE
+        min_height: SIZE
+
+        default_width: SIZE
+        default_height: SIZE
+
+        max_width: SIZE
+        max_height: SIZE
+
+        text_extra_width: 0
+        text_font_size: 0
+
+        state: {
+            enabled: {
+                draw: {
+                    <_GUI_ICON(SIZE, {})
+                }
+            }
+
+            disabled: {
+                draw: {
+                    <_GUI_ICON(SIZE, {})
+                }
+            }
+
+            focused: {
+                draw: {
+                    <_GUI_ICON(SIZE, "-active")
+                }
+            }
+        }
+
+----
+---- Selected
+----
+
+        state: {
+            enabled: {
+                draw: {
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/misc/orb-pressed-bg.png"
+                    }
+
+                    <_GUI_ICON(SIZE, "-pressed")
+                }
+            }
+
+            disabled: {
+                draw: {
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/misc/orb-pressed-bg.png"
+                    }
+
+                    <_GUI_ICON(SIZE, "-pressed")
+                }
+            }
+
+            focused: {
+                draw: {
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/misc/orb-pressed-bg-active.png"
+                    }
+
+                    <_GUI_ICON(SIZE, "-active")
+                }
+            }
+        }
+
+    }
+}
+
+Toggle_Button_Definition{
+    id: "orb"
+    description: "This toggle button is meant to be used in the select orbs dialog."
+
+    <_GUI_RESOLUTION(GUI_NORMAL__RESOLUTION!, 30)
+}
+
+_GUI_RESOLUTION = nil
+_GUI_ICON = nil

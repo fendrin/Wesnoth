@@ -1,0 +1,34 @@
+MP_UNIT_TEST("test1", {
+        event: {
+            name: "side 1 turn 2"
+            do: ->
+                Chat{
+                    message: "second turn"
+                }
+        }
+
+        event: {
+            name: "side 2 turn 2"
+            do: ->
+                Endlevel{
+                    result: "victory"
+                    next_scenario: "test2"
+
+                    carryover_percentage: 50
+                    carryover_report: false
+                    carryover_add: true
+
+                    linger_mode: true
+                    save: false
+                    replay_save: false
+                }
+        }
+
+        event: {
+            name: "side turn"
+            first_time_only: false
+            do: ->
+                End_Turn{
+                }
+        }
+})

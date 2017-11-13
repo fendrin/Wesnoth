@@ -1,0 +1,282 @@
+--textdomain wesnoth-sota
+
+-- There is one complicated event, but it is described in the code.
+
+Scenario{
+    name: _ "Bandits"
+    map: "campaigns/Secrets_of_the_Ancients/maps/03_Bandits.map"
+
+    id: "03_Bandits"
+    next_scenario: "04_Becalmed"
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/trackless-wilds.jpg"
+                scale: false
+            }
+            story: _ "17 III, 23 YW:
+
+Even with the delay at the graveyard, I reached the outskirts of Llorvin at first light, and it was far behind me when the sun rose above the mountain peaks. I doubt the Academy will be looking for me in the trackless wilds inhabited only by woodcutters, and with my new companions, I feel safe enough to travel during the day. I am heading east and then north towards the docks. A ship should be leaving for Blackwater Port in a few days, and I mean to be on it."
+        }
+        <JOURNEY_PART(3)
+    }
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(35, 35, 35)
+
+    side: {
+        <SIDE_1_ARDONNA!
+        <GOLD(150, 150, 140)
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Bandits"
+        type: "Bandit"
+        id: "Garcyn"
+        name: _ "Garcyn"
+        recruit: {"Thug", "Footpad", "Ruffian", "Poacher"}
+        <GOLD(150, 200, 250)
+        unit: {
+            type: "Outlaw"
+            gender: "female"
+            id: "Mossa"
+            name: _ "Mossa"
+            x: 9, y: 16
+            modifications: {
+                <TRAIT_QUICK!
+                <TRAIT_STRONG!
+            }
+        }
+        <FLAG_VARIANT("knalgan")
+    }
+
+    <STARTING_VILLAGES(2, 7)
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the enemy leader"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_ARDONNA!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Set_Variable{
+                name: "undead_seen"
+                value: false
+            }
+    }
+
+    event: {
+        name: "side 1 turn 1 refresh"
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Mossa"
+                }
+                moves: 0
+                attacks_left: 0
+            }
+    }
+
+-- *************************** PLAY ***************************
+
+    THEY_ARE_UNDEAD: (ID) -> {
+        message: {
+            speaker: ID
+            message: _ "They are not underfed, they’re dead! How can they be dead? They’re horrible!"
+        }
+        message: {
+            speaker: "Garcyn"
+            message: _ "Huh. Well, they’re not the first ugly things we’ve seen in the wilds. Your club crushes bone just fine, so crush them."
+        }
+        message: {
+            speaker: ID
+            message: _ "And there is a white-haired girl."
+        }
+        message: {
+            speaker: "Garcyn"
+            message: _ "She must be in league with the dead, so crush her too."
+        }
+        set_variable: {
+            name: "undead_seen"
+            value: true
+        }
+    }
+
+-- The first time a unit from side 2 gets close to an undead unit, the conversation
+-- above is triggered. This happens no matter which unit is the one that moved.
+-- The next two events control this behavior. The variable undead_seen is to make
+-- sure only one of the events triggers the conversation. It's a lot of work for a
+-- small effect, but it's important to the plot that the average person hasn't ever
+-- seen the undead.
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+-- An outlaw gets close to an undead unit:
+        filter: {
+            side: 2
+        }
+        filter_condition: {
+            variable: {
+                name: "undead_seen"
+                equals: false
+            }
+            and: {
+                have_location: {
+                    and: {
+                        x: x1, y: y1
+                        radius: 3
+                    }
+                    and: {
+                        filter: {
+                            race: "undead"
+                        }
+                    }
+                }
+            }
+        }
+        do: ->
+            THEY_ARE_UNDEAD(unit.id)
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+-- An undead unit gets close to an outlaw:
+        filter: {
+            race: "undead"
+        }
+        filter_condition: {
+            variable: {
+                name: "undead_seen"
+                equals: false
+            }
+        }
+        do: ->
+            Store_Unit{
+                variable: "seen_by"
+                filter: {
+                    side: 2
+                    filter_location: {
+                        x: x1, y: y1
+                        radius: 3
+                    }
+                }
+            }
+
+            If{
+                variable: {
+                    name: "seen_by.length"
+                    greater_than: 0
+                }
+                then: ->
+                    THEY_ARE_UNDEAD(seen_by.id)
+                
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mossa"
+        }
+        do: ->
+            Message{
+                speaker: "Garcyn"
+                message: _ "No!"
+            }
+            Message{
+                speaker: "Garcyn"
+                message: _ "You have earned my wrath, wench. Death will be too good for you!"
+            }
+    }
+
+-- *************************** OPENING / ENDING ***************************
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Mossa"
+                message: _ "What have we here?"
+            }
+            Move_Unit{
+                id: "Mossa"
+                to_x: 5
+                to_y: 7
+            }
+            Message{
+                speaker: "Mossa"
+                message: _ "Prey approaches, dearest. It’s an unusual band, but the ones with weapons look underfed."
+            }
+            Message{
+                speaker: "Garcyn"
+                message: _ "Easy pickings then."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "I think we were just spotted from that hill. Weapons up, my friends. We may be walking into an ambush."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Garcyn"
+        }
+        do: ->
+            Message{
+                speaker: "Garcyn"
+                message: _ "Please! Don’t kill me."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "No? Fine then. I have an idea for another experiment."
+            }
+            Clear_Variable{
+                name: {"undead_seen", "seen_by"}
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Ardonna"
+                message: _ "The ship will surely leave before we can reach it!"
+            }
+    }
+
+    <HERO_DEATHS!
+    <MANAGE_PROFILE!
+
+    THEY_ARE_UNDEAD = nil
+}

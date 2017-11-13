@@ -1,0 +1,440 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "16_Hasty_Alliance"
+    name: _ "Hasty Alliance"
+    map: "campaigns/Heir_To_The_Throne/maps/16_Hasty_Alliance.map"
+    <TURNS(33, 30, 27)
+
+    <DEEP_UNDERGROUND!
+
+    next_scenario: "17_Sceptre_of_Fire"
+
+    <SCENARIO_MUSIC("underground.ogg") -- More in start event
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the enemy leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+--hide Li'sar until she arrives
+            Hide_Unit{
+                x: 12
+                y: 18
+            }
+    }
+
+    story: {
+        part: {
+            story: _ "The last dwarvish settlement far behind them, the party descended into the deepest parts of the hewn caverns. Except for disturbances caused by the occasional goblin, the air in the lower passages was still and tomblike."
+            show_title: false
+        }
+        part: {
+            story: _ "Stepping through a low corridor, Konrad and Delfador emerged from the maze-like catacombs into icy blackness. Darkness seemed to crush them. Lights flickered and went out. Even the staff of the elder mage struggled to produce enough light to see by."
+            show_title: false
+        }
+        part: {
+            story: _ "A cavernous void stretched out ahead, across which no ceiling or walls were visible. Wind howled and whipped over narrow ledges bridging the depths, almost as if animated by powerful nearby magic... and newly awoken evil."
+            show_title: false
+        }
+    }
+
+    <HTTT_TRACK(JOURNEY_16_NEW!)
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Humans"
+        controller: "human"
+        gold: 200
+        shroud: true
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        type: "Princess"
+        id: "Li'sar"
+        name: _ "Li’sar"
+        profile: "portraits/lisar.png"
+        facing: "sw"
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "fighter", "fighter", "mixed fighter"}
+        }
+        recruit: {"Swordsman", "Heavy Infantryman", "Pikeman", "Red Mage", "Ogre"}
+        gold: 400
+        team_name: "elves"
+        user_team_name: _ "Humans"
+        experience: 62
+        <FLAG_VARIANT("loyalist")
+    }
+
+-- Ensure that Li'sar can't get herself killed during the first couple of
+-- turns when the player can't necessarily yet be able to protect her.
+    <FORCE_CHANCE_TO_HIT({side: 3}, {id: "Li'sar"}, 0, {
+            variable: {
+                name: "turn_number"
+                less_than: 5
+            }
+    })
+
+    side: {
+        type: "Troll Warrior"
+        id: "Haaf-Garga"
+        name: _ "Haaf-Garga"
+        side: 3
+        canrecruit: true
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Troll", "Troll Whelp", "Vampire Bat", "Wolf Rider"}
+        } else {
+            recruit: {"Troll", "Troll Warrior", "Blood Bat", "Wolf Rider"}
+        }
+        <GOLD(100, 160, 220)
+        <INCOME(4, 8, 12)
+        ai: {
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        team_name: "evil"
+        user_team_name: _ "Evil"
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            NEED_LISAR({x: "recall", y: "recall"})
+            STORE_LISAR!
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "Where are we? Which way now? I am tired of this darkness!"
+            }
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING!
+                message: _ "I am not sure of the way. Let me think for a moment."
+            }
+
+--Li'sar arrives
+            Move_Unit_Fake{
+                type: "Princess"
+                side: 2
+                x: {14, 12}
+                y: {20, 18}
+            }
+
+            Unhide_Unit{
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 2
+                x: {14, 11}
+                y: {20, 18}
+            }
+
+            Unit{
+                type: "Royal Guard"
+                generate_name: true
+                side: 2
+                x: 11
+                y: 18
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Redraw{
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 2
+                x: {14, 11}
+                y: {20, 19}
+            }
+
+            Unit{
+                type: "Royal Guard"
+                generate_name: true
+                side: 2
+                x: 11
+                y: 19
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Redraw{
+            }
+
+            Message{
+                speaker: "Li'sar"
+                <LISAR_VARIATION("mad")
+                message: _ "En garde!"  -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "What in the world are you doing here?"
+            }
+            Message{
+                speaker: "Li'sar"
+                <LISAR_VARIATION("mad")
+                message: _ "Tracking you down, of course! You have escaped me for the last time!"
+            }
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_VARIATION("mad")
+                message: _ "Foolish girl! We are in the deepest of caverns, probably surrounded by all manner of creatures, and you still want to fight us? You will bring us all to ruin!"
+            }
+            Message{
+                speaker: "Li'sar"
+                <LISAR_VARIATION("mad")
+                message: _ "Don’t try to trick me! I know why you have come here! But I will put an end to you and your treason here. Then I will get the Sceptre, and return to the daylight again!"
+            }
+
+--change the music to being frantic as lots of orcs arrive
+            Music{
+                name: "the_dangerous_symphony.ogg"
+                immediate: true
+                play_once: true
+            }
+            Music{
+                name: "the_deep_path.ogg"
+                append: false
+            }
+            Music{
+                name: "heroes_rite.ogg"
+                append: true
+            }
+            Music{
+                name: "into_the_shadows.ogg"
+                append: true
+            }
+            Music{
+                name: "knalgan_theme.ogg"
+                append: true
+            }
+
+            HASTY_TROLL = (X, Y) -> {
+                <LOYAL_UNIT(3, "Troll", X, Y)
+                redraw: {
+                }
+            }
+            HASTY_GOBLIN_KNIGHT = (X, Y) -> {
+                <LOYAL_UNIT(3, "Goblin Knight", X, Y)
+                redraw: {
+                }
+            }
+
+--alot of enemies arrive
+            Move_Unit_Fake{
+                type: "Troll"
+                side: 3
+                x: {13, 12, 11}
+                y: {16, 16, 16}
+            }
+
+            HASTY_TROLL(11, 16)
+
+            Move_Unit_Fake{
+                type: "Troll"
+                side: 3
+                x: {13, 13}
+                y: {16, 17}
+            }
+
+            HASTY_TROLL(13, 17)
+
+            Move_Unit_Fake{
+                type: "Troll"
+                side: 3
+                x: {15, 14}
+                y: {18, 18}
+            }
+
+            HASTY_TROLL(14, 18)
+
+            Move_Unit_Fake{
+                type: "Goblin Knight"
+                side: 3
+                x: {4, 5, 6}
+                y: {13, 14, 14}
+            }
+
+            HASTY_GOBLIN_KNIGHT(6, 14)
+
+            Move_Unit_Fake{
+                type: "Goblin Knight"
+                side: 3
+                x: {3, 4, 5}
+                y: {16, 16, 16}
+            }
+
+            HASTY_GOBLIN_KNIGHT(5, 16)
+
+            Move_Unit_Fake{
+                type: "Goblin Knight"
+                side: 3
+                x: {7, 8}
+                y: {20, 20}
+            }
+
+            HASTY_GOBLIN_KNIGHT(8, 20)
+
+            Move_Unit_Fake{
+                type: "Troll"
+                side: 3
+                x: {3, 4, 5}
+                y: {14, 14, 15}
+            }
+
+            HASTY_TROLL(5, 15)
+
+            Move_Unit_Fake{
+                type: "Troll"
+                side: 3
+                x: {5, 5, 6}
+                y: {14, 15, 15}
+            }
+
+            HASTY_TROLL(6, 15)
+
+--some more trolls that are behind in the caves
+            HASTY_TROLL(3, 13)
+            HASTY_TROLL(4, 9)
+            HASTY_TROLL(15, 13)
+            HASTY_TROLL(17, 14)
+            HASTY_TROLL(13, 10)
+
+            Message{
+                type: "Goblin Knight"
+                message: _ "Surprise! Die, you sun-lovers!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Now we are surrounded! Do you still want to fight us, Princess? Surely that would lead to doom for us all!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I see we have little choice but to help each other. Let us fight together until we return to the surface. Agreed?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Very well, I promise that you will reach the surface again, or we shall all perish together, Princess."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "But once we escape from this hole, I have a score to settle with you!"
+            }
+    }--end of start event
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "Well, we have helped each other survive so far, Princess. Now let’s continue together. What do you say?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Yes. We agreed to help each other get out of these pits alive, did we not? Let us continue to pool our resources. I pledge to you my gold."
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Thank you, Princess. Come, men. Let us find the Sceptre!"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Li'sar"
+                }
+                side: 1
+                canrecruit: false
+                <IS_HERO!
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+            }
+
+            CLEAR_VARIABLE("stored_Lisar")
+    }
+
+--deaths.cfg only handles death of Li'sar is she’s on side '1', so handle
+--it explicitly here.
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Li'sar"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                <LISAR_VARIATION("defeat")
+                message: _ "I can’t believe it should end like this!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}
+
+HASTY_TROLL = nil
+HASTY_GOBLIN_KNIGHT = nil

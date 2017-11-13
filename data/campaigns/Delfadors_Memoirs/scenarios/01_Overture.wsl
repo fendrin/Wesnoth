@@ -1,0 +1,249 @@
+--textdomain wesnoth-dm
+Scenario{
+    name: _ "Overture"
+    id: "01_Overture"
+    next_scenario: "02_This_Valley_Belongs_to_Me"
+    <MEMOIRS_MAP("01_Overture.map")
+    turns: 1
+    theme: "Cutscene_Minimal"
+    <MORNING!
+
+    <INTRO_AND_SCENARIO_MUSIC("revelation.ogg", "heroes_rite.ogg")
+
+    side: {
+-- wmllint: who YOUNG_DELFADOR is Delfador
+        <YOUNG_DELFADOR!
+        facing: "nw"
+        side: 1
+        save_id: "Player"
+        persistent: true
+        controller: "human"
+        recruit: {"Mage", "Spearman", "Horseman"}
+        team_name: "allies"
+        user_team_name: _ "Mages"
+    }
+
+    side: {
+        type: "Mage of Light"
+        id: "Marshal"
+        name: _ "Marshal"
+        facing: "sw"
+        side: 2
+        canrecruit: false
+        team_name: "allies"
+        user_team_name: _ "Mages"
+        controller: "ai"
+        <NAMED_UNIT(2, "Great Mage", 8, 9, "First Oracle", _ "First Oracle", {ai_special: "guardian", facing: "se", profile: "portraits/oracle1.png"})
+        <NAMED_UNIT(2, "Great Mage", 10, 11, "Second Oracle", _ "Second Oracle", {ai_special: "guardian", facing: "sw", profile: "portraits/oracle2.png"})
+        <NAMED_UNIT(2, "Great Mage", 8, 13, "Third Oracle", _ "Third Oracle", {ai_special: "guardian", facing: "nw", profile: "portraits/oracle3.png"})
+        <NAMED_UNIT(2, "Great Mage", 6, 11, "Fourth Oracle", _ "Fourth Oracle", {ai_special: "guardian", facing: "ne", profile: "portraits/oracle4.png"})
+    }
+
+    story: {
+        part: {
+            story: _ "This is the true story of Delfador the Great from his humble beginnings; the tale of how he became the most famous and powerful of all the mages of Wesnoth."
+        }
+        part: {
+            story: _ "It begins on the Isle of Alduin, at the Academy which trains mages from throughout the Great Continent."
+        }
+        part: {
+            story: _ "After ten years of training, two tests stand between that apprentice and attainment of the degree of Mage:"
+        }
+        part: {
+            story: _ "<i>The New Mage Ceremony</i>"
+        }
+        part: {
+            story: _ "and"
+        }
+        part: {
+            story: _ "<i>The Name Journey</i>"
+        }
+    }
+    <DM_TRACK(SEARCH_STAGE1!)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Unit{
+                <METHOR!
+                facing: "nw"
+                side: 1
+                x: 18, y: 15
+                <IS_HERO!
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Academy of Magic, Isle of Alduin."
+                image: "wesnoth-icon.png"
+            }
+-- wmllint: local spelling thorum restro targa
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+            Message{
+                speaker: "Marshal"
+                message: _ "Come, O aspirant. The Oracles await you."
+            }
+
+-- Delfador's entrance
+            Redraw{}
+            Delay{
+                time: 500
+            }
+            MOVE_UNIT({id: "Delfador"}, 8, 11)
+            Redraw{}
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+-- wmllint: local spelling del dor
+            Message{
+                speaker: "First Oracle"
+                message: _ "The time of peace is passing. Chaos is rising; evil is rooted in the land’s very heart. Darkness is coming soon. The world will be changed. And you will be among the champions of our brotherhood of mages. I give you the first syllable of power, the beginning of your name: DEL"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+            Message{
+                speaker: "Second Oracle"
+                message: _ "You will not be least among those champions. Nay; you will be called <i>“The Great”</i> before your days are through. I give you the second syllable of power, the second part of your name: FA"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+            Message{
+                speaker: "Third Oracle"
+                message: _ "Yes. Peace is broken, but hope is not extinguished. There is always hope. And you will be the father of it. I give you the final syllable of power, the last part of your name: DOR"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+            Message{
+                speaker: "Fourth Oracle"
+                message: _ "After the battle, peace. After the darkness, dawn. From death springs new life. I call the power of the Bright Gods into your name: DELFADOR"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "... thorum restro targa thorum..."
+                image: "items/brazier-lit1.png"
+            }
+            Message{
+                speaker: "Marshal"
+                message: _ "DELFADOR, open your eyes. And open them again!"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ ". ."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "o o"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "O O"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "The light fills me!"
+            }
+            Message{
+                speaker: "First Oracle"
+                message: _ "It is well."
+            }
+            Message{
+                speaker: "Second Oracle"
+                message: _ "It is well."
+            }
+            Message{
+                speaker: "Third Oracle"
+                message: _ "It is well."
+            }
+            Message{
+                speaker: "Fourth Oracle"
+                message: _ "It is well."
+            }
+            Message{
+                speaker: "Marshal"
+                message: _ "Now, go forth!"
+            }
+            Message{
+                speaker: "Marshal"
+                message: _ "Your name journey begins. Methor will lead you from this place."
+            }
+
+-- Methor’s entrance
+            Redraw{}
+            Delay{
+                time: 500
+            }
+            MOVE_UNIT({id: "Methor"}, 9, 10)
+            Redraw{}
+            Delay{
+                time: 500
+            }
+
+-- wmllint: recognize Methor
+            Message{
+                speaker: "Methor"
+                message: _ "But I will not see you to its end, for that is yours alone."
+            }
+
+            MODIFY_UNIT({id: "Delfador"}, "facing", "ne")
+            Redraw{}
+            Delay{
+                time: 250
+            }
+
+            Message{
+                speaker: "Methor"
+                message: _ "Dangers and trials await us. When you have truly claimed the name you have been given, I will depart."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I am ready."
+            }
+
+-- Using separate tags to insure Methor moves first
+            Move_Unit{
+                id: "Methor"
+                to_x: {13, 14, 15, 16, 17, 18, 19, 20}
+                to_y: {15, 15, 16, 15, 16, 15, 16, 16}
+            }
+            Move_Unit{
+                id: "Delfador"
+                to_x: {13, 14, 15, 16, 17, 18, 19}
+                to_y: {15, 15, 16, 15, 16, 15, 16}
+            }
+            Delay{
+                time: 250
+            }
+
+            Endlevel{
+                result: "victory"
+                linger_mode: false
+                carryover_report: false
+
+--result=continue
+            }
+    }
+}

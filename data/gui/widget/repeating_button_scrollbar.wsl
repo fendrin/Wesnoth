@@ -1,0 +1,190 @@
+--textdomain wesnoth-lib
+----
+---- Definition of repeating buttons for scrollbar arrows
+----
+
+_GUI_RESOLUTION = (RESOLUTION, SIZE, IMAGE_OVERLAY, IPF, ALPHA) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: SIZE
+        min_height: SIZE
+
+        default_width: SIZE
+        default_height: SIZE
+
+        max_width: SIZE
+        max_height: SIZE
+
+        state_enabled: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    fill_color: "4, 4, 4, #{ALPHA}"
+                }
+
+                image: {
+                    w: SIZE
+                    h: SIZE
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 35: 					name = {IMAGE_OVERLAY} + ".png{IPF}"
+                }
+
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    fill_color: "4, 4, 4, #{ALPHA}"
+                }
+
+                image: {
+                    w: SIZE
+                    h: SIZE
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 57: 					name = {IMAGE_OVERLAY} + ".png~GS(){IPF}"
+                }
+
+            }
+
+        }
+
+        state_pressed: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    fill_color: "4, 4, 4, #{ALPHA}"
+                }
+
+                image: {
+                    w: SIZE
+                    h: SIZE
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 79: 					name = {IMAGE_OVERLAY} + "-pressed.png{IPF}"
+                }
+
+            }
+
+        }
+
+        state_focused: {
+
+            draw: {
+
+                rectangle: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    fill_color: "4, 4, 4, #{ALPHA}"
+                }
+
+                image: {
+                    w: SIZE
+                    h: SIZE
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 101: 					name = {IMAGE_OVERLAY} + "-active.png{IPF}"
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_DEFINITION = (ID, DESCRIPTION, IMAGE_OVERLAY, IPF, ALPHA) -> {
+    repeating_button_definition: {
+        id: ID
+        description: DESCRIPTION
+
+        <_GUI_RESOLUTION({}, 15, IMAGE_OVERLAY, IPF, ALPHA)
+
+    }
+}
+
+_GUI_DEFINITION!
+    "scrollbar_up_arrow"
+    "Up arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 125: 	("~CROP(4,4,17,17)~ROTATE(-90)")
+    "255"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_down_arrow"
+    "Down arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 133: 	("~CROP(4,4,17,17)~ROTATE(90)")
+    "255"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_left_arrow"
+    "Up arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 141: 	("~CROP(4,4,17,17)~ROTATE(180)")
+    "255"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_right_arrow"
+    "Down arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 149: 	("~CROP(4,4,17,17)")
+    "255"
+)
+
+--
+-- Transparent versions
+--
+
+_GUI_DEFINITION!
+    "scrollbar_up_arrow_transparent"
+    "Up arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 161: 	("~CROP(4,4,17,17)~ROTATE(-90)~O(65%)")
+    "165"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_down_arrow_transparent"
+    "Down arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 169: 	("~CROP(4,4,17,17)~ROTATE(90)~O(65%)")
+    "165"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_left_arrow_transparent"
+    "Up arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 177: 	("~CROP(4,4,17,17)~ROTATE(180)~O(65%)")
+    "165"
+)
+
+_GUI_DEFINITION!
+    "scrollbar_right_arrow_transparent"
+    "Down arrow button for a scrollbar."
+    "icons/arrows/short_arrow_right_25"
+err: ../attic/data/gui/widget/repeating_button_scrollbar.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 185: 	("~CROP(4,4,17,17)~O(65%)")
+    "165"
+)
+
+_GUI_DEFINITION = nil
+_GUI_RESOLUTION = nil

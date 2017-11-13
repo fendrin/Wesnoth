@@ -1,0 +1,679 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "20b_Underground_Channels"
+    name: _ "Underground Channels"
+    map: "campaigns/Heir_To_The_Throne/maps/20b_Underground_Channels.map"
+    <TURNS(80, 70, 60)
+
+    next_scenario: "21_Elven_Council"
+    victory_when_enemies_defeated: false
+
+    <HTTT_TRACK(JOURNEY_20B_NEW!)
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("into_the_shadows.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find the exit from the underground and move Konrad to it"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        <CHECK_VARIABLE("met_wose", true)
+                    }
+                    <BONUS_OBJECTIVE_CAPTION!
+                    description: _ "Help the Wose fend off the undead attack"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        gold: 200
+        fog: true
+        shroud: true
+        share_maps: false
+        share_view: false
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        side: 2
+        type: "Saurian Oracle"
+        id: "Szerkz"
+        name: _ "Szerkz"
+        controller: "ai"
+        canrecruit: true
+        team_name: "drakes"
+        user_team_name: _ "Drakes"
+        recruit: {"Saurian Skirmisher", "Saurian Augur", "Saurian Ambusher", "Saurian Flanker", "Saurian Oracle", "Saurian Soothsayer"}
+        <GOLD(150, 200, 250)
+        <INCOME(10, 15, 20)
+        ai: {
+            <ATTACK_DEPTH(4, 5, 6)
+            passive_leader: true
+        }
+    }
+
+    side: {
+        side: 3
+        type: "Ancient Lich"
+        id: "Muff Argulak"
+        name: _ "Muff Argulak"
+        controller: "ai"
+        canrecruit: true
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        recruit: {"Wraith", "Shadow", "Spectre", "Nightgaunt", "Revenant", "Deathblade", "Draug", "Bone Shooter", "Necrophage", "Banebow"}
+        <GOLD(200, 300, 400)
+        <INCOME(10, 15, 20)
+        ai: {
+            <ATTACK_DEPTH(4, 5, 6)
+            passive_leader: true
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+    side: {
+        side: 4
+        type: "Ancient Wose"
+        id: "Haralamdum"
+        name: _ "Haralamdum"
+        controller: "ai"
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        recruit: {"Wose", "Elder Wose"}
+        <GOLD(150, 100, 70)
+        <INCOME(10, 6, 2)
+        ai: {
+            <ATTACK_DEPTH(6, 5, 4)
+            <if EASY then {
+                passive_leader: true
+            }
+        }
+    }
+
+    side: {
+        side: 5
+        type: "Elvish Sylph"
+        id: "Bona-Melodia"
+        name: _ "Bona-Melodia"
+        controller: "ai"
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Shaman", "Elvish Scout", "Elvish Hero", "Elvish Captain", "Elvish Ranger", "Elvish Marksman", "Elvish Druid", "Elvish Sorceress", "Elvish Rider"}
+        gold: 50
+        ai: {
+            <ATTACK_DEPTH(6, 5, 4)
+            avoid: {
+                not: {
+                    x: {41, 42, "43-44", "45-46", "47-48", "49-50"}
+                    y: {3, 2, "1-3", "1-4", "1-5", "1-6"}
+                }
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            NEED_DELFADOR({placement: "leader"})
+            NEED_LISAR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The party enters the mysterious cave, ready to face the unknown..."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "It is unfortunate that the drakes distrusted us. Keh Ohn seemed noble and powerful, and under different circumstances, might have provided us with some insights about these caves."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "He was just someone who couldn’t handle the power given to him."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "You would do well to learn the lesson he did not."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Move along, elf, unless you enjoy making camp in this dank cave. I, for one, do not!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Indeed..."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Listen, you whose eyes are fair but hide a vacuum, do you think I do not know what power can do to one’s soul? What evils a person is capable of when truth and righteousness are but scrolls that can be rewritten when a queen grows tired of them?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I spent my entire childhood listening to my mother give orders and command armies around. I hid in the throne room as a little girl as she met with her generals. I now know she was having people killed... entire towns of people killed!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I became my mother’s most trusted aide-de-camp. I was sent to quiet the worst of the rebellion. Of course they fought back. I never knew who these people were or why they fought my mother. Konrad, you are lucky. You do not know what Wesnoth has been like these past many years. There is no peace. I have never known peace."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I do know the cup of bitterness poured out on Wesnoth by your mother, child. The land has been torn apart. The elves know this. The orcs know this. Undead can feel it. Large armies of men march across the plains hunting each other, and when no men remain, outsiders will claim Wesnoth as their home."
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("mad")
+                message: _ "Enough! I can listen to no more of this. Princess, you may want to end your mother’s rule, but I will end her life as she ended the life of my father and my brothers. Asheviere’s masterwork of treachery will end, and it will end by my blade!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: {41, 42, "43-44", "45-46", "47-48", "49-50"}
+            y: {3, 2, "1-3", "1-4", "1-5", "1-6"}
+            id: "Konrad"
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Bona-Melodia"
+                }
+                then: ->
+                    Message{
+                        speaker: "Bona-Melodia"
+                        message: _ "Get that vile creature!"
+                    }
+
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "Hold!"
+                    }
+
+                    Message{
+                        speaker: "Bona-Melodia"
+                        message: _ "Milord Kalenz! My apologies. I mistook him for one of those foul lizardmen. How came you to be traveling such paths?"
+                    }
+
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "Change is coming to the human lands. We rush to Elensiria seeking assistance, and the perils of the Longlier presented the quickest route."
+                    }
+
+                    Message{
+                        speaker: "Bona-Melodia"
+                        message: _ "Uradredia has already called a meeting of the Council of Lintanir. You must hurry, for they gather even now."
+                    }
+
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "Then there is little time! Fare well."
+                    }
+                
+                elseif: {
+                    have_unit: {
+                        side: 5
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Kalenz"
+                            message: _ "What is this? Where is your leader?"
+                        }
+
+                        Message{
+                            side: 5
+                            message: _ "We were beset by many foul lizardmen. Alas, Bona-Melodia has fallen."
+                        }
+
+                        Message{
+                            speaker: "Kalenz"
+                            message: _ "This bodes ill for Lintanir. We rush to Elensiria on other matters but will carry word of what has transpired here."
+                        }
+
+                        Message{
+                            side: 5
+                            message: _ "Lord Uradredia has called a meeting of the Council of Lintanir. Rumor is there are greater needs than ours."
+                        }
+
+                        Message{
+                            speaker: "Kalenz"
+                            message: _ "Then we must hurry. Stand fast, we will send reinforcements."
+                        }
+                    
+                }
+                else: ->
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "What is this? Where are the guardians? I see signs of battle everywhere: Saurian footprints, Elvish blood. This bodes ill for Lintanir. We must hurry onward to Elensiria. Quickly, before we, too, are beset."
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+-- This place was virtually empty, but there were notes indicating something more was intended.
+--
+-- Sub-quest: help the wose with the undead (per original notes).
+-- Requirements: the undead and wose leaders must still be alive
+-- Start Trigger: first meeting with any wose
+-- Success Trigger: the death of the undead leader at the hands of side 1; the wose leader must still be alive
+-- Complication: other sides might kill the undead leader first.
+-- Result: a book appears at (1,1)
+-- Effect: taking the book grants movement cost 1 through forest, forest defense 70%, and ambush (like Elvish Ranger)
+-- Only some units can read the book. Those who cannot: Delfador, Elves, Dwarves, Merfolk, Horsemen and Mages.
+--
+-- I chose these effects because we're close to the end, the next scenario (S22) has some large forests but,
+-- thereafter, there is not a lot of use for forest skills, since most of theterritory is open grasslands.
+-- So these effects should not have too large an effect upon the remaining parts of the campaign.
+--
+-- GL-2016JUL
+
+-- Haralamdum is ancient, and his mind does not work well any more. He takes things very slowly and carefully, even for a Wose. He halts and pauses, often searching for something in his memory, using meaningless syllables to fill the gap. The syllables of his name come from the phrase he uses to mean "that is all" or "I am done" which he says often, usually out of frustration with how hasty everyone seems. Nobody alive knows his real name, and he has likely forgotten as well. Feel free to add, move, or remove pauses to break up, or even scatter, his train of thought. For inspiration, think of Asperger Syndrome.
+
+-- For background references, see Delfador's Memoirs, scenario 8 ("Ur Thorodor").
+
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("met_wose", false)
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("book_taken,met_wose")
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Haralamdum"
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "From far in the distance comes the sound of branches snapping, followed by a long, hollow boom. The world goes silent for a moment."
+            }
+
+            Message{
+                speaker: "Kalenz"
+                message: _ "Can you feel it? It is as if the entire forest is stunned! Something has happened and, I fear, not for the good."
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Muff Argulak"
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "A hollow screech echoes throughout the caverns. The air suddenly seems fresher and lighter."
+            }
+
+            If{
+                not: {
+                    <CHECK_VARIABLE("second_unit.side", 1)
+                }
+                then: ->
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "Whatever that was, the world rejoices."
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 4
+        }
+        filter_second: {
+            side: 1
+        }
+        filter_condition: {
+            have_unit: {
+                id: "Muff Argulak"
+            }
+            have_unit: {
+                id: "Haralamdum"
+            }
+        }
+        do: ->
+            If{
+                <CHECK_VARIABLE("unit.id", "Haralamdum")
+                then: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Greetings, Sir Wose. We seek the exit to these caverns."
+                    }
+                    Message{
+                        speaker: "unit"
+                        message: _ "If ... hmm dum ... you could help rid us of these ... alam hurum ... infernal undead, I would be ... alam alam ... look to the north and east ... hmm ... most grateful. Har alam dum."
+                    }
+                
+                else: ->
+-- Intentionally courtly and formal here as a counter-point to the rough going when talking to Haralamdum.
+
+                    Message{
+                        speaker: "unit"
+                        message: _ "Well met, stranger."
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Well met, indeed. We seek the exit to these caverns."
+                    }
+                    Message{
+                        speaker: "unit"
+                        message: _ "Then you should look to the north and east. But, if you would, might we ask your assistance."
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "What aid might we offer?"
+                    }
+                    Message{
+                        speaker: "unit"
+                        message: _ "If you would help rid these caverns of those infernal undead, the Ancient One would be most grateful."
+                    }
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "Ancient one?"
+                    }
+                    Message{
+                        speaker: "unit"
+                        message: _ "Our elder. Called, by some, Haralamdum."
+                    }
+                
+            }
+
+            VARIABLE("met_wose", true)
+            Show_Objectives{}
+
+            Event{
+                name: "die"
+                filter: {
+                    id: "Haralamdum"
+                }
+                do: ->
+                    VARIABLE("met_wose", false)
+            }
+
+            Event{
+                name: "die"
+                filter: {
+                    id: "Muff Argulak"
+                }
+                filter_second: {
+                    not: {
+                        side: 1
+                    }
+                }
+                do: ->
+                    VARIABLE("met_wose", false)
+            }
+
+            Event{
+                name: "die"
+                filter: {
+                    id: "Muff Argulak"
+                }
+                filter_second: {
+                    side: 1
+                }
+                filter_condition: {
+                    <CHECK_VARIABLE("met_wose", true)
+                    have_unit: {
+                        id: "Haralamdum"
+                    }
+                }
+                do: ->
+                    Message{
+                        speaker: "Haralamdum"
+
+                        message: _ "Har hum har ... hmm ... well ... har alam dum ... good."
+                    }
+
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "Those undead will bother you no more, Sir Wose."
+                    }
+
+                    Delay{
+                        time: 2000
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "We still must find the exit from these caverns, Konrad."
+                    }
+
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "Yes, Delfador. I'm afraid we must be going, Sir Wose."
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "Well, I say ... hmm dum har ... young Master Delfador? Harum-alam-alam. So it is! Hmm hmm alam ... how is your head?"
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "My head?"
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+
+-- "just the other day" probably means a few decades ago. To Haralamdum, Ur Thorodor is a very young Wose ... a small, young twig on the end of a new branch of an ancient tree, who has not yet earned the honorific 'Ur'
+
+                        message: _ "Just the other day ... hmm ... I was speaking with that twig ... alam ... alam dum ... Thorodor? Hmm ... yes ... hum ... he said you took a ... alam har ... nasty blow to the head ... hmm ... and he feared you were dead."
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+
+-- Over 50 years ago, probably 52, to be more precise.
+
+                        message: _ "That was many years ago, I'm afraid. Now, we really must be moving along ..."
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "So hasty ... hmm ... there was something ..."
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "Har dum ... oh, yes, the book."
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "Book?"
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "When you asked Thorodor for ... harum ... assistance? Hmm ... hmm ... He thought you meant the book ... har hmm ... but you had rushed off ... alam ... alam dum ... and died before he could tell you I have it."
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "I remember no book."
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "I am sure ... dum hum ... well, the head ... alam lum alam ... yes, it was somewhere around here ... hum dum da dum ... Thorodor thought it ... hmm ... quite important ... lum harum dum ... perhaps near my home stump?"
+                    }
+
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "I am sorry, I remember no book. Now, we really must be off."
+                    }
+
+                    Message{
+                        speaker: "Haralamdum"
+                        message: _ "So hasty. Har alam dum."
+                    }
+
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "The wose silently fade into the forest."
+                    }
+
+                    Kill{
+                        side: 4
+                    }
+
+                    PLACE_IMAGE("items/book4.png", 1, 1)
+                    VARIABLE("book_taken", false)
+                    VARIABLE("met_wose", false)
+
+                    Event{
+                        name: "moveto"
+                        first_time_only: false
+                        filter: {
+                            side: 1
+                            x: 1, y: 1
+                        }
+                        do: ->
+                            If{
+                                not: {
+                                    <CHECK_VARIABLE("book_taken", true)
+                                }
+                                then: ->
+                                    Message{
+                                        speaker: "narrator"
+                                        image: "wesnoth-icon.png"
+                                        message: _ "Should #{unit.name} read the book?"
+                                        option: {
+                                            label: _ "Yes"
+                                            command: ->
+                                                Object{
+                                                    id: "wose_lore"
+                                                    name: _ "Wose Lore"
+                                                    image: "items/book4.png"
+                                                    duration: "forever"
+                                                    description: _ "This massive book is filled with the Lore and Legends of the Wose. Any who read it learn deeply of the ways of the twig and leaf, the tree and the forest."
+                                                    cannot_use_message: _ "The book is filled with meaningless tales of sticks and leaves, and childish stories about trees and forest creatures."
+                                                    filter: {
+                                                        x: 1, y: 1
+                                                        not: { -- Elvish Rangers already know this
+                                                            type_adv_tree: "Elvish Ranger"
+                                                        }
+                                                    }
+                                                    then: ->
+                                                        VARIABLE("book_taken", true)
+                                                        Remove_Item{
+                                                            x: 1, y: 1
+                                                        }
+                                                        Message{
+                                                            speaker: "narrator"
+                                                            image: "wesnoth-icon.png"
+                                                            message: _ "Upon finishing the book, #{unit.name} has a much greater understanding of the forest, its nature and ways, and all the creatures within it. Unfortunately, as the last page was turned, the book crumbled to dust."
+                                                        }
+                                                    
+                                                    effect: {
+                                                        apply_to: "new_ability"
+                                                        abilities: {
+                                                            <ABILITY_AMBUSH!
+                                                        }
+                                                    }
+                                                    effect: {
+                                                        apply_to: "defense"
+                                                        replace: true
+                                                        defense: {
+                                                            forest: 30
+                                                        }
+                                                    }
+                                                    effect: {
+                                                        apply_to: "movement_costs"
+                                                        replace: true
+                                                        movement_costs: {
+                                                            forest: 1
+                                                        }
+                                                    }
+                                                }
+                                            
+                                        }
+                                        option: {
+                                            label: _ "No"
+                                            command: ->
+                                                Allow_Undo{}
+                                            
+                                        }
+                                    }
+                                
+                                else: ->
+                                    Allow_Undo{}
+                                
+                            }
+                    }
+            }
+    }
+}

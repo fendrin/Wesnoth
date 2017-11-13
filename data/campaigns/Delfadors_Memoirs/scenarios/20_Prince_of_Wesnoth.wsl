@@ -1,0 +1,270 @@
+--textdomain wesnoth-dm
+Scenario{
+    id: "20_Prince_of_Wesnoth"
+    name: _ "Prince of Wesnoth"
+    next_scenario: "21_Clash_at_the_Manor"
+    <MEMOIRS_MAP("20_Prince_of_Wesnoth.map")
+    <TURNS(20, 22, 24)
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("nunc_dimittis.ogg", "elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+    story: {
+        part: {
+            show_title: true
+        }
+        part: {
+-- The "generation" is the 26 years between 470YW and 496YW.
+-- Delfador is 54 at this time.
+            story: _ "Following the alliance’s victory and the peace treaty came a period of calm that lasted a generation. The new King had learned to trust Delfador at the battle of Abez Ford, and it was no surprise that Delfador became Garard II’s most valued advisor."
+            delay: 4000
+        }
+        part: {
+            story: _ "The elves knew that with Delfador close to the King, Wesnoth would be a reliable ally. And it was for a while."
+            delay: 4000
+        }
+        part: {
+-- Asheviere marries Garard II in 478.
+            story: _ "But Delfador was not alone in having the King’s ear; there was one yet closer to him. The Queen’s power was rising..."
+            delay: 8000
+            background: "story/httt_story3.jpg"
+        }
+        part: {
+-- Eldred's raid takes place in 496
+            story: _ "One day reports came of Wesnothian forces seizing elvish land on the border. Kalenz gathered a small force and hurried to the disputed country."
+        }
+    }
+    <DM_TRACK(BOOK_STAGE1!)
+
+----- Kalenz's code ----
+--wmllint: validate-off
+    side: {
+-- wmllint: recognize Kalenz
+        recruit: ELVES!
+        side: 1
+        no_leader: true
+        controller: "human"
+        team_name: "allies"
+        user_team_name: _ "Elves"
+        save_id: "Player"
+        persistent: true
+        fog: true
+        unit: {
+            <KALENZ!
+            x: 2
+            y: 19
+            canrecruit: true
+        }
+        <GOLD(130, 100, 100)
+        <FLAG_VARIANT("wood-elvish")
+    }
+--wmllint: validate-on
+
+    <STARTING_VILLAGES_ALL(1)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Recall{
+                id: "Kalenz"
+                x: 2, y: 19
+            }
+
+            DELFADOR_JOINS_ELVES!
+    }
+----- /Kalenz's code
+
+    side: {
+        type: "General"
+        id: "Eldred"
+        name: _ "Eldred"
+        profile: "portraits/eldred.png"
+        facing: "sw"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        team_name: "enemies"
+        user_team_name: _ "Loyalists"
+        recruit: {"Heavy Infantryman", "Spearman", "Bowman", "Cavalryman", "Horseman", "Mage", "Swordsman"}
+        <GOLD(130, 180, 200)
+        <INCOME(0, 2, 2)
+        ai: {
+            recruitment_pattern: {"fighter", "archer", "mixed fighter", "scout"}
+            aggression: 1.0
+            caution: 0.0
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 2
+                    canrecruit: true
+                }
+                value: 3.0
+            }
+        }
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "General"
+        id: "Lowel"
+        name: _ "Lowel"
+        facing: "sw"
+        side: 3
+        canrecruit: true
+        controller: "ai"
+        recruit: {"Heavy Infantryman", "Spearman", "Bowman", "Cavalryman", "Horseman", "Mage", "Thug", "Footpad", "Poacher", "Rogue", "Thief", "Outlaw", "Bandit", "Assassin"}
+        team_name: "enemies"
+        user_team_name: _ "Loyalists"
+        <GOLD(150, 230, 290)
+        ai: {
+            recruitment_pattern: {"fighter", "archer", "mixed fighter", "scout"}
+            aggression: 1.0
+            caution: 0.0
+        }
+        <FLAG_VARIANT("loyalist")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Eldred"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Chantal"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 80
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Chantal"
+            }
+            MODIFY_UNIT({side: 1}, "facing", "ne")
+
+-- remove fog from the generals so they can be seen during the dialog
+            Lift_Fog{
+                filter_side: {
+                    side: 1
+                }
+                x: {34, 31}
+                y: {4, 16}
+                radius: 2
+            }
+
+            Message{
+                id: "Kalenz"
+                message: _ "Generals of Wesnoth: you have attacked defenseless elvish land. You must leave immediately. I am Kalenz, High Lord of the Elves. Delfador the Great will confirm the treaty between us."
+            }
+            Message{
+                id: "Eldred"
+                message: _ "This is elvish land no more. I, Eldred, prince of Wesnoth and heir to the throne, claim it for Wesnoth and Queen Asheviere. Delfador does not rule in Wesnoth!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "I did not want to spill human blood, but this arrogant prince leaves me no other choice."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Eldred"
+        }
+
+-- Keep his unit on the board
+        do: ->
+            MODIFY_UNIT({id: "Eldred"}, "hitpoints", 1)
+            Delay{
+                time: 500
+            }
+
+-- wmllint: recognize Delfador
+            DELFADOR_ARRIVES(26, 20)
+            Move_Unit{
+                id: "Delfador"
+                to_x: {26, 25, 25, 24, 24}
+                to_y: {19, 19, 18, 17, 16}
+            }
+            MODIFY_UNIT({id: "Delfador"}, "facing", "ne")
+
+            Endlevel{
+                result: "victory"
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Scroll_To_Unit{
+                id: "Delfador"
+            }
+
+            DELFADOR_LIGHTNING!
+
+            Message{
+                id: "Delfador"
+                message: _ "Peace, friends! I have been riding nonstop for days to prevent this madness! Eldred, I have direct orders from the King to take you back to the Palace, where you will be reprimanded for your inexcusable actions. Kalenz, the King offers his deepest apologies for these events and promises to do anything in his power to make amends."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Delfador! I am glad to see you. We have no demands on the King, but I believe he should be very careful, for he does not seem to be the only ruler in Wesnoth!"
+            }
+            Message{
+                id: "Chantal"
+                message: _ "Kalenz, I am very worried. There is a cloud of evil swirling around the Royal Palace, and it has more centers than the prince alone. I see dark days ahead..."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "I wonder if the Book of Crelanu is not behind this. The Book is not evil in itself, but the power it gives tends to magnify any evil in the reader’s soul. Delfador, has anyone but you opened its covers since you got it from us?"
+            }
+            Message{
+                id: "Delfador"
+                message: _ "I do not think so. But... Asheviere, Garard’s queen and Eldred’s mother, seemed to be hinting some months ago that I should teach her magery. She ceased all such talk when I did not respond, and I thought it merely the momentary whim of a proud and willful woman."
+            }
+            Message{
+                id: "Chantal"
+                message: _ "I wonder if we have not dangerously misjudged her..."
+            }
+            Message{
+                id: "Delfador"
+                message: _ "It may be so. Now that I think on it, I think I had best return to the Palace more swiftly than I came here, even if I have to kill three horses under me to do it."
+            }
+
+            DELFADOR_TAKES_CONTROL!
+            Modify_Side{
+                side: 1
+                user_team_name: _ "Rebels"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "We are too late! All is lost!"
+            }
+    }
+    <MEMOIRS_DEATHS!
+}

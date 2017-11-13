@@ -1,0 +1,431 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "05_The_Oldwood"
+    name: _ "The Oldwood"
+    next_scenario: "06_Temple_in_the_Deep"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/05_The_Oldwood.map"
+    <TURNS(35, 32, 29)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("suspense.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_05_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 100
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        fog: true
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Gralg"
+        name: _ "Tan-Gralg"
+        profile: "portraits/orcs/grunt-3.png"
+        side: 2
+        canrecruit: true
+        <GOLD(160, 220, 280)
+        ai: {
+            <NO_SCOUTS!
+            <if EASY then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            } else {
+                recruitment_pattern: {"scout", "mixed fighter", "archer"}
+            }
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Goblin Pillager"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Crossbowman", "Goblin Pillager"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Crossbowman", "Orcish Slayer", "Goblin Pillager"}
+        }
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Rugar"
+        name: _ "Tan-Rugar"
+        side: 3
+        canrecruit: true
+        <GOLD(160, 220, 280)
+        ai: {
+            <NO_SCOUTS!
+            <if EASY then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            } else {
+                recruitment_pattern: {"scout", "mixed fighter", "archer"}
+            }
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Goblin Pillager"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Crossbowman", "Goblin Pillager"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Crossbowman", "Orcish Slayer", "Goblin Pillager"}
+        }
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+    }
+
+    side: {
+        side: 4
+        type: "Ancient Wose"
+        id: "Elilmaldur-Rithrandil"
+-- wmllint: directory spelling Elilmaldur-Rithrandil
+        name: _ "Elilmaldur-Rithrandil"
+        profile: "portraits/rithrandil.png"
+        canrecruit: true
+        recruit: "Wose Sapling"
+        <GOLD(160, 100, 60)
+        <INCOME(10, 5, 3)
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            CLEAR_VARIABLE("last_done")
+
+            PLACE_IMAGE("scenery/temple1.png", 23, 22)
+            PLACE_IMAGE("scenery/castle-ruins.png", 5, 5)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 6, 5)
+            PLACE_IMAGE("scenery/castle-ruins.png", 6, 6)
+            PLACE_IMAGE("scenery/castle-ruins3.png", 5, 7)
+            PLACE_IMAGE("scenery/castle-ruins.png", 4, 6)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 4, 5)
+            PLACE_IMAGE("scenery/castle-ruins3.png", 29, 2)
+            PLACE_IMAGE("scenery/castle-ruins.png", 29, 3)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 27, 3)
+            PLACE_IMAGE("scenery/castle-ruins3.png", 27, 2)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 15, 29)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 30)
+            PLACE_IMAGE("scenery/castle-ruins3.png", 13, 30)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 13, 29)
+            PLACE_IMAGE("scenery/castle-ruins.png", 17, 16)
+            PLACE_IMAGE("scenery/castle-ruins3.png", 17, 17)
+            PLACE_IMAGE("scenery/castle-ruins2.png", 15, 17)
+            PLACE_IMAGE("scenery/castle-ruins.png", 15, 16)
+
+            Recall{
+                id: "Lady Outlaw"
+            }
+
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+
+            Recall{
+                id: "Sir Ladoc"
+            }
+
+            Recall{
+                id: "Minister Edren"
+            }
+
+            if EASY
+                GUARD_UNIT("Elder Wose", "Muldondindal", _ "Muldondindal", 4, 10, 18)
+                GUARD_UNIT("Elder Wose", "Landunwonbam", _ "Landunwonbam", 4, 16, 13)
+                GUARD_UNIT("Elder Wose", "Bolwuldelman", _ "Bolwuldelman", 4, 7, 18)
+                GUARD_UNIT("Elder Wose", "Laffalialomdium", _ "Laffalialomdium", 4, 24, 7)
+                GUARD_UNIT("Elder Wose", "Wonrunmaldin", _ "Wonrunmaldin", 4, 16, 22)
+                GUARD_UNIT("Elder Wose", "Lassemista", _ "Lassemista", 4, 23, 6)
+            
+            if NORMAL
+                GUARD_UNIT("Elder Wose", "Muldondindal", _ "Muldondindal", 4, 10, 18)
+                GUARD_UNIT("Elder Wose", "Landunwonbam", _ "Landunwonbam", 4, 16, 13)
+                GUARD_UNIT("Elder Wose", "Bolwuldelman", _ "Bolwuldelman", 4, 7, 18)
+                GUARD_UNIT("Elder Wose", "Laffalialomdium", _ "Laffalialomdium", 4, 24, 7)
+            
+            if HARD
+                GUARD_UNIT("Elder Wose", "Muldondindal", _ "Muldondindal", 4, 10, 18)
+                GUARD_UNIT("Elder Wose", "Landunwonbam", _ "Landunwonbam", 4, 16, 13)
+            
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Elilmaldur-Rithrandil"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Haldric’s band finds itself at the heart of the Oldwood Forest. The road quickly narrows and becomes little more than a path. Branches reach high overhead, blocking almost all of the light... The ominous noises of the deep woods echo all around."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Will this evil forest ever end! There are mosquitoes as big as my fist in here, and these nasty old trees are giving me the creeps."
+                image: "portraits/burin-annoyed.png"
+            }
+            Message{
+                speaker: "Lady Outlaw"
+                message: _ "This isn’t so bad. Haldric’s kind are such a suspicious lot when it comes to these sorts of things."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Quiet. Listen, I think I hear something."
+            }
+
+            CLEAR_FOG(1, 16, 15, 1)
+
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "All I hear are more tree-foes!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "That tree, it speaks! No— No— We are tree-friends, really!"
+                image: "portraits/haldric-surprised.png"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "Your kind has long come with your axes, some tree-friends you are. Still, you seem less of a menace than these new monsters that have come to plague us. They cut the trees, and burn the trees for no reason at all!"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "You claim to be a tree-friend; show it to be true. For we are in dire need, or you may meet your fate with the rest of these monsters."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We will help. " .. WHISPER(_ "quietly^Be careful with the trees.")
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "What? What are you looking at me for?"
+            }
+
+            UNCLEAR_FOG!
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 23
+            y: 22
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "The temple has already been looted, but the entrance to its catacombs seems to be blocked by a wall of magical energy."
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "turn 4"
+        do: ->
+            Message{
+                speaker: "Tan-Rugar"
+                message: _ "Stupid stinking trees, we’ll show you!"
+            }
+    }
+
+    event: {
+        name: "turn 6"
+        do: ->
+            Message{
+                speaker: "Tan-Gralg"
+                message: _ "Chop ’em down. It’s cool in these woods, I think we need a fire!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Elilmaldur-Rithrandil"
+        }
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Without the help of these tree-folk we’ll be trapped in these woods till we die! There will be nothing to hold the orcs back!"
+                image: "portraits/haldric-surprised.png"
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Stupid tree-folk."
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve defeated the orcs!"
+            }
+
+            Modify_Side{
+                side: 4
+                fog: true
+                share_view: true
+            }
+            Redraw{
+                side: 4
+            }
+-- Note: don't merge these two [redraw]s into one without testing
+            Redraw{
+                side: 1
+            }
+
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "On this day you have proved yourself to be a tree-friend. For so long your kind has only come with sharp blades to harm my kind. You come to build these buildings of stone. Our roots may be slow, but they are strong. We will eventually claim all of the stones back for the earth."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Well, I suspect you won’t have to worry about my kind for much longer. The orcs have come, and they are taking this Isle!"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "Hmmmm— my kind were here before your kind, and we will be here after the orcs are gone as well. We were here before all others, and I suspect that we will be here in the end."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Can you help us fight the orcs?"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "My kind are bound to the forest, we would be of little help to you beyond our borders. Maybe we could still be of some aid to you. In a war of your people some time ago one of your kings trapped an evil lich in the catacombs of the temple at the heart of the wood. We were there, we were watching."
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "After we drove your kind off we figured out how to break the spell that holds the Evil in the catacombs, and keeps others from entering them."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "This helps us how?"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "The lich was carrying a powerful artifact. We know, we can feel it. This artifact may aid you in your quest."
+            }
+            Message{
+                speaker: "Lady Outlaw"
+-- wmllint: directory spelling Lenvan
+                message: _ "He must mean the Ruby of Fire. It was our most powerful artifact. We brought it with us from the Old Continent, long ago. We thought it was lost in the war with your people, when Lich-Lord Lenvan fell!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "At this point we need all of the help we can get!"
+            }
+            Message{
+                speaker: "Elilmaldur-Rithrandil"
+                message: _ "Then I will open the catacombs for you..."
+            }
+            If{
+                variable: {
+                    name: "have_lady"
+                    numerical_equals: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Young Prince, while the lich-lords have betrayed us by allying themselves with that orcish scum, I can’t bring myself to fight against one of the greatest leaders of my people."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Lady, why would you let those monsters lead your people?"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Haldric, we are an ancient people who lived in a land filled with all manner of man and beast. We needed vision that extended beyond the meager span of human years. The art of necromancy allowed our best and brightest to live forever, and our worst got to serve as mindless slaves."
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Other than losing our war in the far West, then our refugee war to your people, and this orc thing, it wasn’t such a bad deal. Lich-Lord Lenvan was one of our greatest leaders. He led our escape to this land. Albeit, after being down in that hole for so long I don’t imagine he’s too happy."
+                    }
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Uh-huh. Have you considered the possibility that the unholy act of turning your best and brightest into undead is what causes them to fall into darkness?"
+                    }
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "We should save the debate for later. I can still be of use to you. I shall scout the road ahead. We need to know if we can make it to Southbay. I’ll return in a few days."
+                    }
+                    Store_Unit{
+                        filter: {
+                            id: "Lady Outlaw"
+                        }
+                        variable: "lady_store"
+                        kill: true
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We have run out of time... We’ll be trapped in these woods until we die!"
+                image: "portraits/haldric-mad.png"
+            }
+    }
+}

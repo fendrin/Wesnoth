@@ -1,0 +1,169 @@
+-- This test scenario checks unit filter [filter_vision],
+-- and terrain_filter [filter_vision]. It tests what happens
+-- when there is a single, there are multiple, or there are
+-- no matches to the standard side filter contained.
+
+TEST_FILTER_VISION_SCEN = (ID, EVENTS) ->
+    Test{
+        name: "Unit Test #{ID}"
+        map: "test/maps/move_skip_sighted.map"
+        turns: 3
+        id: ID
+        random_start_time: false
+        is_unit_test: true
+
+        <DAWN!
+
+        side: {
+            side: 1
+            controller: "human"
+            name: "Alice"
+            type: "Elvish Archer"
+            id: "alice"
+            fog: true
+            team_name: "West"
+            share_vision: "shroud"
+        }
+        side: {
+            side: 2
+            controller: "human"
+            name: "Bob"
+            type: "Orcish Grunt"
+            id: "bob"
+            fog: true
+            team_name: "East"
+            share_vision: "shroud"
+        }
+        side: {
+            side: 3
+            controller: "human"
+            name: "Dave"
+            type: "Dwarvish Fighter"
+            id: "dave"
+            fog: true
+            team_name: "East"
+            share_vision: "shroud"
+        }
+        side: {
+            side: 4
+            controller: "human"
+            name: "Charlie"
+            type: "Chocobone"
+            id: "charlie"
+            fog: true
+            team_name: "West"
+            share_vision: "shroud"
+        }
+
+        <EVENTS
+    }
+
+
+--define chat_if X
+VARIABLE_OP("chat_ctr", "add", 1)
+
+If{
+    <X!
+    then: ->
+        Chat{
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 69:                 message="$chat_ctr" ": yes"
+        }
+    
+    else: ->
+        Chat{
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 74:                 message="$chat_ctr" ": no"
+        }
+    
+}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by define at line 76
+
+--define test_vision_chat X Y
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 81:     {chat_if (
+Have_Unit{
+    <X!
+    filter_vision: {
+        <Y!
+    }
+}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by table at line 85
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 89:     {chat_if (
+Have_Unit{
+    <X!
+    filter_location: {
+        filter_vision: {
+            <Y!
+        }
+    }
+}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by table at line 94
+Delay{
+    time: 500
+}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by define at line 98
+
+--define assert_test_true X Y
+ASSERT({
+        have_unit: {
+            <X!
+            filter_vision: {
+                <Y!
+            }
+        }
+})
+ASSERT({
+        have_unit: {
+            <X!
+            filter_location: {
+                filter_vision: {
+                    <Y!
+                }
+            }
+        }
+})
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by define at line 119
+
+--define assert_test_false X Y
+ASSERT({
+        not: {
+            have_unit: {
+                <X!
+                filter_vision: {
+                    <Y!
+                }
+            }
+        }
+})
+ASSERT({
+        not: {
+            have_unit: {
+                <X!
+                filter_location: {
+                    filter_vision: {
+                        <Y!
+                    }
+                }
+            }
+        }
+})
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by define at line 144
+
+TEST_FILTER_VISION_SCEN("filter_vision", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("chat_ctr", 0)
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 155:         {assert_test_true () (side=1,2,3,4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 156:         {assert_test_true (side=2) (side=1,2,3,4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 157:         {assert_test_true (side=4) (side=1,2,3,4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 158:         {assert_test_true (side=1) (side=4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 159:         {assert_test_true (side=2) (side=4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 160:         {assert_test_true (side=3) (side=4)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 161:         {assert_test_true (side=4) (side=1)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 162:         {assert_test_true (side=4) (side=3)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 163:         {assert_test_false (side=4) (side=2)}
+err: ../attic/data/test/scenarios/filter_vision.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 164:         {assert_test_false () (side=5)}
+
+
+                SUCCEED!
+        }
+})

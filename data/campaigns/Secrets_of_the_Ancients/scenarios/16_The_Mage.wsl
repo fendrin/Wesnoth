@@ -1,0 +1,534 @@
+--textdomain wesnoth-sota
+
+-- Two events in the "play" section are to remove four HP from Ras-Tabahn each turn. (He
+-- is suffering from tuberculosis.) There are some mages who put holy water around
+-- Crelanu. The water destroys undead, but can be removed by living units. It is there
+-- to prevent easy assassination of Crelanu with a few specters.
+
+-- This is slightly hackish since the closer contains VAR_NAME...
+-- wmlindent: opener "{NEAREST_HEX "
+-- wmlindent: closer "location}"
+
+Scenario{
+    name: _ "The Mage"
+    map: "campaigns/Secrets_of_the_Ancients/maps/16_The_Mage.map"
+
+    id: "16_The_Mage"
+    next_scenario: "17_Mortality"
+    victory_when_enemies_defeated: false
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/mountain-pass.jpg"
+                scale: false
+            }
+            story: _ "3 VI, 23 YW
+
+We crossed the high plateaus, and forded the Arkan-thoria. Then we headed up into the mountains again before we found the mage. This was Ras-Tabahn’s plan, and with the goal in sight, he gained a little strength. However, he is quite weak and ill now, and breathing raggedly. I don’t know how much longer he can survive."
+        }
+        <JOURNEY_PART(16)
+    }
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(22, 22, 22)
+
+    side: {
+        <SIDE_1_BOTH!
+        <GOLD(150, 120, 100)
+-- There is only a little bit shrouded in this scenario (in the cave), but
+-- we still need this:
+        shroud: true
+    }
+
+    side: {
+        side: 2
+        type: "Elder Mage"
+        controller: "ai"
+        user_team_name: _ "Crelanu"
+        id: "Crelanu"
+        profile: "portraits/crelanu.png"
+        name: _ "Crelanu"
+        team_name: "bad"
+        recruit: {"Red Mage", "White Mage", "Mage"}
+        <GOLD(140, 200, 230)
+        <INCOME(15, 22, 30)
+        color: "green"  -- To match his color in LoW
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(1, 6)
+    <STARTING_VILLAGES(2, 6)
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Crelanu"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_BOTH!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                note: {
+                    description: _ "Ras-Tabahn is slowed. He will also lose four hitpoints every turn unless this amount is modified by healing."
+                }
+                note: {
+                    description: _ "Moving any unit onto a bottle of holy water will remove the bottle. An undead unit will be destroyed."
+                }
+            }
+
+            Remove_Shroud{
+                side: 1
+            }
+-- For the cave:
+            Place_Shroud{
+                side: 1
+                x: "0-3"
+                y: 24
+            }
+
+            RECALL_LOYAL_UNITS!
+
+            Store_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                variable: "rastabahn_stored"
+            }
+            Set_Variables{
+                name: "rastabahn_stored.status"
+                mode: "merge"
+                value: {
+                    slowed: true
+                }
+            }
+            Unstore_Unit{
+                variable: "rastabahn_stored"
+            }
+    }
+-- *************************** PLAY ***************************
+-- This gives side 2 level-3 units, but gives us control over when they appear.
+-- Their appearance doesn't depend on side 2 saving gold for them either.
+    event: {
+        name: {"side 2 turn 1 refresh", "side 2 turn 5 refresh"}
+        first_time_only: false
+-- He's not paying for these, but hopefully no one will notice!
+        do: ->
+            Unit{
+                type: "Arch Mage"
+                side: 2
+                x: 20, y: 7  -- Otherwise, the first one goes for a village.
+                moves: 0  -- Pretending it was just recruited.
+            }
+    }
+
+-- The next two events take four HP from Ras-Tabahn. If his HP is very low, he needs
+-- to receive any healing (from villages or resting) *first*, or he will die. On the
+-- other hand, if he has a lot of HP, and he is healed first, he will not receive
+-- the full benefit. That is why we need two events. We will also be slowing him at
+-- this time.
+    event: {
+        name: "side 1 turn"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                variable: "rastabahn_stored"
+            }
+            Set_Variable{
+                name: "rastabahn_harmed"
+                value: false
+            }
+            If{
+                variable: {
+                    name: "rastabahn_stored.hitpoints"
+                    greater_than: 4
+                }
+                then: ->
+                    Harm_Unit{
+                        filter: {
+                            id: "Ras-Tabahn"
+                        }
+                        amount: 4
+                        fire_event: true
+                    }
+                    Set_Variable{
+                        name: "rastabahn_harmed"
+                        value: true
+                    }
+                
+-- [else] This will happen in the next event, *after* the refresh.
+            }
+    }
+
+    event: {
+        name: "side 1 turn refresh"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                variable: "rastabahn_stored"
+            }
+            Set_Variables{
+                name: "rastabahn_stored.status"
+                mode: "merge"
+                value: {
+                    slowed: true
+                }
+            }
+            Unstore_Unit{
+                variable: "rastabahn_stored"
+            }
+
+            If{
+                variable: {
+                    name: "rastabahn_harmed"
+                    boolean_not_equals: true
+                }
+                then: ->
+                    Harm_Unit{
+                        filter: {
+                            id: "Ras-Tabahn"
+                        }
+                        amount: 4
+                        fire_event: true
+                    }
+                
+            }
+    }
+
+-- The next two events control the holy water.
+    event: {
+        name: {"recruit", "recall"}
+        filter: {
+            race: "undead"
+        }
+        do: ->
+            Unit{
+                x: 21, y: 7
+                type: "White Mage"
+                name: _ "Ginmera"
+                id: "Ginmera"
+                side: 2
+                modifications: {
+                    <TRAIT_RESILIENT!
+                    <TRAIT_INTELLIGENT!
+                }
+            }
+
+            PLACE_HOLY_WATER = (X, Y) -> {
+                item: {
+                    x: X
+                    y: Y
+                    image: "items/holy-water.png"
+                }
+            }
+
+            PLACE_HOLY_WATER(20, 6)
+            PLACE_HOLY_WATER(20, 5)
+            PLACE_HOLY_WATER(21, 5)
+            PLACE_HOLY_WATER(22, 5)
+            PLACE_HOLY_WATER(22, 6)
+
+            PLACE_HOLY_WATER = nil
+
+            Store_Items{
+                variable: "holy_waters"
+            }
+
+            Message{
+                speaker: "Ginmera"
+                message: _ "It seems that the invaders can raise undead soldiers, so I placed some holy water around the castle for protection."
+            }
+            Unit{
+                x: 21, y: 5
+                type: "White Mage"
+                name: _ "Rinconan"
+                id: "Rinconan"
+                side: 2
+                modifications: {
+                    <TRAIT_RESILIENT!
+                    <TRAIT_STRONG!
+                }
+            }
+            FREEZE_UNIT("Rinconan")
+            FREEZE_UNIT("Ginmera")
+            Message{
+                speaker: "Ginmera"
+                message: _ "Rinconan and I will stay here to guard you."
+            }
+            Message{
+                speaker: "Crelanu"
+                message: _ "Yes. Thank you Ginmera."
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "logo.png"
+                message: _ "Moving a unit onto a bottle of holy water will remove the bottle. A living unit can do this safely, but any undead unit will be destroyed."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            filter_location: {
+                find_in: "holy_waters"
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    x: x1, y: y1
+                    and: {
+                        race: "undead"
+                    }
+                }
+                then: ->
+                    Kill{
+                        x: x1, y: y1
+                        animate: true
+                        fire_event: true
+                    }
+                
+            }
+            Remove_Item{
+                x: x1, y: y1
+            }
+            Store_Items{
+                variable: "holy_waters"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Crelanu"
+        }
+        do: ->
+            THAW_UNIT("Ginmera")
+            THAW_UNIT("Rinconan")
+    }
+
+-- *************************** ENDING / OPENING ***************************
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Crelanu! (<i>Cough, cough</i>) We have come... for your book."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "We need to borrow it."
+            }
+            Message{
+                speaker: "Crelanu"
+                message: _ "Yes, I knew people like you would be coming, but the book is out of reach now — for all of us. I have given it to the elves. Only they know where it is."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Why would you do such a thing?"
+            }
+            Message{
+                speaker: "Crelanu"
+                message: _ "So that one like you would not be tempted to do what you intend. Oh, yes. I know well what you seek."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Then you can tell us what we want to know."
+            }
+            Message{
+                speaker: "Crelanu"
+                message: _ "I shall not."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "We shall see."
+            }
+            Message{
+                speaker: "narrator"
+                image: "logo.png"
+                message: _ "Ras-Tabahn is sick. He is slowed, and will lose four hitpoints every turn. He will die if he reaches zero. Villages will heal him four points, and he will lose only two if he is resting."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Crelanu"
+        }
+
+-- Bring Crelanu back to life, barely:
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Crelanu"
+                }
+                variable: "crelanu_stored"
+                kill: true
+            }
+            Set_Variable{
+                name: "crelanu_stored.hitpoints"
+                value: 1
+            }
+            Unstore_Unit{
+                variable: "crelanu_stored"
+            }
+
+            Message{
+                speaker: "Ardonna"
+                message: _ "Now, you will tell us the secret of immortality or die!"
+            }
+            Message{
+                speaker: "Crelanu"
+                message: _ "There <i>is no secret</i>, you fools! Magic cannot stop aging. You cannot live forever. It is the way of nature, and the greatest thing we have in common with all of creation. You <i>must</i> die, and your soul depart. I would not try this thing for any reason."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "You are the fool, for you have, indeed, told us all we required. For that, I will spare you to live a few more lonely years with your cowardice."
+            }
+
+            Teleport{
+                filter: {
+                    side: 1
+                    canrecruit: true
+                }
+                x: 6, y: 21
+                animate: false
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "I don’t understand. What did Crelanu tell us?"
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "I will explain. Let us get you somewhere safe first. We’ll go into the cave. Come with me."
+            }
+            Move_Unit{
+                id: "Ardonna"
+                to_x: 1
+                to_y: 24
+            }
+            Hide_Unit{
+                id: "Ardonna"
+            }
+-- Move Ardonna out of the way so that Ras-Tabahn can reach this hex too.
+            Teleport{
+                filter: {
+                    id: "Ardonna"
+                }
+                x: 1, y: 22
+                animate: false
+            }
+
+            Move_Unit{
+                id: "Ras-Tabahn"
+                to_x: 1
+                to_y: 24
+            }
+-- Since no side-1 units should be around to see what Crelanu does next,
+-- we'll hide everyone.
+            Hide_Unit{
+                side: 1
+            }
+
+-- Crelanu moves to his keep to recruit a gryphon.
+            Move_Unit{
+                id: "Crelanu"
+                to_x: 21
+                to_y: 6
+            }
+            Store_Unit{
+                filter: {
+                    id: "Crelanu"
+                }
+                variable: "crelanu_stored"
+            }
+
+-- We'd prefer the gryphon to be recruited in a castle hex, so we'll try to
+-- find an empty one.
+            NEAREST_HEX(21, 6, 3, {terrain: "C*"}
+                not: {
+                    filter: {
+                    }
+                }
+                "location}"
+                if: {
+                    variable: {
+                        name: "location.length"
+                        greater_than: 0
+                    }
+                    then: ->
+                        Unit{
+                            type: "Gryphon"
+                            side: 2
+                            x: location.x
+                            y: location.y
+                            animate: true
+                            id: "messenger"
+                        }
+                    
+                    else: ->
+                        Unit{
+                            type: "Gryphon"
+                            side: 2
+                            placement: "leader"
+                            animate: true
+                            id: "messenger"
+                        }
+                    
+                }
+                move_unit: {
+                    id: "messenger"
+                    to_x: 16
+                    to_y: 24
+                }
+                kill: {
+                    id: "messenger"
+                }
+                redraw: {}
+
+                clear_variable: {
+                    name: {"rastabahn_stored", "rastabahn_harmed", "location", "holy_waters"}
+                }
+                endlevel: {
+                    result: "victory"
+                    bonus: true
+                    <NEW_GOLD_CARRYOVER(40)
+                }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/16_The_Mage.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by event at line 510
+
+            event: {
+-- Crelanu should still be there as the scenario ends. The last breath event
+-- is going to remove him, but we stored him so we can put him back.
+                name: "victory"
+                do: ->
+                    Unstore_Unit{
+                        variable: "crelanu_stored"
+                    }
+                    Clear_Variable{
+                        name: "crelanu_stored"
+                    }
+            }
+
+            <HERO_DEATHS!
+            <MANAGE_PROFILE!
+            <KIDS_ADVANCE!
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/16_The_Mage.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: NEAREST_HEX closed by scenario at line 527

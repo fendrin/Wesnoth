@@ -1,0 +1,24 @@
+--textdomain wesnoth-utbs
+Unit_Type{
+    base_unit: {
+        id: "Shadow"
+    }
+    id: "EShadow"
+    name: _ "Ethereal Shadow"
+    movement_costs: {
+        impassable: 1
+    }
+    defense: {
+        impassable: 50
+    }
+    abilities: {
+-- Remove inherited nightstalk
+        hides: {
+            __remove: true
+        }
+    }
+    advances_to: "ENightgaunt"
+    description: _ "When light came into the world and gave form to the unknown, fear was forced to retreat into darkness. Since that day, the shadows of the world have held terror for humanity, though it knows not why.
+
+That is a question which is easily answered by a necromancer."
+}

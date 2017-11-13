@@ -1,0 +1,555 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "08b_The_Tides_of_War"
+
+    name: _ "The Tides of War"
+    next_scenario: "09b_Bandit_Epilogue"
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+
+    map: "campaigns/The_South_Guard/maps/08b_The_Tides_of_War.map"
+
+    <DEFAULT_SCHEDULE_DAWN!
+
+    victory_when_enemies_defeated: true
+    turns: 60
+
+    <TSG_BIGMAP(JOURNEY_08B_NEW!)
+
+-- The South Guard
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+        <CUSTOM_SG_FLAG!
+
+        gold: 200
+        <INCOME(4, 2, 0)
+
+        fog: false
+        shroud: false
+
+        canrecruit: true
+        recruit: {"Bowman", "Spearman", "Cavalryman", "Footpad", "Thug"}
+    }
+
+-- The Undead Hordes
+
+    side: {
+        side: 2
+        type: "Ancient Lich"
+        id: "Mal M'Brin"
+        name: _ "Mal M’Brin"
+
+        team_name: "The_Undead_Hordes"
+        user_team_name: _ "Undead"
+        controller: "ai"
+
+        <GOLD(400, 700, 900)
+        <INCOME(20, 30, 40)
+
+        canrecruit: true
+        ai: {
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "scout", "fighter", "archer", "mixed fighter"}
+            aggression: 1.0
+            caution: 0.0
+            goal: {
+                criteria: {
+                    id: "Deoran"
+                }
+                value: 6.0
+            }
+        }
+        recruit: {"Wraith", "Shadow", "Revenant", "Draug", "Bone Shooter", "Blood Bat", "Chocobone", "Dark Sorcerer", "Necrophage"}
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(2, 5)
+
+    event: {
+        name: "prestart"
+
+        ILLUMINATING_CAMPFIRE: (X, Y) -> {
+            terrain: {
+                x: X, y: Y
+                terrain: "Gd^Ecf"
+            }
+
+            item: {
+                x: X, y: Y
+                halo: "halo/fire-aura.png"
+            }
+
+            store_locations: {
+                x: X, y: Y
+                radius: 2
+
+                variable: "illuminated_locations"
+            }
+
+            time_area: {
+                find_in: "illuminated_locations"
+
+                <MORNING!
+                <MORNING!
+                <AFTERNOON!
+                <AFTERNOON!
+                <DUSK!
+                <DAWN!
+            }
+        }
+        do: ->
+            Set_Variables{
+                name: "pebbles_defense_benefits"
+
+                value: {
+                    turn: 6
+                    <MODIFY_TERRAIN("Ce", 30, 17)
+                    <VARIABLE("defenses", "some")
+                }
+                value: {
+                    turn: 7
+                    <NAMED_GENERIC_UNIT(1, "Heavy Infantryman", 30, 17, {}, _ "Provincial Guard"), <GUARDIAN!
+                    <VARIABLE("provincial_guard", "some")
+                }
+                value: {
+                    turn: 8
+                    <MODIFY_TERRAIN("Ce", 27, 17)
+                }
+                value: {
+                    turn: 9
+                    <NAMED_GENERIC_UNIT(1, "Heavy Infantryman", 27, 17, {}, _ "Provincial Guard"), <GUARDIAN!
+                }
+                value: {
+                    turn: 10
+                    <MODIFY_TERRAIN("Re^Vct", 16, 9)
+                    <MODIFY_TERRAIN("Re^Vct", 16, 11)
+                }
+                value: {
+                    turn: 11
+                    <MODIFY_TERRAIN("Re^Vct", 17, 14)
+                    <MODIFY_TERRAIN("Re^Vct", 19, 15)
+                }
+                value: {
+                    turn: 12
+                    <MODIFY_TERRAIN("Ch", 20, 11)
+                    <MODIFY_TERRAIN("Ch", 22, 10)
+                }
+                value: {
+                    turn: 13
+                    <MODIFY_TERRAIN("Ce", 25, 17)
+                    <MODIFY_TERRAIN("Gd", 26, 16)
+                    <NAMED_GENERIC_UNIT(1, "Lieutenant", 25, 17, "Lt. Nilaf", _ "Lt. Nilaf"), <GUARDIAN!
+                }
+                value: {
+                    turn: 14
+                    <MODIFY_TERRAIN("Ce", 23, 17)
+                    <MODIFY_TERRAIN("Gd", 24, 16)
+                    <NAMED_GENERIC_UNIT(1, "Spearman", 23, 17, {}, _ "Provincial Guard"), <GUARDIAN!
+                }
+                value: {
+                    turn: 15
+                    <MODIFY_TERRAIN("Ce", 14, 17)
+                    <NAMED_GENERIC_UNIT(1, "Bowman", 14, 17, {}, _ "Provincial Guard"), <GUARDIAN!
+                }
+                value: {
+                    turn: 16
+                    <MODIFY_TERRAIN("Ce", 34, 17)
+                    <NAMED_GENERIC_UNIT(1, "Heavy Infantryman", 34, 17, {}, _ "Provincial Guard"), <GUARDIAN!
+                    <VARIABLE("provincial_guard", "full")
+                }
+                value: {
+                    turn: 17
+                    <ILLUMINATING_CAMPFIRE(20, 16)
+                }
+                value: {
+                    turn: 18
+                    <ILLUMINATING_CAMPFIRE(11, 14)
+                }
+                value: {
+                    turn: 19
+                    <ILLUMINATING_CAMPFIRE(26, 16)
+                }
+                value: {
+                    turn: 20
+                    <ILLUMINATING_CAMPFIRE(35, 17)
+                }
+                value: {
+                    turn: 21
+                    <MODIFY_TERRAIN("Ce", 23, 21)
+                }
+                value: {
+                    turn: 22
+                    <MODIFY_TERRAIN("Ce", 26, 21)
+                    <VARIABLE("defenses", "full")
+                }
+            }
+
+            Foreach{
+                array: "pebbles_defense_benefits"
+                do: ->
+                    If{
+                        variable: {
+                            name: "pebbles_defense_length"
+                            greater_than_equal_to: this_item.turn
+                        }
+
+                        then: ->
+                            Insert_Tag{
+                                name: "command"
+                                variable: "this_item"
+                            }
+                        
+                    }
+                
+            }
+
+-- the player gets 20 extra starting gold for each turn past 22
+            If{
+                variable: {
+                    name: "pebbles_defense_length"
+                    greater_than: 22
+                }
+
+                then: ->
+                    VARIABLE("turns_past_22", pebbles_defense_length)
+                    VARIABLE_OP("turns_past_22", "sub", 22)
+
+                    VARIABLE("extra_starting_gold", 20)
+                    VARIABLE_OP("extra_starting_gold", "multiply", turns_past_22)
+
+                    Gold{
+                        side: 1
+                        amount: extra_starting_gold
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("pebbles_defense_benefits,illuminated_locations")
+            CLEAR_VARIABLE("turns_past_22,extra_starting_gold")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("village_radius", pebbles_defense_length)
+            VARIABLE_OP("village_radius", "sub", 5)
+
+            If{
+                variable: {
+                    name: "village_radius"
+                    less_than: 2
+                }
+
+                then: ->
+                    VARIABLE("village_radius", 2)
+                
+            }
+
+            If{
+                variable: {
+                    name: "village_radius"
+                    greater_than: 20
+                }
+
+                then: ->
+                    VARIABLE("village_radius", 20)
+                
+            }
+    }
+
+    <STARTING_VILLAGES(1, village_radius)
+
+--start
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Minister Hylas"
+                x: 21, y: 11
+            }
+            Recall{
+                id: "Jarek"
+                x: 21, y: 12
+            }
+            Recall{
+                id: "Moreth"
+                x: 22, y: 12
+            }
+
+            MODIFY_UNIT({id: "Minister Hylas"}, "overlays", "misc/loyal-icon.png")
+            MODIFY_UNIT({id: "Minister Hylas"}, "ellipse", "")
+
+            Message{
+                speaker: "Deoran"
+                message: _ "Look! The undead army has broken through Sir Gerrick’s lines! Alas, he is lost!"
+            }
+
+            Message{
+                speaker: "Moreth"
+                message: _ "Since I was a boy, Gerrick was my leader, and there was no one braver. Today we shall defend our homes, and avenge him!"
+            }
+
+            If{
+                variable: {
+                    name: "provincial_guard"
+                    equals: "some"
+                }
+                variable: {
+                    name: "defenses"
+                    equals: "some"
+                }
+                then: ->
+                    Message{
+                        speaker: "Deoran"
+                        message: _ "But in the narrow window his valiant stand gave us, we have roused some of the provincial guard and reinforced our defenses!"
+                    }
+                
+                elseif: {
+                    variable: {
+                        name: "provincial_guard"
+                        equals: "full"
+                    }
+                    variable: {
+                        name: "defenses"
+                        equals: "some"
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Deoran"
+                            message: _ "But in the narrow window his valiant stand gave us, we have roused the whole provincial guard and reinforced our defenses!"
+                        }
+                    
+                }
+                elseif: {
+                    variable: {
+                        name: "provincial_guard"
+                        equals: "full"
+                    }
+                    variable: {
+                        name: "defenses"
+                        equals: "full"
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Deoran"
+                            message: _ "But in the narrow window his valiant stand gave us, we have roused the whole provincial guard and fully embattled the city!"
+                        }
+                    
+                }
+            }
+
+            Message{
+                speaker: "Lt. Nilaf"
+                message: _ "Indeed, Lord, we are ready to defend our homes!"
+            }
+
+            If{
+                variable: {
+                    name: "pebbles_defense_length"
+                    less_than: 24
+                }
+                then: ->
+                    Message{
+                        speaker: "Minister Hylas"
+                        message: _ "I have summoned the great Council of Westin!"
+                    }
+-- wmllint: local spelling Mefel
+                    NAMED_LOYAL_UNIT(1, "Silver Mage", 11, 1, "Minister Mefel", _ "Minister Mefel")
+                    Message{
+                        speaker: "Minister Mefel"
+                        message: _ "Hylas, I have made all possible haste, but my Council brethren are not as swift as I. It will take more time for them to arrive."
+                    }
+                    VARIABLE("council_arrive_turn", 25)
+                    VARIABLE_OP("council_arrive_turn", "sub", pebbles_defense_length)
+                
+
+                else: ->
+                    Message{
+                        speaker: "Minister Hylas"
+                        message: _ "And I have summoned the great Council of Westin! They will battle with all their might!"
+                    }
+                    NAMED_LOYAL_UNIT(1, "Silver Mage", 11, 1, "Minister Mefel", _ "Minister Mefel")
+                    NAMED_LOYAL_UNIT(1, "Arch Mage", 10, 1, "Minister Romand", _ "Minister Romand")
+                    NAMED_LOYAL_UNIT(1, "Red Mage", 12, 1, "Minister Alanafel", _ "Minister Alanafel")
+                    LOYAL_UNIT(1, "White Mage", 9, 1)
+                    LOYAL_UNIT(1, "White Mage", 13, 1)
+                    Message{
+                        speaker: "Minister Mefel"
+                        message: _ "We have heard your summons, and we shall send these dark foes back to the abyss that spawned them!"
+                    }
+                    Message{
+                        speaker: "Deoran"
+                        message: _ "Council of Westin, we are cheered by your presence. Your aid will be most welcome."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "We have rallied all the forces that we will be able to! Let us not make Sir Gerrick’s sacrifice a vain one. For Wesnoth!"
+            }
+
+            If{
+                variable: {
+                    name: "pebbles_defense_length"
+                    less_than: 24
+                }
+                then: ->
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Defeat Mal M’Brin"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Deoran"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        <IS_LAST_SCENARIO!
+
+                        note: {
+                            description: _ "The Council of Westin will arrive on turn #{council_arrive_turn}."
+                        }
+                    }
+                
+                else: ->
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Defeat Mal M’Brin"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Deoran"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+                        <IS_LAST_SCENARIO!
+                    }
+                
+            }
+            CLEAR_VARIABLE("pebbles_defense_length,defenses,provincial_guard,village_radius")
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            If{
+                variable: {
+                    name: "council_arrive_turn"
+                    equals: turn_number
+                }
+                variable: {
+                    name: "council_arrive_turn"
+                    not_equals: empty
+                }
+                then: ->
+                    NAMED_LOYAL_UNIT(1, "Arch Mage", 10, 1, "Minister Romand", _ "Minister Romand")
+                    NAMED_LOYAL_UNIT(1, "Red Mage", 12, 1, "Minister Alanafel", _ "Minister Alanafel")
+                    LOYAL_UNIT(1, "White Mage", 9, 1)
+                    LOYAL_UNIT(1, "White Mage", 13, 1)
+                    Message{
+                        speaker: "Minister Romand"
+                        message: _ "We have heard your summons, and we shall send these dark foes back to the abyss that spawned them!"
+                    }
+                    Message{
+                        speaker: "Deoran"
+                        message: _ "Council of Westin, we are cheered by your presence. Your aid will be most welcome."
+                    }
+
+                    Objectives{
+                        side: 1
+                        silent: true
+                        objective: {
+                            description: _ "Defeat Mal M’Brin"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Deoran"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+                        <IS_LAST_SCENARIO!
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Mal M'Brin"
+        }
+        do: ->
+            CLEAR_VARIABLE("council_arrive_turn")
+            Endlevel{
+                result: "victory"
+                carryover_report: false
+                save: false
+                linger_mode: false
+            }
+    }
+
+-- in order to allow Hylas to die, the death events aren't included from the
+-- standard location here
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Deoran"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                image: "portraits/deoran-sad.png"
+                message: _ "I have failed my kingdom and duty..."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Minister Hylas"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                image: "portraits/hylas.png"
+                message: _ "Now I will never see Westin free again..."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Jarek"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Far from home I fall — but not in vain! Guard our people, Deoran!"
+            }
+    }
+}
+
+ILLUMINATING_CAMPFIRE = nil

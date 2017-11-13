@@ -1,0 +1,473 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to edit gamemap scenarios
+----
+
+_GUI_SIDE_RADIO_OPTION = (ID, LABEL) -> {
+    column: {
+        grow_factor: 1
+        border: "all"
+        border_size: 5
+        horizontal_alignment: "left"
+
+        toggle_button: {
+            id: ID
+            definition: "radio"
+            label: LABEL
+            linked_group: "radio_options"
+        }
+    }
+}
+
+Window{
+    id: "editor_edit_side"
+    description: "Editor Side Editor."
+
+    resolution: {
+        definition: "default"
+
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        maximum_width: 800
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        linked_group: {
+            id: "radio_options"
+            fixed_width: true
+        }
+
+        grid: {
+
+            row: {
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+                        label: _ "Side Setup"
+                    }
+                }
+
+            }
+
+            row: {
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Number:"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    id: "side_number"
+                                    definition: "default"
+                                    label: "0"
+                                }
+                            }
+
+                        }
+
+                        row: {
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Team identifier:"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                text_box: {
+                                    id: "team_name"
+                                    definition: "default"
+                                }
+                            }
+
+                        }
+
+                        row: {
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Team name:"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                text_box: {
+                                    id: "user_team_name"
+                                    definition: "default"
+                                }
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                horizontal_alignment: "left"
+                                border: "all"
+                                border_size: 5
+
+                                toggle_button: {
+                                    id: "shroud"
+                                    definition: "default"
+                                    label: _ "Shroud"
+                                }
+                            }
+
+                            column: {
+                                horizontal_alignment: "left"
+                                border: "all"
+                                border_size: 5
+
+                                toggle_button: {
+                                    id: "no_leader"
+                                    definition: "default"
+                                    label: _ "No leader"
+                                }
+                            }
+
+                        }
+
+                        row: {
+
+                            column: {
+                                horizontal_alignment: "left"
+                                border: "all"
+                                border_size: 5
+
+                                toggle_button: {
+                                    id: "fog"
+                                    definition: "default"
+                                    label: _ "Fog of war"
+                                }
+                            }
+
+                            column: {
+                                horizontal_alignment: "left"
+                                border: "all"
+                                border_size: 5
+
+                                toggle_button: {
+                                    id: "hidden"
+                                    definition: "default"
+                                    label: _ "Hide in status table"
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Gold:"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                slider: {
+                                    id: "gold"
+                                    definition: "default"
+                                    best_slider_length: 200
+                                    minimum_value: 0
+                                    maximum_value: 1000
+                                    step_size: 5
+                                }
+                            }
+                        }
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Gold per village:"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                slider: {
+                                    id: "village_income"
+                                    definition: "default"
+                                    best_slider_length: 200
+                                    minimum_value: 1
+                                    maximum_value: 10
+                                    step_size: 1
+                                }
+                            }
+                        }
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Income:"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                slider: {
+                                    id: "income"
+                                    definition: "default"
+                                    best_slider_length: 200
+                                    minimum_value: -2
+                                    maximum_value: 20
+                                    step_size: 1
+                                }
+                            }
+                        }
+
+                        row: {
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Support per village:"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                slider: {
+                                    id: "village_support"
+                                    definition: "default"
+                                    best_slider_length: 200
+                                    minimum_value: 0
+                                    maximum_value: 20
+                                    step_size: 1
+                                }
+                            }
+                        }
+
+                        row: {
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+                                vertical_alignment: "top"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Controller:"
+                                }
+                            }
+
+                            column: {
+                                horizontal_alignment: "left"
+
+                                grid: {
+
+                                    row: {
+                                        <_GUI_SIDE_RADIO_OPTION("controller_human", _ "controller^Human")
+
+                                        <_GUI_SIDE_RADIO_OPTION("controller_ai", _ "controller^AI only")
+
+                                        <_GUI_SIDE_RADIO_OPTION("controller_null", _ "controller^None")
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        row: {
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+                                vertical_alignment: "top"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Share Vision:"
+                                }
+                            }
+
+                            column: {
+                                horizontal_alignment: "left"
+
+                                grid: {
+
+                                    row: {
+                                        <_GUI_SIDE_RADIO_OPTION("vision_all", _ "vision^All")
+
+                                        <_GUI_SIDE_RADIO_OPTION("vision_shroud", _ "vision^Shroud")
+
+                                        <_GUI_SIDE_RADIO_OPTION("vision_null", _ "vision^None")
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+                    horizontal_alignment: "right"
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+                                    label: _ "OK"
+                                }
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+                                    label: _ "Cancel"
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_SIDE_CONTROLLER_OPTION = nil

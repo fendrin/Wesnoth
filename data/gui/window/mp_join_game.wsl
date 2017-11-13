@@ -1,0 +1,597 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the mp game staging screen
+----
+
+_GUI_SIDE_LIST = () -> {
+    tree_view: {
+        id: "side_list"
+        definition: "default"
+
+        horizontal_scrollbar_mode: "never"
+        vertical_scrollbar_mode: "auto"
+
+        node: {
+            id: "team_header"
+            unfolded: true
+
+            node_definition: {
+
+                row: {
+
+                    column: {
+                        grow_factor: 1
+                        border: "all"
+                        border_size: 10
+                        horizontal_grow: true
+
+                        label: {
+                            id: "tree_view_node_label"
+                            definition: "default_large"
+                            use_markup: true
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        node: {
+            id: "side_panel"
+            unfolded: true
+
+            node_definition: {
+
+                row: {
+
+                    column: {
+                        grow_factor: 0
+                        border: "all"
+                        border_size: 20
+                        horizontal_alignment: "left"
+
+                        label: {
+                            id: "side_number"
+                            definition: "default_huge"
+                            use_markup: true
+                            linked_group: "side_number"
+                        }
+                    }
+
+                    column: {
+                        grow_factor: 1
+                        horizontal_grow: true
+
+                        grid: {
+                            linked_group: "leader"
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+
+                                    image: {
+                                        id: "leader_image"
+                                        definition: "scaled_to_size"
+                                        linked_group: "leader_images"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    grid: {
+
+                                        row: {
+                                            grow_factor: 1
+
+                                            column: {
+                                                border: "all"
+                                                border_size: 5
+                                                horizontal_grow: true
+                                                vertical_grow: true
+
+                                                label: {
+                                                    id: "leader_type"
+                                                    definition: "default_large"
+                                                    use_markup: true
+                                                }
+
+                                            }
+
+                                        }
+
+                                        row: {
+                                            grow_factor: 0
+
+                                            column: {
+                                                horizontal_grow: true
+--vertical_grow = true
+
+                                                grid: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 0
+                                                            border: "left,bottom"
+                                                            border_size: 5
+
+                                                            label: {
+                                                                definition: "default_small"
+                                                                label: _ "<b>Faction:</b>"
+                                                                use_markup: true
+                                                            }
+
+                                                        }
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "left,bottom,right"
+                                                            border_size: 5
+                                                            horizontal_grow: true
+                                                            vertical_grow: true
+
+                                                            label: {
+                                                                id: "leader_faction"
+                                                                definition: "default_small"
+                                                                use_markup: true
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 0
+                                                            border: "left,bottom"
+                                                            border_size: 5
+
+                                                            label: {
+                                                                definition: "default_small"
+                                                                label: _ "<b>Gender:</b>"
+                                                                use_markup: true
+                                                            }
+
+                                                        }
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "left,bottom,right"
+                                                            border_size: 5
+                                                            horizontal_alignment: "left"
+                                                            vertical_grow: true
+
+                                                            image: {
+                                                                id: "leader_gender"
+                                                                definition: "default_small"
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 0
+                        horizontal_grow: true
+
+                        grid: {
+                            linked_group: "gold_and_income"
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_alignment: "left"
+
+                                    image: {
+                                        id: "gold_icon"
+                                        definition: "default"
+                                        label: "themes/gold.png"
+                                        tooltip: _ "Gold"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "side_gold"
+                                        definition: "default_small"
+                                        tooltip: _ "Gold"
+                                    }
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "bottom,left,right"
+                                    border_size: 5
+                                    horizontal_alignment: "left"
+
+                                    image: {
+                                        id: "income_icon"
+                                        definition: "default"
+                                        label: "themes/income.png"
+                                        tooltip: _ "Income"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "bottom,left,right"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        id: "side_income"
+                                        definition: "default_small"
+                                        tooltip: _ "Income"
+                                    }
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 0
+
+                        spacer: {
+                            width: 20
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        node: {
+            id: "side_spacer"
+            unfolded: true
+
+            node_definition: {
+
+                <GUI_HORIZONTAL_SPACER_LINE!
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_CONTROL_AREA = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                border: "all"
+                border_size: 5
+                horizontal_grow: true
+                vertical_grow: true
+
+                panel: {
+                    definition: "box_display_no_blur_no_border"
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+
+                                label: {
+                                    definition: "gold_small"
+                                    label: _ "Connected Players"
+                                }
+
+                            }
+
+                        }
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                listbox: {
+                                    id: "player_list"
+                                    definition: "default"
+
+                                    horizontal_scrollbar_mode: "never"
+
+                                    list_definition: {
+
+                                        row: {
+
+                                            column: {
+                                                horizontal_grow: true
+
+                                                toggle_panel: {
+                                                    id: "panel"
+                                                    definition: "default"
+
+                                                    grid: {
+
+                                                        row: {
+
+                                                            column: {
+                                                                border: "all"
+                                                                border_size: 5
+                                                                horizontal_grow: true
+
+                                                                label: {
+                                                                    id: "player_name"
+                                                                    definition: "default"
+                                                                }
+
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                border: "all"
+                border_size: 5
+                horizontal_grow: true
+
+-- This is exactly the size of two large-sized buttons (116 x 2) plus the interior
+-- border space between them (10). It keeps this column the same size as the corresponding
+-- one in MP Staging, which has the above layout (2 buttons, etc).
+                <GUI_FORCE_WIDGET_MINIMUM_SIZE(242, 0, {
+                        button: {
+                            id: "cancel"
+                            definition: "large"
+                            label: _ "Leave"
+                        }
+                })
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "mp_join_game"
+    description: "MP join game."
+
+    resolution: {
+        definition: "borderless"
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        linked_group: {
+            id: "side_number"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader_images"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "gold_and_income"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_alignment: "left"
+                    border: "all"
+                    border_size: 5
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+                        label: _ "Game Lobby"
+                    }
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 1
+                                vertical_grow: true
+                                horizontal_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            panel: {
+                                                definition: "box_display_no_blur_no_border"
+
+                                                grid: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            horizontal_grow: true
+                                                            vertical_grow: true
+
+                                                            <_GUI_SIDE_LIST!
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            grow_factor: 1
+                                            horizontal_grow: true
+                                            border: "all"
+                                            border_size: 5
+
+                                            label: {
+                                                id: "status_label"
+                                                definition: "default_small"
+                                                label: _ "Waiting for players to join..."
+                                            }
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            <GUI_FORCE_WIDGET_SIZE(0, "((screen_height * 25 / 100))", {
+                                                    chatbox: {
+                                                        id: "chat"
+                                                    }
+                                            })
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_CONTROL_AREA!
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_CONTROL_AREA = nil
+_GUI_SIDE_LIST = nil

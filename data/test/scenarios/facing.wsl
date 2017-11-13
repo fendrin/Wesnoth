@@ -1,0 +1,61 @@
+TURN_UNIT = (ID, DIRECTION) ->
+    Modify_Unit{
+        filter: {
+            id: ID
+        }
+        facing: DIRECTION
+    }
+    Store_Unit{
+        filter: {
+            id: ID
+        }
+        variable: "temp"
+        kill: false
+    }
+    ASSERT(VARIABLE_CONDITIONAL("temp.facing", "equals", DIRECTION))
+
+
+GENERIC_UNIT_TEST("modify_unit_facing", {
+        event: {
+            name: "side 1 turn 1"
+            do: ->
+                TURN_UNIT("alice", "n")
+        }
+        event: {
+            name: "side 1 turn 2"
+            do: ->
+                TURN_UNIT("alice", "ne")
+        }
+        event: {
+            name: "side 1 turn 3"
+            do: ->
+                TURN_UNIT("alice", "nw")
+        }
+        event: {
+            name: "side 1 turn 4"
+            do: ->
+                TURN_UNIT("alice", "s")
+        }
+        event: {
+            name: "side 1 turn 5"
+            do: ->
+                TURN_UNIT("alice", "sw")
+        }
+        event: {
+            name: "side 1 turn 6"
+            do: ->
+                TURN_UNIT("alice", "se")
+        }
+        event: {
+            name: "side 1 turn 7"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "side turn"
+            first_time_only: false
+            do: ->
+                End_Turn{
+                }
+        }
+})

@@ -1,0 +1,16 @@
+-- wmllint: no translatables
+Unit_Type{
+    base_unit: {
+        id: "Fire Guardian"
+    }
+    id: "Fire Guardian2"
+    hitpoints: 23
+    hide_help: true
+    do_not_list: true
+    attack: {
+-- This attack intentionally left blank.
+    }
+    attack: {
+        damage: 8
+    }
+}

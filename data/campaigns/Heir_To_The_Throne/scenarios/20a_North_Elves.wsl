@@ -1,0 +1,884 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "20a_North_Elves"
+    name: _ "Home of the North Elves"
+    map: "campaigns/Heir_To_The_Throne/maps/20a_North_Elves.map"
+    <TURNS(21, 18, 15)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "21_Elven_Council"
+
+    <SCENARIO_MUSIC("the_dangerous_symphony.ogg") -- More in events
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Konrad must reach the Lintanir Forest to the east and hold that position until the turn is over"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Turns run out before reaching the forest"
+                    condition: "lose"
+                    show_turn_counter: true
+                }
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                note: {
+                    description: _ "Your encampment will be dismantled after the first turn."
+                }
+            }
+    }
+
+    <HTTT_TRACK(JOURNEY_20A_NEW!)
+
+    side: {
+        team_name: "elves"
+        user_team_name: _ "Allies"
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        fog: true
+        gold: 200
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Kior-Dal"
+        name: _ "Kior-Dal"
+        side: 2
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Wolf Rider", "Orcish Grunt", "Orcish Archer"}
+        }
+        <if NORMAL then {
+            recruit: {"Wolf Rider", "Orcish Grunt", "Orcish Archer", "Orcish Warrior"}
+        }
+        <if HARD then {
+            recruit: {"Orcish Warrior", "Goblin Knight", "Wolf Rider", "Orcish Grunt", "Orcish Archer", "Troll Whelp", "Troll", "Orcish Assassin"}
+        }
+        ai: {
+            <ATTACK_DEPTH(4, 5, 6)
+            passive_leader: true
+            simple_targeting: true
+            <unless HARD! then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer"}
+            } else {
+                recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            }
+            villages_per_scout: 0
+            village_value: 0
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Honber"
+                }
+                value: 100
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Konrad"
+                }
+                value: 0
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Delfador"
+                }
+                value: 0
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Li'sar"
+                }
+                value: 0
+            }
+        }
+        ai: {
+            time_of_day: "dusk"
+            aggression: 0.7
+            caution: 0.25
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 1.0
+            caution: 0.0
+        }
+        <GOLD(370, 400, 460)
+        <INCOME(8, 12, 16)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    side: {
+        type: "General"
+        id: "Honber"
+        name: _ "Honber"
+        side: 3
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Cavalryman", "Spearman", "Bowman"}
+        }
+        <if NORMAL then {
+            recruit: {"Cavalryman", "Spearman", "Bowman", "Swordsman", "Red Mage"}
+        }
+        <if HARD then {
+            recruit: {"Cavalryman", "Swordsman", "Pikeman", "Ogre", "Dragoon", "Red Mage", "White Mage", "Shock Trooper"}
+        }
+        ai: {
+            <ATTACK_DEPTH(4, 5, 6)
+            passive_leader: true
+            simple_targeting: true
+            <if EASY then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer"}
+            }
+            <if NORMAL then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            }
+            <if HARD then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "healer"}
+            }
+            villages_per_scout: 0
+            village_value: 0
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Kior-Dal"
+                }
+                value: 100
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Konrad"
+                }
+                value: 0
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Delfador"
+                }
+                value: 0
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Li'sar"
+                }
+                value: 0
+            }
+        }
+        ai: {
+            time_of_day: "dawn"
+            aggression: 0.7
+            caution: 0.25
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            aggression: 1.0
+            caution: 0.0
+        }
+        <GOLD(370, 400, 460)
+        <INCOME(12, 16, 20)
+        team_name: "asheviere"
+        user_team_name: _ "Asheviere"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        team_name: "elves"
+        user_team_name: _ "Allies"
+        type: "Elvish Marshal"
+        id: "El'rien"
+        name: _ "El’rien"
+        side: 4
+        canrecruit: true
+        recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Ranger", "Elvish Scout", "Elvish Hero", "Elvish Marksman"}
+
+        <GOLD(600, 475, 350)
+        income: 20
+        ai: {
+            passive_leader: true
+            villages_per_scout: 0
+            village_value: 0
+            caution: 0.9
+            aggression: 0.6
+            grouping: "defensive"
+--
+-- The Elves focus on getting to Konrad so they can
+-- protect him
+--
+-- The previous value was 15
+--
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Konrad"
+                }
+                value: 4
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    <STARTING_VILLAGES(4, 24)
+
+    event: {
+        name: "prestart"
+
+--
+-- Add a bunch of strong guardians to discourage you from
+-- attacking the leaders These are full-fledged war camps,
+-- after all
+--
+
+--
+-- Camp guards
+--
+        do: ->
+            UNIT(2, "Troll Warrior", 28, 4, {ai_special: "guardian"})
+            UNIT(2, "Troll Warrior", 34, 4, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 30, 4, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 32, 4, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 29, 6, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 31, 6, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 33, 6, {ai_special: "guardian"})
+            UNIT(2, "Orcish Slurbow", 30, 6, {ai_special: "guardian"})
+            UNIT(2, "Orcish Slurbow", 32, 6, {ai_special: "guardian"})
+--
+-- Army members
+--
+            UNIT(2, "Orcish Grunt", 31, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 32, 2, {ai_special: "guardian"})
+            UNIT(2, "Troll Whelp", 33, 2, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 33, 1, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 27, 4, {ai_special: "guardian"})
+            UNIT(2, "Troll Whelp", 26, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 25, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 24, 1, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 25, 1, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 26, 1, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 24, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 23, 4, {ai_special: "guardian"})
+            UNIT(2, "Troll Whelp", 22, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 22, 2, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 21, 3, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 21, 2, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 20, 2, {ai_special: "guardian"})
+            UNIT(2, "Orcish Grunt", 20, 1, {ai_special: "guardian"})
+            UNIT(2, "Orcish Warrior", 21, 1, {ai_special: "guardian"})
+--
+-- Camp guards
+--
+            UNIT(3, "Lieutenant", 68, 34, {ai_special: "guardian"})
+            UNIT(3, "Lieutenant", 67, 35, {ai_special: "guardian"})
+            UNIT(3, "Lieutenant", 69, 35, {ai_special: "guardian"})
+            UNIT(3, "Great Mage", 67, 36, {ai_special: "guardian"})
+            UNIT(3, "Great Mage", 69, 36, {ai_special: "guardian"})
+            UNIT(3, "Iron Mauler", 68, 33, {ai_special: "guardian"})
+            UNIT(3, "Iron Mauler", 66, 34, {ai_special: "guardian"})
+            UNIT(3, "Iron Mauler", 70, 34, {ai_special: "guardian"})
+            UNIT(3, "Iron Mauler", 66, 36, {ai_special: "guardian"})
+            UNIT(3, "Iron Mauler", 70, 36, {ai_special: "guardian"})
+--
+-- Army members
+--
+            UNIT(3, "Swordsman", 72, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 72, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 72, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 72, 38, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 73, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 73, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 73, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 73, 38, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 74, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 74, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 74, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 74, 38, {ai_special: "guardian"})
+            UNIT(3, "Royal Guard", 73, 34, {ai_special: "guardian"})
+            UNIT(3, "Sergeant", 74, 34, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 62, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 62, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 62, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 62, 38, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 63, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 63, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 63, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 63, 38, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 64, 35, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 64, 36, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 64, 37, {ai_special: "guardian"})
+            UNIT(3, "Swordsman", 64, 38, {ai_special: "guardian"})
+            UNIT(3, "Royal Guard", 63, 34, {ai_special: "guardian"})
+            UNIT(3, "Sergeant", 64, 34, {ai_special: "guardian"})
+    }
+
+    event: {
+        name: "prestart"
+--
+-- Allow the player to have some >6MP loyal units to compensate for the loss of recruiting
+--
+        do: ->
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            NEED_LISAR({placement: "leader"})
+            Recall{
+                id: "Haldiel"
+            }
+            Recall{
+                id: "Delurin"
+            }
+            Recall{
+                id: "Reglok"
+            }
+            Recall{
+                id: "Niodien"
+            }
+            Redraw{
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Kalenz"
+                message: _ "At last, friends, we have almost reached the Lintanir Forest, the home of the North Elves. I was born not far east of here...more years ago than I care to remember."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "After being in this wilderness for so long, it will be good to get some rest!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "But there is a great fog around us again! We don’t know what dangers may lie ahead!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "So long as we move ahead with caution and prudence, I am sure we will reach the safety and hospitality of the elves."
+            }
+
+            Sound{
+                name: "horse-canter.wav"
+            }
+
+            Move_Unit_Fake{
+                type: "Elvish Rider"
+                side: 1
+                x: {20, 7}
+                y: {17, 18}
+            }
+
+            Unit{
+                id: "Telerandor"
+                name: _ "Telerandor"
+                type: "Elvish Rider"
+                side: 1
+                x: 7
+                y: 18
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_DEXTROUS!
+                }
+                <IS_LOYAL!
+            }
+
+            Redraw{
+            }
+
+            Message{
+                speaker: "Telerandor"
+                message: _ "My lords! I have found you at last."
+            }
+
+            Message{
+                speaker: "Kalenz"
+                message: _ "Greetings, Telerandor, herald of Lintanir! Why have you been searching for us?"
+            }
+
+            Message{
+                speaker: "Telerandor"
+                message: _ "When my lord learned of your coming, he sent riders out looking for you! There is trouble afoot!"
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Trouble? What kind of trouble?"
+            }
+
+            Message{
+                speaker: "Telerandor"
+                message: _ "We have sighted a great host to the south, a host of the men of Wesnoth. And we believe they are looking for you! There is not a moment to lose. You must make haste, east to Lintanir. Only there will you be safe!"
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "I only hope we can avoid them. We will have to bear north-east."
+            }
+            Message{
+                speaker: "Telerandor"
+                message: _ "That is not all, my lord. The foul orcs have heard of the coming of these men, and are even now gathering a great host to oppose them to the north! It is now certain that there will be a great battle."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "This sounds very dangerous. Perhaps we should retreat to the West, and hide until the battle is over?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "I think these wild lands are too dangerous for that! Anyhow... I expected you to be on the side of Wesnoth, Princess?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I am an honorable princess, not an impostor like you! I promised that I would be on your side until we made it out of these lands, and I will keep my promise!"
+            }
+            Message{
+                speaker: "Telerandor"
+                message: _ "Sir, madam, there is no time to lose! You must make it east, to the home of my people. Only there will you be safe!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Rider, do not fool with us. You yourself say men and orcs wage war on this plain that lies ahead. Do you propose we fly to the great woods of the east?"
+            }
+            Message{
+                speaker: "Telerandor"
+                message: _ "My lord, you must rush across the field before the main host of each army makes it to the battle. It is the only way to avoid this great calamity."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "I was afraid that’s what you were going to say."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Come then, Konrad, let us go. We will do what must be done."
+            }
+            Message{
+                speaker: "Telerandor"
+                message: _ "My lord has begun assembling a party of elves to come and escort you into the forest. Beware, for we are all in great danger!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Konrad, the encampment must be torn down. Any delay and these armies will crush us. Any evidence of our passage through here, and they will chase us."
+            }
+    }
+
+--
+-- Turn 2: dismantle your castle
+--
+    event: {
+        name: "turn 2"
+        do: ->
+            Terrain{
+                x: {"3-5", 4}
+                y: {"18-19", 17}
+                terrain: "Re"
+            }
+    }
+
+--
+-- Turn 3: some dialog to help you along
+--
+    event: {
+        name: "turn 3"
+        do: ->
+            Message{
+                speaker: "Li'sar"
+                message: _ "So, Konrad, do you think we can simply trot across the battlefield?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Stop for a moment, princess. Look — you can barely see them in the distance there, but the advance scouts have found each other. The Queen’s troops are marching full speed for the orcs’ camp, and vice-versa. These armies are out for blood."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "But they will not neglect to notice our presence in their midst! We are walking into slaughter!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "(hushed) Our soldiers will defend us as we rush across the field. Sorry to be blunt, princess, but you and I are the only ones who need to make it across alive."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "..."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "...and Delfador, of course. And Kalenz... and.."
+            }
+            Message{
+                speaker: "Li'sar"
+-- wmllint: local spelling Ach
+                message: _ "Ach! I understand, Konrad. I am no stranger to the burden of command. Onward!"
+            }
+    }
+
+--
+-- Turn 5: some of the riders who didn't find you catch up!
+--
+    event: {
+        name: "turn 5"
+        do: ->
+            Store_Unit{
+                variable: "konrad_store"
+                filter: {
+                    id: "Konrad"
+                }
+            }
+            VARIABLE("temp_x", konrad_store.x)
+            VARIABLE("temp_y", konrad_store.y)
+            if EASY
+                Move_Unit_Fake{
+                    type: "Elvish Rider"
+                    x: {1, temp_x}
+                    y: {1, temp_y}
+                    side: 4
+                }
+                NAMED_LOYAL_UNIT(4, "Elvish Rider", temp_x, temp_y, "Glarilon", _ "Glarilon")
+                Message{
+                    speaker: "Glarilon"
+                    message: _ "My lords! I have found you at last."
+                }
+            
+            Move_Unit_Fake{
+                type: "Elvish Rider"
+                x: {1, temp_x}
+                y: {38, temp_y}
+                side: 4
+            }
+            NAMED_LOYAL_UNIT(4, "Elvish Rider", temp_x, temp_y, "Thalindil", _ "Thalindil")
+            Message{
+                speaker: "Thalindil"
+                message: _ "(exhausted) We have... (pant) finally found you!"
+            }
+            CLEAR_VARIABLE("konrad_store")
+            CLEAR_VARIABLE("temp_x")
+            CLEAR_VARIABLE("temp_y")
+    }
+
+--
+-- Turn 7: another rider finds you!
+--
+    event: {
+        name: "turn 7"
+        do: ->
+            Store_Unit{
+                variable: "konrad_store"
+                filter: {
+                    id: "Konrad"
+                }
+            }
+            VARIABLE("temp_x", konrad_store.x)
+            VARIABLE("temp_y", konrad_store.y)
+            Move_Unit_Fake{
+                type: "Elvish Rider"
+                x: {77, temp_x}
+                y: {18, temp_y}
+                side: 4
+            }
+            NAMED_LOYAL_UNIT(4, "Elvish Rider", temp_x, temp_y, "Rholandir", _ "Rholandir")
+            Message{
+                speaker: "Rholandir"
+                message: _ "Lord Kalenz, Lord Konrad, our forces are nigh! Do not lose hope!"
+            }
+            CLEAR_VARIABLE("konrad_store")
+            CLEAR_VARIABLE("temp_x")
+            CLEAR_VARIABLE("temp_y")
+    }
+
+--
+-- Give the armies a gold infusion near the end to keep the pressure on
+--
+    event: {
+        name: "turn 10"
+        do: ->
+            Gold{
+                side: 2
+                amount: 1000
+            }
+            Gold{
+                side: 3
+                amount: 1000
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 2
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Music{
+                name: "northerners.ogg"
+                immediate: false
+                append: true
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "There are some orcs! We must let them fight the men of Wesnoth, and avoid engaging them at all costs!"
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 3
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "There they are! Charge!"
+            }
+            Music{
+                name: "loyalists.ogg"
+                immediate: false
+                append: true
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 4
+            not: {
+                id: "Glarilon"
+            }
+            not: {
+                id: "Thalindil"
+            }
+            not: {
+                id: "Rholandir"
+            }
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "There you are! You must come quickly east to Lintanir!!"
+            }
+    }
+
+-- event when moving to Elvish castle
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Konrad"
+            x: "75-79"
+            y: "17-19"
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "El'rien"
+                }
+                then: ->
+                    Message{
+                        speaker: "El'rien"
+-- wmllint: local spelling Emetria
+                        message: _ "Greetings, Elf-friend! Welcome to Emetria, my hold in Lintanir. You must take shelter here until the battle passes. If you stay with me here for a little while, we will all be safe."
+                    }
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "Thank you, Lord El’rien. The hospitality of the North Elves is as generous as that of your kin in the south! My men will help you hold out against our enemies."
+                    }
+                
+                elseif: {
+                    have_unit: {
+                        side: 4
+                    }
+                    then: ->
+                        Message{
+                            side: 4
+                            message: _ "Welcome to Emetria. You must take shelter here until the battle passes. If you stay for a while, we will all be safe."
+                        }
+                        Message{
+                            speaker: "Konrad"
+                            message: _ "Thank you. The hospitality of the North Elves is as generous as that of your kin in the south! My men will help you hold out against our enemies."
+                        }
+                    
+                }
+                else: ->
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "There is nobody here! We can take shelter here, but must hold out against our enemies alone."
+                    }
+                
+            }
+    }
+
+-- Once you make it far enough, TELL THE PLAYER!
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Konrad"
+            x: {"66-80", "67-80", "68-80", "69-80", "70-80", "71-80", "73-80", "74-80"}
+            y: {"1- 8", "9-14", 15, "16-17", "18-20", 21, "22-25", "26-28"}
+        }
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "Konrad, you have made it to the domain of the North Elves. Continue moving east and let the elves guard your rear."
+            }
+    }
+
+--
+-- Check if Konrad is inside forest, loosely defined -- but include
+-- Eastern woods, and a bit of grassland nearby
+--
+-- This event makes you win if Konrad is inside the forest at the
+-- start of the next turn - that way the enemy still has one last
+-- shot to kill you
+--
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            If{
+                have_unit: {
+                    id: "Konrad"
+                    x: {"66-80", "67-80", "68-80", "69-80", "70-80", "71-80", "73-80", "74-80"}
+                    y: {"1- 8", "9-14", 15, "16-17", "18-20", 21, "22-25", "26-28"}
+                }
+                then: ->
+                    Fire_Event{
+                        name: "victory dance"
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+--
+-- Check if Konrad is inside forest, loosely defined -- but include
+-- Eastern woods and a bit of grassland nearby
+--
+-- This event makes you win if Konrad is inside the forest at the
+-- end of the scenario - just in case the new turn even never fires
+-- (you make it there on the last turn)
+--
+    event: {
+        name: "time over"
+        do: ->
+            If{
+                have_unit: {
+                    id: "Konrad"
+                    x: {"66-80", "67-80", "68-80", "69-80", "70-80", "71-80", "73-80", "74-80"}
+                    y: {"1- 8", "9-14", 15, "16-17", "18-20", 21, "22-25", "26-28"}
+                }
+                then: ->
+                    Fire_Event{
+                        name: "victory dance"
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "We have not yet reached the forest, and the battle still rages. We are caught between two vast armies and cannot escape to safety! We are defeated!"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory dance"
+        do: ->
+            If{
+                have_unit: {
+                    id: "El'rien"
+                }
+                then: ->
+                    Message{
+                        speaker: "El'rien"
+                        message: _ "Elf-friends, you have made it to safety!"
+                    }
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "El’rien, we have the Sceptre of Fire with us! We must escort them to Elensiria!"
+                    }
+                    Message{
+                        speaker: "El'rien"
+                        message: _ "Indeed. We will escort you to our capital, where we will make Council."
+                    }
+                
+                elseif: {
+                    have_unit: {
+                        side: 4
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Kalenz"
+                            message: _ "Where is your leader? Where is El’rien?"
+                        }
+                        Message{
+                            side: 4
+                            message: _ "Alas, he has fallen just this day! We were told of your coming, Lord Kalenz. Council has already been called. You must hurry, but we cannot afford the men to escort you."
+                        }
+                        Message{
+                            speaker: "Kalenz"
+                            message: _ "This is grave news. We will carry word to Elensiria. Hold fast! We will send reinforcements."
+                        }
+                    
+                }
+                else: ->
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "Where is El’rien? Where are his men? Things are moving quicker than we feared. Hurry, we must reach Elensiria."
+                    }
+                
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}

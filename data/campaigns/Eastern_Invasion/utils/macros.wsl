@@ -1,0 +1,87 @@
+--textdomain wesnoth-ei
+
+LIMIT_RECRUITS_PER_TURN = (SIDES, AMOUNT) -> {
+    event: {
+        name: "side turn"
+        first_time_only: false
+        filter_condition: {
+            have_unit: {
+                side: side_number
+
+                and: {
+                    side: SIDES
+                }
+            }
+        }
+        do: ->
+            VARIABLE("recruits_this_turn", 0)
+
+            Event{
+                name: "turn end"
+                do: ->
+                    CLEAR_VARIABLE("recruits_this_turn")
+            }
+    }
+
+    event: {
+        name: "recruit"
+        first_time_only: false
+        filter: {
+            side: SIDES
+        }
+        do: ->
+            VARIABLE_OP("recruits_this_turn", "add", 1)
+
+            If{
+                <VARIABLE_CONDITIONAL("recruits_this_turn", "equals", AMOUNT)
+                then: ->
+                    Store_Side{
+                        side: side_number
+                    }
+
+                    Disallow_Recruit{
+                        side: side_number
+                    }
+                    Event{
+                        name: "turn end"
+                        do: ->
+                            Allow_Recruit{
+                                side: side.side
+                                type: side.recruit
+                            }
+
+                            CLEAR_VARIABLE("side")
+                    }
+                
+            }
+    }
+}
+
+HOLY_AMULET = (X, Y) -> {
+    <PICKUPPABLE_ITEM("holy_amulet", X, Y, {side: 1}, "items/ankh-necklace.png"
+        _ "Wearing this amulet will cause every blow you deal to inflict <i>arcane</i> damage!"
+        _ "holy amulet^Take it"
+        _ "holy amulet^Leave it"
+err: ../attic/data/campaigns/Eastern_Invasion/utils/macros.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 65:     _"I am not suited to using this item! Let another take it." (
+        object: {
+            name: _ "Holy Amulet"
+            image: "items/ankh-necklace.png"
+            duration: "forever"
+
+            effect: {
+                apply_to: "attack"
+                range: "melee"
+                set_type: "arcane"
+            }
+            effect: {
+                apply_to: "attack"
+                range: "ranged"
+                set_type: "arcane"
+            }
+            effect: {
+                apply_to: "overlay"
+                add: "misc/arcane-icon.png"
+            }
+        }
+err: ../attic/data/campaigns/Eastern_Invasion/utils/macros.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: PICKUPPABLE_ITEM closed by table at line 85
+err: ../attic/data/campaigns/Eastern_Invasion/utils/macros.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: PICKUPPABLE_ITEM closed by define at line 86

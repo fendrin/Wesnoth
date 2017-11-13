@@ -1,0 +1,87 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a label.
+----
+---- Defines the following labels
+---- - title_screen_tip, the one for the tips in the title screen, with a maximum width
+
+_GUI_RESOLUTION = (RESOLUTION, FONT_SIZE, FONT_STYLE, FONT_COLOR_ENABLED, FONT_COLOR_DISABLED) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: 0
+        min_height: 0
+
+        default_width: 0
+        default_height: 0
+
+        max_width: 650
+        max_height: 0
+
+        text_font_size: FONT_SIZE
+        text_font_style: FONT_STYLE
+
+        state_enabled: {
+
+            draw: {
+
+                text: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    maximum_width: "(width)"
+                    font_size: FONT_SIZE
+                    font_style: FONT_STYLE
+                    text_alignment: "(text_alignment)"
+                    color: FONT_COLOR_ENABLED
+                    text: "(text)"
+                    text_markup: "(text_markup)"
+                }
+
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+
+                text: {
+                    x: 0
+                    y: 0
+                    w: "(width)"
+                    h: "(height)"
+                    maximum_width: "(width)"
+                    font_size: FONT_SIZE
+                    font_style: FONT_STYLE
+                    text_alignment: "(text_alignment)"
+                    color: FONT_COLOR_DISABLED
+                    text: "(text)"
+                    text_markup: "(text_markup)"
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Label_Definition{
+    id: "title_screen_tip"
+    description: "Label used for the tips in the title screen"
+
+    <_GUI_RESOLUTION!
+err: ../attic/data/gui/widget/label_title_screen_tip.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 77: 		({GUI_NORMAL__RESOLUTION})
+err: ../attic/data/gui/widget/label_title_screen_tip.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 78: 		({GUI_FONT_SIZE_DEFAULT})
+    {}
+err: ../attic/data/gui/widget/label_title_screen_tip.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 80: 		({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/label_title_screen_tip.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 81: 		({GUI__FONT_COLOR_DISABLED__DEFAULT})
+    )
+
+}
+
+_GUI_DEFINITION = nil
+_GUI_RESOLUTION = nil

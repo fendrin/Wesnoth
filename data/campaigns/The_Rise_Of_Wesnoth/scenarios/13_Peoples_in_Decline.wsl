@@ -1,0 +1,334 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "13_Peoples_in_Decline"
+    name: _ "Peoples in Decline"
+    next_scenario: "14_Rough_Landing"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/13_Peoples_in_Decline.map"
+    <TURNS(39, 36, 33)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+
+    story: {
+        part: {
+            music: "underground.ogg"
+            story: _ "Several days later Prince Haldric departs in his ship, the Eldaric, his home and the Green Isle lost to him forever. Before him lay a vast expanse of stormy seas, and the mysterious island that Lady Jessene has mentioned, and even more exotic lands even further to the East."
+            <TROW_GREEN_ISLE_BIGMAP!
+        }
+
+        part: {
+            story: _ "The island that King Haldric and his crew are approaching was at one time a volcano that is now slowly sinking into the sea. The elder Crown Prince of Southbay had managed to establish a foothold on this Island, despite the belligerent nature of its reptilian inhabitants. There will be little left of that foothold by now."
+            <TROW_GREEN_ISLE_BIGMAP!
+        }
+    }
+
+    <TROW_GI_TRACK(JOURNEY_13_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Drake Flameheart"
+        id: "Kegrid"
+        name: _ "Kegrid"
+        side: 2
+        canrecruit: true
+        <GOLD(110, 150, 190)
+        <INCOME(2, 4, 8)
+        team_name: "Drake"
+        user_team_name: _ "Drakes"
+        <if EASY then {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Drake Fighter"}
+        } else {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Fire Drake", "Drake Arbiter", "Drake Fighter", "Drake Warrior"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    side: {
+        type: "Drake Flameheart"
+        id: "Gerrick"
+        name: _ "Gerrick"
+        side: 3
+        canrecruit: true
+        <GOLD(110, 150, 190)
+        <INCOME(2, 4, 8)
+        team_name: "Drake"
+        user_team_name: _ "Drakes"
+
+        <if EASY then {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Drake Fighter"}
+        } else {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Fire Drake", "Drake Flare", "Drake Fighter", "Drake Warrior"}
+        }
+
+        ai: {
+            <NO_SCOUTS!
+            <if EASY then {
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer", "fighter"}
+            } else {
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer", "fighter", "mixed fighter"}
+            }
+            aggression: 0.75
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    side: {
+        type: "Drake Flameheart"
+        id: "Merkush"
+        name: _ "Merkush"
+        side: 4
+        canrecruit: true
+        <GOLD(110, 150, 190)
+        <INCOME(2, 4, 8)
+        team_name: "Drake"
+        user_team_name: _ "Drakes"
+
+        <if EASY then {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Drake Fighter"}
+        } else {
+            recruit: {"Drake Burner", "Drake Clasher", "Drake Glider", "Fire Drake", "Drake Thrasher", "Drake Fighter", "Drake Warrior"}
+        }
+
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "fighter"}
+            aggression: 0.75
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            OBJ_TRIDENT_STORM(17, 18, "trident")
+
+            Recall{
+                id: "Lady Jessene"
+                x: 10
+                y: 8
+            }
+            Recall{
+                id: "Burin the Lost"
+                x: 11
+                y: 9
+            }
+            Recall{
+                id: "Sir Ruddry"
+                x: 9
+                y: 10
+            }
+
+            Recall{
+                id: "Sir Ladoc"
+                x: 9
+                y: 10
+            }
+
+            Recall{
+                id: "Minister Edren"
+                x: 10
+                y: 10
+            }
+
+            Recall{
+                id: "Lord Typhon"
+                x: 9
+                y: 9
+            }
+
+            PLACE_IMAGE("units/transport/galleon.png~RC(magenta>red)", 10, 9)
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lord Typhon"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+--   [event]
+--       name=moveto
+--       [filter]
+--           side=1
+--           x=17
+--           y=18
+--       [/filter]
+--
+--       [remove_item]
+--       [/remove_item]
+--   [/event]
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "After some time at sea an island is spotted. The Eldaric docks at a crude port that appears to be deserted."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Land! Land! Bless the Lords of Light!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "This is the Elder Prince’s island all right. We had a heck of a time pacifying the Drakes who live here. Oh my, it looks like they’ve rearmed!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We come in peace. We only seek to re-provision our ships."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: WHISPER(_ "I don’t think diplomacy is going to work.")
+            }
+            Message{
+                speaker: "Gerrick"
+-- wmllint: local spelling Ssso humansss usss
+                message: _ "Ssso humansss, you’ve come to trouble usss again. Prepare to die! For the glory of the Lords of Morogor!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: WHISPER(_ "Do I need to say, <i>“I told you so”</i>?")
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 17
+            y: 18
+        }
+        do: ->
+            Event{
+                name: "new turn"
+                do: ->
+                    VARIABLE_OP("xx1", "rand", "18..19")
+                    VARIABLE_OP("yy1", "rand", "16..19")
+
+                    NAMED_LOYAL_UNIT(4, "Sea Serpent", xx1, yy1, "Bitey the Serpent", _ "Bitey the Serpent")
+
+                    Message{
+                        side: 1
+                        filter_location: {
+                            x: xx1, y: yy1
+                            radius: 10
+                        }
+                        message: _ "Look out, a serpent has emerged from the deep."
+                    }
+
+                    Scroll_To_Unit{
+                        id: "Bitey the Serpent"
+                    }
+
+                    CLEAR_VARIABLE("xx1,yy1")
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Well, it looks like their warriors have given up the fight. We should be able to re-provision the ships now."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "The nice thing is, they’ll go back to guarding this island after we’re gone for a while. It’ll make a good way of preventing others from following us."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "This island is slowly sinking. Hmm, I wonder what they’ll do when it gets too small for them?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "They seem rather intelligent. They’re certainly belligerent and numerous. I’m sure they’ll eventually evacuate. Just like us right now."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I don’t find that thought very comforting."
+            }
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 4
+                x: {3, 3, 4}
+                y: {1, 2, 2}
+            }
+
+            LIVING_INTEL("Familiar", "Familiar", _ "Familiar", "portraits/familiar.png", 4, 4, 2)
+-- wmllint: directory spelling Neep
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Clack!</i>"
+            }
+
+            Kill{
+                id: "Familiar"
+            }
+
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 4
+                x: {4, 3, 2, 1}
+                y: {2, 3, 2, 2}
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "The fleet is starving, we’ll never pacify this island before we all die!"
+            }
+    }
+}

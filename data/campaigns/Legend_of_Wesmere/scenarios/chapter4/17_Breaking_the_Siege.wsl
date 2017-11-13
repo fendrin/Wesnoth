@@ -1,0 +1,423 @@
+--textdomain wesnoth-low
+
+LANDAR_SPOILED = () -> {
+    }true
+
+    Scenario{
+        name: _ "Breaking the Siege"
+        id: "17_Breaking_the_Siege"
+        next_scenario: "18_Hour_of_Glory"
+        experience_modifier: 100
+
+        random_start_time: false
+        allow_new_game: false
+        force_lock_settings: true
+
+        <LOW_MAP("North_Elves.map")
+        <WINTER_MASK("17_Breaking_the_Siege.mask")
+
+        <TURNS(40, 36, 32)
+        <DEFAULT_SCHEDULE!
+
+        <INTRO_AND_SCENARIO_MUSIC("revelation.ogg", "elvish-theme.ogg")
+        <EXTRA_SCENARIO_MUSIC("traveling_minstrels.ogg")
+        <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+        <EXTRA_SCENARIO_MUSIC("silvan_sanctuary.ogg")
+        <EXTRA_SCENARIO_MUSIC("northerners.ogg")
+        <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+
+        <NORTH_ELVES_VILLAGES!
+
+        story: {
+            part: {
+                story: _ "With the orcs embroiled in a civil war, Kalenz seized the chance to take back his beloved home. Reports had been arriving of an enclave of Northern Elves yet holding out against the orcish invaders. It was quickly decided to send a force to their aid. But harsh winter weather descended while it was en route..."
+                delay: 4000
+            }
+        }
+        <LOW_TRACK(TREASURY_COMPLETE!, BOOK_COMPLETE!, ALLIANCE_STAGE4!)
+
+        PLAYER_GOLD: () -> {
+            <GOLD(300, 200, 100)
+        }
+        MULTIPLAYER_GOLD: () -> {
+            <GOLD(45, 45, 45)
+        }
+
+-- wmllint: validate-off
+        side: {
+            side: 1
+            <KALENZ!
+            <PLAYABLE!
+            x: 46
+            y: 39
+            fog: true
+
+            <unless MULTIPLAYER! then {
+                <PLAYER_GOLD!
+                unit: {
+                    <LANDAR!
+--TODO place on his keep
+                    placement: "leader"
+                }
+                unit: {
+                    <OLURF!
+--TODO place on his keep
+                    placement: "leader"
+                }
+                unit: {
+                    <CLEODIL!
+--TODO place on her keep
+                    placement: "leader"
+                }
+            } else {
+                <MULTIPLAYER_GOLD!
+            }
+        }
+-- wmllint: validate-on
+        event: {
+            name: "prestart"
+            do: ->
+                RECALL_LOYALS!
+        }
+
+        side: {
+            side: 2
+            persistent: true
+            save_id: "Uradredia"
+            allow_player: false
+            <PLAYER_TEAM!
+
+            no_leader: true
+            unit: {
+                <URADREDIA!
+                extra_recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Scout", "Elvish Shaman"}
+                x: 24
+                y: 7
+            }
+        }
+
+        side: {
+            side: 3
+            allow_player: false
+            team_name: "orcs"
+            user_team_name: _ "Enemies"
+            <FLAG_VARIANT("undead")
+            type: "Orcish Warlord"
+            id: "Kior-Pur"
+            name: _ "Kior-Pur"
+            canrecruit: true
+            x: 15
+            y: 38
+            <if EASY then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Goblin Spearman"}
+            }
+            <if NORMAL then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Goblin Spearman", "Orcish Slayer"}
+            }
+            <if HARD then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Goblin Spearman", "Orcish Slayer", "Orcish Warrior"}
+            }
+            <GOLD(200, 230, 250)
+
+            ai: {
+                <NO_SCOUTS!
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer", "mixed fighter"}
+            }
+            ai: {
+                time_of_day: {"dusk", "first_watch", "second_watch"}
+                aggression: 0.75
+                caution: 0.0
+                grouping: false
+                attack_depth: 5
+            }
+            <INCOME(4, 8, 12)
+        }
+
+        side: {
+            side: 4
+            allow_player: false
+            team_name: "orcs"
+            user_team_name: _ "Enemies"
+            <FLAG_VARIANT("undead")
+            type: "Orcish Warlord"
+            id: "Mbiran"
+            name: _ "Mbiran"
+            canrecruit: true
+            x: 6
+            y: 6
+            <GOLD(200, 240, 290)
+            <INCOME(4, 8, 12)
+            <if EASY then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+            }
+            <if NORMAL then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Orcish Warrior"}
+            }
+            <if HARD then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+            }
+            ai: {
+                <NO_SCOUTS!
+                recruitment_pattern: {"fighter", "fighter", "mixed fighter", "archer", "scout", "fighter"}
+                aggression: 0.75
+            }
+            ai: {
+                grouping: "offensive"
+                aggression: 0.75
+            }
+        }
+
+        side: {
+            side: 5
+            allow_player: false
+            team_name: "orcs"
+            user_team_name: _ "Enemies"
+            <FLAG_VARIANT("undead")
+            type: "Orcish Warlord"
+            id: "Tan-Durr"
+            name: _ "Tan-Durr"
+            canrecruit: true
+            x: 44
+            y: 7
+            <INCOME(4, 8, 12)
+            <GOLD(200, 250, 290)
+            <if EASY then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+            }
+            <if NORMAL then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Orcish Warrior"}
+            }
+            <if HARD then {
+                recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+            }
+            ai: {
+                <NO_SCOUTS!
+                recruitment_pattern: {"scout", "fighter", "fighter", "archer", "mixed fighter"}
+            }
+            ai: {
+                time_of_day: {"dusk", "first_watch", "second_watch"}
+                aggression: 0.75
+                caution: 0.0
+                grouping: false
+            }
+        }
+
+        <if MULTIPLAYER then {
+            side: {
+                side: 6
+                save_id: "Landar"
+                fog: true
+                <PLAYABLE!
+                no_leader: true
+                unit: {
+                    <LANDAR!
+                    x: 20
+                    y: 4
+                }
+                <MULTIPLAYER_GOLD!
+            }
+            side: {
+                side: 7
+                save_id: "Olurf"
+                <PLAYABLE!
+
+                no_leader: true
+                unit: {
+                    <OLURF!
+                    x: 20
+                    y: 4
+                }
+                <MULTIPLAYER_GOLD!
+                fog: true
+            }
+            side: {
+                side: 8
+                save_id: "Cleodil"
+                <PLAYABLE!
+                <MULTIPLAYER_GOLD!
+                fog: true
+
+                no_leader: true
+                unit: {
+                    <CLEODIL!
+                    x: 20
+                    y: 4
+                }
+            }
+        }
+
+        event: {
+            name: "prestart"
+            do: ->
+                Objectives{
+                    side: 1
+
+                    objective: {
+                        description: _ "Defeat all enemy leaders"
+                        condition: "win"
+                    }
+                    objective: {
+                        description: _ "Death of Kalenz"
+                        condition: "lose"
+                    }
+                    objective: {
+                        description: _ "Death of Landar"
+                        condition: "lose"
+                    }
+                    objective: {
+                        description: _ "Death of Cleodil"
+                        condition: "lose"
+                    }
+                    objective: {
+                        description: _ "Death of Uradredia"
+                        condition: "lose"
+                    }
+                    objective: {
+                        description: _ "Death of Olurf"
+                        condition: "lose"
+                    }
+
+                    <TURNS_RUN_OUT!
+
+                    gold_carryover: {
+                        bonus: true
+                        carryover_percentage: 80
+                    }
+                }
+        }
+
+        event: {
+            name: "enemies defeated"
+            do: ->
+                Endlevel{
+                    result: "victory"
+                    save: false
+                    bonus: true
+                }
+        }
+
+--wmllint: recognize Uradredia
+        event: {
+            name: "start"
+            do: ->
+                Message{
+                    id: "Kior-Pur"
+                    message: _ "I see troops coming from the south! It must be that our army has beaten these elves and humans and will now help us crush these remaining elves!"
+                }
+                Message{
+                    id: "Uradredia"
+                    message: _ "Our defenses are stretched thin. Men, prepare to face another orcish attack!"
+                }
+                Message{
+                    id: "Kalenz"
+                    message: _ "The North Elves still stand. Prepare for battle!"
+                }
+
+                AI_CONTROLLER_ALLOW_LEADER_CONTROL(1, 2)
+        }
+
+        event: {
+            name: "victory"
+            do: ->
+                Message{
+                    id: "Kalenz"
+                    message: _ "The North Elves are now free!"
+                }
+                Message{
+                    id: "Uradredia"
+-- wmllint: local spelling Kliada
+                    message: _ "Our thanks to you, Kalenz, son of Kliada. Our troops are at your command."
+                }
+        }
+
+        event: {
+            name: "moveto"
+            filter: {
+                side: 1
+                x: "1-19"
+                y: "36-40"
+            }
+            do: ->
+                Message{
+                    id: "Kior-Pur"
+                    message: _ "The elves are attacking us! Reserves!"
+                }
+
+                Move_Unit_Fake{
+                    type: "Goblin Impaler"
+                    x: {4, 5, 6, 6}
+                    y: {35, 36, 36, 37}
+                }
+                Unit{
+                    type: "Direwolf Rider"
+                    id: "Zhuk"
+                    name: _ "Zhuk"
+                    side: 4
+                    x: 6
+                    y: 37
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+                }
+
+                Scroll_To_Unit{
+                    id: "Zhuk"
+                }
+
+                Unit{
+                    type: "Direwolf Rider"
+                    id: "Dran"
+                    name: _ "Dran"
+                    side: 4
+                    x: 6
+                    y: 36
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+                }
+                Unit{
+                    type: "Direwolf Rider"
+                    id: "Hrugt"
+                    name: _ "Hrugt"
+                    side: 4
+                    x: 5
+                    y: 37
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+                }
+                Unit{
+                    type: "Direwolf Rider"
+                    id: "Orhtib"
+                    name: _ "Orhtib"
+                    side: 4
+                    x: 5
+                    y: 38
+                    modifications: {
+                        <TRAIT_RESILIENT!
+                        <TRAIT_STRONG!
+                    }
+                }
+        }
+
+        event: {
+            name: "last breath"
+            filter: {
+                id: "Kior-Pur"
+            }
+            do: ->
+                Message{
+                    id: "Kalenz"
+                    message: _ "Before you die, know that you lost in Wesmere, you lost at Tath, you will lose here and that your Great Chief is dead!"
+                }
+        }
+
+-- wmllint: unwho "{OLURF}"
+        INCLUDE("campaigns/Legend_of_Wesmere/utils/deaths.cfg")
+    }
+
+    PLAYER_GOLD = nil
+    MULTIPLAYER_GOLD = nil

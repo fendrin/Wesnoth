@@ -1,0 +1,114 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a vertical scrollbar.
+----
+
+_GUI_STATE = (POSITIONER_TOP, BG_COLOR, IMAGE_SUFFIX, IPF) -> {
+    draw: {
+
+--
+-- Groove
+--
+
+        rectangle: {
+            x: 0
+            y: 0
+            w: "(width)"
+            h: "(height)"
+            fill_color: BG_COLOR
+        }
+
+--
+-- Positioner
+--
+
+        image: {
+-- 5 pixels high
+            x: 0
+            y: "(positioner_offset)"
+            name: "buttons/scrollbars/scrolltop#{IMAGE_SUFFIX}#{IPF}"
+        }
+
+        image: {
+            x: 0
+            y: "(positioner_offset + #{POSITIONER_TOP})"
+            h: "(
+if(positioner_length - positioner_top < 0
+	, 0
+	, positioner_length - positioner_top)
+where positioner_top = {POSITIONER_TOP})"
+            resize_mode: "stretch"
+            name: "buttons/scrollbars/scrollmid#{IMAGE_SUFFIX}#{IPF}"
+        }
+
+        image: {
+-- 5 pixels high
+            x: 0
+            y: "(positioner_offset + positioner_length)"
+            name: "buttons/scrollbars/scrollbottom#{IMAGE_SUFFIX}#{IPF}"
+        }
+
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, WIDTH, HEIGHT, POSITIONER_LENGHT, POSITIONER_TOP, IPF) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: WIDTH
+        min_height: HEIGHT
+
+        default_width: 15
+        default_height: HEIGHT
+
+        max_width: WIDTH
+        max_height: 0
+
+        minimum_positioner_length: POSITIONER_LENGHT
+
+        top_offset: 0
+        bottom_offset: 0
+
+        state_enabled: {
+            <_GUI_STATE(POSITIONER_TOP, GUI__BACKGROUND_COLOR_ENABLED!, ".png", IPF)
+        }
+
+        state_disabled: {
+            <_GUI_STATE(POSITIONER_TOP, GUI__BACKGROUND_COLOR_DISABLED!, ".png~GS()", IPF)
+        }
+
+        state_pressed: {
+            <_GUI_STATE(POSITIONER_TOP, GUI__BACKGROUND_COLOR_ENABLED!, "-pressed.png", IPF)
+        }
+
+        state_focused: {
+            <_GUI_STATE(POSITIONER_TOP, GUI__BACKGROUND_COLOR_ENABLED!, "-active.png", IPF)
+        }
+    }
+}
+
+Vertical_Scrollbar_Definition{
+    id: "default"
+    description: "a vertical scrollbar"
+
+-- Note a scrollbar is normally sized by the item that "masters" it
+-- that's why the default height is rather low.
+
+    <_GUI_RESOLUTION({}, 25, 20, 11, 2, {})
+
+}
+
+Vertical_Scrollbar_Definition{
+    id: "transparent"
+    description: "a transparent vertical scrollbar"
+
+-- Note a scrollbar is normally sized by the item that "masters" it
+-- that's why the default height is rather low.
+
+    <_GUI_RESOLUTION({}, 25, 20, 11, 2, "~O(65%)")
+
+}
+
+_GUI_STATE = nil
+_GUI_RESOLUTION = nil

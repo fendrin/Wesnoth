@@ -1,0 +1,454 @@
+--textdomain wesnoth-did
+
+Scenario{
+    id: "12_Endless_Night"
+    name: _ "Endless Night"
+    map: "campaigns/Descent_Into_Darkness/maps/12_Endless_Night.map"
+    turns: -1
+    next_scenario: "12_Endless_Night"
+    victory_when_enemies_defeated: true
+
+    <UNDERGROUND!
+
+    story: {
+        part: {
+            story: _ "Years pass. Every summer when the mountain passes become clear, the lich sends his soldiers to attack the orcs, removing any human, elven, or dwarvish patrols that get in the way. Every year the undead inflict some damage before being repelled and retreating to the caves."
+            <STORYTXT_BACKGROUND("end.jpg")
+        }
+        part: {
+            story: _ "Rumors circulate of a lich that preys on scouting patrols. A hero, gathering his loyal troops to him, decides to put an end to the evil."
+            <STORYTXT_BACKGROUND("end.jpg")
+        }
+    }
+
+    <DID_TRACK(JOURNEY_12_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        save_id: "Malin Keshar"
+        recruit: {"Walking Corpse", "Vampire Bat", "Ghost", "Ghoul", "Skeleton Archer", "Skeleton", "Dark Adept"}
+        gold: 200
+        team_name: "good"
+        user_team_name: _ "Mal Keshar"
+        <FLAG_VARIANT("undead")
+
+-- wmllint: recognize Mal Keshar
+        <CHARACTER_STATS_MAL_KESHAR!
+
+        facing: "ne"
+    }
+-- wmllint: validate-on
+
+-- Foolish Hero
+    side: {
+        side: 2
+        controller: "ai"
+        gold: 0
+-- Place leader, grant gold and recruits later
+        no_leader: true
+
+-- After I have greatly reduced the number of villages in this scenario
+-- it might be a good idea to give our foolish hero some income
+        <INCOME(5, 7, 9)
+
+        ai: {
+            villages_per_scout: 10
+            village_value: 0.5
+        }
+    }
+
+    <STARTING_VILLAGES(1, 6)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Defeat the foolish hero"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Destruction of Mal Keshar"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+
+                <IS_LAST_SCENARIO!
+            }
+
+            MODIFY_UNIT({id: "Mal Keshar"}, "profile", "portraits/malin_lich-ancient.png")
+
+            If{
+                variable: {
+                    name: "timesForever"
+                    greater_than: 1
+                }
+
+                then: ->
+                    VARIABLE("previous_previous_randomHero", previous_randomHero)
+                    VARIABLE("previous_randomHero", randomHero)
+                
+
+                else: ->
+                    VARIABLE("previous_randomHero", -1)
+                
+            }
+
+-- let's pick a random hero type...
+            VARIABLE_OP("randomHero", "rand", {"human", "bandit", "elf", "dwarf", "orc"})
+
+-- and make sure it's not the same as last time
+            While{
+                variable: {
+                    name: "randomHero"
+                    equals: previous_randomHero
+                }
+
+                or: {
+                    variable: {
+                        name: "randomHero"
+                        equals: previous_previous_randomHero
+                    }
+                }
+
+                do: ->
+                    VARIABLE_OP("randomHero", "rand", {"human", "bandit", "elf", "dwarf", "orc"})
+                
+            }
+
+            Switch{
+                variable: "randomHero"
+                case: {
+                    value: "human"
+                    do: ->
+                        Unit{
+                            side: 2
+                            type: "Royal Guard"
+                            id: "Foolish Hero"
+                            name: _ "Foolish Hero"
+                            x: 20, y: 3
+                            canrecruit: true
+                            facing: "sw"
+                        }
+
+                        Allow_Recruit{
+                            side: 2
+                            type: {"Spearman", "Swordsman", "Pikeman", "Bowman", "Longbowman", "Heavy Infantryman", "Shock Trooper", "Mage", "Red Mage", "White Mage", "Horseman", "Knight", "Lancer"}
+                        }
+
+                        INCIDENTAL_MUSIC("loyalists.ogg")
+                        Music{
+                            name: "the_city_falls.ogg"
+                            append: true
+                        }
+                }
+
+                case: {
+                    value: "bandit"
+                    do: ->
+                        Unit{
+                            side: 2
+                            type: "Assassin"
+                            id: "Foolish Hero"
+                            name: _ "Foolish Hero"
+                            x: 20, y: 3
+                            canrecruit: true
+                            facing: "sw"
+                        }
+
+                        Allow_Recruit{
+                            side: 2
+                            type: {"Thug", "Bandit", "Footpad", "Outlaw", "Poacher", "Trapper", "Thief", "Rogue"}
+                        }
+
+                        INCIDENTAL_MUSIC("battle.ogg")
+                }
+
+                case: {
+                    value: "elf"
+                    do: ->
+                        Unit{
+                            side: 2
+                            type: "Elvish Marshal"
+                            id: "Foolish Hero"
+                            name: _ "Foolish Hero"
+                            x: 20, y: 3
+                            canrecruit: true
+                            facing: "sw"
+                        }
+
+                        Allow_Recruit{
+                            side: 2
+                            type: {"Elvish Fighter", "Elvish Hero", "Elvish Captain", "Elvish Archer", "Elvish Ranger", "Elvish Marksman", "Elvish Shaman", "Elvish Sorceress", "Elvish Druid", "Elvish Scout", "Elvish Rider", "Wose"}
+                        }
+
+                        INCIDENTAL_MUSIC("knolls.ogg")
+                        Music{
+                            name: "elf-land.ogg"
+                            append: true
+                        }
+                }
+
+                case: {
+                    value: "dwarf"
+                    do: ->
+                        Unit{
+                            side: 2
+                            type: "Dwarvish Lord"
+                            id: "Foolish Hero"
+                            name: _ "Foolish Hero"
+                            x: 20, y: 3
+                            canrecruit: true
+                            facing: "sw"
+                        }
+
+                        Allow_Recruit{
+                            side: 2
+                            type: {"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Thunderer", "Dwarvish Thunderguard", "Dwarvish Stalwart", "Dwarvish Guardsman", "Dwarvish Ulfserker", "Dwarvish Berserker", "Dwarvish Scout", "Dwarvish Pathfinder", "Gryphon Rider", "Gryphon Master"}
+                        }
+
+                        INCIDENTAL_MUSIC("knalgan_theme.ogg")
+                        Music{
+                            name: "legends_of_the_north.ogg"
+                            append: true
+                        }
+                }
+
+                case: {
+                    value: "orc"
+                    do: ->
+                        Unit{
+                            side: 2
+                            type: "Orcish Warlord"
+                            id: "Foolish Hero"
+                            name: _ "Foolish Hero"
+                            x: 20, y: 3
+                            canrecruit: true
+                            facing: "sw"
+                        }
+
+                        Allow_Recruit{
+                            side: 2
+                            type: {"Orcish Warrior", "Orcish Slayer", "Orcish Crossbowman", "Troll", "Troll Rocklobber"}
+                        }
+
+                        Music{
+                            name: "northerners.ogg"
+                            immediate: true
+                            append: false
+                        }
+                        Music{
+                            name: "battle.ogg"
+                            append: true
+                        }
+                }
+            }
+
+-- Give the foolish hero gold = 200*timesForever
+            Gold{
+                side: 2
+                amount: "#{(200*#{timesForever)"
+            }
+
+-- play only sad music after a few repetitions
+            If{
+                variable: {
+                    name: "timesForever"
+                    greater_than: 4
+                }
+                then: ->
+                    INCIDENTAL_MUSIC("the_king_is_dead.ogg")
+                    Music{
+                        name: "elvish-theme.ogg"
+                        append: true
+                    }
+                    Music{
+                        name: "nunc_dimittis.ogg"
+                        append: true
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Switch{
+                variable: "randomHero"
+                case: {
+                    value: "human"
+                    do: ->
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "Your doom is at hand, foul lich! I shall bring you down by my own hand."
+                        }
+
+                        Message{
+                            speaker: "Mal Keshar"
+                            message: _ "The only doom at hand is yours, if you do not leave now. Go back to your manors and taverns, and do not trouble me further."
+                        }
+                }
+
+                case: {
+                    value: "bandit"
+                    do: ->
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "You have preyed on too many of my boys. I have come here to end this, once and for all."
+                        }
+
+                        Message{
+                            speaker: "Mal Keshar"
+                            message: _ "Not even real soldiers. I will sweep you aside."
+                        }
+                }
+
+                case: {
+                    value: "elf"
+                    do: ->
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "Your kind is an abomination. I am here to see that you inflict no more harm on the spirits that have passed on."
+                        }
+
+                        Message{
+                            speaker: "Mal Keshar"
+                            message: _ "Fool! By leaving your forests and coming into my domain, you have sacrificed your own spirits."
+                        }
+                }
+
+                case: {
+                    value: "dwarf"
+                    do: ->
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "I’ve been itching for a chance to break some bones with my hammer, and now you’ve given me cause. Goodness knows you’ve got plenty of bones over there."
+                        }
+
+                        Message{
+                            speaker: "Mal Keshar"
+                            message: _ "Go back to your tunnels and your mines, and do not trouble me unless you want your hammers to work for me once you are dead."
+                        }
+
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "Hear that boys, he’s threatening us! It’s time he learned what real dwarves are made of."
+                        }
+                }
+
+                case: {
+                    value: "orc"
+                    do: ->
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "So, I’ve finally found your lair, lich. You, who have been attacking the orcs for years and have destroyed many of our tribes."
+                        }
+
+                        Message{
+                            speaker: "Mal Keshar"
+                            message: _ "Orcs? It is you who have forced me to choose the dark path, and it is you who ended my mortal life and made me turn into a lich. I am actually grateful to you for coming here, foolish hero. My hatred toward your race makes me stronger and I again get a chance to kill orcs!"
+                        }
+
+                        Message{
+                            speaker: "Foolish Hero"
+                            message: _ "Nothing will stop me from taking revenge for my father who died at your hand and for the rest of my people you and your minions have killed, lich. Orcs, attack! The one who brings me his skull gets a bag of gold."
+                        }
+                }
+            }
+
+-- Some more harassment once the scenario's been played a few times
+            If{
+                variable: {
+                    name: "timesForever"
+                    numerical_equals: 4
+                }
+                then: ->
+                    Message{
+                        speaker: "Mal Keshar"
+                        message: _ "Is there an endless supply of foolish heroes with death wishes? Honestly, where do you all come from?"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal Keshar"
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "timesForever"
+                    greater_than: 1
+                }
+
+-- after the first repetition, we'll let the campaign really end
+-- when Malin dies
+                then: ->
+                    Role{
+                        side: 2
+                        not: {
+                            canrecruit: true
+                        }
+                        role: "second"
+                    }
+
+                    Music{
+                        name: "elvish-theme.ogg"
+                        immediate: true
+                        append: false
+                    }
+
+                    Message{
+                        speaker: "Foolish Hero"
+                        message: _ "Well, that is the end of his evil ways."
+                    }
+
+                    Message{
+                        role: "second"
+                        message: _ "I wonder who he was in life, before falling into the evil ways that led him to today."
+                    }
+
+                    Message{
+                        speaker: "Foolish Hero"
+                        message: _ "Once he chose this unlife for himself and his soldiers, he forfeited any claim to our compassion. Does it even matter who he was?"
+                    }
+
+                    Message{
+                        role: "second"
+                        message: _ "No, I suppose it does not."
+                    }
+
+                    Endlevel{
+                        next_scenario: "null"
+                        carryover_report: false
+                        save: false
+                        linger_mode: false
+                    }
+                
+
+-- Normal defeat condition on the first repeat
+                else: ->
+                    HERODEATH_MALIN_LICH!
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            VARIABLE_OP("timesForever", "add", 1)
+
+            Endlevel{
+                result: "victory"
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+}

@@ -1,0 +1,475 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "02_The_Fall"
+    name: _ "The Fall"
+    next_scenario: "03_A_Harrowing_Escape"
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/02_The_Fall.map"
+    <TURNS(23, 20, 17)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    story: {
+        part: {
+            story: _ "Summer passes into fall, and King Eldaric fortifies his frontiers. It is not long before the first orcish scouts are spotted. War has come to the valley."
+            <TROW_GREEN_ISLE_BIGMAP!
+        }
+    }
+
+    <TROW_GI_TRACK(JOURNEY_02_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Fighter"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 100
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Stormvale"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(1, 6)
+
+    side: {
+        type: "Wesfolk Outcast"
+        gender: "female"
+        id: "Wesfolk Leader"
+        name: _ "Wesfolk Leader"
+        profile: "portraits/lady_outlaw.png"
+        side: 2
+        canrecruit: true
+        recruit: {"Footpad", "Poacher", "Thief", "Thug"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer", "scout"}
+            <NO_SCOUTS!
+            aggression: 0.15
+            caution: 0.5
+            passive_leader: true
+            grouping: "defensive"
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        <GOLD(90, 130, 170)
+        team_name: "wesfolk"
+        user_team_name: _ "Wesfolk"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES(2, 7)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Rarbag"
+        name: _ "Tan-Rarbag"
+        profile: "portraits/orcs/grunt-3.png"
+        side: 3
+        canrecruit: true
+        recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        <GOLD(180, 260, 350)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <NO_SCOUTS!
+            passive_leader: true
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+    }
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Tan-Erang"
+        name: _ "Tan-Erang"
+        side: 4
+        canrecruit: true
+        recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        <GOLD(160, 220, 310)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <NO_SCOUTS!
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+    }
+
+    NORTH_GUARD: (X, Y, ID_STRING, NAME_STRING, SECOND_TRAIT_WML) -> {
+        unit: {
+            <if EASY then {
+                type: "Shock Trooper"
+            }
+            <if NORMAL then {
+                type: "Heavy Infantryman"
+            }
+            <if HARD then {
+                type: "Heavy Infantryman"
+            }
+            side: 1
+            id: ID_STRING
+            name: NAME_STRING  -- wmllint: ignore
+            x: X
+            y: Y
+            modifications: {
+                <TRAIT_LOYAL!
+                <SECOND_TRAIT_WML
+            }
+            <IS_LOYAL!
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            MODIFY_UNIT({id: "Wesfolk Leader"}, "experience", wesfolk_leader_store.experience)
+
+            if EASY
+                LOYAL_UNIT(2, "Poacher", 11, 20), GUARDIAN!
+            } else {
+                LOYAL_UNIT(2, "Poacher", 11, 20), GUARDIAN!
+                LOYAL_UNIT(2, "Poacher", 7, 21), GUARDIAN!
+                LOYAL_UNIT(2, "Poacher", 9, 22), GUARDIAN!
+            
+
+            Recall{
+                id: "King Eldaric IV"
+                x: 28
+                y: 15
+            }
+
+            NORTH_GUARD(10, 6, "Thegwyn", _ "Thegwyn", TRAIT_RESILIENT!)
+            NORTH_GUARD(12, 6, "Galdred", _ "Galdred", TRAIT_STRONG!)
+            NORTH_GUARD(12, 10, "Tromas", _ "Tromas", TRAIT_FEARLESS!)
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the Wesfolk Leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of King Eldaric IV"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Orcs kill the Wesfolk Leader"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "Haldric, things have not gone well! The orcs have arrived. We met them at the north keep but they were just too many. They have flanked us to the east in the mountains. I have my personal guards holding the pass to the north, but they won’t be able to last long... We must evacuate our home."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "That’s awful! And it only gets worse. That Wesfolk rabble has set up shop again in the south pass..."
+                image: "portraits/haldric-surprised.png"
+            }
+
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "That’s the only way out of the valley! This is a disaster! We must defeat that Wesfolk scum and flee to the south. Our home is lost... We must make haste."
+            }
+
+            Message{
+                speaker: "Tan-Rarbag"
+                message: _ "So, <i>human</i>, care to make your final stand?"
+            }
+
+            Message{
+                speaker: "Tan-Erang"
+                message: _ "Die! Die! Die!"
+            }
+
+            Message{
+                speaker: "Wesfolk Leader"
+                message: _ "This is going to get ugly..."
+            }
+    }
+
+    event: {
+        name: "turn 14"
+        do: ->
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "Hurry! Only death awaits in this valley!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Erang"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            LOOT(75, 1)
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Rarbag"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            LOOT(75, 1)
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Wesfolk Leader"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+-- wmllint: local spelling surren
+                message: _ "Umm, I invoke the right of surren..."
+            }
+
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "Nay! Off with your hea—"  -- wmllint: no spellcheck
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "But I can help! Really! You could use me and my men’s skills on the long road ahead!"
+            }
+
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "Haldric, what say you on this matter?"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Hmm... after some thought..."
+                image: "portraits/haldric-annoyed.png"
+
+                option: {
+                    label: _ "I think that your skills may be useful. You may join us."
+                    command: ->
+                        Message{
+                            speaker: "Wesfolk Leader"
+                            message: _ "Let there be peace between us, our survival depends on it."
+                        }
+                        Allow_Recruit{
+                            side: 1
+                            type: {"Thief", "Thug", "Poacher", "Footpad"}
+                        }
+                        Message{
+                            speaker: "Prince Haldric"
+                            message: _ "So what shall I call you?"
+                        }
+                        Message{
+                            speaker: "Wesfolk Leader"
+                            message: _ "The Lady Outlaw will do."
+                        }
+                        Store_Unit{
+                            filter: {
+                                id: "Wesfolk Leader"
+                            }
+
+                            kill: true
+                            variable: "wesfolk_leader_store"
+                        }
+
+                        Unit{
+                            id: "Lady Outlaw"
+                            name: _ "Lady Outlaw"
+                            unrenamable: true
+                            type: wesfolk_leader_store.type
+                            gender: "female"
+                            side: 1
+                            x: wesfolk_leader_store.x, y: wesfolk_leader_store.y
+                            experience: wesfolk_leader_store.experience
+                            moves: wesfolk_leader_store.moves
+                            overlays: "misc/hero-icon.png"
+                            random_traits: false
+                            profile: "portraits/lady_outlaw.png"
+                            modifications: {
+                                <TRAIT_LOYAL!
+                            }
+                        }
+
+                        Set_Variable{
+                            name: "have_lady"
+                            value: 1
+                        }
+                    
+                }
+                option: {
+                    label: _ "Your word can’t be trusted. Prepare to meet your gods!"
+                    command: ->
+                        Message{
+                            speaker: "Wesfolk Leader"
+                            message: _ "Arrogant fools! (<i>Reaches into pocket</i>) <i>Poof</i>!"
+                        }
+
+                        FULL_HEAL({id: "Lady Outlaw"})
+
+                        Store_Unit{
+                            filter: {
+                                id: "Wesfolk Leader"
+                            }
+
+                            kill: true
+                            variable: "lady_store"
+                        }
+
+                        VARIABLE("lady_store.id", "Lady Outlaw")
+                        VARIABLE("lady_store.name", _ "Lady Outlaw")
+                        VARIABLE("lady_store.canrecruit", false)
+                        VARIABLE("lady_store.side", 1)
+
+                        Set_Variable{
+                            name: "have_lady"
+                            value: 0
+                        }
+
+                        Message{
+                            speaker: "King Eldaric IV"
+                            message: _ "Argh, she’s gone. Next time, more sword, less chat."
+                        }
+
+                        Message{
+                            speaker: "Prince Haldric"
+                            message: _ "She’s clever! Maybe I made the wrong choice. Well, at least she left some of her gold behind..."
+                        }
+
+                        if EASY
+                            LOOT(300, 1)
+                        
+
+                        if NORMAL
+                            LOOT(250, 1)
+                        
+
+                        if HARD
+                            LOOT(200, 1)
+                        
+                    
+                }
+            }
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "Son, you must lead our people through the south pass. I will remain behind to hold off these vile monsters for as long as I can."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "But, Father!"
+            }
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "It’s the only way. Go now, and don’t look back! Luck be with you!"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Wesfolk Leader"
+        }
+
+        filter_second: {
+            side: {3, 4}
+        }
+        do: ->
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "We’re surrounded! The orcs have taken the southern pass! All is lost!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "We’re surrounded! I can see their reinforcements! All is lost!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: {3, 4}
+            x: "26-30"
+            y: "13-15"
+        }
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Our home! Where shall we go!"
+            }
+            Message{
+                speaker: "King Eldaric IV"
+                message: _ "There can be no looking back! We must go south."
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Kill{
+                id: "King Eldaric IV"
+            }
+
+            CLEAR_VARIABLE("wesfolk_leader_store")
+    }
+}

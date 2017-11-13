@@ -1,0 +1,305 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the default button.
+----
+
+_GUI_BUTTON_FONT_SIZE = () -> {
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    _GUI_LINE = (X1, Y1, X2, Y2, COLOR) -> {
+        line: {
+            x1: X1
+            y1: Y1
+            x2: X2
+            y2: Y2
+
+            thickness: 1
+            color: COLOR
+        }
+    }
+
+    _GUI_POINT = (X, Y, COLOR) -> {
+        <_GUI_LINE(X, Y, X, Y, COLOR)
+    }
+
+    _GUI_STATE = (BACKGROUND_IMAGE, BORDER_COLOR, BORDER_COLOR_DARK, HIGHLIGHT_LINE_COLOR, IPF) -> {
+--
+-- Background
+--
+
+        image: {
+            x: 2
+            y: 2
+            w: "(width)"
+            h: "(height)"
+            name: "buttons/button_normal/#{BACKGROUND_IMAGE}.png#{IPF}"
+        }
+
+--
+-- Dark background borders
+--
+
+        <_GUI_LINE(0, 1, 0, "(height - 2)", "1, 10, 16, 255")
+        <_GUI_LINE(2, 1, "(width - 2)", 1, "1, 10, 16, 255")
+        <_GUI_LINE(1, "(height - 1)", "(width - 2)", "(height - 1)", "1, 10, 16, 255")
+        <_GUI_LINE("(width - 2)", 1, "(width - 2)", "(height - 1)", "1, 10, 16, 255")
+
+--
+-- Gold colored borders
+--
+
+        <_GUI_LINE(2, 0, "(width - 2)", 0, BORDER_COLOR)
+        <_GUI_LINE("(width - 1)", 1, "(width - 1)", "(height - 3)", BORDER_COLOR)
+
+        <_GUI_LINE(1, 1, 1, "(height - 3)", BORDER_COLOR_DARK)
+        <_GUI_LINE(2, "(height - 2)", "(width - 2)", "(height - 2)", BORDER_COLOR_DARK)
+
+--
+-- Blue tint lines on the top and right
+--
+
+        <_GUI_LINE(3, 2, "(width - 3)", 2, HIGHLIGHT_LINE_COLOR)
+        <_GUI_LINE("(width - 3)", 2, "(width - 3)", "(height - 4)", HIGHLIGHT_LINE_COLOR)
+
+--
+-- Round the corners
+--
+
+        <_GUI_POINT(2, 1, BORDER_COLOR_DARK)
+        <_GUI_POINT(2, "(height - 3)", BORDER_COLOR_DARK)
+
+        <_GUI_POINT("(width - 2)", 1, BORDER_COLOR)
+        <_GUI_POINT("(width - 2)", "(height - 3)", BORDER_COLOR)
+    }
+
+    _GUI_RESOLUTION = (RESOLUTION, MIN_WIDTH, DEFAULT_WIDTH, HEIGHT, EXTRA_WIDTH, EXTRA_HEIGHT, FONT_SIZE, IPF, ALPHA) -> {
+        resolution: {
+
+            <RESOLUTION
+
+            min_width: MIN_WIDTH
+            min_height: HEIGHT
+
+            default_width: DEFAULT_WIDTH
+            default_height: HEIGHT
+
+            max_width: 0
+            max_height: HEIGHT
+
+            text_extra_width: EXTRA_WIDTH
+            text_extra_height: EXTRA_HEIGHT
+            text_font_size: FONT_SIZE
+
+            state_enabled: {
+
+                draw: {
+
+                    <_GUI_STATE("background"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 98: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 99: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("21, 79, 109, 255") {IPF}}
+
+                        <GUI__CENTERED_TEXT(FONT_SIZE, {}, GUI__FONT_COLOR_ENABLED__TITLE!)
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 101
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_enabled at line 103
+
+
+                state_disabled: {
+
+                    draw: {
+
+                        <_GUI_STATE("background"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 112: 					({GUI__FONT_COLOR_DISABLED__DEFAULT ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 113: 					("89,  89,  89,  {ALPHA}")
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 114: 					("1, 10, 16, 255") "~GS(){IPF}"}
+
+                            <GUI__CENTERED_TEXT(FONT_SIZE, {}, GUI__FONT_COLOR_DISABLED__TITLE!)
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 113
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_disabled at line 115
+
+
+                    state_pressed: {
+
+                        draw: {
+
+                            <_GUI_STATE("background-pressed"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 127: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 128: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("1, 10, 16, 255") {IPF}}
+
+                                <GUI__CENTERED_TEXT(FONT_SIZE, {}, GUI__FONT_COLOR_ENABLED__TITLE!)
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 125
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_pressed at line 127
+
+
+                        state_focused: {
+
+                            draw: {
+
+                                <_GUI_STATE("background-active"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 141: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 142: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("12, 108, 157, 255") {IPF}}
+
+                                    <GUI__CENTERED_TEXT(FONT_SIZE, {}, GUI__FONT_COLOR_ENABLED__TITLE!)
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 137
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_focused at line 139
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by resolution at line 141
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by define at line 142
+
+
+                        button_definition: {
+
+                            id: "default"
+                            description: "Default button"
+
+                            <_GUI_RESOLUTION({}, 40, 112, 26, 13, 4, _GUI_BUTTON_FONT_SIZE!, {}, 255)
+
+                        }
+
+                        button_definition: {
+
+                            id: "large"
+                            description: "Large button"
+
+                            <_GUI_RESOLUTION({}, 40, 116, 30, 13, 4, _GUI_BUTTON_FONT_SIZE!, {}, 255)
+
+                        }
+
+                        button_definition: {
+
+                            id: "really_large"
+                            description: "Large button"
+
+                            <_GUI_RESOLUTION({}, 40, 172, 40, 13, 4, GUI_FONT_SIZE_LARGE!, {}, 255)
+
+                        }
+
+                        button_definition: {
+
+                            id: "transparent"
+                            description: "Default transparent button"
+
+                            <_GUI_RESOLUTION({}, 40, 112, 26, 13, 4, _GUI_BUTTON_FONT_SIZE!, "~O(65%)", 165)
+
+                        }
+
+                        _GUI_RESOLUTION_ICON_ONLY: (RESOLUTION, MIN_WIDTH, DEFAULT_WIDTH, HEIGHT, EXTRA_WIDTH, EXTRA_HEIGHT, FONT_SIZE, IPF, ALPHA, IMAGE_OVERLAY) -> {
+                            resolution: {
+
+                                <RESOLUTION
+
+                                min_width: MIN_WIDTH
+                                min_height: HEIGHT
+
+                                default_width: DEFAULT_WIDTH
+                                default_height: HEIGHT
+
+                                max_width: 0
+                                max_height: HEIGHT
+
+                                text_extra_width: EXTRA_WIDTH
+                                text_extra_height: EXTRA_HEIGHT
+                                text_font_size: FONT_SIZE
+
+                                state_enabled: {
+
+                                    draw: {
+
+                                        <_GUI_STATE("background"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 212: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 213: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("21, 79, 109, 255") {IPF}}
+
+                                            image: {
+                                                <GUI_CENTERED_IMAGE!
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 218: 					name = {IMAGE_OVERLAY} + ".png{IPF}"
+
+                                            }
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 209
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_enabled at line 211
+
+
+                                    state_disabled: {
+
+                                        draw: {
+
+                                            <_GUI_STATE("background"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 230: 					({GUI__FONT_COLOR_DISABLED__DEFAULT ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 231: 					("89,  89,  89,  {ALPHA}")
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 232: 					("1, 10, 16, 255") "~GS(){IPF}"}
+
+                                                image: {
+                                                    <GUI_CENTERED_IMAGE!
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 237: 					name = {IMAGE_OVERLAY} + ".png~GS(){IPF}"
+
+                                                }
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 224
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_disabled at line 226
+
+
+                                        state_pressed: {
+
+                                            draw: {
+
+                                                <_GUI_STATE("background-pressed"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 249: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 250: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("1, 10, 16, 255") {IPF}}
+
+                                                    image: {
+                                                        <GUI_CENTERED_IMAGE!
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 255: 					name = {IMAGE_OVERLAY} + "-pressed.png{IPF}"
+
+                                                    }
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 239
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_pressed at line 241
+
+
+                                            state_focused: {
+
+                                                draw: {
+
+                                                    <_GUI_STATE("background-active"
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 267: 					({GUI__BORDER_COLOR      ALPHA={ALPHA}})
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 268: 					({GUI__BORDER_COLOR_DARK ALPHA={ALPHA}}) ("12, 108, 157, 255") {IPF}}
+
+                                                        image: {
+                                                            <GUI_CENTERED_IMAGE!
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 273: 					name = {IMAGE_OVERLAY} + "-active.png{IPF}"
+
+                                                        }
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by draw at line 254
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by state_focused at line 256
+
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by resolution at line 258
+err: ../attic/data/gui/widget/button_default.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: _GUI_STATE closed by define at line 259
+
+
+                                            button_definition: {
+
+                                                id: "left_arrow_ornate"
+                                                description: "Left arrow button."
+
+                                                <_GUI_RESOLUTION_ICON_ONLY({}, 40, 56, 26, 13, 4, _GUI_BUTTON_FONT_SIZE!, {}, 255, "icons/arrows/long_arrow_ornate_left")
+
+                                            }
+
+                                            button_definition: {
+
+                                                id: "right_arrow_ornate"
+                                                description: "Right arrow button."
+
+                                                <_GUI_RESOLUTION_ICON_ONLY({}, 40, 56, 26, 13, 4, _GUI_BUTTON_FONT_SIZE!, {}, 255, "icons/arrows/long_arrow_ornate_right")
+
+                                            }
+
+                                            _GUI_POINT = nil
+                                            _GUI_LINE = nil
+                                            _GUI_STATE = nil
+                                            _GUI_RESOLUTION = nil
+                                            _GUI_RESOLUTION_ICON_ONLY = nil

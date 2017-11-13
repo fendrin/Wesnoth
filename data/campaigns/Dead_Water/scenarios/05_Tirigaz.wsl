@@ -259,7 +259,7 @@ Scenario{
                     y: 20
                     side: 3
                 }
-
+            
 
             if HARD
                 Unit{
@@ -286,7 +286,7 @@ Scenario{
                     y: 19
                     side: 3
                 }
-
+            
 
             if NIGHTMARE
                 Unit{
@@ -325,7 +325,7 @@ Scenario{
                     y: 19
                     side: 3
                 }
-
+            
 
 -- Count the undead because it's more robust than hardcoding
 -- their number.
@@ -342,7 +342,7 @@ Scenario{
                         name: "number_of_undead"
                         add: 1
                     }
-
+                
             }
             Clear_Variable{
                 name: "undead"
@@ -477,7 +477,7 @@ Scenario{
                                 message: _ "You’re still squatting on our land! I warned you."
                             }
                             WAKE_ORCS!
-
+                        
                     }
             }
     }
@@ -511,12 +511,12 @@ Scenario{
                                 message: _ "I told you to stay off our land! Now you’re in for it."
                             }
                             WAKE_ORCS!
-
+                        
 
                         else: ->
                             Allow_Undo{
                             }
-
+                        
                     }
             }
     }
@@ -545,12 +545,12 @@ Scenario{
                         message: _ "I told not to bother the ships! Now you’re in for it."
                     }
                     WAKE_ORCS!
-
+                
 
                 else: ->
                     Allow_Undo{
                     }
-
+                
             }
     }
 
@@ -578,12 +578,12 @@ Scenario{
                         message: _ "You crazy fish men are attacking us? After we tried to be nice? That’s it. We’re going to end you once and for all."
                     }
                     WAKE_ORCS!
-
+                
 
                 else: ->
                     Allow_Undo{
                     }
-
+                
             }
     }
 
@@ -617,12 +617,12 @@ Scenario{
                             Unstore_Unit{
                                 variable: "this_item"
                             }
-
+                        
                     }
                     Clear_Variable{
                         name: "orcs"
                     }
-
+                
             }
     }
 
@@ -665,7 +665,7 @@ Scenario{
                                 result: "victory"
                                 <NEW_GOLD_CARRYOVER(40)
                             }
-
+                        
 
                         else: ->
                             Message{
@@ -678,15 +678,15 @@ Scenario{
                                             result: "victory"
                                             bonus: false
                                         }
-
+                                    
                                 }
                                 option: {
                                     label: _ "This orc leader has not learned that threatening merfolk is a bad idea. We shall defeat him before we go."
                                 }
                             }
-
+                        
                     }
-
+                
             }
     }
 
@@ -703,7 +703,7 @@ Scenario{
         do: ->
             Item{
                 x: x1, y: y1
--- err: ../attic/data/campaigns/Dead_Water/scenarios/05_Tirigaz.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 703:             image=misc/blank-hex.png~BLIT(items/chest-open.png~CROP(0,10,72,62),0,0)
+err: ../attic/data/campaigns/Dead_Water/scenarios/05_Tirigaz.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 703:             image=misc/blank-hex.png~BLIT(items/chest-open.png~CROP(0,10,72,62),0,0)
             }
 
             If{
@@ -722,13 +722,13 @@ Scenario{
                         speaker: "Kai Krellis"
                         message: _ "It seems that orc was rich! He has a chest here with over 100 pieces of gold!"
                     }
-
+                
                 else: ->
                     Message{
                         speaker: "second_unit"
                         message: _ "It seems that orc was rich! He has a chest here with over 100 pieces of gold!"
                     }
-
+                
             }
 
             Sound{
@@ -750,7 +750,7 @@ Scenario{
                         result: "victory"
                         <NEW_GOLD_CARRYOVER(40)
                     }
-
+                
             }
     }
 
@@ -780,7 +780,7 @@ Scenario{
         }
         Redraw{
         }
-
+    
 
     event: {
         name: "turn 2"
@@ -888,10 +888,10 @@ Scenario{
             }
     }
 
-    -- REMOVE_KEEP = nil
-    -- CITY_GUARD = nil
-    -- GHOST = nil
-    -- WRAITH = nil
-    -- WAKE_ORCS = nil
+    REMOVE_KEEP = nil
+    CITY_GUARD = nil
+    GHOST = nil
+    WRAITH = nil
+    WAKE_ORCS = nil
     <HERO_DEATHS!
 }

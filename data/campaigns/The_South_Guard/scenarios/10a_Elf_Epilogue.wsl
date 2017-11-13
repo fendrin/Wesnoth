@@ -1,0 +1,37 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "10a_Elf_Epilogue"
+
+    name: _ "Epilogue"
+    next_scenario: "null"
+
+    turns: 10
+    <NO_MAP_DATA!
+
+    <SG_ELF_EPILOGUE!
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+
+        canrecruit: true
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Endlevel{
+                carryover_report: false
+                replay_save: false
+                linger_mode: false
+            }
+    }
+}

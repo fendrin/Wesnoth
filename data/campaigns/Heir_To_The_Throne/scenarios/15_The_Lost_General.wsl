@@ -1,0 +1,692 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "15_The_Lost_General"
+    name: _ "The Lost General"
+    map: "campaigns/Heir_To_The_Throne/maps/15_The_Lost_General.map"
+    <TURNS(64, 60, 54)
+
+    <UNDERGROUND!
+
+    next_scenario: "16_Hasty_Alliance"
+
+    <SCENARIO_MUSIC("the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("into_the_shadows.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+
+    <HTTT_TRACK(JOURNEY_15_NEW!)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        controller: "human"
+        <GOLD(350, 250, 100)
+        shroud: true
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        id: "Geldar"
+        name: _ "Geldar"
+        type: "Dwarvish Lord"
+        side: 2
+        canrecruit: true
+        recruit: "Dwarvish Fighter"
+        gold: 150
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        <FLAG_VARIANT("knalgan")
+    }
+
+    side: {
+        id: "Brugg"
+        name: _ "Brugg"
+        type: "Troll Warrior"
+        side: 3
+        canrecruit: true
+        recruit: {"Orcish Warrior", "Wolf Rider", "Troll", "Troll Whelp", "Troll Rocklobber", "Goblin Pillager", "Orcish Assassin", "Orcish Crossbowman"}
+        <GOLD(290, 350, 410)
+        ai: {
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        team_name: "evil"
+        user_team_name: _ "Evil"
+    }
+
+    side: {
+        id: "Lionel"
+        name: _ "Lionel"
+        type: "Death Knight"
+        side: 4
+        canrecruit: true
+        recruit: {"Skeleton", "Ghost", "Revenant", "Skeleton Archer", "Bone Shooter"}
+        <GOLD(240, 300, 360)
+        ai: {
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        team_name: "evil"
+        user_team_name: _ "Evil"
+        <FLAG_VARIANT("undead")
+    }
+
+    <PLACE_IMAGE("scenery/signpost.png", 27, 22)
+    <PLACE_IMAGE("scenery/rubble.png", 28, 25)
+    <PLACE_IMAGE("scenery/rubble.png", 26, 24)
+    <PLACE_IMAGE("scenery/rubble.png", 27, 24)
+
+    <PLACE_IMAGE("scenery/whirlpool.png", 13, 22)
+    <PLACE_IMAGE("scenery/whirlpool.png", 7, 23)
+
+    event: {
+        name: "prestart"
+        do: ->
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            Allow_Recruit{
+                side: 1
+                type: {"Dwarvish Fighter", "Dwarvish Thunderer"}
+            }
+            Disallow_Recruit{
+                side: 1
+                type: "Dwarvish Guardsman"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "We are now in the main dwarvish caverns."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Underground roads once led to the different parts of the complex, but now everything lies in ruins."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 27
+            y: 22
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "scenery/signpost.png"
+                message: _ "The sign says ‘Guest quarters’."
+            }
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 17
+            y: 24
+            side: 1
+        }
+        do: ->
+            NAMED_LOYAL_UNIT(2, "Dwarvish Fighter", 17, 23, "Burlin", _ "Burlin")
+
+            Message{
+                speaker: "Burlin"
+                message: _ "My uncle’s family drowned after the orcs flooded that cavern..."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 13
+            y: 22
+            side: 1
+            race: "merman"
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "A hidden whirlpool sucks you down into a subterranean current!"
+            }
+            PLACE_IMAGE("items/bones.png", 2, 22)
+            PLACE_IMAGE("items/bones.png", 4, 21)
+            Unit{
+                id: "Ulfdain"
+                name: _ "Ulfdain"
+                type: "Dwarvish Ulfserker"
+                side: 2
+                x: 2, y: 21
+                random_traits: false
+
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_LOYAL!
+            }
+            Teleport{
+                filter: {
+                    x: x1, y: y1
+                }
+                x: 6, y: 23
+            }
+            Scroll_To{
+                x: 6, y: 23
+            }
+            Remove_Shroud{
+                side: 1
+                x: "2-4"
+                y: "21-24"
+            }
+            Redraw{
+                side: 1
+            }
+            Message{
+                speaker: "Ulfdain"
+                message: _ "What’s this, more trolls? Aye, come to papa, little whelps."
+            }
+            Message{
+                x: 6, y: 23
+                message: _ "Hello? Who is here?"
+            }
+            Message{
+                speaker: "Ulfdain"
+                message: _ "What in the world are you? Some sort o’ monster’s appendage set tae lure me down to be yer watery meal, eh?"
+            }
+            Message{
+                x: 6, y: 23
+                male_message: _ "I am a merman, dweller of the vast oceans! Do not ask me what I am doing in a cave. My lord can be somewhat eccentric. We are fighting at the side of your fellow cave-dwellers to drive back the orcs and trolls."
+                female_message: _ "I am a mermaid, dweller of the vast oceans! Do not ask me what I am doing in a cave. My lord can be somewhat eccentric. We are fighting at the side of your fellow cave-dwellers to drive back the orcs and trolls."
+            }
+            Message{
+                speaker: "Ulfdain"
+                show_if: {
+                    have_unit: {
+                        x: 6, y: 23
+                        gender: "male"
+                    }
+                }
+-- wmllint: directory spelling mer-mahn
+                message: _ "(sniffs) A mer-mahn. Never heard of it. I doubt yer as tasty as my friends here."
+            }
+            Message{
+                speaker: "Ulfdain"
+                show_if: {
+                    have_unit: {
+                        x: 6, y: 23
+                        gender: "female"
+                    }
+                }
+-- wmllint: directory spelling mer-mead
+                message: _ "(sniffs) A mer-mead. Never heard of it. I doubt yer as tasty as my friends here."
+            }
+            Message{
+                x: 6, y: 23
+                message: _ "Why are you down here? Are those... troll carcasses?"
+            }
+            Message{
+                speaker: "Ulfdain"
+                message: _ "I was brawlin’ with these wee pups here defending my outpost. We got a little carried away, fell in the water, and were sucked down intae this grotto."
+            }
+            Message{
+                x: 6, y: 23
+                message: _ "How long have you been here?"
+            }
+            Message{
+                speaker: "Ulfdain"
+                message: _ "Och, several days at least. The troll meat is starting to stink, and I’m a little ravenous, if ye catch my drift. Canna’ swim past that current, and no’ for lack o’ tryin’."
+            }
+            Message{
+                x: 6, y: 23
+                message: _ "I will rescue you. Hold onto my shoulders, sir dwarf."
+            }
+            Message{
+                speaker: "Ulfdain"
+                message: _ "Thanks. Nae need to wait around here. Let’s go."
+            }
+            Store_Unit{
+                filter: {
+                    id: "Ulfdain"
+                }
+
+                kill: true
+                variable: "stored_Ulfdain"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 7
+            y: 23
+            side: 1
+            race: "merman"
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Better prepared this time to fight the current, you eventually manage to emerge from the whirlpool."
+            }
+            Teleport{
+                filter: {
+                    id: unit.id
+                }
+                x: 13, y: 22
+            }
+            VARIABLE("stored_Ulfdain.x", 14)
+            VARIABLE("stored_Ulfdain.y", 22)
+            VARIABLE("stored_Ulfdain.side", 1)
+            Unstore_Unit{
+                variable: "stored_Ulfdain"
+                find_vacant: true
+            }
+            Place_Shroud{
+                side: 1
+                x: {"2-7", "7-8"}
+                y: {"21-24", "22-24"}
+            }
+            Message{
+                speaker: "Ulfdain"
+                show_if: {
+                    have_unit: {
+                        id: unit.id
+                        gender: "male"
+                    }
+                }
+                message: _ "Well, mer-mahn, we made it. I will fight for yer lord. He sounds like a brave fellow."
+            }
+            Message{
+                speaker: "Ulfdain"
+                show_if: {
+                    have_unit: {
+                        id: unit.id
+                        gender: "female"
+                    }
+                }
+                message: _ "Well, mer-mead, we made it. I will fight for yer lord. He sounds like a brave fellow."
+            }
+            CLEAR_VARIABLE("stored_Ulfdain")
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: "22-25"
+            y: "1-23"
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "These passages seem to have been used recently."
+            }
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: "11-19"
+            y: "10-16"
+            side: 1
+        }
+        do: ->
+            Remove_Shroud{
+                side: 1
+                x: {"14-16", "12-18", "10-19", "12-18"}
+                y: {10, 11, "12-14", 15}
+            }
+            Redraw{
+            }
+
+--
+-- For some reason, the scroll_to tag isn't working.
+-- If anyone can fix it, please do.
+--
+
+            Scroll_To{
+                x: 15, y: 13
+            }
+            Delay{
+                time: 1500
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "You emerge into a vast natural cathedral, the walls arching higher than you can see in the darkness. Stretching across the gallery is a great chasm, around which the cave floor appears to have been completely worn smooth. This was once the center of a bustling dwarvish empire, the remnants of which have since been driven into the upper caves of Knalga by the forces of darkness."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: "20-30"
+            y: "18-30"
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "There is a big cave-in south of here."
+            }
+    }
+    event: {
+        name: "moveto"
+        filter: {
+            x: "20-30"
+            y: "24-25"
+            side: 1
+        }
+        do: ->
+            QUAKE("cave-in.ogg")
+            Message{
+                speaker: "unit"
+                message: _ "The rocks are moving!"
+            }
+            Terrain{
+                x: 28
+                y: 26
+                terrain: "Uu"
+            }
+
+            PLACE_IMAGE("scenery/rubble.png", 28, 26)
+
+            Terrain{
+                x: 26
+                y: 25
+                terrain: "Uu"
+            }
+
+            PLACE_IMAGE("scenery/rubble.png", 26, 25)
+
+--just in case that the player waits until the other end is
+-- open to catch him alone
+            Unit{
+                <if HARD then {
+                    type: "Revenant"
+                } else {
+                    type: "Skeleton"
+                }
+                side: 4
+                x: 24
+                y: 28
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                <if EASY then {
+                    type: "Walking Corpse"
+                }
+                <if NORMAL then {
+                    type: "Skeleton"
+                }
+                <if HARD then {
+                    type: "Revenant"
+                }
+                side: 4
+                x: 24
+                y: 28
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 2
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Who goes there? Friend or foe?"
+            }
+            Message{
+                speaker: "unit"
+                message: _ "We are desperately trying to rid these tunnels of orcs and trolls! Please help us in our quest."
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 3
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Vile creature! Let us rid these tunnels of its kind!"
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 4
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "I did not know that the undead were in these pits!"
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Lionel"
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Who is this foul enemy that we fight?"
+            }
+            Message{
+                speaker: "Lionel"
+                message: _ "I am Lionel. I am the Lost General. I will avenge myself upon you all!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Avenge? What have we done to you that you must avenge?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Lionel? A General? I remember that name..."
+            }
+            Message{
+                speaker: "Lionel"
+                message: _ "Remember me, do you? Aye. I was the king’s finest general, sent down to these pits to retrieve the Sceptre. But the orcs trapped me and my men in this cavern, to starve to death. The dwarves were no help, leaving me to die. Now I will get revenge on you all!"
+            }
+
+            MORE_UNITS = () -> {
+                <LOYAL_UNIT(4, "Revenant", 23, 28)
+            }
+
+            MORE_UNITS!
+            MORE_UNITS!
+            MORE_UNITS!
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Lionel"
+        }
+        do: ->
+            Message{
+                speaker: "Lionel"
+                message: _ "Argh! I am vanquished! But at least by worthy foes, instead of those disgusting orcs."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Rest in peace, Lionel. The poor, lost general."
+            }
+            Message{
+                speaker: "Lionel"
+                message: _ "I am destroyed, but my mission must be completed. Though you are foes, you are at least worthy ones, so I will tell you that the Sceptre is east from here, the way you have come from, deep in the caverns. I made the mistake of not asking for directions when I became lost. May you have better fortune in your quest than I did!"
+            }
+    }
+
+    event: {
+        name: "turn 20"
+        do: ->
+            QUAKE("rumble.ogg")
+            QUAKE("rumble.ogg")
+            QUAKE("rumble.ogg")
+            QUAKE("rumble.ogg")
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The earth shakes."
+            }
+-- just to open another exit to the undeads
+            Terrain{
+                x: 15
+                y: 26
+                terrain: "Uu"
+            }
+
+            PLACE_IMAGE("scenery/rubble.png", 15, 26)
+
+            Terrain{
+                x: 16
+                y: 26
+                terrain: "Uu"
+            }
+
+            PLACE_IMAGE("scenery/rubble.png", 16, 26)
+
+            LOYAL_UNIT(4, "Skeleton", 23, 28)
+    }
+
+    event: {
+        name: "enemies defeated"
+
+--
+
+-- We don't know if Geldar will be alive at this point,
+-- but if he is, then he gives you guardsmen. The message
+-- tags outside the if statement will form a coherent
+-- conversation either way, and leaving them out avoids
+-- some duplication.
+
+--
+        do: ->
+            Message{
+                speaker: "Geldar"
+                message: _ "Tall ones, I thank ye. Life has been nothing but a struggle recently. We are the last outpost o’ civilization in these caves."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "These caves are vast. If we are to find the Sceptre of Fire we must hurry. We are not alone, and now that our foes have smelled our blood it will be worse."
+            }
+            Message{
+                speaker: "Geldar"
+                message: _ "The Sceptre? Ah, the Sceptre ye seek. You surface dwellers are ambitious. Beyond my citadel the spawn of the darkness hold complete sway. You’ll no’ survive without assistance."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "How will we make it?"
+            }
+            Message{
+                speaker: "Geldar"
+                message: _ "Northeast o’ my keep, young human, the tunnels converge towards the deepest reaches of the underground kingdom. The Sceptre can only be there. Please accept the service of my guardsmen. These elite warriors will protect you."
+            }
+
+            If{
+                have_unit: {
+                    id: "Geldar"
+                }
+                then: ->
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "Your boon is most welcome, sir dwarf. Keeping the Sceptre out of the hands of evil beasts is a common goal for us, and we will prevail with your help."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "You may now recruit the legendary dwarvish guardsmen!"
+                    }
+                    Allow_Recruit{
+                        side: 1
+                        type: "Dwarvish Guardsman"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "I do not know, Konrad, but I can sense our path only leads us downward. We will continue to the northeast, to the deepest depths of these caverns."
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}
+
+MORE_UNITS = nil

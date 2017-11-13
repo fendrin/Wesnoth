@@ -1,0 +1,33 @@
+--textdomain wesnoth
+-- Main purpose of this file is to ensure that macros get read in first.
+
+-- wmlscope: set export=yes
+
+Lua{
+    code: [[
+wesnoth.dofile 'lua/backwards-compatibility.lua'
+wesnoth.dofile 'lua/wml-tags.lua'
+wesnoth.dofile 'lua/feeding.lua'
+]]
+}
+
+unless NO_TERRAIN_GFX!
+    INCLUDE("core/terrain-graphics/")
+
+
+INCLUDE("core/macros/")
+
+Credits_Group{
+    INCLUDE("core/about.cfg")
+}
+Credits_Group{
+    INCLUDE("core/about_i18n.cfg")
+}
+
+INCLUDE("core/help.cfg")
+INCLUDE("core/hotkeys.cfg")
+unless NO_TERRAIN!
+    INCLUDE("core/terrain.cfg")
+
+INCLUDE("core/units.cfg")
+INCLUDE("core/editor/")

@@ -1,0 +1,14 @@
+--textdomain wesnoth
+
+--
+-- Empty theme used in no-gui mode.
+--
+
+Theme{
+    id: "null"
+    hidden: true
+    resolution: {
+        width: 1
+        height: 1
+    }
+}

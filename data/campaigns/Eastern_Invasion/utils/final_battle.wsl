@@ -1,0 +1,191 @@
+--textdomain wesnoth-ei
+--
+--  These events are shared between the two final scenarios
+--
+Event{
+    name: "attack"
+    filter: {
+        id: "Dacyn" -- wmllint: recognize Dacyn
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Dacyn"
+            message: _ "Your evil will darken the earth no longer!"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Terraent" -- wmllint: recognize Terraent
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Terraent"
+            message: _ "I shall avenge the death of my comrades!"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Engineer" -- wmllint: recognize Engineer
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Engineer"
+            message: _ "I’m gonna blow you up!"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Grug" -- wmllint: recognize Grug
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Grug"
+            message: _ "Grug again dead make!"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Owaec" -- wmllint: recognize Owaec
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Owaec"
+            message: _ "Taste the steel of the Horse Clans!"
+        }
+}
+
+Event{
+    name: "attack"
+    filter: {
+        id: "Gweddry" -- wmllint: recognize Gweddry
+    }
+    filter_second: {
+        id: "Mal-Ravanal"
+    }
+    do: ->
+        Message{
+            speaker: "Gweddry"
+            message: _ "This is for Wesnoth!"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Mal-Ravanal"     -- wmllint: recognize Mal-Ravanal
+    }
+    do: ->
+        Message{
+            speaker: "Mal-Ravanal"
+            message: _ "You are more powerful than I expected, but you cannot possibly defeat me."
+        }
+
+        If{
+            have_location: {
+                and: {
+                    x: x1, y: y1
+                    radius: 3
+                }
+                filter: {
+                    id: "Dacyn"
+                }
+            }
+            then: ->           --Dacyn is close enough; Mal-Ravanal can't escape
+                DACYN_FAKE_ATTACK_ANIMATION_OBJECT!
+
+                Delay{
+                    time: 1
+                }
+                Animate_Unit{
+                    filter: {
+                        id: "Mal-Ravanal"
+                    }
+                    flag: "failed_teleport"
+                }
+
+                Message{
+                    speaker: "Dacyn"
+                    message: _ "No. Your reign of terror ends today."
+                }
+
+                Message{
+                    speaker: "Mal-Ravanal"
+                    message: _ "What?!... I... cannot... lose..."
+                }
+
+                Delay{
+                    time: 1
+                }
+                Animate_Unit{
+                    filter: {
+                        id: "Mal-Ravanal"
+                    }
+                    flag: "death"
+
+                    animate: {
+                        filter: {
+                            id: "Dacyn"
+                        }
+                        flag: "fake_attack"
+                    }
+                }
+
+                Kill{
+                    id: "Mal-Ravanal"
+                }
+                Kill{
+                    race: "undead"
+                    animate: true
+                }
+
+                Endlevel{
+                    result: "victory"
+                    carryover_report: false
+                    save: false
+                }
+            
+            else: ->     --Dacyn is too far away; Mal-Ravanal escapes
+                Animate_Unit{
+                    filter: {
+                        id: "Mal-Ravanal"
+                    }
+                    flag: "pre_teleport"
+                }
+                Kill{
+                    id: "Mal-Ravanal"
+                    animate: false
+                    fire_event: false
+                }
+                Message{
+                    speaker: "Dacyn"
+                    message: _ "I wasn’t able to prevent his escape from here. Now Wesnoth is doomed..."
+                }
+                Endlevel{
+                    result: "defeat"
+                }
+            
+        }
+}

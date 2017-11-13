@@ -1,0 +1,664 @@
+--textdomain wesnoth-tb
+
+Scenario{
+    id: "02_The_Chase"
+    name: _ "The Chase"
+    map: "campaigns/Two_Brothers/maps/02_The_Chase.map"
+    next_scenario: "03_Guarded_Castle"
+    <if EASY then {
+        turns: 28
+    } else {
+        turns: 24
+    }
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE_DUSK!
+
+    <SCENARIO_MUSIC("weight_of_revenge.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+
+    story: {
+        part: {
+            story: _ "Arvith and his band rode north in search of his missing brother."
+            background: "story/Two_Brothers_M2P1.png"
+        }
+-- Diary entries split into two parts until story screens allow vertical scrolling (FR -17492).
+-- wmllint: local spelling Grey
+        part: {
+            background: "story/Two_Brothers_M2P1.png"
+            story: _ "16 V, 363 YW
+Excerpt from the journal of Arvith of Maghre
+
+We’ve been searching three days for Baran, and turned up nothing. My best hunch was to head north into the borderlands, where the necromancer’s minions could safely hide; everywhere else is more farmland. At first I thought the search might be useless, but late in the first day we found a set of tracks. Some of them had been made by skeletal feet.
+
+We’re close enough to be certain now: those tracks are heading into the Grey Woods. No one from Maghre or any of the other villages has gone into that forest in living memory. Stories have been passed down for generations warning against it. Supposedly the place is haunted by lost souls who hunger for the living, and anyone who dies there is doomed to join them."
+        }
+        part: {
+            background: "story/Two_Brothers_M2P1.png"
+            story: _ "16 V, 363 YW
+Excerpt from the journal of Arvith of Maghre
+
+But I’m past superstitions now; I’ve seen enough of the world to guess at the truth behind these sorts of tales. The forest is home to elves — unfriendly ones, if the stories have any basis at all. I worry for my men; horses don’t fight well in forests, and the elves will be more dangerous in their own territory. But there are things that need done and questions that need answered. Something bigger is happening. One necromancer terrorizing townsfolk is nothing new, but why didn’t his servants scatter when he was killed? Where are they headed now? And most importantly, why did they take Baran with them?
+
+Besides... I want my brother back."
+        }
+    }
+
+    <TB_TRACK(JOURNEY_STAGE2!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <if EASY then {
+            gold: 180
+            income: 10
+        } else {
+            gold: 120
+        }
+        recruit: {"Horseman", "Bowman", "Spearman", "Footpad"}
+        team_name: "good"
+        user_team_name: _ "Humans"
+        <FLAG_VARIANT("loyalist")
+
+-- wmllint: recognize Arvith
+        <CHARACTER_STATS_ARVITH!
+
+        facing: "ne"
+        shroud: true
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        <if EASY then {
+            gold: 25
+        } else {
+            gold: 60
+        }
+        income: -8
+        recruit: "Elvish Scout"
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        <FLAG_VARIANT("wood-elvish")
+
+        type: "Elvish Rider"
+        id: "Nil-Galion"
+        name: _ "Nil-Galion"
+        canrecruit: true
+        unrenamable: true
+
+        facing: "se"
+
+        unit: {
+            side: 2
+            type: "Elvish Scout"
+            x: 15, y: 20
+        }
+
+        unit: {
+            side: 2
+            type: "Elvish Fighter"
+            x: 5, y: 13
+        }
+
+        unit: {
+            side: 2
+            type: "Elvish Scout"
+            x: 4, y: 36
+        }
+
+        unit: {
+            side: 2
+            type: "Elvish Scout"
+            x: 7, y: 46
+        }
+
+        unit: {
+            side: 2
+            type: "Elvish Scout"
+            x: 15, y: 35
+        }
+
+        <unless EASY! then {
+            unit: {
+                side: 2
+                type: "Elvish Scout"
+                x: 7, y: 25
+            }
+
+            unit: {
+                side: 2
+                type: "Elvish Scout"
+                x: 10, y: 33
+            }
+
+            unit: {
+                side: 2
+                type: "Elvish Hero"
+                x: 11, y: 45
+            }
+
+            unit: {
+                side: 2
+                type: "Elvish Rider"
+                x: 15, y: 23
+            }
+
+            unit: {
+                side: 2
+                type: "Wose"
+                x: 7, y: 29
+            }
+        }
+
+        ai: {
+            recruitment_pattern: "scout"
+        }
+    }
+
+    side: {
+        side: 3
+        hidden: true
+        team_name: "elves"
+        user_team_name: _ "Kidnappers"
+
+        type: "Dark Adept"
+        id: "Muff Toras"
+        name: _ "Muff Toras"
+        unrenamable: true
+        x: 9, y: 4
+
+        ai: {
+            leader_ignores_keep: true
+            village_value: 0
+
+            modify_ai: {
+                action: "delete"
+                path: "stage[main_loop].candidate_action[villages]"
+            }
+        }
+
+        <if EASY then {
+            unit: {
+                type: "Skeleton"
+                x: 9, y: 5
+            }
+
+            unit: {
+                type: "Skeleton"
+                x: 9, y: 3
+            }
+        } else {
+            unit: {
+                type: "Revenant"
+                x: 9, y: 5
+            }
+
+            unit: {
+                type: "Revenant"
+                x: 9, y: 3
+            }
+        }
+    }
+
+    event: {
+        id: "freezer"
+        name: "side 3 turn refresh"
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    side: 3
+                }
+                moves: 0
+            }
+    }
+
+    <STARTING_VILLAGES(1, 7)
+    <if EASY then {
+        <STARTING_VILLAGES(2, 17)
+    } else {
+        <STARTING_VILLAGES(2, 30)
+    }
+
+    <PLACE_IMAGE("scenery/signpost.png", 10, 1)
+
+    event: {
+        name: "prestart"
+        do: ->
+            STORE_BARAN!
+
+            CLEAR_VARIABLE("first_password,second_password")
+
+            if EASY
+                Disallow_Recruit{
+                    side: 1
+                    type: "Heavy Infantryman"
+                }
+            
+
+            Objectives{
+                side: 1
+                objective: {
+                    show_if: {
+                        have_unit: {
+                            id: "Nil-Galion"
+                        }
+                        not: {
+                            variable: {
+                                name: "found_kidnappers"
+                                boolean_equals: true
+                            }
+                        }
+                    }
+                    description: _ "Fight your way through the woods before the kidnappers escape"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        not: {
+                            have_unit: {
+                                id: "Nil-Galion"
+                            }
+                        }
+                        not: {
+                            variable: {
+                                name: "found_kidnappers"
+                                boolean_equals: true
+                            }
+                        }
+                    }
+                    description: _ "Catch the kidnappers"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        variable: {
+                            name: "found_kidnappers"
+                            boolean_equals: true
+                        }
+                    }
+                    description: _ "Kill the Dark Adept before his reinforcements arrive"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Arvith"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                <if EASY then {
+                    <HINT(_ "The Elvish forces are spread out. Seek to fight them one at a time with several of your units.", {
+                            show_if: {
+                                have_unit: {
+                                    id: "Nil-Galion"
+                                }
+                                not: {
+                                    variable: {
+                                        name: "found_kidnappers"
+                                        boolean_equals: true
+                                    }
+                                }
+                            }
+                    })
+                    <HINT(_ "Use horsemen or footpads to quickly explore the shrouded woods to locate the kidnappers.", {
+                            show_if: {
+                                not: {
+                                    have_unit: {
+                                        id: "Nil-Galion"
+                                    }
+                                }
+                                not: {
+                                    variable: {
+                                        name: "found_kidnappers"
+                                        boolean_equals: true
+                                    }
+                                }
+                            }
+                    })
+                    <HINT(_ "Separate the Dark Adept from his guards and attack in force for an easy kill.", {
+                            show_if: {
+                                variable: {
+                                    name: "found_kidnappers"
+                                    boolean_equals: true
+                                }
+                            }
+                    })
+                }
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: "0-20"
+                y: "15-54"
+            }
+
+            if EASY
+                Terrain{
+                    x: {10, 13, 10, 3}
+                    y: {44, 42, 26, 34}
+                    terrain: "Gg^Vh"
+                }
+                Capture_Village{
+                    side: 1
+                    x: 10
+                    y: 44
+                }
+                Capture_Village{
+                    side: 2
+                    x: {10, 3}
+                    y: {26, 34}
+                }
+            
+
+            NEED_MERCENARY!
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Arvith"
+                message: _ "Come on, men. A stroll through such lovely green woods, what could be finer?"
+            }
+
+            Message{
+                speaker: "Nil-Galion"
+                message: _ "You there! Halt and explain yourself."
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "We’re chasing after some men who kidnapped my brother!"
+            }
+
+            Message{
+                speaker: "Nil-Galion"
+                message: _ "Those men told me their prisoner had attempted to murder their master, and warned that evil men would follow him. Advance no further, or you will die."
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "So much for those ghost stories. Mere elves will not stop me from freeing Baran!"
+            }
+
+            Message{
+                role: "Mercenary"
+                message: _ "I am glad at least that we will not have to face ghosts. But those elves will have us at a disadvantage; our horses will not maneuver well in the trees."
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "Bah, just stay on the paths; our spearmen and bowmen can fight in the deeper woods. We have faced and won through greater perils than those amateurs can offer."
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 3
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Remove_Event{
+                id: "freezer"
+            }
+
+            Modify_Side{
+                filter: {
+                    side: 3
+                }
+                hidden: false
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: "0-20"
+                y: "0-15"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "I see them! There they are!"
+            }
+
+            Message{
+                speaker: "Muff Toras"
+                message: _ "Curses! If they had been an hour slower our master’s reinforcements would already be here to meet us."
+            }
+
+            VARIABLE("found_kidnappers", true)
+            Show_Objectives{}
+    }
+
+    event: {
+        name: "turn 12"
+        do: ->
+            Message{
+                speaker: "Arvith"
+                message: _ "Come on, men, let’s catch those kidnappers!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Muff Toras"
+        }
+        do: ->
+            NEED_MERCENARY!
+
+            Message{
+                speaker: "unit"
+                message: _ "Hah! You have captured me, but it will avail you nothing. I sent your precious brother the mage north with half my men a day since; he will be safely locked away in our master’s dungeons by now."
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "My blade is at your throat. Give us the way to my brother now, or I will spill your wretched blood on the ground."
+            }
+
+            VARIABLE("first_password_1", _ "Sithrak")
+            VARIABLE("first_password_2", _ "Eleben")
+            VARIABLE("first_password_3", _ "Jarlom")
+            VARIABLE("first_password_4", _ "Hamik")
+
+            VARIABLE_OP("first_password", "rand", "1..4")
+
+            VARIABLE("second_password_1", _ "Akranbral")
+            VARIABLE("second_password_2", _ "Drakanal")
+            VARIABLE("second_password_3", _ "Xaskanat")
+            VARIABLE("second_password_4", _ "Katklagad")
+
+            VARIABLE_OP("second_password", "rand", "1..4")
+
+            Message{
+                speaker: "unit"
+                message: _ "Three days ride to the northeast, in a deserted castle. The passwords to the guards are #{first_password_#{first_password and #{second_password_#{second_password}."
+            }
+
+            CLEAR_VARIABLE("first_password_1,first_password_2,first_password_3,first_password_4")
+            CLEAR_VARIABLE("second_password_1,second_password_2,second_password_3,second_password_4")
+
+            Message{
+                speaker: "Arvith"
+                message: _ "Bind him and take him with us. If he has played us false, he will die."
+            }
+
+            Heal_Unit{
+                filter: {
+                    id: "Muff Toras"
+                }
+                amount: 1
+            }
+
+            Message{
+                role: "Mercenary"
+                message: _ "Captain, what are we riding into? I thought you wanted nothing to do with Baran any more, not since Toen Caric."
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "I’m no longer sure. What’s between us remains, but knowing someone else has lain hands on him changes things. Mount up, and let’s get moving."
+            }
+
+            if EASY
+                Kill{
+                    id: "Brena"
+                }
+
+                Move_Unit_Fake{
+                    type: "Iron Mauler"
+                    side: 1
+                    x: {1, 1, 3, 4, 8}
+                    y: {6, 4, 3, 3, 1}
+                }
+
+                NAMED_UNIT(1, "Iron Mauler", 8, 1, "Brena", _ "Brena", {
+                        overlays: "misc/loyal-icon.png"
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_STRONG!
+                        }
+                })
+
+                Message{
+                    speaker: "Brena"
+                    message: _ "Greetings. I am Brena, a knight errant. I saw you pursuing and fighting the foul undead. Are there more of them to be destroyed?"
+                }
+
+                Message{
+                    speaker: "Arvith"
+                    message: _ "Aye. We think there’s a nest of them north-east of here. They’ve captured my brother."
+                }
+
+                Message{
+                    speaker: "Brena"
+                    message: _ "I bear a great hatred towards their kind. I will follow and fight them with you, if you permit."
+                }
+
+                Message{
+                    role: "Mercenary"
+                    message: _ "He would only slow us down!"
+                }
+
+                Message{
+                    speaker: "Arvith"
+                    message: _ "It is my place to decide this."
+                    option: {
+                        label: _ "Oh, all right then. Come along with us."
+                        command: ->
+                            Message{
+                                speaker: "Brena"
+                                message: _ "Thank you. My comrades and I will help you on your noble quest."
+                            }
+                        
+                    }
+                    option: {
+                        label: _ "I am sorry. We have not the time to spare."
+                        command: ->
+                            Message{
+                                speaker: "Brena"
+                                message: _ "Take this, then, for I see that you are on a quest. My comrades will help you whenever you call for them."
+                            }
+
+                            Sound{
+                                name: "gold.ogg"
+                            }
+
+                            Gold{
+                                side: 1
+                                amount: 70
+                            }
+
+                            Message{
+                                speaker: "narrator"
+                                image: "wesnoth-icon.png"
+                                message: _ "You receive 70 pieces of gold!"
+                            }
+
+                            Kill{
+                                id: "Brena"
+                            }
+                        
+                    }
+                }
+            
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Muff Toras"
+                message: _ "My reinforcements are here!"
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "He escaped us..."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Nil-Galion"
+        }
+        do: ->
+            Message{
+                speaker: "Nil-Galion"
+                message: _ "Foolish human, you have killed me but you will not catch the undead in time. I have fulfilled my contract, and will be reanimated soon to become a lord of their armies."
+            }
+
+            Kill{
+                id: "Nil-Galion"
+                animate: true
+            }
+
+            Message{
+                speaker: "Arvith"
+                message: _ "Follow their back trail!"
+            }
+
+            Show_Objectives{}
+    }
+
+    <ARVITH_LAST_BREATH!
+
+    event: {
+        name: "victory"
+
+        <if EASY then {
+            allow_recruit: {
+                side: 1
+                type: "Heavy Infantryman"
+            }
+        }
+        do: ->
+            CLEAR_VARIABLE("found_kidnappers")
+
+            RESTORE_BARAN!
+    }
+}

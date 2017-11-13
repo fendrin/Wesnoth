@@ -1,0 +1,554 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "23_Test_of_the_Clans"
+    name: _ "Test of the Clan"
+    map: "campaigns/Heir_To_The_Throne/maps/23_Test_of_the_Clans.map"
+    <TURNS(53, 50, 47)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "24_Battle_for_Wesnoth"
+
+    <SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("northern_mountains.ogg")
+    <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+
+    lua: {
+        code: [[
+			function wesnoth.wml_actions.show_countdown(cfg)
+				local _ = wesnoth.textdomain "wesnoth-httt"
+				local n = wesnoth.get_variable("units_to_slay")
+				local obj = _("Defeat one more enemy unit", "Defeat $units_to_slay enemy units", n)
+				wesnoth.set_variable("units_to_slay_obj", wesnoth.format(obj, {units_to_slay = n}))
+				if not cfg.silent then
+					local splash = _("Still $units_to_slay clan member to defeat!", "Still $units_to_slay clan members to defeat!", n)
+					wesnoth.wml_actions.print{
+						text = wesnoth.format(splash, {units_to_slay = n}),
+						size = 18,
+						red = 255, green = 255, blue = 255
+					}
+				end
+			end
+		]]
+    }
+
+-- wmllint: local spelling Bayer
+    event: {
+        name: "prestart"
+        <if EASY then {
+            <VARIABLE("units_to_slay", 25)
+        }
+        <if NORMAL then {
+            <VARIABLE("units_to_slay", 35)
+        }
+        <if HARD then {
+            <VARIABLE("units_to_slay", 50)
+        }
+        do: ->
+            CLEAR_VARIABLE("clan_alric,clan_bayar,clan_daryn,clan_ruga")
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            NEED_LISAR({placement: "leader"})
+            Disallow_Recruit{
+                side: 1
+                type: "Knight"
+            }
+            Show_Countdown{
+                silent: true
+            }
+            Objectives{
+                side: 1
+                objective: {
+                    description: "#{}units_to_slay_obj"
+                    condition: "win"
+                }
+                objective: {
+                    <BONUS_OBJECTIVE_CAPTION!
+                    description: _ "Defeat enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    <HTTT_TRACK(JOURNEY_23_NEW!)
+
+    side: {
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        gold: 400
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        team_name: "clan"
+        user_team_name: _ "Plainsmen"
+        type: "Grand Knight"
+        id: "Sir Alric"
+        name: _ "Sir Alric"
+        side: 2
+        canrecruit: true
+        recruit: {"Horseman", "Knight", "Bowman", "Lancer"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            grouping: "offensive"
+            aggression: 0.6
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.4
+            grouping: "defensive"
+        }
+        <GOLD(120, 150, 180)
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(2, 7)
+
+    side: {
+        team_name: "clan"
+        user_team_name: _ "Plainsmen"
+        type: "Grand Knight"
+        id: "Sir Ruga"
+        name: _ "Sir Ruga"
+        side: 3
+        canrecruit: true
+        recruit: {"Horseman", "Knight", "Bowman", "Lancer"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            grouping: "offensive"
+            aggression: 0.6
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.4
+            grouping: "defensive"
+        }
+        <GOLD(120, 150, 180)
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(3, 7)
+
+    side: {
+        team_name: "clan"
+        user_team_name: _ "Plainsmen"
+        type: "Grand Knight"
+        id: "Sir Daryn"
+        name: _ "Sir Daryn"
+        side: 4
+        canrecruit: true
+        recruit: {"Horseman", "Knight", "Bowman", "Lancer"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            grouping: "offensive"
+            aggression: 0.6
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.4
+            grouping: "defensive"
+        }
+        <GOLD(120, 150, 180)
+        <INCOME(2, 4, 8)
+    }
+
+    <STARTING_VILLAGES(4, 7)
+
+    side: {
+        team_name: "clan"
+        user_team_name: _ "Plainsmen"
+        type: "Grand Knight"
+        id: "Bayar"
+        name: _ "Lord Bayar"
+        side: 5
+        canrecruit: true
+        recruit: {"Knight", "Longbowman"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(5, 5, 6)
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            grouping: "offensive"
+            aggression: 0.6
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.4
+            grouping: "defensive"
+        }
+        <GOLD(140, 170, 200)
+        <INCOME(4, 8, 12)
+    }
+
+    <STARTING_VILLAGES(5, 7)
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "Greetings, men of the plains."
+            }
+            Message{
+                speaker: "Sir Daryn"
+                message: _ "What do these intruders want? We did not invite them here, that is certain."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "We come in peace! We wish for you to aid us in our struggle against Asheviere, the evil Queen."
+            }
+            Message{
+                speaker: "Sir Alric"
+                message: _ "We will not join you. You who are led by these youths and this old man."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "You are for us or against us. If you do not join us to overthrow the evil Queen, we will strip you of your power, once the throne is rightfully reclaimed."
+            }
+            Message{
+                speaker: "Bayar"
+                message: _ "Hah! You think you can seize the throne? Defeat us in battle and we will join you, or leave now and never return!"
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Very well. We will fight you."
+            }
+            Message{
+                speaker: "Bayar"
+                message: _ "Fools! We will run you down like dogs!"
+            }
+            Message{
+                speaker: "Sir Alric"
+                message: _ "There is no turning back for you now. This is a fight to the death!"
+            }
+    }
+
+    event: {
+        name: "turn 3"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "Delfador, this is sheer madness. We cannot afford to play games when we should be marching against the Queen."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Lord Bayar, halt this folly! I challenge you to a personal combat."
+            }
+            Message{
+                speaker: "Bayar"
+                message: _ "Ho! You have amused me, young heir. Ho, ho, challenge indeed."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Young heir? Then you assent to my claim?"
+            }
+            Message{
+                speaker: "Bayar"
+                message: _ "Impudence. Bah! Do you see orcs on our plains? Did we not grant you a test of your strength?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "I fail to see the purpose of this exercise. It only weakens us."
+            }
+            Message{
+                speaker: "Bayar"
+                message: _ "No, whelp. You may be weakened, but the horse clans are eternal. I will promise you this, however. If you can defeat me personally, I myself will join your siege of Weldyn."
+            }
+            Message{
+                speaker: "Sir Ruga"
+                message: _ "Aye."
+            }
+            Message{
+                speaker: "Sir Daryn"
+                message: _ "Aye."
+            }
+            Message{
+                speaker: "Sir Alric"
+                message: _ "Aye."
+            }
+    }
+
+--
+-- Lord Bayar dies - you get a bonus
+--
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Bayar"
+        }
+        do: ->
+            VARIABLE("clan_bayar", 1)
+
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    greater_than: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Bayar"
+                        message: _ "I cannot believe this! You have defeated me! You are now my liege, and I leave the battlefield in shame. But the Clan shall fight on!"
+                    }
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "Their leader has fallen but still they fight!"
+                    }
+                
+            }
+    }
+--
+-- Sir Daryn dies - you get a bonus
+--
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Sir Daryn"
+        }
+        do: ->
+            VARIABLE("clan_daryn", 1)
+
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    greater_than: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Sir Daryn"
+                        message: _ "You can defeat me, but the Clan will never fall. Our numbers are endless!"
+                    }
+                
+            }
+    }
+--
+-- Sir Ruga dies - you get a bonus
+--
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Sir Ruga"
+        }
+        do: ->
+            VARIABLE("clan_ruga", 1)
+
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    greater_than: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Sir Ruga"
+                        message: _ "Even as I pledge my lance to your service, my Clan fights on!"
+                    }
+                
+            }
+    }
+--
+-- Sir Alric dies - you get a bonus
+--
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Sir Alric"
+        }
+        do: ->
+            VARIABLE("clan_alric", 1)
+
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    greater_than: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "Sir Alric"
+                        message: _ "A humiliating defeat, yet you are no match for the might of the Clan!"
+                    }
+                
+            }
+    }
+
+    BONUS_VICTORY: () -> {
+        if: {
+            have_unit: {
+                id: "Bayar"
+                side: 5
+            }
+            then: ->
+                Role{
+                    type: "Grand Knight"
+                    side: 5
+                    role: "clanboss"
+                }
+            
+            else: ->
+                Role{
+                    type: "Grand Knight"
+                    side: {5, 4, 3, 2}
+                    role: "clanboss"
+                }
+            
+        }
+        message: {
+            role: "clanboss"
+            message: _ "Stop! I cannot believe this! You have defeated us! Indeed, you are worthy, worthy even to claim the throne. The clans will help you. We will fight with you against the Queen."
+        }
+        message: {
+            speaker: "Konrad"
+            message: _ "So you admit defeat! You will serve me in fighting the evil queen?"
+        }
+        message: {
+            role: "clanboss"
+            message: _ "We will serve you, my lord. You will make a worthy king."
+        }
+
+        message: {
+            speaker: "narrator"
+            image: "wesnoth-icon.png"
+            message: _ "The mighty riders of the eastern plains, the Knights of the Clans, are now yours to command!"
+        }
+        allow_recruit: {
+            side: 1
+            type: "Knight"
+        }
+
+        message: {
+            speaker: "Li'sar"
+            message: _ "I think you are mistaken! You will help me be queen."
+        }
+        message: {
+            role: "clanboss"
+            message: _ "Who then is your leader? Whom do we serve?"
+        }
+        message: {
+            speaker: "Delfador"
+            message: _ "You will serve us. You will protect our flanks while we make way straight for the queen. With you on either flank, we can surely overcome her."
+        }
+        message: {
+            speaker: "Kalenz"
+            message: _ "Delfador, don’t you think it is time we settled this?"
+        }
+        message: {
+            speaker: "Delfador"
+            message: _ "Yes, it is time. It is time for the truth to be told. I had hoped to take this secret to my grave, but it isn’t to be. You elves live too long, and though I have tried hard to understand, your wisdom is foreign to me."
+        }
+        message: {
+            speaker: "Konrad"
+            message: _ "Secret? What secret Delfador? What are you talking about?"
+        }
+        message: {
+            speaker: "Delfador"
+-- wmllint: local spelling Elnar
+            message: _ "We should not speak of it now. Instead come with me, Konrad and Li’sar, to the top of mount Elnar. To look at Weldyn. To make plans for the battle, and to talk."
+        }
+        endlevel: {
+            result: "victory"
+            bonus: true
+            <NEW_GOLD_CARRYOVER(40)
+        }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("units_to_slay,units_to_slay_obj")
+    }
+
+    event: {
+        name: "last breath"
+        first_time_only: false
+        filter: {
+            side: {2, 3, 4, 5}
+        }
+        do: ->
+            VARIABLE_OP("units_to_slay", "sub", 1)
+
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    numerical_equals: 0
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "We are routing their forces! Let’s see if the Clan has had enough. Their help in guarding our flanks will be invaluable."
+                    }
+                    BONUS_VICTORY!
+                
+                else: ->
+                    Show_Countdown{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            If{
+                variable: {
+                    name: "units_to_slay"
+                    greater_than: 0
+                }
+                then: ->
+-- Re-create Lord Bayar so he can talk. He's not dead;
+-- he's just out of commission.
+                    NAMED_LOYAL_UNIT(5, "Grand Knight", 8, 54, "Lord Bayar", _ "Lord Bayar")
+                    BONUS_VICTORY!
+                
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}
+
+BONUS_VICTORY = nil

@@ -5,13 +5,13 @@
 -- One good way of knowing the common name of a special key to use in the 'key=' field below is to
 -- consult 'man SDLKey' on a linux system.
 
-IF_APPLE_CMD_ELSE_CTRL = () ->
-    return if APPLE then {
+IF_APPLE_CMD_ELSE_CTRL = () -> {
+    <if APPLE then {
         cmd: true
     } else {
         ctrl: true
     }
-
+}
 
 Hotkey{
     command: "scroll-up"

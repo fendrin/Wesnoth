@@ -1,0 +1,111 @@
+--textdomain wesnoth-editor
+-- This file defines the groups which are shown in the editor.
+-- All editor_group entries in terrain.cfg should have a corresponding id here.
+-- Name is shown in the tooltip in the editor.
+-- Icon is the button icon name.
+
+--The all entry shows all terrains and must be available
+--TODO
+Editor_Group{
+    id: "all"
+    name: _ "all"
+    icon: "group_all"
+}
+
+Editor_Group{
+    id: "water"
+    name: _ "water"
+    icon: "group_water_deep"
+    core: true
+}
+
+Editor_Group{
+    id: "flat"
+    name: _ "flat"
+    icon: "group_flat"
+    core: true
+}
+
+Editor_Group{
+    id: "desert"
+    name: _ "desert"
+    icon: "group_sand"
+    core: true
+}
+
+Editor_Group{
+    id: "embellishments"
+    name: _ "embellishments"
+    icon: "group_embellishments"
+    core: true
+}
+
+Editor_Group{
+    id: "forest"
+    name: _ "forest"
+    icon: "group_forest"
+    core: true
+}
+
+Editor_Group{
+    id: "fall"
+    name: _ "fall"
+    icon: "group_fall"
+    core: true
+}
+
+Editor_Group{
+    id: "frozen"
+    name: _ "frozen"
+    icon: "group_frozen"
+    core: true
+}
+
+Editor_Group{
+    id: "rough"
+    name: _ "rough"
+    icon: "group_mountains"
+    core: true
+}
+
+Editor_Group{
+    id: "cave"
+    name: _ "cave"
+    icon: "group_caves"
+    core: true
+}
+
+Editor_Group{
+    id: "obstacle"
+    name: _ "obstacle"
+    icon: "group_unwalkable"
+    core: true
+}
+
+Editor_Group{
+    id: "village"
+    name: _ "village"
+    icon: "group_village"
+    core: true
+}
+
+Editor_Group{
+    id: "castle"
+    name: _ "castle"
+    icon: "group_castle"
+    core: true
+}
+
+Editor_Group{
+    id: "bridge"
+    name: _ "bridge"
+    icon: "group_bridges"
+    core: true
+}
+
+Editor_Group{
+    id: "special"
+    name: _ "special"
+    icon: "group_x"
+    core: true
+}

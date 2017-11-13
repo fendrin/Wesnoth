@@ -1,0 +1,410 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "12_Northern_Winter"
+    name: _ "Northern Winter"
+    map: "campaigns/Heir_To_The_Throne/maps/12_Northern_Winter.map"
+
+    <TURNS(50, 40, 40)
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Turns{
+                variable: "turn_limit"
+            }
+            Set_Variable{
+                name: "turn_limit"
+                add: 1
+            }
+    }
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "13_The_Dwarven_Doors"
+
+    <SCENARIO_MUSIC("elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+    <EXTRA_SCENARIO_MUSIC("silvan_sanctuary.ogg")
+    <EXTRA_SCENARIO_MUSIC("weight_of_revenge.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- wmllint: local spelling thutter
+    story: {
+        part: {
+            story: _ "Across the river were lands few humans had ever visited. The occasional distant thutter of orcish signal drums made the abundant pine forests nestled in rolling foothills both breathtaking and ominous."
+            <HTTT_BIGMAP!
+            show_title: false
+        }
+        part: {
+            story: _ "Swirling, snow-laden winds tore at Konrad’s army, signaling the final exit of autumn and the onset of what would be a harsh winter."
+            <HTTT_BIGMAP!
+            show_title: false
+        }
+    }
+
+    <HTTT_TRACK(JOURNEY_12_NEW!)
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        controller: "human"
+        gold: 200
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Halgar Du'nar"
+        name: _ "Halgar Du’nar"
+        experience: 0
+        side: 2
+        canrecruit: true
+        recruit: {"Orcish Grunt", "Wolf Rider", "Orcish Archer", "Troll Whelp", "Ogre"}
+        ai: {
+            <ATTACK_DEPTH(4, 5, 5)
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "archer"}
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: -1.0
+        }
+        <GOLD(90, 150, 210)
+        <INCOME(2, 4, 8)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES(2, 5)
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Gorlak"
+        name: _ "Gorlak"
+        experience: 0
+        side: 3
+        canrecruit: true
+        recruit: {"Orcish Grunt", "Wolf Rider", "Orcish Archer", "Troll"}
+        ai: {
+            <ATTACK_DEPTH(4, 5, 5)
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "archer"}
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: -1.0
+        }
+        <GOLD(110, 170, 230)
+        <INCOME(2, 4, 8)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES(3, 5)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Role{
+                role: "human-advisor"
+                auto_recall: {}
+
+                type: "Thief," .. 
+                "Poacher,Footpad,Thug," .. 
+                "Mage," .. 
+                "Horseman," .. 
+                "Rogue," .. 
+                "Trapper,Outlaw,Bandit," .. 
+                "Red Mage,White Mage," .. 
+                "Lancer,Knight," .. 
+                "Assassin," .. 
+                "Ranger,Huntsman,Fugitive,Highwayman," .. 
+                "Silver Mage,Arch Mage,Mage of Light," .. 
+                "Grand Knight,Paladin," .. 
+                "Great Mage"
+                else: ->
+                    Unit{
+                        side: 1
+                        type: "Thief"
+                        role: "human-advisor"
+                        placement: "leader"
+                    }
+                
+            }
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "This winter is bitterly cold! Perhaps we should stop here and rest a while."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Stop and rest? My lord, we must go hard after the Sceptre of Fire, lest it fall into the hands of our enemies!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "We have had a hard march ever since we were besieged by the undead in that foul valley. Now winter bears down upon us, and we have spent most of our money. This land looks fertile enough. Surely we can settle here for the winter!"
+            }
+            Message{
+                role: "human-advisor"
+                message: _ "Yes, let us rest a while! I am sure there are many challenges ahead, and I do not think I could endure another like the fording of the river for many days."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "We are pursued by the forces of your arch-enemy, chasing the Sceptre of Fire, the fate of the realm in our hands, and you humans want to stop and rest? Onward, I say!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "They are right, Kalenz. I had wanted to acquire the Sceptre within a moon, but it is not to be. Our soldiers will begin to desert if they do not rest soon. But in these wild north lands, we must fight even for the right to rest. Look to the north! Those foul orcs will not allow us any peace!"
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("mad")
+                message: _ "Then we shall wrest control of the land from them. To arms men!"
+            }
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                message: _ "More snow is falling. We must finish this battle quickly. Onward men!"
+            }
+
+-- This event makes snow fall on random non-snowy locations at such a
+-- constant pace that snow will be everywhere exactly when turns run out
+            Event{
+                name: "new turn"
+                first_time_only: false
+                delayed_variable_substitution: true
+                do: ->
+                    Random_Placement{
+                        num_items: "size / (#{turn_limit - #{turn_number)"
+                        variable: "loc"
+                        allow_less: true
+
+                        filter_location: {
+                            terrain: {"Gs", "Gd", "Co", "Ko", "Re", "Rb", "Gll^Fp", "Gll^Fmw", "Gll^Fdw", "Gd^Vo", "Gd^Vc", "Hhd^Vo", "Hhd^Vc"}
+                        }
+
+                        command: ->
+                            Switch{
+                                variable: "loc.terrain"
+
+                                case: {
+                                    value: "Gs"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa")
+                                }
+
+                                case: {
+                                    value: "Gd"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa")
+                                }
+
+                                case: {
+                                    value: "Co"
+                                    do: ->
+                                        VARIABLE("terrain", "Coa")
+                                }
+
+                                case: {
+                                    value: "Ko"
+                                    do: ->
+                                        VARIABLE("terrain", "Koa")
+                                }
+
+                                case: {
+                                    value: "Coa"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa")
+                                }
+
+                                case: {
+                                    value: "Hhd"
+                                    do: ->
+                                        VARIABLE("terrain", "Ha")
+                                }
+
+                                case: {
+                                    value: "Gll^Fp"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa^Fpa")
+                                }
+
+                                case: {
+                                    value: "Gll^Fmw"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa^Fma")
+                                }
+
+                                case: {
+                                    value: "Gll^Fdw"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa^Fda")
+                                }
+
+                                case: {
+                                    value: "Gd^Vo"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa^Voa")
+                                }
+
+                                case: {
+                                    value: "Gd^Vc"
+                                    do: ->
+                                        VARIABLE("terrain", "Aa^Vca")
+                                }
+
+                                case: {
+                                    value: "Hhd^Vo"
+                                    do: ->
+                                        VARIABLE("terrain", "Ha^Voa")
+                                }
+
+                                case: {
+                                    value: "Hhd^Vc"
+                                    do: ->
+                                        VARIABLE("terrain", "Ha^Vca")
+                                }
+
+-- just a fallback in case something goes wrong
+                                else: ->
+                                    VARIABLE("terrain", loc.terrain)
+                                
+                            }
+
+                            Terrain{
+                                x: loc.x, y: loc.y
+                                terrain: terrain
+                            }
+                        
+                    }
+
+                    CLEAR_VARIABLE("terrain")
+            }
+    }
+
+    event: {
+        name: "turn 10"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("concerned")
+                message: _ "We must make haste before the snow overwhelms us!"
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "Victory is ours! We have secured the land from the orcs. Now we can rest here while the cold winter passes."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Let us not rest for too long though, friends. We must still reach the ancient dwarven lands before our foes do."
+            }
+
+            If{
+                variable: {
+                    name: "get_gryphons"
+                    numerical_equals: 1
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "A camp was pitched in a secluded valley that protected its occupants from the worst of the winter weather and roving orc patrols. During this time, the valley walls echoed with the squeaks of gryphon hatchlings, who happily frolicked across the camp."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Konrad set his shamans to the task of corralling the animals. The elvish shamans had a natural rapport with the gryphlets, whose wings were still too small to carry a mount."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Konrad finally decided he could not wait until the gryphons grew to maturity — Delfador’s insistence that the Sceptre must be recovered was too compelling. And so after many days of rest, the party set out once again for the dwarven kingdom..."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "A camp was pitched in a secluded valley that protected its occupants from the worst of the winter weather and roving orc patrols."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "Eventually Delfador’s insistence that the Sceptre must be recovered proved too compelling, even when it meant dismantling the camp without the spring having yet fully arrived. And so after many days of rest, the party set out once again for the dwarven kingdom..."
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            VARIABLE_OP("turn_limit", "sub", 1)
+            VARIABLE("snowCoverage", turn_number)
+            VARIABLE_OP("snowCoverage", "sub", 1)
+            VARIABLE_OP("snowCoverage", "divide", turn_limit)
+            CLEAR_VARIABLE("turn_limit")
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}

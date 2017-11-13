@@ -1,0 +1,38 @@
+--textdomain wesnoth-test
+
+unless DONT_RELOAD_CORE!
+
+    INCLUDE("themes/")
+
+-- Load core wml for tests including macros and units
+    INCLUDE("core")
+
+    Textdomain{
+        name: "wesnoth"
+    }
+    Textdomain{
+        name: "wesnoth-lib"
+    }
+
+
+
+Textdomain{
+    name: "wesnoth-test"
+}
+
+if TEST
+
+--Load test macros
+    INCLUDE("test/macros")
+
+--Load test scenarios
+    INCLUDE("test/scenarios")
+
+
+
+unless DONT_RELOAD_CORE!
+    Binary_Path{
+        path: "data/core"
+    }
+
+    INCLUDE("game_config.cfg")

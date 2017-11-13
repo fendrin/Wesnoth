@@ -1,0 +1,458 @@
+--textdomain wesnoth-ei
+
+Scenario{
+    id: "05_Northern_Outpost"
+    name: _ "Northern Outpost"
+    map: "campaigns/Eastern_Invasion/maps/05_Northern_Outpost.map"
+    turns: 20
+    next_scenario: "06_Two_Paths"
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("transience.ogg", "wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("traveling_minstrels.ogg")
+    <EXTRA_SCENARIO_MUSIC("loyalists.ogg")
+
+    <EI_TRACK(JOURNEY_05_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <GOLD(150, 130, 100)
+        team_name: "good"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+-- wmllint: recognize Gweddry
+        <CHARACTER_STATS_GWEDDRY!
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Cavalryman", "Mage", "Heavy Infantryman"}
+        <GOLD(90, 70, 50)
+        team_name: "good"
+        user_team_name: _ "Wesnothians"
+
+-- wmllint: recognize Owaec
+        <CHARACTER_STATS_OWAEC!
+
+-- Manually canrecruit flag here is deliberate
+        canrecruit: true
+        facing: "sw"
+
+        ai: {
+            passive_leader: true
+            recruitment_pattern: {"mixed fighter", "fighter", "scout", "mixed fighter", "fighter"}
+            <NO_SCOUTS!
+            avoid: {
+                x: "1-32"
+                y: "1-18"
+            }
+        }
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Skeleton", "Skeleton Archer", "Skeleton Rider"}
+
+        <GOLD(30, 40, 50)
+        <INCOME(9, 14, 18)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Revenant"
+        id: "Lanar-Skal"
+        name: _ "Lanar-Skal"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            aggression: -0.1
+            caution: 0.25
+            grouping: "defensive"
+            recruitment_pattern: {"archer", "archer", "fighter", "fighter", "scout"}
+            passive_leader: true
+        }
+    }
+
+    side: {
+        side: 4
+        no_leader: true
+        team_name: "bad"
+        hidden: true
+        ai: {
+            grouping: false
+            aggression: 0.7
+            leader_aggression: 0.7
+            grouping: "offensive"
+        }
+    }
+
+    <AI_CONTROLLER({}, 1, 2, {})
+
+    <PLACE_IMAGE("scenery/rock1.png", 15, 28)
+    <PLACE_IMAGE("scenery/rock2.png", 8, 5)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find the outlaw leader"
+                    condition: "win"
+                    show_if: {
+                        <VARIABLE_CONDITIONAL("boss_found", "not_equals", true)
+                    }
+                }
+                objective: {
+                    description: _ "Kill Shodrano"
+                    condition: "win"
+                    show_if: {
+                        have_unit: {
+                            side: 4
+-- wmllint: recognize Shodrano
+                            id: "Shodrano"
+                        }
+                    }
+                }
+                objective: {
+                    description: _ "Defeat the undead leader"
+                    condition: "win"
+                    show_if: {
+                        have_unit: {
+                            side: 3
+                            canrecruit: true
+                        }
+                    }
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Owaec"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 70
+                }
+
+                <AI_CONTROLLER_NOTE!
+            }
+
+            VARIABLE("shodrano_killed", false)
+
+            Store_Villages{
+                y: "1-22"
+            }
+
+            Spread_Bandit_Villages{
+                x: "1-32"
+                y: "1-22"
+                count: location.length / 2
+                <if EASY then {
+                    types: "Footpad,Footpad,Poacher,Poacher,Thug,Thug,Thug,Thug,Thief,Thief,Thief,Thief"
+                } else {
+                    types: "Footpad,Footpad,Poacher,Poacher,Thug,Thug,Thug,Thug,Thief,Thief,Thief,Thief,Rogue,Bandit,Outlaw"
+                }
+            }
+
+            CLEAR_VARIABLE("location")
+
+            Recall{
+                id: "Dacyn"
+            }
+
+            Recall{
+                id: "Terraent"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Owaec"
+                message: _ "Hail, Gweddry!"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Greetings, Owaec! We have been forced from our positions by undead invaders. They follow us even now."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Indeed, they do. And do not think you will be able to defeat them. They are too powerful. We are heading for the Northlands, where I hope to find a means to stop this invasion. Will you join us?"
+            }
+
+            Message{
+                speaker: "Owaec"
+                message: _ "I cannot. My orders were to protect these villages. If I leave, the villagers will be at the mercy of a gang of bandits. I cannot find a way to defeat them; the outlaws hide in the villages whenever I send in my troops."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Hoping to protect these villages is foolish; all who stay here will die. However, if we can drive these bandits out, will you organize the villagers to flee to the west? There they may survive for a time. But soon nowhere in Wesnoth will be safe."
+            }
+
+            Message{
+                speaker: "Owaec"
+                message: _ "If the situation is as dire as you’ve described, I must... but we have no way to remove these bandits."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "I think I may be able to help. Gweddry, I believe I can cast a spell that will reveal the bandits when our troops enter a village. However, this magic will require my full attention; I won’t be able to help you in battle."
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "That sounds good; it is time to drive out some bandits. Dacyn, cast your spell!"
+            }
+
+            Message{
+                speaker: "Owaec"
+                message: _ "I believe there is a leader behind these outlaws; kill him and we will face no further resistance. I will place my clansmen at your service."
+            }
+
+            Allow_Recruit{
+                side: 1
+                type: "Horseman"
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "You may now recruit horsemen!"
+            }
+
+            Message{
+                speaker: "Lanar-Skal"
+                message: _ "Go, go far from here! But me and my kind will chase you, and kill you!"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "It seems the undead have caught up with us! We will have to kill them too if we want the villagers to be safe. Well, I will begin casting the spell."
+            }
+
+            MOVE_UNIT({id: "Dacyn"}, 13, 14)
+
+            DACYN_CASTING_SPELL_ANIMATION_OBJECT!
+
+            MODIFY_UNIT({id: "Dacyn"}, "variables.casting_the_spell", true)
+    }
+
+-- Dacyn remains busy until the bandits are defeated
+    event: {
+        name: "side 1 turn refresh"
+        first_time_only: false
+        filter_condition: {
+            have_unit: {
+                id: "Dacyn"
+                filter_wml: {
+                    variables: {
+                        casting_the_spell: "yes"
+                    }
+                }
+            }
+        }
+        do: ->
+            Modify_Unit{
+                filter: {
+                    id: "Dacyn"
+                }
+
+                moves: 0
+                attacks_left: 0
+            }
+    }
+
+    event: {
+        name: "capture"
+        first_time_only: false
+        filter: {
+            side: 1
+        }
+        filter_condition: {
+            <VARIABLE_CONDITIONAL("shodrano_killed", "not_equals", true)
+        }
+
+        bandit_village_capture: {
+            x: x1, y: y1
+        }
+    }
+
+    event: {
+        name: "boss_found"
+        do: ->
+            Move_Unit_Fake{
+                x: {x1, x2}
+                y: {y1, y2}
+                type: "Assassin"
+                side: 4
+            }
+
+            Unit{
+                x: x2, y: y2
+                type: "Assassin"
+                side: 4
+                id: "Shodrano"
+                name: _ "Shodrano"
+                canrecruit: true
+            }
+
+            INCIDENTAL_MUSIC("battle-epic.ogg")
+
+            Message{
+                speaker: "Shodrano"
+                message: _ "So, you have found my hiding place. Very well, I guess I will have to kill you!"
+            }
+
+            Message{
+                speaker: "Owaec"
+                message: _ "That’s the bandit leader! Kill him!"
+            }
+
+            Show_Objectives{}
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Shodrano"
+        }
+        do: ->
+            Message{
+                speaker: "Shodrano"
+                message: _ "You have defeated me! I can terrorize the villagers no more..."
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Shodrano"
+        }
+        do: ->
+            VARIABLE("shodrano_killed", true)
+
+            MODIFY_UNIT({id: "Dacyn"}, "variables.casting_the_spell", false)
+
+            If{
+                have_unit: {
+                    id: "Lanar-Skal"
+                }
+                then: ->
+                    Message{
+                        speaker: "Owaec"
+                        message: _ "We still need to defeat these undead for the villagers to be safe."
+                    }
+
+                    Show_Objectives{}
+                
+                else: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(70)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Lanar-Skal"
+        }
+        do: ->
+            If{
+                <VARIABLE_CONDITIONAL("shodrano_killed", "not_equals", true)
+                then: ->
+                    Message{
+                        speaker: "Owaec"
+                        message: _ "There are still these outlaws to take care of — we must continue fighting here."
+                    }
+
+                    Show_Objectives{}
+                
+                else: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(70)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            MODIFY_UNIT({id: "Dacyn"}, "variables.casting_the_spell", false)
+
+            Message{
+                speaker: "Owaec"
+                message: _ "Well, both the outlaws and undead are defeated. We have some time to spare now before more undead arrive."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Good! Now, we must move onward, north. Tell the villagers to pack their belongings and head west."
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Owaec"
+                }
+
+                kill: true
+                variable: "stored_Owaec"
+            }
+
+            Unit{
+                side: 1
+                id: "Owaec"
+                name: _ "Owaec"
+                unrenamable: true
+                x: stored_Owaec.x, y: stored_Owaec.y
+                type: stored_Owaec.type
+                experience: stored_Owaec.experience
+                profile: "portraits/owaec.png"
+                <IS_HERO!
+                random_traits: false
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+            }
+
+            CLEAR_VARIABLE("stored_Owaec,bandit_villages,bandit_types,villages_visited,boss_found,shodrano_killed")
+    }
+
+    <HOLY_AMULET(2, 25)
+
+    <WESNOTH_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+    <HERODEATH_OWAEC!
+}

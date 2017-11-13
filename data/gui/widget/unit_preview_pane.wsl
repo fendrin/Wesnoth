@@ -1,0 +1,441 @@
+--textdomain wesnoth-lib
+
+_GUI_UNIT_PREVIEW_PANE_FULL = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                border: "bottom"
+                border_size: 5
+                horizontal_grow: true
+                vertical_alignment: "center"
+
+                image: {
+                    id: "type_image"
+                    definition: "default"
+                }
+
+            }
+
+        }
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                border: "top,bottom"
+                border_size: 5
+                vertical_grow: true
+                horizontal_grow: true
+
+                label: {
+                    id: "type_name"
+                    wrap: true
+                }
+
+            }
+
+        }
+
+        row: {
+            grow_factor: 0
+
+            column: {
+                grow_factor: 0
+                horizontal_grow: true
+
+                grid: {
+
+                    row: {
+                        grow_factor: 1
+
+                        column: {
+                            grow_factor: 0
+                            border: "right,bottom"
+                            border_size: 5
+                            horizontal_alignment: "left"
+
+                            label: {
+                                id: "type_level"
+                            }
+
+                        }
+
+                        column: {
+                            grow_factor: 0
+                            border: "left,right,bottom"
+                            border_size: 5
+                            horizontal_alignment: "left"
+
+                            image: {
+                                id: "type_alignment"
+                            }
+
+                        }
+
+                        column: {
+                            grow_factor: 0
+                            border: "right,bottom"
+                            border_size: 5
+                            horizontal_alignment: "left"
+
+                            image: {
+                                id: "type_race"
+                            }
+
+                        }
+
+                        column: {
+                            grow_factor: 1
+                            border: "right,bottom"
+                            border_size: 5
+                            horizontal_grow: true
+
+                            label: {
+                                id: "type_race_label"
+                                definition: "default_small"
+                            }
+
+                        }
+
+                        column: {
+                            grow_factor: 0
+                            border: "left,bottom"
+                            border_size: 5
+                            horizontal_alignment: "right"
+
+                            button: {
+                                id: "type_profile"
+                                definition: "action_about"
+
+                                label: _ "Profile"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                vertical_grow: true
+                horizontal_grow: true
+
+-- TODO: remove this if default_width is sufficient
+--{GUI_FORCE_WIDGET_MINIMUM_SIZE 225 0 (
+                tree_view: {
+                    id: "type_details"
+                    indentation_step_size: 8
+                    vertical_scrollbar_mode: "auto"
+
+                    node: {
+                        id: "header"
+                        unfolded: true
+                        node_definition: {
+                            row: {
+                                column: {
+                                    spacer: {
+                                        height: 10
+                                    }
+                                }
+                            }
+                            row: {
+                                column: {
+                                    horizontal_alignment: "left"
+                                    vertical_alignment: "top"
+                                    border: "top,bottom"
+                                    border_size: 1
+                                    label: {
+                                        definition: "default_small"
+                                        id: "name"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    node: {
+                        id: "item"
+                        unfolded: true
+                        node_definition: {
+                            row: {
+                                column: {
+                                    horizontal_alignment: "left"
+                                    vertical_alignment: "top"
+                                    border: "top,bottom"
+                                    border_size: 1
+                                    label: {
+                                        wrap: true
+                                        definition: "default_small"
+                                        id: "name"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    node: {
+                        id: "hp_xp_mp"
+                        unfolded: true
+                        node_definition: {
+                            row: {
+                                column: {
+                                    horizontal_alignment: "left"
+                                    vertical_alignment: "top"
+                                    border: "top,bottom"
+                                    border_size: 1
+                                    grid: {
+                                        row: {
+                                            column: {
+                                                horizontal_alignment: "left"
+                                                vertical_alignment: "top"
+                                                label: {
+                                                    wrap: true
+                                                    definition: "default_small"
+                                                    id: "hp"
+                                                }
+                                            }
+                                            column: {
+                                                horizontal_alignment: "left"
+                                                vertical_alignment: "top"
+                                                label: {
+                                                    wrap: true
+                                                    definition: "default_small"
+                                                    id: "xp"
+                                                }
+                                            }
+                                            column: {
+                                                horizontal_alignment: "left"
+                                                vertical_alignment: "top"
+                                                label: {
+                                                    wrap: true
+                                                    definition: "default_small"
+                                                    id: "mp"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+--)}
+            }
+
+        }
+
+    }
+}
+
+_GUI_UNIT_PREVIEW_PANE_MINIMAL_LEFT = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                horizontal_alignment: "center"
+                vertical_alignment: "center"
+
+                border: "right"
+                border_size: 5
+
+                image: {
+                    id: "type_image"
+                }
+
+            }
+
+            column: {
+                grow_factor: 1
+                horizontal_alignment: "right"
+
+                grid: {
+
+                    row: {
+                        grow_factor: 1
+
+                        column: {
+                            horizontal_alignment: "right"
+
+                            border: "left,bottom"
+                            border_size: 5
+
+                            label: {
+                                id: "type_details_minimal"
+                                definition: "default_small"
+
+                                text_alignment: "right"
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+
+                        column: {
+                            horizontal_alignment: "right"
+                            border: "left,top"
+                            border_size: 5
+
+                            button: {
+                                id: "type_profile"
+                                definition: "default"
+
+                                label: _ "Profile"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_UNIT_PREVIEW_PANE_MINIMAL_RIGHT = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                grow_factor: 1
+                horizontal_alignment: "left"
+
+                grid: {
+
+                    row: {
+                        grow_factor: 1
+
+                        column: {
+                            horizontal_alignment: "left"
+
+                            border: "right,bottom"
+                            border_size: 5
+
+                            label: {
+                                id: "type_details_minimal"
+                                definition: "default_small"
+
+                                text_alignment: "left"
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+                        grow_factor: 1
+
+                        column: {
+                            horizontal_alignment: "left"
+                            border: "right,top"
+                            border_size: 5
+
+                            button: {
+                                id: "type_profile"
+                                definition: "default"
+
+                                label: _ "Profile"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            column: {
+                horizontal_alignment: "center"
+                vertical_alignment: "center"
+                border: "left"
+                border_size: 5
+
+                image: {
+                    id: "type_image"
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_RESOLUTION = (DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFINITION_GRID) -> {
+    resolution: {
+
+        min_width: 0
+        min_height: 0
+
+        default_width: DEFAULT_WIDTH
+        default_height: DEFAULT_HEIGHT
+
+        max_width: 0
+        max_height: 0
+
+        background: {
+
+            draw: {
+
+            }
+
+        }
+
+        foreground: {
+
+            draw: {
+
+            }
+
+        }
+
+        <DEFINITION_GRID
+
+    }
+}
+
+Unit_Preview_Pane_Definition{
+    id: "default"
+    description: "A fully detailed preview area for unit stats."
+
+    <_GUI_RESOLUTION(225, 500, _GUI_UNIT_PREVIEW_PANE_FULL!)
+}
+
+Unit_Preview_Pane_Definition{
+    id: "unit_minimal_left"
+    description: "A more text-based unit preview pane with the sprite to the left."
+
+    <_GUI_RESOLUTION(0, 0, _GUI_UNIT_PREVIEW_PANE_MINIMAL_LEFT!)
+}
+
+Unit_Preview_Pane_Definition{
+    id: "unit_minimal_right"
+    description: "A more text-based unit preview pane with the sprite to the right."
+
+    <_GUI_RESOLUTION(0, 0, _GUI_UNIT_PREVIEW_PANE_MINIMAL_RIGHT!)
+}
+
+_GUI_UNIT_PREVIEW_PANE_FULL = nil
+_GUI_UNIT_PREVIEW_PANE_MINIMAL_LEFT = nil
+_GUI_UNIT_PREVIEW_PANE_MINIMAL_RIGHT = nil
+_GUI_RESOLUTION = nil

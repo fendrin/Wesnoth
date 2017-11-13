@@ -1,0 +1,12 @@
+--textdomain wesnoth-ai
+
+unless AI_CA_GOTO!
+    INCLUDE("core/macros/ai.cfg")
+    INCLUDE("core/macros/ai_candidate_actions.cfg")
+
+
+Ai{
+    id: "experimental_ai"
+    description: _ "Multiplayer_AI^Experimental AI" -- wmllint: no spellcheck
+    <EXPERIMENTAL_AI!
+}

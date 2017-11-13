@@ -1,0 +1,20 @@
+--textdomain wesnoth-dm
+
+MEMOIRS_MAP = (NAME) -> {
+    map_data: "#{campaigns/Delfadors_Memoirs/maps/#{NAME}}"
+}
+
+DWARVES = () -> {
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/dm-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    DWARVES2 = () -> {
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/dm-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+        ELVES = () -> {
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/dm-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+            ELVES2 = () -> {
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/dm-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                LOYALISTS = () -> {
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/dm-macros.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)

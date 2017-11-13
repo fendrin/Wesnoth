@@ -1,0 +1,525 @@
+--textdomain wesnoth-did
+
+Scenario{
+    id: "09_A_Small_Favor3"
+    name: _ "A Small Favor — Part 3"
+    map: "campaigns/Descent_Into_Darkness/maps/09_A_Small_Favor3.map"
+    <TURNS(30, 27, 25)
+    next_scenario: "10_Alone_at_Last"
+    victory_when_enemies_defeated: false
+
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+
+-- No storyl; this occurs immediately after the previous scenario
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        gold: 0
+        team_name: "intruders"
+        user_team_name: _ "Intruders"
+        <FLAG_VARIANT("undead")
+
+        income: -2
+
+-- wmllint: recognize Malin Keshar
+        <CHARACTER_STATS_MALIN_KESHAR!
+
+        shroud: true
+        share_maps: true
+        facing: "nw"
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        team_name: "defenders"
+        user_team_name: _ "Defenders"
+        no_leader: true
+        hidden: true
+
+-- Mages in rooms
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 16, 15, {}, _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 18, 15, {}, _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 22, 13, {}, _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 24, 12, {}, _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 27, 10, {}, _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Mage", 29, 10, {}, _ "Guardian"), <GUARDIAN!
+
+-- Mages in great hall
+        <NAMED_NOTRAIT_UNIT({}, "Silver Mage", 13, 8, "", _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "Red Mage", 14, 9, "", _ "Guardian"), <GUARDIAN!
+        <NAMED_NOTRAIT_UNIT({}, "White Mage", 16, 8, "", _ "Guardian"), <GUARDIAN!
+
+        ai: {
+            village_value: 0
+            aggression: 0.8
+        }
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        team_name: "intruders"
+        user_team_name: _ "Intruders"
+        no_leader: true
+        hidden: true
+        shroud: true
+        share_maps: false
+        facing: "nw"
+
+        ai: {
+            village_value: 0
+            aggression: 0.8
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 3
+                    canrecruit: true
+                }
+                value: 5
+            }
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Darken Volk"
+                }
+                protect_radius: 6
+                value: 20
+            }
+        }
+    }
+
+-- This macro places the doors and adds the door-opening event
+    <MANOR_DOORS({1, 3})
+
+--TODO: Create some scenery (fire, torches, ...)
+    <PLACE_IMAGE("items/book5.png", 11, 7)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Find the book"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Darken Volk"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 100
+                }
+            }
+
+-- Scatter manor guards
+            SCATTER_UNITS(6, "Pikeman,Duelist,Pikeman,Spearman,Pikeman,Swordsman", 3, {
+                    terrain: "Rr"
+                    not: {
+                        x: 25, y: 18
+                        radius: 4
+                    }
+                    not: {
+                        x: 31, y: 15
+                        radius: 2
+                    }
+                    not: {
+                        x: 11, y: 7
+                    }
+                    not: {
+                        filter: {}
+                    }
+                },{
+                    side: 2
+                    name: _ "Guard"
+                    random_traits: true
+            })
+
+-- Who has the book?
+            VARIABLE("hasBook", "none")
+
+-- Switch Volk's side
+            Recall{
+                id: "Darken Volk"
+                x: 26, y: 16
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Darken Volk"
+                }
+                kill: true
+                variable: "stored_Darken"
+            }
+
+            VARIABLE("stored_Darken.side", 3)
+            VARIABLE("stored_Darken.canrecruit", true)
+
+            CLEAR_VARIABLE("stored_Darken.ellipse")
+
+            Unstore_Unit{
+                variable: "stored_Darken"
+            }
+
+            CLEAR_VARIABLE("stored_Darken")
+
+            Lock_View{}
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Store_Unit{
+                filter: {
+                    filter_wml: {
+                        variables: {
+                            got_inside_manor: true
+                        }
+                    }
+                }
+
+                kill: true
+                variable: "units_inside_manor"
+            }
+
+            Foreach{
+                array: "units_inside_manor"
+                do: ->
+                    VARIABLE("this_item.upkeep", "loyal")
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                        find_vacant: false
+                    }
+
+                    Recall{
+                        id: this_item.id
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("units_inside_manor")
+
+-- Create DV's units
+            GENERIC_UNIT(3, "Revenant", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            GENERIC_UNIT(3, "Spectre", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            GENERIC_UNIT(3, "Deathblade", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            GENERIC_UNIT(3, "Necrophage", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            GENERIC_UNIT(3, "Banebow", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            GENERIC_UNIT(3, "Nightgaunt", 26, 16)
+            Unit{
+                amend: true
+                animate: true
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "I feel the book is very close, somewhere to the northwest."
+            }
+
+            Unlock_View{}
+    }
+
+    event: {
+        name: "side 3 turn refresh"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Darken Volk"
+                }
+                variable: "stored_Darken"
+            }
+
+            If{
+                variable: {
+                    name: "hasBook"
+                    equals: "none"
+                }
+                then: ->
+                    If{
+                        variable: {
+                            name: "turn_number"
+                            greater_than: 3
+                        }
+                        then: ->
+                            VARIABLE("dest.x", 11)
+                            VARIABLE("dest.y", 7)
+                        
+                        else: ->
+                            VARIABLE("dest.x", 16)
+                            VARIABLE("dest.y", 14)
+                        
+                    }
+                
+                else: ->
+                    VARIABLE("dest.x", 31)
+                    VARIABLE("dest.y", 1)
+                
+            }
+
+            Find_Path{
+                traveler: {
+                    id: "Darken Volk"
+                }
+                destination: {
+                    x: dest.x
+                    y: dest.y
+                }
+                variable: "darken_goto"
+                allow_multiple_turns: true
+            }
+
+            If{
+                variable: {
+                    name: "darken_goto.step.length"
+                    greater_than: 0
+                }
+                then: ->
+                    VARIABLE("index", "#{(min(#{stored_Darken.max_moves,#{darken_goto.step.length-1))")
+                    VARIABLE("stored_Darken.goto_x", darken_goto.step[index].x)
+                    VARIABLE("stored_Darken.goto_y", darken_goto.step[index].y)
+                
+                else: ->
+                    VARIABLE("stored_Darken.goto_x", dest.x)
+                    VARIABLE("stored_Darken.goto_y", dest.y)
+                
+            }
+
+            Unstore_Unit{
+                variable: "stored_Darken"
+            }
+
+            CLEAR_VARIABLE("stored_Darken,dest,darken_goto,index")
+    }
+
+    event: {
+-- Malin gets the book
+        name: "moveto"
+        filter: {
+            id: "Malin Keshar"
+            x: 11, y: 7
+        }
+        filter_condition: {
+            variable: {
+                name: "hasBook"
+                equals: "none"
+            }
+        }
+        do: ->
+            Remove_Item{
+                x: 11, y: 7
+            }
+
+            VARIABLE("hasBook", "Malin")
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "We’ve got the book, but now how do we get out of here?"
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "There’s a small tunnel in the cellar to the northeast. It will lead us far enough out of the city that we can escape pursuit."
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Escape via the tunnel in the northeast cellar"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Darken Volk"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 100
+                }
+            }
+
+            Event{
+                name: "moveto"
+                filter: {
+                    id: "Malin Keshar"
+                    x: "30-31", y: 1
+                }
+                do: ->
+                    Message{
+                        speaker: "Malin Keshar"
+                        message: _ "Phew! Let’s get out of here."
+                    }
+
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(100)
+                        carryover_report: false
+                    }
+            }
+    }
+
+    event: {
+-- DV gets the book
+        name: "moveto"
+        filter: {
+            id: "Darken Volk"
+            x: 11, y: 7
+        }
+        filter_condition: {
+            variable: {
+                name: "hasBook"
+                equals: "none"
+            }
+        }
+        do: ->
+            Remove_Item{
+                x: 11, y: 7
+            }
+
+            VARIABLE("hasBook", "Darken")
+
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Escape the manor"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Darken Volk"
+                }
+
+                <TURNS_RUN_OUT!
+            }
+
+            Event{
+                name: "moveto"
+                filter: {
+                    id: "Darken Volk"
+                    side: 3
+                }
+                do: ->
+                    Message{
+                        speaker: "Malin Keshar"
+                        message: _ "We’ve got the book, but now how do we get out of here?"
+                    }
+
+                    Scroll_To_Unit{
+                        id: "Darken Volk"
+                    }
+
+                    Message{
+                        speaker: "Malin Keshar"
+                        message: _ "Wait, you aren’t leaving me behind, are you?"
+                    }
+            }
+
+            Event{
+                name: "moveto"
+                filter: {
+                    id: "Darken Volk"
+                    x: "30-31", y: 1
+                }
+                do: ->
+                    Message{
+                        speaker: "Darken Volk"
+                        message: _ "You have served me well, my apprentice."
+                    }
+
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "As he heads into the tunnel Darken Volk collapses its entrance, leaving Malin to be captured and executed by the city guards."
+                    }
+
+                    Endlevel{
+                        result: "defeat"
+                    }
+            }
+
+            Event{
+                name: "moveto"
+                filter: {
+                    id: "Malin Keshar"
+                    x: "30-31", y: 1
+                }
+                do: ->
+                    Message{
+                        speaker: "Malin Keshar"
+                        message: _ "Phew! Let’s get out of here."
+                    }
+
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(100)
+                        carryover_report: false
+                    }
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            MODIFY_UNIT({id: "Darken Volk"}, "side", 1)
+    }
+
+    <HERODEATH_MALIN!
+    <HERODEATH_VOLK_B!
+
+    <TIME_OVER_DEFEAT_MANOR!
+}

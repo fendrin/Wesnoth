@@ -1,0 +1,947 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the mp game staging screen
+----
+
+_GUI_SIDE_LIST = () -> {
+    tree_view: {
+        id: "side_list"
+        definition: "default"
+
+        horizontal_scrollbar_mode: "never"
+        vertical_scrollbar_mode: "auto"
+
+        node: {
+            id: "team_header"
+            unfolded: true
+
+            node_definition: {
+
+                row: {
+
+                    column: {
+                        grow_factor: 1
+                        border: "all"
+                        border_size: 10
+                        horizontal_grow: true
+
+                        label: {
+                            id: "tree_view_node_label"
+                            definition: "default_large"
+                            use_markup: true
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        node: {
+            id: "side_panel"
+            unfolded: true
+
+            node_definition: {
+
+                row: {
+
+                    column: {
+                        grow_factor: 0
+                        border: "all"
+                        border_size: 20
+                        horizontal_grow: true
+
+                        label: {
+                            id: "side_number"
+                            definition: "default_huge"
+                            linked_group: "side_number"
+                        }
+                    }
+
+                    column: {
+                        grow_factor: 0
+                        vertical_alignment: "center"
+
+                        button: {
+                            id: "select_leader"
+                            definition: "minimal_arrow"
+                            tooltip: _ "Select the faction and leader for this side"
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 1
+                        horizontal_grow: true
+--vertical_grow = true
+
+                        grid: {
+                            linked_group: "leader"
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+                                    border: "all"
+                                    border_size: 5
+
+                                    image: {
+                                        id: "leader_image"
+                                        definition: "scaled_to_size"
+                                        linked_group: "leader_images"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    grid: {
+
+                                        row: {
+                                            grow_factor: 1
+
+                                            column: {
+                                                border: "all"
+                                                border_size: 5
+                                                horizontal_grow: true
+                                                vertical_grow: true
+
+                                                label: {
+                                                    id: "leader_type"
+                                                    definition: "default_large"
+                                                    use_markup: true
+                                                    use_tooltip_on_label_overflow: true
+                                                }
+
+                                            }
+
+                                        }
+
+                                        row: {
+                                            grow_factor: 0
+
+                                            column: {
+                                                horizontal_grow: true
+--vertical_grow = true
+
+                                                grid: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 0
+                                                            border: "left,bottom"
+                                                            border_size: 5
+
+                                                            label: {
+                                                                definition: "default_small"
+                                                                label: _ "<b>Faction:</b>"
+                                                                use_markup: true
+                                                            }
+
+                                                        }
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "left,bottom,right"
+                                                            border_size: 5
+                                                            horizontal_grow: true
+                                                            vertical_grow: true
+
+                                                            label: {
+                                                                id: "leader_faction"
+                                                                definition: "default_small"
+                                                                use_markup: true
+                                                                use_tooltip_on_label_overflow: true
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 0
+                                                            border: "left,bottom"
+                                                            border_size: 5
+
+                                                            label: {
+                                                                definition: "default_small"
+                                                                label: _ "<b>Gender:</b>"
+                                                                use_markup: true
+                                                            }
+
+                                                        }
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "left,bottom,right"
+                                                            border_size: 5
+                                                            horizontal_alignment: "left"
+                                                            vertical_grow: true
+
+                                                            image: {
+                                                                id: "leader_gender"
+                                                                definition: "default_small"
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 0
+                        horizontal_grow: true
+
+                        grid: {
+                            linked_group: "controller"
+
+                            row: {
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    menu_button: {
+                                        id: "controller"
+                                        definition: "default"
+                                        tooltip: _ "Change the side's controller"
+                                    }
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    menu_button: {
+                                        id: "ai_controller"
+                                        definition: "default"
+                                        tooltip: _ "Change the AI side's behaviour"
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 0
+
+                        grid: {
+                            linked_group: "team_and_color"
+
+                            row: {
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    menu_button: {
+                                        id: "side_team"
+                                        definition: "default"
+                                        tooltip: _ "Which team this side belongs to"
+                                    }
+                                }
+
+                            }
+
+                            row: {
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    menu_button: {
+                                        id: "side_color"
+                                        definition: "default"
+                                        tooltip: _ "The team color"
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    column: {
+                        grow_factor: 0
+
+                        grid: {
+                            linked_group: "gold_and_income"
+
+                            row: {
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        definition: "default_small"
+                                        label: _ "Gold:"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    slider: {
+                                        id: "side_gold_slider"
+                                        definition: "short"
+
+-- TODO: the GUI1 dialog had a min of 20, but that meant the slider was never reaching max...
+                                        minimum_value: 25
+                                        maximum_value: 800
+                                        step_size: 25
+                                    }
+                                }
+
+                            }
+
+                            row: {
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    label: {
+                                        definition: "default_small"
+                                        label: _ "Income:"
+                                    }
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+
+                                    slider: {
+                                        id: "side_income_slider"
+                                        definition: "short"
+
+                                        minimum_value: -2
+                                        maximum_value: 18
+                                        step_size: 1
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        node: {
+            id: "side_spacer"
+            unfolded: true
+
+            node_definition: {
+
+                <GUI_HORIZONTAL_SPACER_LINE!
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_PLAYER_LIST = () -> {
+    panel: {
+        definition: "box_display_no_blur_no_border"
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+
+                    label: {
+                        definition: "gold_small"
+                        label: _ "Connected Players"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    listbox: {
+                        id: "player_list"
+                        definition: "default"
+
+                        horizontal_scrollbar_mode: "never"
+
+                        list_definition: {
+
+                            row: {
+
+                                column: {
+                                    horizontal_grow: true
+
+                                    toggle_panel: {
+                                        id: "panel"
+                                        definition: "default"
+
+                                        grid: {
+
+                                            row: {
+
+                                                column: {
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_grow: true
+
+                                                    label: {
+                                                        id: "player_name"
+                                                        definition: "default"
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_CONTROL_AREA = () -> {
+    grid: {
+
+        row: {
+
+            column: {
+                border: "all"
+                border_size: 5
+
+                button: {
+                    id: "ok"
+                    definition: "large"
+                    label: _ "I’m Ready"
+                }
+            }
+
+            column: {
+                border: "all"
+                border_size: 5
+
+                button: {
+                    id: "cancel"
+                    definition: "large"
+                    label: _ "Cancel"
+                }
+            }
+
+        }
+
+    }
+}
+
+Window_Definition{
+    id: "mp_staging"
+    description: "A simple window without border decorations and the ability to set a custom background."
+
+    <_GUI_RESOLUTION_BORDERLESS_BASE({}, 10, 13, {
+            image: {
+                x: "(width - image_width)"
+                y: 0
+                w: "(image_width)"
+                h: "(height)"
+
+-- TODO: this should be generated with IPFs once we get a gradient function
+                name: "dialogs/multi_create/background.png"
+            }
+
+--
+-- Corners
+--
+
+            image: {
+                x: 0
+                y: 0
+                w: "(image_width)"
+                h: "(image_height)"
+                name: "dialogs/multi_create/corner.png~ROTATE(90)"
+            }
+
+            image: {
+                x: "(width - image_width)"
+                y: "(height - image_height)"
+                w: "(image_width)"
+                h: "(image_height)"
+                name: "dialogs/multi_create/corner.png~ROTATE(-90)"
+            }
+    })
+}
+
+Window{
+    id: "mp_staging"
+    description: "Game staging area."
+
+    resolution: {
+        window_width: 800
+        window_height: 600
+-- TODO: decide about background
+--definition = "mp_staging"
+        definition: "borderless"
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        linked_group: {
+            id: "side_number"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "controller"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader_images"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "team_and_color"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "gold_and_income"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+                    grid: {
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                label: {
+                                    id: "title"
+                                    definition: "title"
+                                    label: _ "Game Lobby"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                horizontal_alignment: "right"
+
+                                <_GUI_CONTROL_AREA!
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    panel: {
+                        definition: "box_display_no_blur_no_border"
+
+                        grid: {
+
+                            row: {
+
+                                column: {
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    <_GUI_SIDE_LIST!
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    border: "all"
+                    border_size: 5
+
+                    label: {
+                        id: "status_label"
+                        definition: "default_small"
+                        label: _ "Waiting for players to join..."
+                    }
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+-- 4/1 grow ratio is deliberate, since we don't want the players
+-- column to shrink completely to minimum size.
+                                grow_factor: 4
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <GUI_FORCE_WIDGET_SIZE(0, "((screen_height * 25 / 100))", {
+                                        chatbox: {
+                                            id: "chat"
+                                        }
+                                })
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                border: "all"
+                                border_size: 5
+
+                                <_GUI_PLAYER_LIST!
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    resolution: {
+-- TODO: decide about background
+--definition = "mp_staging"
+
+        window_width: 1100
+        window_height: 800
+
+        definition: "borderless"
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        linked_group: {
+            id: "side_number"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "controller"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader_images"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "team_and_color"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "gold_and_income"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_alignment: "left"
+                    border: "all"
+                    border_size: 5
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+                        label: _ "Game Lobby"
+                    }
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 1
+                                vertical_grow: true
+                                horizontal_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            panel: {
+                                                definition: "box_display_no_blur_no_border"
+
+                                                grid: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            horizontal_grow: true
+                                                            vertical_grow: true
+
+                                                            <_GUI_SIDE_LIST!
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            grow_factor: 1
+                                            horizontal_grow: true
+                                            border: "all"
+                                            border_size: 5
+
+                                            label: {
+                                                id: "status_label"
+                                                definition: "default_small"
+                                                label: _ "Waiting for players to join..."
+                                            }
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            <GUI_FORCE_WIDGET_SIZE(0, "((screen_height * 25 / 100))", {
+                                                    chatbox: {
+                                                        id: "chat"
+                                                    }
+                                            })
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            <_GUI_PLAYER_LIST!
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            <_GUI_CONTROL_AREA!
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_CONTROL_AREA = nil
+_GUI_SIDE_LIST = nil
+_GUI_PLAYER_LIST = nil

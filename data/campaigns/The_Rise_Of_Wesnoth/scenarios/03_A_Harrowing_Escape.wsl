@@ -1,0 +1,434 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "03_A_Harrowing_Escape"
+    name: _ "A Harrowing Escape"
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/03_A_Harrowing_Escape.map"
+    next_scenario: "04a_The_Swamp_of_Esten"
+    <TURNS(48, 45, 42)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_03_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 100
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Schmog"
+        name: _ "Tan-Schmog"
+        profile: "portraits/orcs/grunt.png"
+        side: 2
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "mixed fighter", "archer"}
+            passive_leader: true
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.15
+            grouping: false
+        }
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-NauVong"
+        name: _ "Tan-NauVong"
+        profile: "portraits/orcs/grunt-2.png"
+        side: 3
+        canrecruit: true
+        <GOLD(80, 140, 200)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "mixed fighter", "archer"}
+            passive_leader: true
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.15
+            grouping: false
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/signpost.png", 23, 38)
+            PLACE_IMAGE("scenery/signpost.png", 13, 7)
+            if EASY
+                GUARD_UNIT("Orcish Grunt", "Snagakhan", _ "Snagakhan", 2, 17, 37)
+                GUARD_UNIT("Orcish Grunt", "Knafakhan", _ "Knafakhan", 3, 19, 36)
+            
+            if NORMAL
+                GUARD_UNIT("Orcish Warrior", "Snagakhan", _ "Snagakhan", 2, 17, 37)
+                GUARD_UNIT("Orcish Warrior", "Knafakhan", _ "Knafakhan", 3, 19, 36)
+            
+
+            if HARD
+                GUARD_UNIT("Orcish Warrior", "Snagakhan", _ "Snagakhan", 2, 17, 37)
+                GUARD_UNIT("Orcish Warrior", "Knafakhan", _ "Knafakhan", 3, 19, 36)
+                GUARD_UNIT("Orcish Warrior", "Hoshnak", _ "Hoshnak", 2, 6, 23)
+                GUARD_UNIT("Orcish Warrior", "Gruumogth", _ "Gruumogth", 3, 8, 22)
+            
+            Recall{
+                id: "Lady Outlaw"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Argh, the orcish vanguard must have flanked us even further to the east! They’re already holding the mouth of the pass. We have to get out of the mountain pass before winter comes or we’re all dead meat!"
+                image: "portraits/haldric-surprised.png"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Father, I wish you were here..."
+            }
+
+            Message{
+                speaker: "Lady Outlaw"
+                message: _ "I’d drop the sentiment and pick up your sword. There’s plenty of fighting ahead of us!"
+            }
+
+            Message{
+                speaker: "Tan-Schmog"
+-- wmllint: local spelling Grrrr
+                message: _ "You won’t get much further boy. Grrrr!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 8
+            y: 5
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Who goes there?"
+            }
+
+            Unit{
+                id: "Burin the Lost"
+                name: _ "Burin the Lost"
+                profile: "portraits/burin.png"
+                side: 1
+                type: "Dwarvish Steelclad"
+                unrenamable: true
+                x: 8
+                y: 5
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_STRONG!
+                }
+                <IS_LOYAL!
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Burin, Burin the Lost. Who be ye?"
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’m Prince Haldric, we have little time to talk. We must make haste through the pass... What are you?"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "I’m a dwarf, you fool of a boy! I got lost while exploring deep underground, almost a century ago. I’ve never found my way home. But it seems nice enough here."
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Nice? The orcs have come, and we must flee!"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Orcs! It’s been a long time since I felt the satisfying crunch of one of those under my axe. Time for a fight!"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "You’ve fought orcs before?"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Fool boy! Where did you grow up? Enough of this, let’s go get some orcs!"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’re trapped in the pass! I can see their reinforcements! All is lost! Is that... Is that snow...? We’re doomed!"
+                image: "portraits/haldric-surprised.png"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 23
+            y: 38
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "scenery/signpost.png"
+-- wmllint: local spelling SE SW
+--wmllint: display on
+                message: _ "SE — The River Road.
+SW — The Midlands."
+--wmllint: display off
+                image: "wesnoth-icon.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 13
+            y: 7
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+-- wmllint: local spelling NUTTIN HEER
+                message: _ "GO HOME! AIN’T NUTTIN TO SEE HEER!"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    ESCAPE_VICTORY: () -> {
+        message: {
+            speaker: "Prince Haldric"
+            message: _ "Now, should I go southeast on the river road, or southwest through the midlands? The river road crosses the Swamp of Esten, so I doubt that even orcs would go there. The Midlands were nice, but who knows what’s going on there now."
+
+            option: {
+                label: _ "I think I’ll take the river road..."
+                command: ->
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "Good. The Midlands are probably an orc-infested ruin by now."
+                    }
+
+                    Message{
+                        speaker: "Burin the Lost"
+                        message: _ "<i>Swamp</i>?! I’m under five feet tall, and I don’t float! ... Argh, have it your way."
+                        image: "portraits/burin-annoyed.png"
+                    }
+                    VARIABLE("escape_choice", 1)
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                        next_scenario: "04a_The_Swamp_of_Esten"
+                    }
+                
+            }
+            option: {
+                label: _ "We’ll go through the Midlands..."
+                command: ->
+                    Message{
+                        speaker: "Lady Outlaw"
+                        message: _ "I suspect that the Midlands might be in ruins by now."
+                    }
+
+                    Message{
+                        speaker: "Burin the Lost"
+                        message: _ "It’s better than the swamp. I’m under five feet tall, and I don’t float! Besides, I’d rather enjoy meeting more orcs."
+                    }
+                    VARIABLE("escape_choice", 2)
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                        next_scenario: "04b_The_Midlands"
+                    }
+                
+            }
+        }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Tan-Schmog"
+        }
+        do: ->
+            LOOT(50, 1)
+
+            If{
+                have_unit: {
+                    id: "Tan-NauVong"
+                }
+
+                then: ->
+                    Gold{
+                        side: 3
+                        amount: ON_DIFFICULTY(60, 80, 90)
+                    }
+
+                    Message{
+                        speaker: "Tan-NauVong"
+                        message: _ "Come and get it!"
+                    }
+
+                    LOYAL_UNIT(3, "Orcish Slayer", 25, 40)
+                    LOYAL_UNIT(3, "Orcish Assassin", 24, 40)
+                    LOYAL_UNIT(3, "Orcish Assassin", 26, 40)
+
+                    Message{
+                        side: 3
+                        type: "Orcish Slayer"
+                        message: _ "Die, human."
+                    }
+
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Uh-oh!"
+                        image: "portraits/haldric-surprised.png"
+                    }
+                
+
+                else: ->
+                    ESCAPE_VICTORY!
+                
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Tan-NauVong"
+        }
+        do: ->
+            LOOT(50, 1)
+
+            If{
+                have_unit: {
+                    id: "Tan-Schmog"
+                }
+
+                then: ->
+                    Gold{
+                        side: 2
+                        amount: ON_DIFFICULTY(60, 80, 90)
+                    }
+
+                    Message{
+                        speaker: "Tan-Schmog"
+                        message: _ "I’ll not go so easily!"
+                    }
+
+                    LOYAL_UNIT(2, "Orcish Slayer", 25, 40)
+                    LOYAL_UNIT(2, "Orcish Assassin", 24, 40)
+                    LOYAL_UNIT(2, "Orcish Assassin", 26, 40)
+
+                    Message{
+                        side: 2
+                        type: "Orcish Slayer"
+                        message: _ "Die, human."
+                    }
+
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "Uh-oh!"
+                        image: "portraits/haldric-surprised.png"
+                    }
+                
+
+                else: ->
+                    ESCAPE_VICTORY!
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve escaped the pass. Well, at least I know that the orcs can be beaten. Hmm, I guess that this is the last I’ll see of my home... and my father. (<i>Sigh</i>)"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We should make our way to Southbay. It is the largest city on the Isle. We should be able to make a stand there. Failing that, there’s always Clearwater Port."
+            }
+    }
+}

@@ -1,0 +1,464 @@
+---- Change GENERATE_ANSWERS to 1 in the next line to generate the correct answers for the characterization test.
+---- The list of answers will appear in console when you run wesnoth, after debug: messages.
+---- Copy the lines to a text file ("foo") and use the following sed script to clean them,
+----
+---- sed -n 's/^.*: \([ [:digit:]]*\) ,/\1/p' <foo | tr '\n' ','
+----
+---- so you get a nice comma separated list. Then paste it in data/test/macros/pathfind_answers.cfg,
+---- and in this file change GENERATE_ANSWERS to 0 again.
+
+GENERATE_ANSWERS = () -> {
+    0
+}
+
+IF_GEN_ANS = (T, E) -> {
+    if: {
+        <VARIABLE_CONDITIONAL("GEN_ANS", "equals", 1)
+        then: ->
+            T
+        
+        else: ->
+            E
+        
+    }
+}
+
+SPLIT_COMMA_LIST = (LIST, VAR) -> {
+    set_variables: {
+        name: VAR
+        split: {
+            list: LIST
+            key: "val"
+            separator: ","
+            remove_empty: false
+        }
+    }
+}
+
+CHECK_ANSWER = (X) -> {
+    <IF_GEN_ANS({
+            <VARIABLE("observed_answer", Var(X))
+            wml_message: {
+                message: "#{observed_answer ,"
+                logger: "debug"
+                to_chat: false
+            }
+        },{
+            <VARIABLE("current_answer", answers[answer_counter].val)
+            <VARIABLE("observed_answer", Var(X))
+            wml_message: {
+                message: "#{current_answer , #{observed_answer"
+                logger: "debug"
+                to_chat: false
+            }
+            <ASSERT(VARIABLE_CONDITIONAL("observed_answer", "equals", current_answer))
+    })
+    <VARIABLE_OP("answer_counter", "add", 1)
+}
+
+INIT_ANSWERS = (LIST) -> {
+    <VARIABLE("answer_counter", 0)
+    <VARIABLE("answers_list", "#{#{LIST}}")
+    <SPLIT_COMMA_LIST(answers_list, "answers")
+
+    wml_message: {
+        message: "Parsed: #{answers.length} answers"
+        logger: "debug"
+        to_chat: false
+    }
+}
+
+TEST_PATHFIND = (SRC, DST) -> {
+    find_path: {
+        traveler: {
+            <SRC
+        }
+        destination: {
+            <DST
+        }
+        allow_multiple_turns: true
+        variable: "path"
+    }
+    <VARIABLE("nhexes", path.hexes)
+    <IF_VAR("nhexes", "equals", 0, {
+            then: ->
+--[wml_message]
+--    message="got no paths {SRC} {DST}"
+--    logger=error
+--    to_chat=false
+--[/wml_message]
+                CHECK_ANSWER("nhexes")
+            
+            else: ->
+                CHECK_ANSWER("path.movement_cost")
+--{CHECK_ANSWER path.required_turns} Comment this out -- there may be multiple shortest paths, so finding a different shortest path is okay.
+--{FOREACH path.steps step}
+--    {CHECK_ANSWER (path.steps[$step|].x)}
+--    {CHECK_ANSWER (path.steps[$step|].y)}
+--{NEXT step}
+            
+    })
+}
+
+TEST_NEXT_UNIT = (TEST_MACRO, DST) -> {
+    store_locations: {
+        <DST
+        variable: "tmp"
+    }
+    if: {
+        have_unit: {
+            <DST
+        }
+        then: ->
+            Wml_Message{
+                message: "Destination #{DST} was occupied!"
+                logger: "error"
+                to_chat: false
+            }
+        
+        else: ->
+            If{
+                <VARIABLE_CONDITIONAL("tmp.terrain", "contains", "X")
+                then: ->
+                    Wml_Message{
+                        message: "Destination #{DST} was impassable!"
+                        logger: "error"
+                        to_chat: false
+                    }
+                
+                else: ->
+                    VARIABLE("ID", units[unit_counter].id)
+                    EXEC(TEST_MACRO, {id: ID}, DST)
+                    VARIABLE_OP("unit_counter", "add", 1)
+                
+            }
+        
+    }
+}
+
+MAKE_TEST = (ID, MACRO, INIT_MACRO) -> {
+    test: {
+        name: "Unit Test #{ID}"
+        id: ID
+        is_unit_test: true
+        INCLUDE("test/maps/pathfind_1.cfg")
+
+        event: {
+            name: "side 1 turn 1"
+            first_time_only: true
+            do: ->
+                VARIABLE("GEN_ANS", GENERATE_ANSWERS!)
+                INIT_ANSWERS(INIT_MACRO)
+
+                Store_Unit{
+                    filter: {
+                    }
+                    variable: "units"
+                }
+                VARIABLE("unit_counter", 0)
+
+                Wml_Message{
+                    message: "#{units.length} units"
+                    logger: "debug"
+                    to_chat: false
+                }
+
+                TEST_NEXT_UNIT(MACRO, {x: 9, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 42, y: 16})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 33, y: 27})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 5})
+                TEST_NEXT_UNIT(MACRO, {x: 5, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 23, y: 15})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 39})
+                TEST_NEXT_UNIT(MACRO, {x: 31, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 12})
+                TEST_NEXT_UNIT(MACRO, {x: 18, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 16, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 39, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 36})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 19})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 6, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 1})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 6})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 4})
+                TEST_NEXT_UNIT(MACRO, {x: 9, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 42, y: 16})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 33, y: 27})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 5})
+                TEST_NEXT_UNIT(MACRO, {x: 5, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 23, y: 15})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 39})
+                TEST_NEXT_UNIT(MACRO, {x: 31, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 12})
+                TEST_NEXT_UNIT(MACRO, {x: 18, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 17})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 14})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 32, y: 3})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 36})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 19})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 6, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 1})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 6})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 4})
+                TEST_NEXT_UNIT(MACRO, {x: 9, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 42, y: 16})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 33, y: 27})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 5})
+                TEST_NEXT_UNIT(MACRO, {x: 5, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 23, y: 15})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 39})
+                TEST_NEXT_UNIT(MACRO, {x: 31, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 12})
+                TEST_NEXT_UNIT(MACRO, {x: 18, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 16, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 39, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 36})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 19})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 6, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 1})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 6})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 4})
+                TEST_NEXT_UNIT(MACRO, {x: 9, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 42, y: 16})
+                TEST_NEXT_UNIT(MACRO, {x: 10, y: 11})
+                TEST_NEXT_UNIT(MACRO, {x: 33, y: 27})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 5})
+                TEST_NEXT_UNIT(MACRO, {x: 5, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 23, y: 15})
+                TEST_NEXT_UNIT(MACRO, {x: 3, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 39})
+                TEST_NEXT_UNIT(MACRO, {x: 31, y: 23})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 9})
+                TEST_NEXT_UNIT(MACRO, {x: 12, y: 8})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 12})
+                TEST_NEXT_UNIT(MACRO, {x: 18, y: 32})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 24, y: 17})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 34, y: 14})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 28})
+                TEST_NEXT_UNIT(MACRO, {x: 19, y: 2})
+                TEST_NEXT_UNIT(MACRO, {x: 32, y: 3})
+                TEST_NEXT_UNIT(MACRO, {x: 35, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 36})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 19})
+                TEST_NEXT_UNIT(MACRO, {x: 25, y: 24})
+                TEST_NEXT_UNIT(MACRO, {x: 26, y: 7})
+                TEST_NEXT_UNIT(MACRO, {x: 2, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 14, y: 34})
+                TEST_NEXT_UNIT(MACRO, {x: 16, y: 18})
+                TEST_NEXT_UNIT(MACRO, {x: 39, y: 42})
+                TEST_NEXT_UNIT(MACRO, {x: 1, y: 32})
+
+                Wml_Message{
+                    message: "#{answer_counter} answers made"
+                    logger: "debug"
+                    to_chat: false
+                }
+                VARIABLE("anslength", answers.length)
+                Wml_Message{
+                    message: "#{answers.length} anslength"
+                    logger: "debug"
+                    to_chat: false
+                }
+
+                IF_GEN_ANS({
+                        <ASSERT(VARIABLE_CONDITIONAL("answer_counter", "equals", anslength))
+                        wml_message: {
+                            message: "unit counter = #{unit_counter"
+                            logger: "debug"
+                            to_chat: false
+                        }
+                        <VARIABLE("temp", units.length)
+                        wml_message: {
+                            message: "units.length = #{units.length"
+                            logger: "debug"
+                            to_chat: false
+                        }
+            },{})
+        }
+        event: {
+            name: "side 1 turn refresh"
+            do: ->
+                SUCCEED!
+        }
+    }
+}
+
+MAKE_TEST("characterize_pathfinding_one", "TEST_PATHFIND", "GENERATED_FIND_PATH_ANSWERS")
+
+MAKE_TEST_INIT_ONLY = (ID, MACRO, INIT_MACRO) -> {
+    test: {
+        name: "Unit Test #{ID}"
+        id: ID
+        is_unit_test: true
+        INCLUDE("test/maps/pathfind_1.cfg")
+
+        event: {
+            name: "side 1 turn 1"
+            first_time_only: true
+            do: ->
+                VARIABLE("GEN_ANS", GENERATE_ANSWERS!)
+                INIT_ANSWERS(INIT_MACRO)
+        }
+    }
+}
+
+MAKE_TEST_INIT_ONLY("characterize_pathfinding_init", "TEST_PATHFIND", "GENERATED_FIND_PATH_ANSWERS")
+
+---- Reach test goes below here ---
+
+TEST_PATHREACH = (SRC, DST) -> {
+    store_reachable_locations: {
+        filter: {
+            <SRC
+        }
+        variable: "r"
+    }
+    <VARIABLE("nlocs", r.length)
+    <CHECK_ANSWER("nlocs")
+    <FOREACH("r", "i")
+    <CHECK_ANSWER("r[i].x")
+    <CHECK_ANSWER("r[i].y")
+    <NEXT("i")
+}
+
+MAKE_SHORT_TEST = (ID, MACRO, INIT_MACRO, INIT_COUNTER) -> {
+    test: {
+        name: "Unit Test #{ID}"
+        id: ID
+        is_unit_test: true
+        INCLUDE("test/maps/pathfind_1.cfg")
+
+        event: {
+            name: "side 1 turn 1"
+            first_time_only: true
+            do: ->
+                VARIABLE("GEN_ANS", GENERATE_ANSWERS!)
+                INIT_ANSWERS(INIT_MACRO)
+
+                Store_Unit{
+                    filter: {
+                    }
+                    variable: "units"
+                }
+                VARIABLE("unit_counter", INIT_COUNTER)
+
+                Wml_Message{
+                    message: "#{units.length} units"
+                    logger: "debug"
+                    to_chat: false
+                }
+
+                REPEAT(15, {
+                        <TEST_NEXT_UNIT(MACRO, {x: 8, y: 8}) ---- The second argument is ignored for all {MACRO} that we will use this macro with.
+                })
+
+                Wml_Message{
+                    message: "#{answer_counter} answers made"
+                    logger: "debug"
+                    to_chat: false
+                }
+                VARIABLE("anslength", answers.length)
+                Wml_Message{
+                    message: "#{answers.length} anslength"
+                    logger: "debug"
+                    to_chat: false
+                }
+
+                IF_GEN_ANS({
+                        wml_message: {
+                            message: "unit counter = #{unit_counter"
+                            logger: "debug"
+                            to_chat: false
+                        }
+                        <VARIABLE("temp", units.length)
+                        wml_message: {
+                            message: "units.length = #{units.length"
+                            logger: "debug"
+                            to_chat: false
+                        }
+            },{})
+                ASSERT(VARIABLE_CONDITIONAL("answer_counter", "equals", anslength))
+        }
+        event: {
+            name: "side 1 turn refresh"
+            do: ->
+                SUCCEED!
+        }
+    }
+}
+
+MAKE_SHORT_TEST("characterize_pathfinding_reach_1", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_1", 0)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_2", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_2", 20)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_3", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_3", 40)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_4", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_4", 60)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_5", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_5", 80)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_6", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_6", 100)
+MAKE_SHORT_TEST("characterize_pathfinding_reach_7", "TEST_PATHREACH", "GENERATED_REACHABILITY_ANSWERS_7", 120)

@@ -1,0 +1,1477 @@
+--textdomain wesnoth-utbs
+
+Scenario{
+    id: "12_The_Final_Confrontation"
+    name: _ "The Final Confrontation"
+    next_scenario: "13_Epilogue"
+
+    <UTBS_MAP("12_The_Final_Confrontation.map")
+
+    <STORY_THE_FINAL_CONFRONTATION!
+
+    <SCENARIO_MUSIC("the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("revelation.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+    victory_when_enemies_defeated: false
+    turns: "-1"
+
+    <UNDERGROUND!
+
+----------------------------------------------------------------------------------------------------------
+--                   Events table (stuff that can be triggered with 'fire')                              -
+----------------------------------------------------------------------------------------------------------
+-- eloh_death : causes the post-Eloh events to occur                                                     -
+-- create_minion : spawns one of Yechnagoth's minions                                                   -
+-- yechnagoth_regenerate : causes Yechnagoth to fully heal                                               -
+-- yechnagoth_special_attack : trigger Yechnagoth's special slowing attack                               -
+-- yechnagoth_vulnerate : vulnerates Yechnagoth                                                          -
+-- yechnagoth_death : triggers Yechnagoth's death event                                                  -
+----------------------------------------------------------------------------------------------------------
+
+-- Side 1: elves
+    side: {
+        side: 1
+        id: "Kaleh"
+        type: "Desert Fighter"
+        canrecruit: true
+        gold: 0
+        <NO_INCOME!
+        controller: "human"
+        shroud: false
+        fog: false
+        <FLAG_VARIANT("long")
+        user_team_name: _ "team_name^Quenoth Elves"
+    }
+
+-- Side 2: Eloh
+    side: {
+        side: 2
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        team_name: "eloh"
+        user_team_name: _ "Eloh"
+        <FLAG_VARIANT("undead")
+        ai: {
+            aggression: 0.95
+            caution: 0.1
+
+-- change AI so that enemies target Kaleh's friends
+-- more than Kaleh himself. I want to threaten
+-- other units more, since Kaleh's death leads to
+-- immediate defeat
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Kaleh"
+                }
+                value: 1
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Nym"
+                }
+                value: 3
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Zhul"
+                }
+                value: 3
+            }
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: ally_name
+                }
+                value: 3
+            }
+        }
+    }
+
+-- Side 3: Brainwashed Elves
+    side: {
+        side: 3
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        team_name: "eloh"
+        user_team_name: _ "Eloh"
+
+        ai: {
+            aggression: 0.95
+            caution: 0.1
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Kaleh"
+                }
+                value: 1
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Nym"
+                }
+                value: 3
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Zhul"
+                }
+                value: 3
+            }
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: ally_name
+                }
+                value: 3
+            }
+        }
+        <FLAG_VARIANT("long")
+    }
+
+-- Side 4: Pulsing Spires
+    side: {
+        side: 4
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        team_name: "eloh"
+        user_team_name: _ "Eloh"
+        <FLAG_VARIANT("undead")
+
+        ai: {
+            aggression: -1.0
+            caution: 1.0
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Kaleh"
+                }
+                value: 1
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Nym"
+                }
+                value: 3
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Zhul"
+                }
+                value: 3
+            }
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: ally_name
+                }
+                value: 3
+            }
+        }
+    }
+
+-- Prestart functions:
+-- insert items onto map
+-- place item images on map
+-- recall main heroes
+-- store/remove kaleh
+-- initialize starting variables
+-- set starting scenario objectives
+
+    event: {
+        name: "prestart"
+
+-- add items to map
+        do: ->
+            PLACE_IMAGE("items/kaleh-dead.png", 10, 13)
+
+-- recall heroes
+            Recall{
+                id: "Nym"
+                x: 10, y: 16
+            }
+
+            Recall{
+                id: "Zhul"
+                x: 11, y: 17
+            }
+-- wmllint: unwho ALL
+
+-- recall dwarf/troll
+            Recall{
+                id: ally_name
+                x: 9, y: 17
+            }
+
+-- wmllint: recognize Grog
+-- wmllint: recognize Nog
+-- wmllint: recognize Rogrimir
+-- wmllint: recognize Jarl
+
+-- store/remove kaleh
+
+            Store_Unit{
+                filter: {
+                    id: "Kaleh"
+                }
+                kill: true
+                variable: "stored_kaleh"
+            }
+
+--initialize starting variables
+
+            VARIABLE("allies_killed", 0)
+            VARIABLE("ally_died_in_final_fight", false)
+            VARIABLE("number_minions_to_spawn", 0)
+
+-- set starting scenario objectives
+
+            Objectives{
+                summary: _ "Starting Objectives:"
+                objective: {
+                    description: _ "Defeat the false Eloh"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kaleh"
+                    condition: "lose"
+                }
+
+                <IS_LAST_SCENARIO!
+            }
+    }
+
+-- Event 1: Starting dialogue
+
+    event: {
+        name: "start"
+
+        scroll_to: {
+            x: 10, y: 13
+        }
+        do: ->
+            Redraw{
+            }
+
+            Delay{
+                time: 750
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "Kaleh! No!"
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 500
+            }
+
+-- Nym runs to Kaleh's side
+
+            MOVE_UNIT({id: "Nym"}, 10, 14)
+
+            Delay{
+                time: 300
+            }
+
+-- Zhul runs to Kaleh's side
+
+            MOVE_UNIT({id: "Zhul"}, 11, 14)
+
+            Message{
+                speaker: "Zhul"
+                message: _ "He’s still breathing. Eloh, what grace I have, give unto him."
+            }
+
+            Delay{
+                time: 300
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "He’s stirring."
+            }
+
+-- Ally runs to Kaleh's side
+
+            MOVE_UNIT({id: ally_name}, 9, 14)
+
+            Delay{
+                time: 300
+            }
+
+            If{
+                variable: {
+                    name: "ally_race"
+                    equals: "dwarf"
+                }
+
+                then: ->
+                    Message{
+                        speaker: ally_name
+                        message: _ "Aye, there’s still life in the boy. But where is the foul creature that did this to him?"
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: ally_name
+                        message: _ "The little one is not dead yet. But where is evil lady that did this to him?"
+                    }
+                
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 300
+            }
+
+            Unit{
+                type: "Divine Incarnation"
+                id: "Eloh"
+                name: _ "Eloh"
+                profile: "portraits/eloh.png"
+                x: 10, y: 11
+                upkeep: "free"
+                side: 2
+                modifications: {
+                    <TRAIT_INTELLIGENT!
+                    <TRAIT_QUICK!
+                }
+            }
+
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Eloh"
+                message: _ "So, the elf’s puny friends think they can save him. But you are too late. He is already mine!"
+            }
+
+            Remove_Item{
+                x: 10, y: 13
+            }
+
+            VARIABLE_OP("stored_kaleh.hitpoints", "sub", 10)
+            VARIABLE("stored_kaleh.facing", "n")
+
+            Unstore_Unit{
+                variable: "stored_kaleh"
+                find_vacant: true
+            }
+
+            If{
+                have_unit: {
+                    id: ally_name
+                }
+
+                then: ->
+                    MESSAGE_DEPEND_ON_ALLY!
+                        {
+                            message: {
+                                speaker: "Kaleh"
+                                message: _ "Nym, Zhul, Grog, you shouldn’t have."
+                            }
+                        }
+                        {
+                            message: {
+                                speaker: "Kaleh"
+                                message: _ "Nym, Zhul, Nog, you shouldn’t have."
+                            }
+                        }
+                        {
+                            message: {
+                                speaker: "Kaleh"
+                                message: _ "Nym, Zhul, Rogrimir, you shouldn’t have."
+                            }
+                        }
+
+                        {
+                            message: {
+                                speaker: "Kaleh"
+                                message: _ "Nym, Zhul, Jarl, you shouldn’t have."
+                            }
+                    })
+                
+
+                else: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Nym, Zhul, you shouldn’t have."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Eloh"
+                message: _ "Your struggles were mildly entertaining, but futile in the end. For I am powerful beyond your imagining, and this is the seat of my power!"
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "You are not Eloh. You are but a pitiful mockery of her power and glory!"
+            }
+
+            Message{
+                speaker: "Eloh"
+                message: _ "Is that what you think? I shall prove you wrong. Look out upon your people and despair!"
+            }
+
+            Move_Unit_Fake{
+                type: "Desert Fighter"
+                side: 3
+                x: {9, 8}
+                y: {20, 16}
+            }
+
+            Unit{
+                type: "Desert Fighter"
+                id: "Anarion"
+                name: _ "Anarion"
+                x: 8
+                y: 16
+                side: 3
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_STRONG!
+                }
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 100
+            }
+
+            Move_Unit_Fake{
+                type: "Desert Archer"
+                side: 3
+                x: {11, 12}
+                y: {20, 16}
+            }
+
+            Unit{
+                type: "Desert Archer"
+                id: "Zylea"
+                name: _ "Zylea"
+                x: 12
+                y: 16
+                side: 3
+                modifications: {
+                    <TRAIT_DEXTROUS!
+                    <TRAIT_RESILIENT!
+                }
+            }
+
+            Message{
+                speaker: "Anarion"
+                message: _ "All hail Eloh!"
+            }
+
+            Message{
+                speaker: "Zylea"
+                message: _ "Death to the heretics!"
+            }
+
+            Message{
+                speaker: "Eloh"
+                message: _ "They worship their true god."
+            }
+
+            Message{
+                speaker: "Eloh"
+                message: _ "Come and bow down before your true master, boy."
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Your wish is my command."
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 300
+            }
+
+-- Kaleh moves over to Eloh
+
+            MOVE_UNIT({id: "Kaleh"}, 10, 12)
+
+            Harm_Unit{
+                filter: {
+                    id: "Eloh"
+                }
+
+                filter_second: {
+                    id: "Kaleh"
+                }
+
+                primary_attack: {
+                    name: "sword"
+                }
+                animate: true
+-- Do damage according to Kaleh's first, sword attack
+                amount: stored_kaleh.attack[1].damage
+                alignment: "lawful"
+                damage_type: "blade"
+            }
+
+            CLEAR_VARIABLE("stored_kaleh")
+
+            Redraw{
+            }
+
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Eloh"
+                image: "portraits/eloh_rage.png"
+                message: _ "Argh, you stabbed me!"
+            }
+
+            Message{
+                speaker: "Kaleh"
+-- wmllint: local spelling Kalehssar
+                message: _ "I have crossed deserts, mountains, and oceans and watched my people bleed every step of the way. I did not come all this way to give up now. I am tired of being called boy; I am Kalehssar, the leader of my people and I will fight you until my dying breath!"
+            }
+
+            Message{
+                speaker: "Eloh"
+                image: "portraits/eloh_rage.png"
+                message: _ "I command you to stop this foolishness!"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Never!"
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "The shell brooches Melusand gave us, they’re glowing!"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "You will never dominate us, not while hope survives!"
+            }
+
+            Message{
+                speaker: "Eloh"
+                image: "portraits/eloh_rage.png"
+                message: _ "So be it. You choose death? Then you shall receive it from those you hold most dear. Kill the unbelievers, let none survive!"
+            }
+
+            Message{
+                speaker: "Anarion"
+                message: _ "Yes mistress."
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Ignore our brethren, we must destroy her!"
+            }
+    }
+
+-- Create an alien minion
+    event: {
+        name: "create_minion"
+        first_time_only: false
+        do: ->
+            SCATTER_UNITS(1, "Crawling Horror", 0, {
+                    x: "6-14"
+                    y: "7-14"
+                    terrain: {"Rr", "Uu"}
+
+                    not: {
+                        filter: {
+                        }
+                    }
+                },{
+                    side: 2
+                    upkeep: "free"
+            })
+    }
+
+-- Event 1: The Death of Eloh and the revealing of the true monster
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Eloh"
+        }
+        do: ->
+            Fire_Event{
+                name: "eloh_death"
+            }
+    }
+
+    event: {
+        name: "eloh_death"
+        do: ->
+            Message{
+                speaker: "Eloh"
+                image: "portraits/eloh_rage.png"
+                message: _ "You think you killed me? You have no idea what you are facing."
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "Who is she really? Could it be Zhangor, back to avenge his imprisonment?"
+            }
+
+            Message{
+                speaker: "Eloh"
+                image: "portraits/eloh_rage.png"
+                message: _ "Nonsense. Unlike that fool, I do not care about petty things like revenge. Nor do I depend on mortals to enact my will. No, I shall destroy you myself!"
+            }
+
+            Kill{
+                id: "Eloh"
+                animate: false
+                fire_event: false
+            }
+
+            Modify_Unit{
+                filter: {
+                    side: 3
+                }
+                side: 1
+            }
+
+            Message{
+                type: {"Desert Fighter", "Desert Archer"}
+                message: _ "Huh? What happened?"
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "Her spell has been broken. But I don’t think we have won yet. Come aid us!"
+            }
+
+            Message{
+                type: {"Desert Fighter", "Desert Archer"}
+                message: _ "Yes priestess."
+            }
+
+            Scroll{
+                x: 25
+            }
+            Scroll{
+                x: -25
+            }
+            Scroll{
+                x: 25
+            }
+            Scroll{
+                x: -25
+            }
+            Scroll{
+                x: 25
+            }
+            Scroll{
+                x: -25
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Color_Adjust{
+                red: 40, green: 0, blue: 100
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 250
+            }
+
+            Color_Adjust{
+                red: 0, green: 0, blue: 0
+            }
+
+            Redraw{
+            }
+
+-- main body appears
+
+            Terrain{
+                terrain: "Urb" -- wmllint: ignore
+                x: 10, y: 10
+            }
+
+-- create main body unit here
+
+            Unit{
+                type: "Central Body"
+                id: "Yechnagoth"
+                name: _ "Yechnagoth"
+                side: 2
+                x: 10, y: 10
+            }
+
+-- add roots around central body
+
+--{PLACE_IMAGE scenery/castle-ruins.png 9 11}
+--{PLACE_IMAGE scenery/castle-ruins.png 10 11}
+--{PLACE_IMAGE scenery/castle-ruins.png 11 11}
+--{PLACE_IMAGE scenery/castle-ruins.png 9 10}
+--{PLACE_IMAGE scenery/castle-ruins.png 10 9}
+--{PLACE_IMAGE scenery/castle-ruins.png 11 10}
+
+-- Pulsing Spires appear
+
+            RANDOM("0..1")
+
+            If{
+                variable: {
+                    name: "random"
+                    numerical_equals: 1
+                }
+
+                then: ->
+                    Terrain{
+                        terrain: "Uu"
+                        x: {8, 8, 14}
+                        y: {7, 13, 10}
+                    }
+
+-- create Pulsing Spires at:
+-- (8,7) (8,13) (14,10)
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 8, y: 7
+                    }
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 8, y: 13
+                    }
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 14, y: 10
+                    }
+                
+
+                else: ->
+                    Terrain{
+                        terrain: "Uu"
+                        x: {6, 12, 12}
+                        y: {10, 7, 13}
+                    }
+
+-- create Pulsing Spires at:
+-- (6,10) (12,7) (12,13)
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 6, y: 10
+                    }
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 12, y: 7
+                    }
+
+                    Unit{
+                        type: "Pulsing Spire"
+                        side: 4
+                        x: 12, y: 13
+                    }
+                
+            }
+
+            Redraw{
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "What is that thing?!"
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "Eloh protect us!"
+            }
+
+            Color_Adjust{
+                red: 33, green: 181, blue: 140
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 250
+            }
+
+            Color_Adjust{
+                red: 0, green: 0, blue: 0
+            }
+
+            Redraw{
+            }
+
+-- create 3 bugs
+            Fire_Event{
+                name: "create_minion"
+            }
+            Fire_Event{
+                name: "create_minion"
+            }
+            Fire_Event{
+                name: "create_minion"
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "Curse Uria, more abominations!"
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "Is it even possible to kill this thing? It’s huge!"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "It must have some sort of weak point. Look at those pulsing spires, I thought they were stone, but they seem to be alive. Maybe if we destroy them it will weaken the creature. No matter what horrors appear, we must keep attacking it. We can’t stop now!"
+            }
+
+            Objectives{
+                summary: _ "New Objectives:"
+                objective: {
+                    description: _ "Defeat Yechnagoth"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kaleh"
+                    condition: "lose"
+                }
+
+                <IS_LAST_SCENARIO!
+            }
+
+-- Start spawning minions, increasing the number each turn.
+            VARIABLE("number_minions_to_spawn", 1)
+            Event{
+                name: "turn #{(#{turn_number+#{ON_DIFFICULTY 2 2 1})"
+                delayed_variable_substitution: false
+                do: ->
+                    VARIABLE("number_minions_to_spawn", 2)
+            }
+            Event{
+                name: "turn #{(#{turn_number+#{ON_DIFFICULTY 4 3 3})"
+                delayed_variable_substitution: false
+                do: ->
+                    VARIABLE("number_minions_to_spawn", 3)
+            }
+            Event{
+                name: "turn #{(#{turn_number+#{ON_DIFFICULTY 6 5 5})"
+                delayed_variable_substitution: false
+                do: ->
+                    VARIABLE("number_minions_to_spawn", 4)
+            }
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        filter_condition: {
+            have_unit: {
+                id: "Yechnagoth"
+            }
+        }
+        do: ->
+            VARIABLE("helper_level", 4)
+            While{
+                variable: {
+                    name: "helper_level"
+                    greater_than: 0
+                }
+                variable: {
+                    name: "possible_helpers.length"
+                    equals: 0
+                }
+                do: ->
+                    Store_Unit{
+                        filter: {
+                            side: 1
+                            level: helper_level
+                            x: "recall", y: "recall"
+                        }
+
+                        kill: false
+                        variable: "possible_helpers"
+                    }
+                    VARIABLE_OP("helper_level", "sub", 1)
+                
+            }
+            CLEAR_VARIABLE("helper_level")
+
+            If{
+                variable: {
+                    name: "possible_helpers.length"
+                    greater_than: 0
+                }
+
+                then: ->
+                    VARIABLE_OP("random_helper_i", "rand", "1..#{possible_helpers.length")
+                    VARIABLE_OP("random_helper_i", "sub", 1)
+
+                    Move_Unit_Fake{
+                        type: possible_helpers[random_helper_i].type
+                        side: 1
+                        x: {10, 10}
+                        y: {20, 18}
+                    }
+
+                    Recall{
+                        id: possible_helpers[random_helper_i].id
+                        x: 10, y: 18
+                        show: false
+                    }
+
+                    CLEAR_VARIABLE("random_helper_i")
+                
+            }
+            CLEAR_VARIABLE("possible_helpers")
+    }
+
+-- Event 2: New minions are created each turn
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        repeat: {
+            times: number_minions_to_spawn
+            do: ->
+                Fire_Event{
+                    name: "create_minion"
+                }
+            
+        }
+    }
+
+-- Event 3: Central Body heals fully each turn
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        filter_condition: {
+            have_unit: {
+                type: "Central Body"
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "yechnagoth_regenerate"
+            }
+    }
+
+    event: {
+        name: "yechnagoth_regenerate"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    type: "Central Body"
+                }
+                variable: "stored_alien"
+            }
+
+            Set_Variable{
+                name: "temp"
+                value: stored_alien.hitpoints
+            }
+
+            Modify_Unit{
+                filter: {
+                    type: "Central Body"
+                }
+                hitpoints: this_unit.max_hitpoints
+            }
+
+            If{
+                variable: {
+                    name: "temp"
+                    less_than: stored_alien.max_hitpoints
+                }
+
+                then: ->
+                    Fire_Event{
+                        name: "invulnerable_comment"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE({"temp", "stored_alien"})
+    }
+
+    event: {
+        name: "invulnerable_comment"
+        do: ->
+            Message{
+                speaker: "Kaleh"
+                message: _ "That central body is healing faster than we can damage it. It’s almost as if our attacks are doing no damage at all. We got to try another tactic, and fast!"
+            }
+    }
+
+-- Event 4: Special attack by Central Body each turn
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        filter_condition: {
+            have_unit: {
+                id: "Yechnagoth"
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "yechnagoth_special_attack"
+            }
+    }
+
+    event: {
+        name: "yechnagoth_special_attack"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    side: 1
+                    <EVERYWHERE!
+                }
+
+                kill: false
+                variable: "elf_list"
+            }
+
+            VARIABLE_OP("victim_i", "rand", "1..#{elf_list.length")
+            VARIABLE_OP("victim_i", "sub", 1)
+
+            VARIABLE("victim_id", elf_list[victim_i].id)
+            CLEAR_VARIABLE({"elf_list", "victim_i"})
+
+--used to be 140,255,247
+
+            Color_Adjust{
+                red: 40, green: 0, blue: 100
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 250
+            }
+
+            Color_Adjust{
+                red: 0, green: 0, blue: 0
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 100
+            }
+
+-- Add two effects slow unit and damage it
+-- 1: do damage to unit (8/9/10 based on difficulty?-stops healing)
+-- 2: slow unit
+            Sound{
+                name: "squishy-strike.wav"
+            }
+
+            Harm_Unit{
+                filter: {
+                    id: victim_id
+                }
+
+                amount: ON_DIFFICULTY(10, 11, 12)
+                alignment: "chaotic"
+                damage_type: "fire"
+                kill: true
+                slowed: true
+            }
+
+            If{
+                variable: {
+                    name: "hit_by_special_attack"
+                    not_equals: true
+                }
+
+                then: ->
+                    VARIABLE("hit_by_special_attack", true)
+
+                    Message{
+                        speaker: victim_id
+                        message: _ "What the heck? That central creature just hit me with some sort of slime. It hurts and I— I’m stuck!"
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: victim_id
+                        message: _ "Ow, I’m stuck!"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("victim_id")
+    }
+
+-- Event 5: When player destroys all 3 Pulsing Spires, Central Body is weakened
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            type: "Pulsing Spire"
+        }
+
+        filter_condition: {
+            have_unit: {
+                type: "Pulsing Spire"
+                count: 0
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "yechnagoth_vulnerate"
+            }
+    }
+
+    event: {
+        name: "yechnagoth_vulnerate"
+
+-- when all 3 spires are destroyed, weaken main body
+        do: ->
+            Kill{
+                type: "Pulsing Spire"
+                fire_event: false
+                animate: false
+            }
+
+            Scroll{
+                x: 20
+            }
+            Scroll{
+                x: -20
+            }
+            Scroll{
+                x: 20
+            }
+            Scroll{
+                x: -20
+            }
+            Scroll{
+                x: 20
+            }
+            Scroll{
+                x: -20
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "<big><b>Aaaurrgghh!!</b></big>"
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios_old/12_The_Final_Confrontation.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1234:             image= # wmllint: no-icon
+            }
+
+            Kill{
+                type: "Central Body"
+                animate: false
+                fire_event: false
+            }
+
+            Unit{
+                type: "Central Body2"
+                id: "Yechnagoth"
+                name: _ "Yechnagoth"
+                side: 2
+                x: 10, y: 10
+            }
+
+            Redraw{
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "I think we’re finally doing some damage. We must attack the central body, while it remains vulnerable!"
+            }
+    }
+
+-- Event 6: Death of weakened Central Body
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            type: "Central Body2"
+        }
+
+-- shake cavern
+
+        scroll: {
+            x: 40
+        }
+        scroll: {
+            x: -40
+        }
+        scroll: {
+            x: 40
+        }
+        scroll: {
+            x: -40
+        }
+        scroll: {
+            x: 40
+        }
+        scroll: {
+            x: -40
+        }
+
+-- flash dark blue, light blue, very light blue,
+
+-- dark blue
+        do: ->
+            Color_Adjust{
+                red: 40, green: 0, blue: 100
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 300
+            }
+
+--light blue
+
+            Color_Adjust{
+                red: 33, green: 181, blue: 140
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 300
+            }
+
+-- very light blue
+
+            Color_Adjust{
+                red: 140, green: 255, blue: 247
+            }
+
+            Redraw{
+            }
+
+            Delay{
+                time: 300
+            }
+
+-- back to normal
+
+            Color_Adjust{
+                red: 0, green: 0, blue: 0
+            }
+
+            Redraw{
+            }
+    }
+
+    event: {
+        name: "die"
+
+        filter: {
+            type: "Central Body2"
+        }
+        do: ->
+            Fire_Event{
+                name: "yechnagoth_death"
+            }
+    }
+
+    event: {
+        name: "yechnagoth_death"
+
+-- have a minion scream
+        do: ->
+            Message{
+                type: "Crawling Horror"
+                message: _ "Aiiee!!"    -- wmllint: no spellcheck
+            }
+
+            Redraw{
+            }
+
+-- kill minions
+
+            Kill{
+                type: {"Crawling Horror", "Pulsing Spire"}
+                animate: true
+                fire_event: false
+            }
+
+            Redraw{
+            }
+
+-- wait
+            Delay{
+                time: 2500
+            }
+
+--ending conversation
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "At last. It is finished."
+            }
+
+            If{
+                have_unit: {
+                    id: "Nym"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Is Yechnagoth really dead?"
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Yes, she’s dead Nym."
+                    }
+
+                    Message{
+                        speaker: "Nym"
+                        message: _ "I almost can’t believe it."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "Behold, the pretender has been defeated. Eloh’s might has prevailed."
+            }
+
+            MESSAGE_DEPEND_ON_ALLY!
+                {
+                    message: {
+                        speaker: "Grog"
+                        message: _ "Ugh. Grog is covered in blood and guts and nasty blue goo. Whatever creature was, she doesn’t smell any better dead than she did alive."
+                    }
+                }
+                {
+                    message: {
+                        speaker: "Nog"
+                        message: _ "Ugh. Nog is covered in blood and guts and nasty blue goo. Whatever creature was, she doesn’t smell any better dead than she did alive."
+                    }
+                }
+                {
+                    message: {
+                        speaker: "Rogrimir"
+                        message: _ "Ugh. I’m covered in blood and guts, and this nasty blue stuff. I don’t know what in the nine hells we were fighting, but she doesn’t smell any better dead than she did alive."
+                    }
+                }
+                {
+                    message: {
+                        speaker: "Jarl"
+                        message: _ "Ugh. I’m covered in blood and guts, and this nasty blue stuff. I don’t know what in the nine hells we were fighting, but she doesn’t smell any better dead than she did alive."
+                    }
+            })
+
+            If{
+                have_unit: {
+                    id: {"Nym", "Zhul", ally_name}
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Let’s get out of here."
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("number_minions_to_spawn")
+            CLEAR_VARIABLE("hit_by_special_attack")
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                carryover_report: false
+                linger_mode: false
+                <NEW_GOLD_CARRYOVER(0)
+            }
+    }
+
+    UTBS_IN_FINAL_FIGHT: () -> {
+        }true
+        <UTBS_INCLUDE("utils/deaths.cfg")
+        UTBS_IN_FINAL_FIGHT = nil
+    }

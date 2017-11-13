@@ -1,0 +1,78 @@
+--textdomain wesnoth-utbs
+-- add the events for Kaleh abilities
+
+-- the stun attack
+WEAPON_SPECIAL_STUN_EVENTS = () -> {
+    event: {
+        name: "attacker_hits"
+        first_time_only: false
+
+        filter_attack: {
+            special: "stun"
+        }
+
+        filter_second: {
+            not: {
+                level: 0
+                or: {
+                    status: "stunned"
+                }
+            }
+        }
+        do: ->
+            VARIABLE("second_unit.status.stunned", true)
+
+            Unstore_Unit{
+                variable: "second_unit"
+                find_vacant: false
+                text: _ "stunned"
+                female_text: _ "female^stunned"
+                red: 196, green: 196, blue: 128
+            }
+
+            Object{
+                silent: true
+                duration: "turn end"
+
+                filter: {
+                    x: x2, y: y2
+                }
+
+                effect: {
+                    apply_to: "image_mod"
+                    replace: "CS(50,50,0)"
+                }
+
+                effect: {
+                    apply_to: "zoc"
+                    value: false
+                }
+            }
+    }
+
+    event: {
+        name: "side turn end"
+        first_time_only: false
+        do: ->
+            Store_Unit{
+                filter: {
+                    side: side_number
+                    status: "stunned"
+                }
+                variable: "stunned"
+            }
+
+            Foreach{
+                array: "stunned"
+                do: ->
+                    CLEAR_VARIABLE("this_item.status.stunned")
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("stunned")
+    }
+}

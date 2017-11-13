@@ -1,0 +1,957 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "19c_Cliffs_of_Thoria"
+    name: _ "The Cliffs of Thoria"
+    map: "campaigns/Heir_To_The_Throne/maps/19c_Cliffs_of_Thoria.map"
+    <TURNS(55, 50, 45)
+
+    next_scenario: "20b_Underground_Channels"
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE_AFTERNOON!
+
+    <SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+    <EXTRA_SCENARIO_MUSIC("northern_mountains.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+
+    <HTTT_TRACK(JOURNEY_19C_NEW!)
+
+    <PLACE_IMAGE("items/gohere.png", 55, 3)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 43, 5)
+    <PLACE_IMAGE("scenery/wreck-3.png", 46, 13)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 5, 8)
+    <PLACE_IMAGE("scenery/wreck-3.png", 44, 17)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 52, 18)
+    <PLACE_IMAGE("scenery/wreck-2.png", 21, 12)
+    <PLACE_IMAGE("scenery/wreck.png", 25, 5)
+    <PLACE_IMAGE("scenery/wreck.png", 3, 4)
+    <PLACE_IMAGE("scenery/wreck-2.png", 8, 13)
+    <PLACE_IMAGE("scenery/wreck.png", 17, 8)
+    <PLACE_IMAGE("scenery/wreck-3.png", 12, 8)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 14, 12)
+    <PLACE_IMAGE("scenery/wreck.png", 48, 6)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 51, 4)
+    <PLACE_IMAGE("scenery/wreck.png", 48, 19)
+    <PLACE_IMAGE("scenery/wreck.png", 48, 6)
+    <PLACE_IMAGE("scenery/wreck-2.png", 21, 6)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 13, 3)
+    <PLACE_IMAGE("scenery/wreck.png", 18, 13)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 39, 2)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 40, 16)
+    <PLACE_IMAGE("scenery/wreck.png", 39, 13)
+    <PLACE_IMAGE("scenery/wreck-2.png", 32, 2)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 42, 10)
+    <PLACE_IMAGE("scenery/wreck-2.png", 33, 14)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 26, 8)
+    <PLACE_IMAGE("scenery/wreck.png", 33, 14)
+    <PLACE_IMAGE("scenery/wreck-3.png", 40, 7)
+    <PLACE_IMAGE("scenery/wreck.png", 29, 10)
+    <PLACE_IMAGE("scenery/wreck-2.png", 32, 6)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 24, 15)
+    <PLACE_IMAGE("scenery/shipwreck-1.png", 35, 9)
+
+    <WATERFALL_MASK(55, 1)
+    <WATERFALL_MASK(55, 2)
+    <WATERFALL_MASK(55, 3)
+    <WATERFALL_MASK(55, 4)
+    <WATERFALL_MASK(55, 5)
+    <WATERFALL_MASK(54, 1)
+    <WATERFALL_MASK(54, 2)
+    <WATERFALL_MASK(54, 3)
+    <WATERFALL_MASK(54, 4)
+    <WATERFALL_MASK(54, 5)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    show_if: {
+                        not: {
+                            <CHECK_VARIABLE("waterfall_sighted", true)
+                        }
+                    }
+                    description: _ "Make it to the end of the river"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        <CHECK_VARIABLE("waterfall_sighted", true)
+                    }
+                    description: _ "Reach the cave"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        <CHECK_VARIABLE("sergeant_sighted", true)
+                    }
+                    <BONUS_OBJECTIVE_CAPTION!
+                    description: _ "Rescue the sergeant"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Li’sar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-human.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        gold: 250
+        fog: true
+        shroud: false
+        share_maps: false
+        share_view: false
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        side: 2
+        no_leader: true
+        controller: "ai"
+        canrecruit: false
+        ai: {
+            <ATTACK_DEPTH(5, 5, 6)
+            avoid: {
+                x: {"1-40", "14-19", "44-55", "41-43"}
+                y: {"15-22", "13-14", "11-22", "14-22"}
+            }
+            passive_leader: true
+        }
+        team_name: "drakes"
+        user_team_name: _ "Drakes"
+    }
+
+    side: {
+        side: 3
+        no_leader: true
+        controller: "ai"
+        canrecruit: false
+        hidden: true
+        ai: {
+            <ATTACK_DEPTH(5, 5, 6)
+            avoid: {
+                x: {"1-55", "1-44", "1-41"}
+                y: {"1-11", "12-13", "14-22"}
+            }
+        }
+        team_name: "monsters"
+        user_team_name: _ "Monsters"
+    }
+
+    side: {
+        side: 4
+        no_leader: true
+        controller: "ai"
+        hidden: true
+        canrecruit: false
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        fog: true
+        share_view: false
+    }
+
+    event: {
+        name: "prestart"
+-- For Home of the Northern Elves: where do we come from?
+-- the position where we are - impassable mountains, looking for a way out
+-- the sunk loyalist fleet with the flag of wesnoth
+-- the conversation with the drakes
+        do: ->
+            Set_Variable{
+                name: "A_Choice_Was_Made"
+                value: "c"
+            }
+            Role{
+                role: "merman-advisor"
+                type: "Merman Triton,Merman Hoplite,Merman Javelineer,Merman Entangler,Mermaid Diviner,Mermaid Siren," .. 
+                "Merman Warrior,Merman Spearman,Merman Netcaster,Mermaid Priestess,Mermaid Enchantress," .. 
+                "Merman Fighter,Merman Hunter,Mermaid Initiate"
+                reassign: false
+                auto_recall: {}
+                else: ->
+                    Unit{
+                        type: "Merman Fighter"
+                        role: "merman-advisor"
+                        placement: "leader"
+                    }
+                
+            }
+            NEED_DELFADOR({placement: "leader"})
+            NEED_KALENZ({placement: "leader"})
+            NEED_LISAR({placement: "leader"})
+
+            VARIABLE("sergeant_sighted", false)
+            VARIABLE("waterfall_sighted", false)
+            OBJ_TRIDENT_STORM(17, 11, "cot_stormtrident")
+            PLACE_IMAGE("items/gohere.png", 55, 3)
+            Unit{
+                type: "Injured Sergeant"
+                side: 4
+                x: 45
+                y: 16
+                id: "Warven"
+                name: _ "Warven"
+                hitpoints: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_FEARLESS!
+                }
+                <IS_LOYAL!
+                status: {
+                    poisoned: true
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "The party traveled down the river for days, sometimes walking through the shallow water, sometimes swimming, helped by the Merfolk."
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "One day they saw a gruesome sight — a fleet of boats and rafts sunk or shattered among the river islands. Konrad sent some of the mermen to investigate."
+            }
+            Message{
+                role: "merman-advisor"
+                message: _ "These are not proper ships, but shallow-draft boats built only recently; much of their timber is green. They were sunk in battle, not by a storm. Those that were not capsized have been burned. The battle must have taken place not long ago, perhaps only a few weeks past. We’ve found no survivors. One more thing...all flew the banner of the Crown of Wesnoth."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Haven’t you found any enemy boats, ones the Wesnothians were fighting against?"
+            }
+            Message{
+                role: "merman-advisor"
+                message: _ "No we have not. If there were any, they are long gone."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Perhaps the monsters Lord Kalenz alluded to sunk the boats."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "That is possible. I would guess they were seeking a way east, just as we are."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "What do we do next? How much more of the river do we still have to travel?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "The mountains north and south of the river are impassable."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Then we have only two choices: to proceed down the river or to go back where we came from and fight our way through the orcs or the undead."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "We certainly have no time to go back! We must hurry to the home of the North Elves, to meet with our elven allies."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Delfador is right. We must go on!"
+            }
+            Delay{
+                time: 1000
+            }
+            Move_Unit_Fake{
+                type: "Armageddon Drake"
+                x: {28, 4}
+                y: {9, 9}
+                side: 2
+            }
+            Unit{
+                type: "Armageddon Drake"
+                facing: "sw"
+                side: 2
+                x: 4
+                y: 9
+                canrecruit: true
+                id: "Keh Ohn"
+                name: _ "Keh Ohn"
+                ai_special: "guardian"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Oh my! A monster!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "A dragon! A big one!"
+            }
+            Message{
+                speaker: "Keh Ohn"
+-- wmllint: local spelling Keh Ohn
+                message: _ "I am Keh Ohn, leader of the drakes who have settled upon these cliffs. Who are you?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "A talking dragon?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I am beginning to understand why you were talking about monsters on our way here, Lord Kalenz."
+            }
+            Message{
+                role: "merman-advisor"
+                message: _ "With all due respect, Your Highnesses, you are both wrong. This is not a dragon. This is a drake."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Here? But, drakes have never been seen in Wesnoth before... Are you certain of this?"
+            }
+            Message{
+                role: "merman-advisor"
+-- po: Yes, "Eastern Shore" is correct. Mermen are water-oriented;
+-- po: it's the eastern shore of the Great Ocean.
+                message: _ "I was born in the Bay of Pearls and spent my entire life on the Eastern Shore. But I have spoken with those who have traveled the Western Ocean and met drakes on their journeys. Therefore, I am certain beyond doubt that the creature flying in front of us is a drake, Delfador. Concerning the drakes having never been seen in Wesnoth, must I remind you that we are not in Wesnoth anymore? There are many unthinkable things and creatures which can be found outside of Wesnoth."
+            }
+            Message{
+                speaker: "Keh Ohn"
+-- wmllint: local spelling GRROAR!!
+                message: _ "GRROAR!! Will you silly self-centered creatures show some manners and pay some attention to me?"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Eh... well of course, sir drake. Let me introduce myself — I am Prince Konrad, leader of the group and heir to the throne of Wesnoth."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "And I am Princess Li’sar, the only daughter of the late King Garard II and Queen Asheviere. I too am an heir to the throne of Wesnoth!"
+            }
+            Message{
+                speaker: "Keh Ohn"
+-- wmllint: display on
+-- wmllint: local spelling Soooo
+                message: _ "(releasing a torrent of fire towards Konrad and Li’sar)
+Soooo... It is you who sent your subordinates to attack us. Now when we’ve destroyed them, you come to do the job yourselves."
+-- wmllint: display off
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "No...There is an ongoing civil war amongst us humans. The boats were sent by our enemies, not by us, even if they were Wesnothian boats."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "The Prince speaks the truth."
+            }
+            Message{
+                speaker: "Keh Ohn"
+                message: _ "I don’t know. Maybe you are telling the truth, maybe not. We drakes don’t trust you. Many of our warriors died in the battle and many more are still healing their wounds, but we still have claws. Go back now and leave us in peace. If you go further we’ll be forced to show them."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "But we cannot go back. We are on an important mission."
+            }
+            Message{
+                speaker: "Keh Ohn"
+                message: _ "If you defy my warning — prepare for battle."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "So be it. We have to go down the river; we have no choice. We’ll fight our way through if necessary."
+            }
+            Message{
+                speaker: "Keh Ohn"
+                message: _ "You will regret challenging us. Drakes, to arms!"
+            }
+            Delay{
+                time: 500
+            }
+            Kill{
+                x: 4
+                y: 9
+                animate: false
+            }
+            Move_Unit_Fake{
+                type: "Armageddon Drake"
+                x: {4, 28}
+                y: {9, 9}
+                side: 2
+            }
+            Unit{
+                type: "Armageddon Drake"
+                side: 2
+                x: 28
+                y: 9
+                canrecruit: true
+                id: "Keh Ohn"
+                name: _ "Keh Ohn"
+                ai_special: "guardian"
+            }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Locations{
+                terrain: "*^V*"    -- wmllint: ignore
+                and: {
+                    x: 14
+                    y: 9
+                    radius: 10
+                }
+                variable: "temp_starting_villages_area"
+            }
+
+            Foreach{
+                array: "temp_starting_villages_area"
+                do: ->
+                    Capture_Village{
+                        side: 2
+                        x: this_item.x, y: this_item.y
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("temp_starting_villages_area")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Locations{
+                terrain: "*^V*"    -- wmllint: ignore
+                and: {
+                    x: 34
+                    y: 7
+                    radius: 10
+                }
+                variable: "temp_starting_villages_area"
+            }
+
+            Foreach{
+                array: "temp_starting_villages_area"
+                do: ->
+                    Capture_Village{
+                        side: 2
+                        x: this_item.x, y: this_item.y
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("temp_starting_villages_area")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Set_Variables{
+                name: "drake_bases"
+
+                value: {
+                    x: 12, y: 10
+                }
+                value: {
+                    x: 16, y: 6
+                }
+                value: {
+                    x: 22, y: 7
+                }
+                value: {
+                    x: 23, y: 13
+                }
+                value: {
+                    x: 28, y: 9
+                }
+                value: {
+                    x: 31, y: 5
+                }
+                value: {
+                    x: 34, y: 12
+                }
+                value: {
+                    x: 38, y: 7
+                }
+                value: {
+                    x: 41, y: 12
+                }
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            side: 1
+
+            filter_location: {
+                find_in: "drake_bases"
+            }
+        }
+        do: ->
+            RANDOM("10..50")
+
+            Gold{
+                side: 1
+                amount: "+#{random"
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "We’ve found #{random gold in the drake nest."
+                image: "items/gold-coins-medium.png"
+            }
+            CLEAR_VARIABLE("random")
+
+-- Remove the current location from the array
+            For{
+                array: "drake_bases"
+                do: ->
+                    If{
+                        variable: {
+                            name: "drake_bases[i].x"
+                            numerical_equals: x1
+                        }
+
+                        variable: {
+                            name: "drake_bases[i].y"
+                            numerical_equals: y1
+                        }
+
+                        then: ->
+                            CLEAR_VARIABLE("drake_bases[#{i]")
+
+                            Break{}
+                        
+                    }
+                
+            }
+            CLEAR_VARIABLE("i")
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Keh Ohn"
+        }
+        do: ->
+            Message{
+                speaker: "Keh Ohn"
+                message: _ "GRRROOOOAAAAR!"  -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "second_unit"
+                message: _ "Hurrah! We’ve killed their leader!"
+            }
+            Message{
+                side: 2
+                canrecruit: false
+                message: _ "Our leader is dead, but it matters not! Time enough to appoint a new leader after the battle is won! Fight on to the last, comrades!"
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION("mad")
+                message: _ "Keep on going down the river. While we’re at it, let us force as many drakes as possible to pay with their lives. They have defied us, and now they will meet the same fate as their leader!"
+            }
+            Message{
+                side: 1
+                and: {
+                    race: "elf"
+
+                    or: {
+                        race: "merman"
+                    }
+                }
+                message: _ "We hear and obey, My Lord."
+            }
+    }
+
+-- Each turn, a drake will be spawned from each base which still stands;
+-- however, a lvl2 drake will take 2 turns to appear and a lvl3 drake 3 turns
+    event: {
+        name: "new turn"
+        first_time_only: false
+
+        foreach: {
+            array: "drake_bases"
+            do: ->
+                If{
+-- We only attempt to spawn drakes from a base if there isn't one
+-- already standing there
+                    not: {
+                        have_unit: {
+                            x: this_item.x, y: this_item.y
+                        }
+                    }
+
+                    then: ->
+                        If{
+                            variable: {
+                                name: "this_item.delayed_spawning_on_turn"
+                                greater_than: 1
+                            }
+
+                            variable: {
+                                name: "this_item.delayed_spawning_on_turn"
+-- Note: the value might be lower than $turn_number
+                                less_than_equal_to: turn_number
+                            }
+
+                            then: ->
+                                GENERIC_UNIT(2, this_item.spawn_type, this_item.x, this_item.y)
+                                Unit{
+                                    amend: true
+                                    ai_special: "guardian"
+                                    facing: "sw"
+                                }
+
+                                CLEAR_VARIABLE("this_item.delayed_spawning_on_turn")
+                            
+
+                            else: ->
+                                if EASY
+                                    VARIABLE_OP("spawn_level", "rand", "1,2")
+                                else
+                                    VARIABLE_OP("spawn_level", "rand", "1,2,2,3")
+                                
+
+                                Switch{
+                                    variable: "spawn_level"
+
+                                    case: {
+                                        value: 1
+                                        do: ->
+                                            VARIABLE_OP("spawn_type", "rand", "Drake Fighter,Drake Burner,Drake Glider")
+
+                                            GENERIC_UNIT(2, spawn_type, this_item.x, this_item.y)
+                                            Unit{
+                                                amend: true
+                                                ai_special: "guardian"
+                                            }
+                                            CLEAR_VARIABLE("spawn_type")
+                                    }
+
+                                    case: {
+                                        value: 2
+                                        do: ->
+                                            VARIABLE_OP("this_item.spawn_type", "rand", "Drake Warrior,Drake Flare,Fire Drake,Sky Drake")
+
+                                            VARIABLE("this_item.delayed_spawning_on_turn", "#{(#{turn_number + 1)")
+                                    }
+
+                                    case: {
+                                        value: 3
+                                        do: ->
+                                            VARIABLE_OP("this_item.spawn_type", "rand", "Drake Blademaster,Drake Flameheart,Inferno Drake,Drake Enforcer,Drake Warden,Hurricane Drake")
+
+                                            VARIABLE("this_item.delayed_spawning_on_turn", "#{(#{turn_number + 2)")
+                                    }
+                                }
+                                CLEAR_VARIABLE("spawn_level")
+                            
+                        }
+                    
+                }
+            
+        }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+        }
+        filter_condition: {
+            have_location: {
+                x: x1, y: y1
+                and: {
+                    x: 45, y: 16
+                    radius: 7
+                }
+            }
+        }
+        do: ->
+            Modify_Side{
+                side: 4
+                share_view: true
+            }
+            Message{
+                speaker: "unit"
+                message: _ "I see someone at the top of the furthermost cliff!"
+            }
+            Lift_Fog{
+                filter_side: {
+                    side: 1
+                }
+                x: 45, y: 16
+                radius: 2
+            }
+            Scroll_To{
+                x: 45
+                y: 16
+            }
+            Message{
+                speaker: "unit"
+                scroll: false
+                message: _ "It is a young human sergeant, barely more than a boy. He appears badly hurt but still alive."
+            }
+            Message{
+                speaker: "unit"
+                scroll: false
+                message: _ "I wonder why the drakes haven’t finished him by now? It is strange that there are not any drakes in that area."
+            }
+            SERPENT = (X, Y) -> {
+                unit: {
+                    type: "Water Serpent"
+                    side: 3
+                    x: X
+                    y: Y
+                    movement_costs: {
+                        mountains: UNREACHABLE!
+                    }
+                }
+            }
+            SERPENT(48, 13)
+            SERPENT(45, 12)
+            SERPENT(50, 16)
+            SERPENT(48, 18)
+            SERPENT(45, 19)
+            SERPENT = nil
+            Message{
+                type: "Water Serpent"
+                scroll: false
+                message: _ "Grrroar"    -- wmllint: no spellcheck
+            }
+            Scroll_To_Unit{
+                id: "unit"
+            }
+            Message{
+                speaker: "unit"
+                scroll: false
+                message: _ "Well... that answers the question."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "We should try to help the injured soldier."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Must I remind you that he, like all the others who died, was sent to kill us!?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Perhaps he was sent after you, but not after me. I am sure that he is still loyal to his princess — the heiress to the throne of Wesnoth!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Princess Li’sar, do I have to remind you again that it is Konrad, not you, who is the rightful heir?"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Whatever.... I still think we should make an effort to rescue him from the unfortunate position he is in. If you help him, I’ll do my best to convince him that you are not his enemies but his friends..."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Our main goal remains to survive ourselves, but if we can spare the troops, we might try to rescue the sergeant stranded on the cliff. However, I make no promises."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "Fair enough!"
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "Fair enough."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Fair enough..."
+            }
+            VARIABLE("sergeant_sighted", true)
+            Show_Objectives{}
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: {44, 44, 45, 45, 46, 46}
+            y: {15, 16, 15, 17, 15, 16}
+        }
+        do: ->
+            Kill{
+                id: "Warven"
+            }
+
+            Unit{
+                type: "Sergeant"
+                side: 1
+                x: 45
+                y: 16
+                id: "Warven"
+                name: _ "Warven"
+                hitpoints: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_FEARLESS!
+                }
+                <IS_LOYAL!
+                status: {
+                    poisoned: true
+                }
+            }
+
+            Message{
+                speaker: "Warven"
+                message: _ "Who...who are you? A friend or a foe?"
+            }
+            Message{
+                speaker: "unit"
+                message: _ "We are friends. Don’t worry about it and don’t try to fight us — you are in no condition to fight."
+            }
+            Message{
+                speaker: "Li'sar"
+                message: _ "I am Princess Li’sar, and we are friends. Join us and wait for the healers to help you, young sergeant."
+            }
+            Message{
+                speaker: "Warven"
+                message: _ "Princess Li’sar — here? Your Highness, I am yours to command!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Follow us when you think you are capable and beware of monsters. We have fought many already, and there are sure to be more ahead."
+            }
+            VARIABLE("sergeant_sighted", false)
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: "53-55"
+            y: "1-5"
+            side: 1
+        }
+        do: ->
+            VARIABLE("waterfall_sighted", true)
+
+            Message{
+                speaker: "unit"
+                message: _ "There is a cataract ahead. By the thunder of the water and the height of the spume, it must drop several hundred feet at least. We must leave the river before we are swept into it, or we will surely perish!"
+            }
+
+            REMOVE_IMAGE(55, 3)
+
+            WATERFALL_MASK(55, 3)
+
+            Role{
+                role: "merman-advisor"
+                reassign: false
+                search_recall_list: false
+                type: "Merman Triton,Merman Hoplite,Merman Javelineer,Merman Entangler,Mermaid Diviner,Mermaid Siren," .. 
+                "Merman Warrior,Merman Spearman,Merman Netcaster,Mermaid Priestess,Mermaid Enchantress," .. 
+                "Merman Fighter,Merman Hunter,Mermaid Initiate"
+            }
+            Message{
+                role: "merman-advisor"
+                message: _ "Even we merfolk cannot swim that. The road east is blocked."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Wait. What about the tributary which flows into the river from inside the mountain? There seems to be a cave..."
+            }
+            Message{
+                speaker: "Kalenz"
+-- wmllint: local spelling Everlore
+                message: _ "Legend says that that little river comes from the land of the North Elves. It is said that it is an outflow of Everlore, which flows in the land of my home and that there is a cave system in that area with several cave entrances and springs which flow into the ground. I can say no more about it, except that it is swarming with undead and other creatures which find power in the darkness of the caves. We elves prefer not to venture into the caves; instead we put guards near the entrances to kill any foul creature foolish enough to wander outside. No elves have been inside for centuries and that area is unknown to us. Truly, I don’t recommend entering the cave if we have any other options."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Unfortunately, we have no other options. Onward into the cave!"
+            }
+
+            Show_Objectives{}
+
+            PLACE_IMAGE("items/gohere.png", 37, 1)
+
+            Event{
+                name: "moveto"
+                filter: {
+                    x: 37
+                    y: 1
+                    id: "Konrad"
+                }
+                do: ->
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "I’ve reached the cave entrance. There seems to be a system of channels running through the mountains. Follow me, and let us hope we somehow manage to get out alive."
+                    }
+                    Message{
+                        speaker: "Li'sar"
+                        message: _ "That is so very encouraging...."
+                    }
+                    Message{
+                        speaker: "Delfador"
+                        message: _ "I wonder what kind of monsters await us inside."
+                    }
+                    Message{
+                        speaker: "Kalenz"
+                        message: _ "We are soon going to find out."
+                    }
+                    Message{
+                        speaker: "Li'sar"
+                        message: _ "Well, there is no point in delaying any further. Let us go and find out."
+                    }
+                    Message{
+                        speaker: "Warven"
+                        side: 1
+                        message: _ "Yes, my lady!"
+                    }
+                    Message{
+                        speaker: "Konrad"
+                        message: _ "Everybody inside..."
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("sergeant_sighted,waterfall_sighted,drake_bases")
+    }
+}

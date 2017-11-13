@@ -1,0 +1,4 @@
+-- This is the main config file for the GUI definitions
+-- Currently it just includes the default GUI.
+-- However, perhaps in the future it may include additional GUI theme definitions.
+err: ../attic/data/gui/_main.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 5: {./default.cfg}

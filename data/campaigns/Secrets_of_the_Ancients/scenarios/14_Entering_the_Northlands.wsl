@@ -1,0 +1,247 @@
+--textdomain wesnoth-sota
+
+-- Walkthrough tip if you have trouble: Use walking corpses. Recruit about five, including
+-- a soulless or two. Make more at every opportunity: two or three per turn. You need the
+-- enemy to attack their former soldiers instead of your leveled ones.
+
+Scenario{
+    name: _ "Entering the Northlands"
+    map: "campaigns/Secrets_of_the_Ancients/maps/14_Entering_the_Northlands.map"
+
+    id: "14_Entering_the_Northlands"
+    next_scenario: "15_Mountain_Pass"
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/black-background.png"
+                scale: true
+                base_layer: true
+            }
+            image: {
+                x: 400, y: 200
+                centered: true
+                file: "story/ford-of-abez-1.jpg"
+            }
+            title: _ "<i>Chapter Three:</i> To Conquer Death"
+            show_title: true
+            title_alignment: "left"
+            story: _ "24 IV, 23 YW
+
+We reached the Ford of Abez as the dawn light spread behind the mountain peaks to the north. As we waded across, the dark water reached to our waists, which made for slow going. I dared not imagine what manner of tentacled creature lurked below, but we completed the crossing without incident. The water was chill with snowmelt, so our teeth were chattering when we reached the far shore. The rising sun was warm though, and had us dried in short order. Despite this, Ras-Tabahn was not well off. He collapsed in the sand and went into a paroxysm of coughing the like of which I had never seen. When he could speak again, he assured me that it was only on account of the cold, and I should not be unduly troubled. I am uneasy all the same."
+        }
+        <JOURNEY_PART(14)
+    }
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(36, 35, 34)
+
+    side: {
+-- wmllint: who SIDE_1_BOTH is Ardonna,Ras-Tabahn
+        <SIDE_1_BOTH!
+        <GOLD(170, 170, 170)
+    }
+
+    side: {
+        side: 2
+        type: "Orcish Sovereign"
+        controller: "ai"
+        user_team_name: _ "Orcs"
+        name: _ "Rod-Ishnak"
+        id: "Rod-Ishnak"
+        team_name: "bad"
+        recruit: {"Orcish Crossbowman", "Orcish Warrior"}
+        <GOLD(100, 140, 200)
+        <INCOME(17, 22, 28)
+        <FLAG_VARIANT6("ragged")
+    }
+
+    side: {
+        side: 3
+        type: "Orcish Warlord"
+        controller: "ai"
+        user_team_name: _ "Orcs"
+        name: _ "Vok-Hroog"
+        id: "Vok-Hroog"
+        profile: "portraits/orcs/grunt-6.png"
+        team_name: "bad"
+        unit: {
+            x: 6, y: 6
+            type: "Orcish Shaman"
+            name: _ "Krongk"
+            id: "Krongk"
+        }
+        recruit: {"Orcish Crossbowman", "Orcish Warrior"}
+        <GOLD(100, 140, 200)
+        <INCOME(15, 20, 26)
+        <FLAG_VARIANT6("ragged")
+    }
+
+-- Without these, the AI tends to get nothing *but* Orcish Crossbowmen, and the scenario
+-- becomes unbeatable (probably), not to mention boring.
+    <if EASY then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3}, "Orcish Crossbowman", 4)
+    }
+    <if NORMAL then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3}, "Orcish Crossbowman", 5)
+    }
+    <if HARD then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS({2, 3}, "Orcish Crossbowman", 6)
+    }
+
+    <STARTING_VILLAGES(2, 6)
+
+-- *************************** PRESTART ***************************
+    STARTING_ORC: (SIDE, TYPE) -> {
+        <FIND_CASTLE_HEX(SIDE, "location")
+        unit: {
+            x: location.x
+            y: location.y
+            type: TYPE
+            side: SIDE
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_BOTH!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Set_Variables{
+                name: "starting_orc_units"
+                mode: "append"
+                split: {
+                    list: "Orcish Archer,Orcish Archer,Wolf Rider,Wolf Rider,Goblin Pillager"
+                    key: "type"
+                    separator: ","
+                }
+            }
+
+            For{
+                array: "starting_orc_units"
+                variable: "i"
+                do: ->
+                    STARTING_ORC(2, starting_orc_units[i].type)
+                
+            }
+
+            For{
+                array: "starting_orc_units"
+                variable: "i"
+                do: ->
+                    STARTING_ORC(3, starting_orc_units[i].type)
+                
+            }
+
+            Clear_Variable{
+                name: {"location", "starting_orc_units"}
+            }
+
+            FREEZE_UNIT("Krongk")
+
+            RECALL_LOYAL_UNITS!
+    }
+-- *************************** PLAY ***************************
+    event: {
+        name: "attack"
+        filter_second: {
+            id: "Krongk"
+        }
+        do: ->
+            Message{
+                speaker: "Krongk"
+                message: _ "They’re attacking me!"
+            }
+            Message{
+                speaker: "Vok-Hroog"
+                message: _ "Yeah, yeah."
+            }
+            THAW_UNIT("Krongk")
+    }
+
+-- *************************** ENDING / OPENING ***************************
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "We have crossed into the north. The dwarven kingdom of Knalga lies straight ahead."
+            }
+            Message{
+                speaker: "Shynal"
+                message: _ "Now I’m really far from home. I’ve never been north of the river before. I hope I get to see some dwarves!"
+            }
+            Message{
+                speaker: "Vok-Hroog"
+                message: _ "I claim this territory in the name of Krag-Ubor, the ruler of all true orcs! Leave now, Ishnak, or face the combined wrath of the five tribes."
+            }
+            Message{
+                speaker: "Rod-Ishnak"
+                message: _ "I arrived first, Hroog. It’s mine!"
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "This could be trouble."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Many orcs are decent sorts (<i>cough, cough</i>). I fought alongside Krag-Ubor once, who the farther orc just mentioned."
+            }
+            Message{
+                speaker: "Vok-Hroog"
+                message: _ "Wait who’s that?"
+            }
+            Message{
+                speaker: "Rod-Ishnak"
+                message: _ "Wizards and deaders just like from back home! I <i>hate</i> those! I suggest a contest. Whoever kills the most wizards and skeletons and stuff takes this territory and all the human slaves."
+            }
+            Message{
+                speaker: "Vok-Hroog"
+                message: _ "Huh. Fine. That sounds like good sport."
+            }
+            Message{
+                speaker: "Krongk"
+                message: _ "I declare this competition official. I will support the claim of the winner."
+            }
+            Message{
+                speaker: "Vok-Hroog"
+                message: _ "Yeah, yeah."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "I did say this was trouble."
+            }
+            Message{
+                speaker: "Shynal"
+                message: _ "But we’ll win, won’t we?"
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+    <MANAGE_PROFILE!
+    <KIDS_ADVANCE!
+}

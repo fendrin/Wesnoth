@@ -1,0 +1,5 @@
+Locale{
+    name: "Български (Bulgarski)"
+    sort_name: "Bulgarski"
+    locale: "bg_BG"
+}

@@ -1,0 +1,574 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "02_Blackwater_Port"
+    name: _ "scenario name^Blackwater Port"
+    next_scenario: "03_The_Isle_of_Alduin"
+    map: "campaigns/Heir_To_The_Throne/maps/02_Blackwater_Port.map"
+    <DEFAULT_SCHEDULE!
+    <TURNS(12, 12, 9)
+
+    <SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Resist until the end of the turns"
+                    condition: "win"
+                    show_turn_counter: true
+                }
+                <if HARD then {
+                    objective: {
+                        <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        description: _ "Defeat the enemy leader" .. EARLY_FINISH_BONUS_FOOTNOTE! .. OBJECTIVE_FOOTNOTE(_ "(special bonus)")
+                        condition: "win"
+                    }
+                } else {
+                    <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat the enemy leader")
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Sir Kaylan"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    <HTTT_TRACK(JOURNEY_02_NEW!)
+
+    label: {
+        x: 27, y: 8
+        text: _ "Blackwater Port"
+    }
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-elvish.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        gold: 100
+        controller: "human"
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Grand Knight"
+        id: "Kaylan"
+        name: _ "Sir Kaylan"
+        profile: "portraits/humans/grand-knight-2.png"
+
+        side: 2
+-- Make Kaylan's TC teal, so it fits better with the portrait.
+        color: "teal"
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        recruit: {"Horseman", "Knight"}
+        ai: {
+            recruitment_pattern: "fighter"
+            villages_per_scout: 0
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.45
+            grouping: "defensive"
+        }
+        <GOLD(120, 70, 40)
+    }
+
+    <STARTING_VILLAGES_AREA(2, 17, 15, 25)
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Mokolo Qimur"
+        name: _ "Mokolo Qimur"
+        profile: "portraits/orcs/grunt-2.png"
+        side: 3
+        color: "purple"
+        canrecruit: true
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        recruit: {"Orcish Grunt", "Wolf Rider", "Orcish Archer", "Troll Whelp"}
+        <GOLD(100, 160, 220)
+        <INCOME(8, 16, 20)
+        ai: {
+            <ATTACK_DEPTH(1, 3, 5)
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES_AREA(3, 3, 19, 5)
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/rock1.png", 23, 17)
+
+            Unit{
+                type: "Swordsman"
+                x: 23
+                y: 10
+                id: "Veocyn"
+                name: _ "Veocyn"
+                ai_special: "guardian"
+                side: 2
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Swordsman"
+                x: 25
+                y: 11
+                id: "Yran"
+                name: _ "Yran"
+                ai_special: "guardian"
+                side: 2
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+
+            NEED_DELFADOR({placement: "leader"})
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "We should be able to board a ship at Blackwater Port, but it seems the orcs are heading there too. Rebels who hate Asheviere and are loyal to the memory of the king desperately hold the port, as it is one of the only places where they can ship supplies and weapons."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Delfador, some orcs are following us! We must make haste!"
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "Delfador, my old friend! We had heard of your coming, and of the attacks on the elves. It is good to see you again, although I would prefer it were not in such sad times."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Konrad, this is Kaylan, one of the mightiest of the horse lords, and one of the few who is willing to oppose the Dark Crown. Rumor has it that his lance has slain fifty men and a hundred orcs."
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "It seems the orcs have come here too, to try to wrest this port from our hands. Our defenses are still weak, but reinforcements will arrive soon!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "We will help you fight them off until the reinforcements arrive."
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "With your help, we have hope we can fend them off. But you must not tarry here long, for your survival is even more important to our cause than the strength of the port. A ship is due here in two days, surely it will be able to take you to safety."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "And the ship will take us to Alduin?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Yes, we will sail to the Isle of Alduin, my home, Konrad, and the home of many magi."
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "I will send one of my horsemen to serve under you. I offer you my support, Konrad, and the support of my men — from now on you will be able to recruit horsemen."
+            }
+--   [message]
+--   speaker=narrator
+--   image="wesnoth-icon.png"
+--   message= _ "You may now recruit horsemen!"
+--   [/message]
+            Message{
+                speaker: "Konrad"
+                message: _ "Thank you, sir. But how shall I best use these horsemen? How do they differ from elves?"
+            }
+            if EASY
+                Message{
+                    speaker: "Kaylan"
+                    message: _ "Elves are a powerful race, Konrad, more powerful than my own people usually acknowledge. But horsemen are powerful in a different way. They have no long range attack, but can charge into combat, inflicting double normal damage, though taking double damage in return. They are also lawful, meaning they fight better by day, and worse at night. Horsemen are unmatched on open land, though elves will serve you better in forests or rugged terrain."
+                }
+            } else {
+                Message{
+                    speaker: "Kaylan"
+                    message: _ "Elves may be the lords of the forest, but horsemen are powerful as well. On the plains under the midday sun they can fell the toughest foes with sharp spears and under heavy hoofs!"
+                }
+            
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING_ELF!
+                message: _ "Recruit troops wisely, Konrad, and remember that you can recall experienced units from past battles to help you fight again."
+            }
+            Move_Unit_Fake{
+                side: 1
+                type: "Horseman"
+                x: {15, 16, 23}
+                y: {27, 27, 24}
+            }
+            Unit{
+                id: "Haldiel"
+                name: _ "Haldiel"
+                type: "Horseman"
+                x: 23
+                y: 24
+                side: 1
+                facing: "ne"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_STRONG!
+                }
+                <IS_LOYAL!
+            }
+            Message{
+                speaker: "Haldiel"
+                message: _ "Greetings, young master. I pledge myself to your service."
+            }
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_MENTORING_ELF!
+                message: _ "Konrad, note that Haldiel does not seek gold upkeep; as a loyal unit he fights for us solely out of loyalty to our cause. Such units are extremely valuable. Take care to use them cautiously in battle, lest they fall."
+            }
+            Allow_Recruit{
+                side: 1
+                type: "Horseman"
+            }
+    }
+
+    event: {
+        name: "time over"
+        scroll_to: {
+            x: 35
+            y: 6
+        }
+        do: ->
+            Unit{
+                type: "Horseman"
+                id: "Yredd"
+                name: _ "Yredd"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Horseman"
+                id: "Tarcyn"
+                name: _ "Tarcyn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Horseman"
+                id: "Syryn"
+                name: _ "Syryn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Knight"
+                id: "Cicyn"
+                name: _ "Cicyn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Knight"
+                id: "Ginvan"
+                name: _ "Ginvan"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                type: "Knight"
+                id: "Simyr"
+                name: _ "Simyr"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "Reinforcements have arrived! Forward, men! I expect each of you to bring me back the head of an orc!"
+            }
+            Message{
+                speaker: "Mokolo Qimur"
+                message: _ "So many foul humans riding on horses! There is no way we can defeat them. Quick, we must make our escape!"
+            }
+            Fire_Event{
+                name: "victory dance"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mokolo Qimur"
+        }
+
+--
+-- A bonus for anyone who can beat the leader on the HARD level
+--
+        <if HARD then {
+            scroll_to: {
+                x: 35
+                y: 6
+            }
+            unit: {
+                type: "Horseman"
+                id: "Yredd"
+                name: _ "Yredd"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            unit: {
+                type: "Horseman"
+                id: "Tarcyn"
+                name: _ "Tarcyn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            unit: {
+                type: "Horseman"
+                id: "Syryn"
+                name: _ "Syryn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            unit: {
+                type: "Knight"
+                id: "Cicyn"
+                name: _ "Cicyn"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            unit: {
+                type: "Knight"
+                id: "Ginvan"
+                name: _ "Ginvan"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            unit: {
+                type: "Knight"
+                id: "Simyr"
+                name: _ "Simyr"
+                x: 35
+                y: 6
+                ai_special: "guardian"
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+            redraw: {
+            }
+            message: {
+                speaker: "Kaylan"
+                message: _ "Reinforcements have arrived, but lo! Our allies have already destroyed the orcish army menacing our fair port. In honor, I must reward your valor."
+            }
+            message: {
+                speaker: "Kaylan"
+                message: _ "You have risked your life to defend our city. In return, I place one of my city’s finest defenders in your service. Simyr, step forward. I place your lance in the service of young prince Konrad here. May you help him restore order to the country."
+            }
+            kill: {
+                id: "Simyr"
+            }
+            move_unit_fake: {
+                side: 2
+                type: "Knight"
+                x: {33, 29}
+                y: {5, 7}
+            }
+            unit: {
+                type: "Knight"
+                id: "Simyr"
+                name: _ "Simyr"
+                x: 29
+                y: 7
+                side: 1
+                facing: "sw"
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+            message: {
+                speaker: "Simyr"
+                message: _ "It is my pleasure and honor to serve, my liege."
+            }
+        }
+        do: ->
+            Fire_Event{
+                name: "victory dance"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory dance"
+        do: ->
+            Message{
+                speaker: "Kaylan"
+                message: _ "Thank you for the help, friends. The ship should arrive soon, it will take you to Alduin."
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Galleon"
+                side: 1
+                x: {1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21}
+                y: {2, 2, 3, 3, 4, 4, 5, 5, 6, 7, 8, 8, 9, 9, 10, 10, 10, 9, 9, 8, 8, 7, 7}
+            }
+
+            PLACE_IMAGE("units/transport/galleon.png~RC(magenta>red)", 21, 7)
+
+            Message{
+                speaker: "Delfador"
+                message: _ "We should embark now."
+            }
+            Message{
+                speaker: "Kaylan"
+                message: _ "Safe voyage to you, friends. Rest assured that we will never surrender to the forces of the Dark Queen."
+            }
+    }
+
+--
+-- Death event for Sir Kaylan
+--
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Kaylan"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I have failed in my duty to protect the Rightful Heir and the port."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Without his help, we will be unable to use the ships. There is no hope..."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+}

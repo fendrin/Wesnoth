@@ -1,0 +1,198 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window used to show large tooltips.
+---- The placement algorithms used are described in the
+---- »Tooltip placement« section in the GUI2 design document.
+----
+---- gui/dialogs/title_screen.cpp has test code, which is
+---- activated by defining the DEBUG_TOOLTIP macro.
+----
+
+__GUI_WINDOW_HEIGHT = () -> {
+    {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 13: 	if(window_height = 0
+-- Determine the wanted maximum height. -
+-- The value should be high enough to avoid an -
+-- unable to place exception. -
+        "		", 100000
+-- Determine the height to use. -
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 19: 		, window_height)
+    }--enddef
+
+
+    __GUI_WINDOW_FUNCTIONS: () -> {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 24: def placement_method(m, w, s)
+        {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 26: 	if((w.y > s.y) or (w.x > s.x)
+            "		", "'V'"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 28: 		, if(m.y >= w.y
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 29: 			, if(m.x >= w.x, 'I', 'III')
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 30: 			, if(m.x >= w.x, 'II', 'IV')
+        }
+    }
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 33: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 35: def set_x(m, w, s)
+
+    {
+        "["
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 38: 	if(preferred_x + w.x > s.x
+        "		", "s.x - w.x"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 40: 		, preferred_x)
+        "where"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 42: 	preferred_x = switch(
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 43: 		  placement_method(m, w, s)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 44: 		, 'I'   , m.x - (w.x / 2)
+        "		", "'II'	", "m.x -  w.x"
+-- extra offset to avoid being obscured by the mouse. -
+        "		", "'IV'", "m.x + 15"
+        "		", "'V'", 5
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 49: 		, #default# m.x
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 50: 		),
+--
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 52: 	debug_print('placement_method, mouse ', m),
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 53: 	debug_print('window ', w),
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 54: 	debug_print('screen ', s),
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 55: 	debug_print('y margin', s.y - (m.y + w.y)),
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 56: 	debug_print('result ', placement_method(m, w, s)),
+--
+
+        "][0]"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 60: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 62: def set_y(m, w, s)
+
+        {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 64: 	switch(
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 65: 		  placement_method(m, w, s)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 66: 		, 'I'   , m.y - (w.y + 5)
+            "		", "'II'", "m.y"
+            "		", "'III'", "m.y -  w.y"
+            "		", "'IV'", "m.y + 25"
+            "		", "'V'", 5
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 71: 		, #default# m.y - w.y
+        }
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 73: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 75: def get_maximum_width(w, s)
+
+        {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 77: 	if(w.x = 0
+-- The default width upon the initial run. -
+            "		", 450
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 80: 		, if(w.y <= s.y
+-- If the window's height fits use that. -
+            "			", "w.x"
+-- Else use an increased width, which should reduce -
+-- the required height. -
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 85: 			, 2 * w.x))
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 86: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 88: def set_w(r, w, s)
+
+            {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 90: 	switch(
+                "r"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 92: 		, 'maximum', get_maximum_width(w, s)
+                "		", "'size'", "w.x"
+            }
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 95: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 97: def reevaluate_best_size(w, s)
+
+            {
+                "["
+                "w.y > s.y", 
+--
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 102: 	debug_print('window ', w),
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 103: 	debug_print('screen ', s)
+--
+                "][0]"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 106: );
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by define at line 66
+
+                __GUI_WINDOW_X: () -> {
+                    {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 111: 	set_x(
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 112: 			  loc(source_x + (source_w / 2), source_y + (source_h / 2))
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 113: 			, loc(window_width, window_height)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 114: 			, loc(screen_width, screen_height))
+                    }
+                }
+
+                __GUI_WINDOW_Y: () -> {
+                    {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 120: 	set_y(
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 121: 			  loc(source_x, source_y)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 122: 			, loc(window_width, window_height)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 123: 			, loc(screen_width, screen_height))
+                    }--enddef
+
+                    __GUI_WINDOW_WIDTH: () -> {
+                        {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 128: 	set_w(
+                            "size_request_mode"
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 130: 			, loc(window_width, window_height)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 131: 			, loc(screen_width, screen_height))
+                        }--enddef
+
+                        __GUI_WINDOW_REEVALUATE_BEST_SIZE: () -> {
+                            {
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 136: 	reevaluate_best_size(
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 137: 			  loc(window_width, window_height)
+err: ../attic/data/gui/window/tooltip_floating.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 138: 			, loc(screen_width, screen_height))
+                            }--enddef
+
+                            window: {
+                                id: "tooltip"
+                                description: "The tooltip popup window with large tooltips, eg in the main menu."
+
+                                resolution: {
+                                    definition: "tooltip"
+
+                                    automatic_placement: false
+
+                                    functions: "#{__GUI_WINDOW_FUNCTIONS}"
+
+                                    x: "#{__GUI_WINDOW_X}"
+                                    y: "#{__GUI_WINDOW_Y}"
+                                    width: "#{__GUI_WINDOW_WIDTH}"
+                                    height: "#{__GUI_WINDOW_HEIGHT}"
+                                    reevaluate_best_size: "#{__GUI_WINDOW_REEVALUATE_BEST_SIZE}"
+
+-- TODO tooltips in this window make little sense.
+-- Have to think of a nice solution.
+                                    tooltip: {
+                                        id: "tooltip"
+                                    }
+
+                                    helptip: {
+                                        id: "tooltip"
+                                    }
+
+                                    grid: {
+
+                                        row: {
+
+                                            column: {
+
+                                                label: {
+                                                    id: "label"
+                                                    definition: "default_small"
+
+                                                    use_markup: true
+                                                    wrap: true
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            __GUI_WINDOW_REEVALUATE_BEST_SIZE = nil
+                            __GUI_WINDOW_HEIGHT = nil
+                            __GUI_WINDOW_WIDTH = nil
+                            __GUI_WINDOW_Y = nil
+                            __GUI_WINDOW_X = nil
+                            __GUI_WINDOW_FUNCTIONS = nil
+}

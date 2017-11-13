@@ -1,0 +1,256 @@
+--textdomain wesnoth
+-- This file contains unit utility macros for WML authors.
+--
+-- These don't rely on any other macros.   Please don't change this.
+
+-- This needs to match the magic UNREACHABLE constant in unit_movement_type
+UNREACHABLE = () -> {
+err: ../attic/data/core/macros/unit-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+-- Use this to restrict a filter to on-map units, not the recall list.
+    NOT_ON_RECALL_LIST = () -> {
+        not: {
+            x: "recall", y: "recall"
+        }
+    }
+
+-- Rationale for the naming scheme of these generators:
+-- All generators take SIDE X Y for consistency.
+-- Those that begin with NAMED_ additionally take ID_STRING NAME_STRING
+-- The LOYAL_ macros set the loyalty trait.
+
+    UNIT = (SIDE, TYPE, X, Y, WML) ->
+-- Place a unit with embedded WML specified.
+--
+        Unit{
+            side: SIDE
+            type: TYPE
+            x: X
+            y: Y
+            <WML
+        }
+    
+
+    GENERIC_UNIT = (SIDE, TYPE, X, Y) -> {
+-- Creates a generic unit of TYPE belonging to SIDE at X,Y, which has a
+-- random name, gender and traits (just like a recruited unit).
+        unit: {
+            side: SIDE
+            type: TYPE
+            x: X
+            y: Y
+            generate_name: true
+            random_traits: true
+            random_gender: true
+            upkeep: "full"
+        }
+    }
+
+    NOTRAIT_UNIT = (SIDE, TYPE, X, Y) -> {
+-- Creates a unit with no traits, random gender and generated name.
+--
+-- Example:
+--! {NOTRAIT_UNIT 1 (Elvish Fighter) 19 16}
+--
+        unit: {
+            side: SIDE
+            type: TYPE
+            x: X
+            y: Y
+            generate_name: true
+            random_traits: false
+            random_gender: true
+        }
+    }
+
+    LOYAL_UNIT = (SIDE, TYPE, X, Y) -> {
+-- Creates a unit with the Loyal trait.
+--
+-- Example:
+--! {LOYAL_UNIT 1 (Elvish Fighter) 19 16}
+--
+        unit: {
+            type: TYPE
+            side: SIDE
+            x: X
+            y: Y
+            generate_name: true
+            modifications: {
+                <TRAIT_LOYAL!
+            }
+            overlays: "misc/loyal-icon.png"
+        }
+    }
+
+    NAMED_UNIT = (SIDE, TYPE, X, Y, ID_STRING, NAME_STRING, WML) -> {
+-- Place a named unit with embedded WML specified.
+--
+        unit: {
+            side: SIDE
+            type: TYPE
+            x: X
+            y: Y
+            id: ID_STRING
+            name: NAME_STRING
+            <WML
+        }
+    }
+
+    NAMED_LOYAL_UNIT = (SIDE, TYPE, X, Y, ID_STRING, NAME_STRING) -> {
+-- Creates a unit with the Loyal trait.
+--
+-- Example:
+--! {NAMED_LOYAL_UNIT 1 (Elvish Fighter) 19 16 (Myname) ( _ "Myname")}
+--
+        unit: {
+            side: SIDE
+            type: TYPE
+            id: ID_STRING
+            name: NAME_STRING
+            x: X
+            y: Y
+            modifications: {
+                <TRAIT_LOYAL!
+            }
+            overlays: "misc/loyal-icon.png"
+        }
+    }
+
+    NAMED_GENERIC_UNIT = (SIDE, TYPE, X, Y, ID_STRING, NAME_STRING) -> {
+-- Creates a generic unit of TYPE belonging to SIDE at X,Y, which has a
+-- generated gender and traits (just like a recruited unit).
+        unit: {
+            side: SIDE
+            type: TYPE
+            id: ID_STRING
+            name: NAME_STRING
+            x: X
+            y: Y
+            random_traits: true
+            random_gender: true
+            upkeep: "full"
+        }
+    }
+
+    NAMED_NOTRAIT_UNIT = (SIDE, TYPE, X, Y, ID_STRING, NAME_STRING) -> {
+-- Creates a unit with no traits, random gender and specified name.
+--
+-- Example:
+--! {NAMED_NOTRAIT_UNIT 1 (Elvish Fighter) 20 22 (Mochi) (_"Mochi") }
+--
+        unit: {
+            side: SIDE
+            type: TYPE
+            id: ID_STRING
+            name: NAME_STRING
+            x: X
+            y: Y
+            random_traits: false
+            random_gender: true
+        }
+    }
+
+    RECALL = (ID_STRING) -> {
+        recall: {
+            id: ID_STRING
+        }
+    }
+
+    RECALL_XY = (ID_STRING, X, Y) -> {
+-- Note that id precedes x and y, unlike with the unit-generating macros.
+        recall: {
+            id: ID_STRING
+            x: X
+            y: Y
+        }
+    }
+
+    GUARDIAN = () -> {
+-- Meant to be used as a suffix to a unit-generating macro call.
+        unit: {
+            amend: true
+            ai_special: "guardian"
+            animate: false
+        }
+    }
+
+    NO_UPKEEP = () -> {
+-- Meant to be used as a suffix to a unit-generating macro call.
+-- Use this when you don't want to use up a traits slot.
+        unit: {
+            amend: true
+            upkeep: "loyal"
+-- It's questionable whether we should do this here...
+            overlays: "misc/loyal-icon.png"
+        }
+    }
+
+    FACING = (DIRECTION) -> {
+-- Meant to be used as a suffix to a unit-generating macro call.
+        unit: {
+            amend: true
+            facing: DIRECTION
+        }
+    }
+
+    VARIATION = (VARIATION_NAME) -> {
+-- Meant to be used as a suffix to a unit-generating macro call.
+        unit: {
+            amend: true
+            variation: VARIATION_NAME
+        }
+    }
+
+    STORE_UNIT_VAR = (FILTER, VAR, TO_VAR_NAME) -> {
+-- Stores an attribute of a unit to the given variable.
+--
+-- Example where this is used to flip all orcs to whatever side James is on:
+--! {STORE_UNIT_VAR (id=James) side side_of_James}
+--! {MODIFY_UNIT (race=orc) side $side_of_James}
+        store_unit: {
+            filter: {
+                <FILTER
+            }
+
+            kill: false
+            variable: "STORE_UNIT_VAR_store"
+        }
+
+        set_variable: {
+            name: TO_VAR_NAME
+err: ../attic/data/core/macros/unit-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 217:         value=$STORE_UNIT_VAR_store.{VAR}
+        }
+
+        clear_variable: {
+            name: "STORE_UNIT_VAR_store"
+        }
+    }
+
+    ADVANCE_UNIT = (FILTER, ID_STRING) -> {
+-- Advances all units matching the filter to ID_STRING or if missing, their normal advancement
+--
+-- Example to advance all spearmen to a cavalrymen:
+--! {ADVANCE_UNIT type=Spearman Cavalryman}
+-- Example to advance your leader normally:
+--! {ADVANCE_UNIT canrecruit,side=yes,1 ""}
+
+        modify_unit: {
+            filter: {
+                <FILTER
+            }
+            type: ID_STRING
+        }
+    }
+
+    TRANSFORM_UNIT = (FILTER, TYPE) -> {
+-- Transforms all units matching the filter into TYPE or if missing, their normal advancement
+-- Keeps the unit's hitpoints, experience and status intact.
+--
+-- Example to turn all spearmen into cavalrymen:
+--! {TRANSFORM_UNIT type=Spearman Cavalryman}
+
+        transform_unit: {
+            <FILTER
+            transform_to: TYPE
+        }
+    }

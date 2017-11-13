@@ -1,0 +1,85 @@
+--textdomain wesnoth-thot
+
+CHARACTER_STATS_AIGLONDUR = () -> {
+    type: "Dwarvish Fighter"
+    id: "Aiglondur"
+    name: _ "Aiglondur"
+    profile: "portraits/aiglondur.png"
+    canrecruit: true
+    unrenamable: true
+    modifications: {
+        <TRAIT_RESILIENT!
+        <TRAIT_INTELLIGENT!
+    }
+}
+
+CHARACTER_STATS_ANGARTHING = () -> {
+    type: "Dwarvish Witness"
+    id: "Angarthing"
+    name: _ "Angarthing"
+    profile: "portraits/angarthing.png"
+    unrenamable: true
+    <IS_HERO!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_QUICK!
+    }
+}
+
+CHARACTER_STATS_RATHELN = () -> {
+    type: "Arch Mage"
+    id: "Ratheln"
+    profile: "portraits/ratheln.png"
+    name: _ "Ratheln"
+    unrenamable: true
+    <IS_HERO!
+    modifications: {
+        <TRAIT_LOYAL!
+        <TRAIT_STRONG!
+    }
+}
+
+CHARACTER_STATS_DULCATULOS_AS_LEADER = () -> {
+    type: "Dwarvish Steelclad"
+    id: "Dulcatulos"
+    name: _ "Dulcatulos"
+    profile: "portraits/dulcatulos.png"
+    canrecruit: true
+    unrenamable: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_HEALTHY!
+    }
+}
+
+CHARACTER_STATS_DULCATULOS = () -> {
+    type: "Dwarvish Steelclad"
+    id: "Dulcatulos"
+    name: _ "Dulcatulos"
+    profile: "portraits/dulcatulos.png"
+    unrenamable: true
+    <IS_HERO!
+    upkeep: "free"
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_HEALTHY!
+    }
+}
+
+CHARACTER_STATS_KARRAG_PREREV = () -> {
+    type: "Dwarvish Rune Lord"
+    id: "Karrag"
+    name: _ "Karrag"
+    profile: "portraits/karrag.png~RIGHT()"
+    canrecruit: true
+    unrenamable: true
+}
+
+CHARACTER_STATS_KARRAG = () -> {
+    type: "Undead Dwarvish Rune Lord"
+    id: "Karrag"
+    name: _ "Karrag"
+    profile: "portraits/karrag.png~RIGHT()"
+    canrecruit: true
+    unrenamable: true
+}

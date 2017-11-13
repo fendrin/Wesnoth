@@ -1,0 +1,185 @@
+--textdomain wesnoth-thot
+
+CONDITIONAL_MAGE_RECRUITING = () -> {
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            side: 1
+            type_adv_tree: "Mage"
+            not: {
+                id: "Ratheln"
+            }
+            filter_wml: {
+                modifications: {
+                    trait: {
+                        id: "loyal"
+                    }
+                }
+            }
+        }
+        do: ->
+            If{
+                not: {
+                    have_unit: {
+                        search_recall_list: true
+                        side: 1
+                        type_adv_tree: "Mage"
+                        not: {
+                            id: "Ratheln"
+                        }
+                        filter_wml: {
+                            modifications: {
+                                trait: {
+                                    id: "loyal"
+                                }
+                            }
+                        }
+                    }
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "Without magic users from Master Perrin’s academy in your party, you can no longer recruit new ones."
+                        image: "wesnoth-icon.png"
+                    }
+                    Disallow_Recruit{
+                        side: 1
+                        type: "Mage"
+                    }
+                
+            }
+    }
+}
+
+OBJ_STAFF_OF_RIGHTEOUS_FLAME = (X, Y) -> {
+    <PLACE_IMAGE("scenery/temple1.png", X, Y)
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: X, y: Y
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "There an altar in this temple, and a staff lies upon it."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: X, y: Y
+        }
+        do: ->
+            Object{
+                id: "sorf	"-- Prevent it from being picked up more than once.
+                name: _ "Staff of Righteous Flame"
+                image: "items/staff-magic.png"
+                duration: "forever"
+                description: _ "This staff gives a dying mage a final strike that will destroy all nearby enemies."
+                cannot_use_message: _ "Only a mage may wield this Staff."
+                filter: {
+                    side: 1
+                    type_adv_tree: "Mage"
+                    x: x1, y: y1
+                }
+
+                then: ->
+                    Modify_Unit{
+                        filter: {
+                            id: unit.id
+                        }
+
+                        overlays: "misc/righteous-flame-icon.png"
+
+                        event: {
+                            id: "death_of_sorf_holder"
+                            name: "last breath"
+                            delayed_variable_substitution: false
+                            filter: {
+                                id: unit.id
+                            }
+                            do: ->
+                                Message{
+                                    speaker: "unit"
+                                    message: _ "Aaarrgh! Though I die, the flame of righteousness shall send you down to darkness!"
+                                }
+
+                                Animate_Unit{
+                                    filter: {
+                                        id: unit.id
+                                    }
+
+                                    flag: "boo"
+                                }
+
+                                Kill{
+                                    filter_adjacent: {
+                                        id: unit.id
+                                        is_enemy: true
+                                    }
+                                    animate: true
+                                    fire_event: true
+                                }
+
+                                Redraw{}
+                        }
+                    }
+                
+
+                effect: {
+                    apply_to: "new_ability"
+                    abilities: {
+                        <ABILITY_STEADFAST!
+                    }
+                }
+
+                effect: {
+                    apply_to: "new_animation"
+                    extra_anim: {
+                        flag: "boo"
+                        start_time: 0
+
+                        frame: {
+                            duration: 700
+                            halo: "halo/elven/faerie-fire-halo[1~7].png"
+                            blend_color: {255, 0, 0}
+                            blend_ratio: 0.5
+                            sound: "fire.wav"
+                        }
+                    }
+                }
+            }
+    }
+}
+
+RECALL_VETERAN = (TYPE, X, Y) -> {
+    recall: {
+        type: TYPE
+        or: {
+            race: "dwarf"
+        }
+        not: {
+            id: {"Aiglondur", "Dulcatulos"}
+        }
+        x: X, y: Y
+    }
+}
+
+RENAME_MASKED_DWARVES = (SIDE) -> {
+-- The Masked Dwarves are nameless, it's a part of their charm...
+    event: {
+        name: "recruit"
+        first_time_only: false
+        filter: {
+            side: SIDE
+        }
+        do: ->
+            MODIFY_UNIT({x: x1, y: y1}, "name", _ "Masked Dwarf")
+    }
+}

@@ -1,0 +1,354 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "Outriding the Outriders"
+    id: "7_Outriding_the_Outriders"
+    turns: 12
+    map: "campaigns/Sceptre_of_Fire/maps/7_Outriding_the_Outriders.map"
+    next_scenario: "8_The_Dragon"
+    victory_when_enemies_defeated: false
+    village_gold: 0
+
+    <SCENARIO_MUSIC("vengeful.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        id: "Alanin"
+        type: "Dragoon"
+        save_id: "Rugnur"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: 
+        shroud: true
+        fog: true
+        gold: 0
+        income: -2
+        village_gold: 0
+        <FLAG_VARIANT("loyalist")
+        team_name: "alanin"
+        user_team_name: _ "Alanin"
+    }
+
+    side: {
+        no_leader: true
+        side: 2
+        ai: {
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Alanin"
+                }
+                value: 1
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    type: {"Bowman", "Spearman"}
+                }
+                value: 0.1
+            }
+            avoid: {
+                x: {11, 17, 18, 16, 14, 22}
+                y: {5, 12, 20, 33, 28, 14}
+            }
+            village_value: 0
+            aggression: 1.0
+            caution: 0
+            grouping: false
+        }
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    story: {
+        part: {
+            story: _ "Rugnur had fled across the Arkan-thoria, but Alanin could not do that. He went south — back to the Wesnoth border."
+        }
+        part: {
+            story: _ "The elves followed both of them. First I will tell of their pursuit of Alanin, before we descend into the caves to learn Rugnur’s fate."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_07_NEW!)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Unhide_Unit{
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Reach the Wesnothian outpost in the south"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 0
+                }
+            }
+            Unit{
+                x: 1, y: 1
+                type: "Galleon"
+                side: 2
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Alanin"
+                message: _ "Well, the elves are behind me for now, but they will send riders to catch me, and elvish riders are faster than me."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "My only hope is to convince the peasants to stop the elves from passing through their land, so I can get ahead of them."
+            }
+
+            Unit{
+                type: "Elvish Outrider"
+                id: "Asaeri"
+                name: _ "Lord Asaeri"
+                x: 18, y: 1
+                side: 2
+                modifications: {
+                    <TRAIT_STRONG!
+                    <TRAIT_DEXTROUS!
+                }
+            }
+            Unit{
+                type: "Elvish Outrider"
+                id: "Gaelir"
+                name: _ "Gaelir"
+                x: 18, y: 1
+                side: 2
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_DEXTROUS!
+                }
+            }
+            Unit{
+                type: "Elvish Outrider"
+                id: "Salira"
+                name: _ "Salira"
+                x: 18, y: 1
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_STRONG!
+                    <TRAIT_QUICK!
+                }
+            }
+            Unit{
+                type: "Elvish Outrider"
+                id: "Losnin"
+                name: _ "Losnin"
+                x: 18, y: 1
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_STRONG!
+                    <TRAIT_RESILIENT!
+                }
+            }
+            Unit{
+                type: "Elvish Outrider"
+                id: "Ealin"
+                name: _ "Ealin"
+                x: 18, y: 1
+                side: 2
+                facing: "sw"
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_RESILIENT!
+                }
+            }
+            Kill{
+                type: "Galleon"
+            }
+            Scroll_To{
+                x: 18, y: 1
+            }
+            Message{
+                speaker: "Asaeri"
+-- wmllint: local spelling outride
+                message: _ "You cannot outride us, horseman of Wesnoth! Whatever message you are carrying, it will not be delivered!"
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "We shall see about that!"
+            }
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Unit{
+                type: "Elvish Outrider"
+                id: "Raesil"
+                name: _ "Raesil"
+                x: 18, y: 1
+                side: 2
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_RESILIENT!
+                }
+            }
+    }
+
+    event: {
+        name: "capture"
+        filter: {
+            id: "Alanin"
+        }
+        do: ->
+            Message{
+                speaker: "Alanin"
+                message: _ "The villagers here are loyal to Wesnoth. They should be willing to help me escape these elves!"
+            }
+            Unit{
+                type: "Spearman"
+                id: "Rolin"    -- wmllint: ignore
+                name: _ "Rolin"
+                x: x1, y: y1
+                side: 1
+                random_traits: true
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Message{
+                speaker: "Rolin"   -- wmllint: ignore
+                message: _ "We will certainly help any warrior of Wesnoth who needs our help!"
+            }
+    }
+
+    event: {
+        name: "capture"
+        first_time_only: false
+        filter: {
+            id: "Alanin"
+        }
+        do: ->
+            RANDOM("Spearman,Bowman")
+
+            Unit{
+                type: random
+                generate_name: true
+                x: x1, y: y1
+                side: 1
+                random_traits: true
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+
+            RANDOM("Spearman,Bowman")
+
+            Unit{
+                type: random
+                generate_name: true
+                x: x1, y: y1
+                side: 1
+                random_traits: true
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Alanin"
+
+            filter_location: {
+                terrain: {"Ce", "Ke"}
+            }
+        }
+        do: ->
+            MODIFY_UNIT({id: "Alanin"}, "profile", "portraits/alanin-older.png")
+
+            Unit{
+                type: "Lieutenant"
+                id: "Hadlin"   -- wmllint: ignore
+                name: _ "Hadlin"
+                x: 10, y: 63
+                side: 1
+                random_traits: false
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+            Message{
+                speaker: "Hadlin"  -- wmllint: ignore
+                message: _ "Who goes there?"
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "I’m a dragoon, with Haldric II’s personal bodyguard. I was sent on a mission in the northlands, and now elvish horsemen are chasing me. I barely evaded them."
+            }
+            Message{
+                speaker: "Hadlin"  -- wmllint: ignore
+                message: _ "I see. Well, come on in. I doubt they would be able to capture this fort, even if they did want to start a war, which I doubt."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+                carryover_report: false
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Alanin"
+                }
+                variable: "alanin"
+                kill: true
+            }
+            Kill{
+                not: {
+                    x: "recall", y: "recall"
+                }
+                side: 1
+            }
+            Foreach{
+                array: "dwarves"
+                do: ->
+                    VARIABLE("this_item.x", "recall")
+                    VARIABLE("this_item.y", "recall")
+-- to heal them
+                    VARIABLE("this_item.hitpoints", this_item.max_hitpoints)
+                    VARIABLE("this_item.moves", this_item.max_moves)
+                    VARIABLE("this_item.attacks_left", this_item.max_attacks)
+                    CLEAR_VARIABLE("this_item.status.slowed")
+-- no need for poisoned and petrified, as Elves do not have units with such abilities
+
+                    Unstore_Unit{
+                        variable: "this_item"
+                    }
+                
+            }
+            CLEAR_VARIABLE("dwarves")
+            CLEAR_VARIABLE("stored_Rugnur_side")
+    }
+}

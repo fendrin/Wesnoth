@@ -1,0 +1,86 @@
+--textdomain wesnoth-lib
+----
+---- Definition of an image.
+----
+
+_GUI_RESOLUTION = (_IMAGE_ATTRIBUTES) -> {
+    resolution: {
+
+        min_width: 0
+        min_height: 0
+
+        default_width: 0
+        default_height: 0
+
+        max_width: 0
+        max_height: 0
+
+        state_enabled: {
+
+            draw: {
+
+                image: {
+
+                    <_IMAGE_ATTRIBUTES
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Image_Definition{
+    id: "default"
+    description: "an image."
+
+    <_GUI_RESOLUTION({
+            name: "(text)"
+    })
+
+}
+
+Image_Definition{
+    id: "centered"
+    description: "an image."
+
+    <_GUI_RESOLUTION({
+            name: "(text)"
+            <GUI_CENTERED_IMAGE!
+    })
+
+}
+
+Image_Definition{
+    id: "tiled_to_size"
+    description: "an image."
+
+    <_GUI_RESOLUTION({
+            name: "(text)"
+            x: 0
+            y: 0
+            w: "(width)"
+            h: "(height)"
+            resize_mode: "tile"
+    })
+
+}
+
+Image_Definition{
+    id: "scaled_to_size"
+    description: "an image."
+
+    <_GUI_RESOLUTION({
+            name: "(text)"
+            x: 0
+            y: 0
+            w: "(width)"
+            h: "(height)"
+            resize_mode: "scale"
+    })
+
+}
+
+_GUI_RESOLUTION = nil

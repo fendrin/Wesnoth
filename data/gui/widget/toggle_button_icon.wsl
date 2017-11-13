@@ -1,0 +1,190 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a toggle button with only a changing image.
+---- It's used for the editor in the resize grid. When needed it can also be
+---- extended for usage with other widgets.
+----
+
+_GUI_ICON = () -> {
+    image: {
+        <GUI_CENTERED_IMAGE!
+
+        name: "(icon)"
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, SIZE) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: SIZE
+        min_height: SIZE
+
+        default_width: SIZE
+        default_height: SIZE
+
+        max_width: SIZE
+        max_height: SIZE
+
+        text_extra_width: 0
+        text_font_size: 0
+
+        state: {
+            enabled: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+
+            disabled: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+
+            focused: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30-active.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+        }
+
+----
+---- Selected
+----
+
+        state: {
+            enabled: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30-pressed.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+
+            disabled: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30-pressed.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+
+            focused: {
+
+                draw: {
+
+                    image: {
+                        x: 0
+                        y: 0
+                        w: SIZE
+                        h: SIZE
+                        name: "buttons/button_square/button_square_30-active-pressed.png"
+                    }
+
+                    <_GUI_ICON!
+
+                }
+
+            }
+        }
+
+    }
+
+}
+
+Toggle_Button_Definition{
+
+    id: "icon"
+    description: "This toggle button is meant to be used in the resize grid of the editor and only has an icon."
+
+    <_GUI_RESOLUTION(GUI_NORMAL__RESOLUTION!, 30)
+
+}
+
+Toggle_Button_Definition{
+
+    id: "icon_medium"
+    description: "Medium-sized version of the icon-only toggle button."
+
+    <_GUI_RESOLUTION(GUI_NORMAL__RESOLUTION!, 25)
+
+}
+
+Toggle_Button_Definition{
+
+    id: "icon_small"
+    description: "Small version of the icon-only toggle button."
+
+    <_GUI_RESOLUTION(GUI_NORMAL__RESOLUTION!, 16)
+
+}
+
+Toggle_Button_Definition{
+
+    id: "icon_tiny"
+    description: "Tiny version of the icon-only toggle button."
+
+    <_GUI_RESOLUTION(GUI_NORMAL__RESOLUTION!, 10)
+
+}
+
+_GUI_RESOLUTION = nil
+_GUI_ICON = nil

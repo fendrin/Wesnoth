@@ -1,0 +1,2 @@
+-- wmllint: no translatables
+INCLUDE("ai/ais/idle_ai.cfg")

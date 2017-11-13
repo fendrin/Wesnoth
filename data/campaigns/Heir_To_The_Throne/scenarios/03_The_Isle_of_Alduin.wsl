@@ -1,0 +1,380 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "03_The_Isle_of_Alduin"
+    name: _ "The Isle of Alduin"
+    map: "campaigns/Heir_To_The_Throne/maps/03_The_Isle_of_Alduin.map"
+    <TURNS(34, 24, 21)
+
+    <DEFAULT_SCHEDULE_AFTERNOON!
+
+    next_scenario: "04_The_Bay_of_Pearls"
+
+    <SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+    <EXTRA_SCENARIO_MUSIC("silvan_sanctuary.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("weight_of_revenge.ogg")
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the enemy leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    <HTTT_TRACK(JOURNEY_03_NEW!)
+
+    side: {
+        type: "Commander"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-elvish.png"
+        side: 1
+        canrecruit: true
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        gold: 140
+        controller: "human"
+        <FLAG_VARIANT("long")
+    }
+
+-- wmllint: recognize Delfador
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Usadar Q'kai"
+        name: _ "Usadar Q’kai"
+        side: 2
+        canrecruit: true
+        recruit: {"Orcish Grunt", "Wolf Rider", "Orcish Archer", "Troll Whelp", "Goblin Spearman"}
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <GOLD(30, 60, 100)
+        ai: {
+            recruitment_pattern: {"scout", "scout", "fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(1, 3, 5)
+        }
+
+--make the AI a lot more aggressive at night
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0
+            grouping: false
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+--make the orcs start with all the villages
+    <STARTING_VILLAGES(2, 45)
+
+--if anyone moves next to the ship, they get a rebuke from Konrad
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: {31, 31, 32}
+            y: {9, 10, 11}
+        }
+        do: ->
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("mad")
+                message: _ "This is no time to return to our vessel! We must take control of the island!"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/rock3.png", 25, 30)
+
+            Disallow_Recruit{
+                side: 1
+                type: "Mage"
+            }
+
+            NEED_DELFADOR({x: 26, y: 12})
+            Store_Unit{
+                variable: "konrad_store"
+                kill: true
+                filter: {
+                    id: "Konrad"
+                }
+            }
+            Store_Unit{
+                variable: "delfador_store"
+                kill: true
+                filter: {
+                    id: "Delfador"
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+
+--the ship that brought them here
+        do: ->
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Galleon"
+                side: 1
+                x: {33, 32}
+                y: {1, 10}
+            }
+
+            PLACE_IMAGE("units/transport/galleon.png~RC(magenta>red)", 31, 11)
+
+--move Konrad out of the ship and onto the keep
+            Move_Unit_Fake{
+                type: konrad_store.type
+                side: 1
+                x: {31, 26}
+                y: {11, 13}
+            }
+
+--show Konrad
+            Unstore_Unit{
+                variable: "konrad_store"
+            }
+            CLEAR_VARIABLE("konrad_store")
+
+            Redraw{
+            }
+
+--move Delfador out of the ship and onto the keep
+            Move_Unit_Fake{
+                type: delfador_store.type
+                side: 1
+                x: {31, 26}
+                y: {11, 12}
+            }
+
+--show Delfador
+            Unstore_Unit{
+                variable: "delfador_store"
+            }
+            CLEAR_VARIABLE("delfador_store")
+
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "And so the party landed on the Isle of Alduin."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "So this is Alduin. It looks a little... desolate."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I fear so, Konrad. It seems that the orcs have come even here. Here to the place where I was born, where I was trained."
+            }
+            Message{
+                speaker: "Usadar Q'kai"
+                message: _ "Who is that? Oh, a party of elves has landed. We shall drive them back into the sea!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I did not think the orcs would have come here. This island used to be so beautiful. We must recapture it! To arms!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 21, y: 10
+            side: 1
+        }
+        do: ->
+            Unit{
+                id: "Elrian"
+                name: _ "Elrian"
+                type: "Mage"
+                x: 20
+                y: 9
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_LOYAL!
+            }
+
+            Message{
+                speaker: "unit"
+                message: _ "I found someone hiding in the village!"
+            }
+            Message{
+                speaker: "Elrian"
+                message: _ "My lords, I have been hiding in the village from the orcs, like many of the other magi here. I pledge myself to your service; let us move swiftly to recapture the island!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Certainly, let us join together to fight the evil ones."
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "You can now recruit magi!"
+            }
+            if EASY
+                Message{
+                    speaker: "Konrad"
+                    <KONRAD_VARIATION_ELF("glad")
+                    message: _ "Surely no orc can stand against us with magi in our ranks! Their magical attacks almost always find their mark, even against well-defended troops."
+                }
+                Message{
+                    speaker: "Delfador"
+                    <DELFADOR_MENTORING_ELF!
+                    message: _ "Caution, young prince. It is very difficult to train inexperienced magi in combat. When they fight on the front lines of battle, you must protect magi with stronger units else the enemy will make short work of them."
+                }
+            
+            Allow_Recruit{
+                side: 1
+                type: "Mage"
+            }
+
+            VARIABLE("received_mages", true)
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Unit{
+                x: 6
+                y: 35
+                type: "Arch Mage"
+                id: "Seimus"
+                name: _ "Seimus"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+                <IS_LOYAL!
+            }
+
+-- The guy does not show up on the screen without some help
+            Redraw{
+            }
+            Delay{
+                time: 1250
+            }
+
+            Message{
+                speaker: "Seimus"
+                message: _ "Delfador, my old master! You have saved the island from the orcs!"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "My apprentice! How did the island fall to such as these?"
+            }
+
+            Message{
+                speaker: "Seimus"
+                message: _ "You have not heard, master Delfador? Asheviere is trying to control the entire western coast. She hired many orcs and sent them here. They were holding me until a ship could arrive to take me to Weldyn where I am to stand trial for treason for training magi!"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "We have come from fighting her forces at Blackwater. Where else has she attacked?"
+            }
+
+            Message{
+                speaker: "Seimus"
+                message: _ "She has taken control of the Bay of Pearls, long held by the Mermen, and has turned them into slaves. There they dive for pearls by which she grows richer every day. There are even rumors that she may break the ancient treaty and attack Elensefar!"
+            }
+
+            Message{
+                speaker: "Konrad"
+                message: _ "Can’t we strike back at her? How many forces does she have at the Bay of Pearls? Can we take it back from her?"
+            }
+
+            Message{
+                speaker: "Delfador"
+                message: _ "We must indeed go there. Let us therefore rest here a little, and then set sail for the Bay. Hopefully we will defeat her forces there!"
+            }
+
+            If{
+                variable: {
+                    name: "received_mages"
+                    not_equals: true
+                }
+
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        image: "wesnoth-icon.png"
+                        message: _ "You can now recruit magi!"
+                    }
+
+                    if EASY
+                        Message{
+                            speaker: "Konrad"
+                            <KONRAD_VARIATION_ELF("glad")
+                            message: _ "Surely no orc can stand against us with magi in our ranks! Their magical attacks almost always find their mark, even against well-defended troops."
+                        }
+                        Message{
+                            speaker: "Delfador"
+                            <DELFADOR_MENTORING_ELF!
+                            message: _ "Caution, young prince. It is very difficult to train inexperienced magi in combat. When they fight on the front lines of battle, you must protect magi with stronger units else the enemy will make short work of them."
+                        }
+                    
+                
+            }
+
+            Kill{
+                id: "Seimus"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/deaths.cfg")
+
+    event: {
+        name: "victory"
+        do: ->
+            Allow_Recruit{
+                side: 1
+                type: "Mage"
+            }
+
+            CLEAR_VARIABLE("received_mages")
+    }
+}

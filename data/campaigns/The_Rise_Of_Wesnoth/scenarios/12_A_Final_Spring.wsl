@@ -1,0 +1,778 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "12_A_Final_Spring"
+    name: _ "A Final Spring"
+    next_scenario: "13_Peoples_in_Decline"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/12_A_Final_Spring.map"
+    <TURNS(39, 36, 33)
+
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_12_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        side: 1
+        type: "Noble Commander"
+        unrenamable: true
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Humans"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(1, 12)
+
+    side: {
+        side: 2
+        type: "Grand Knight"
+        id: "King Addroran IX"
+        name: _ "King Addroran IX"
+        profile: "portraits/addroran.png"
+        canrecruit: true
+        <GOLD(220, 160, 120)
+        team_name: "Haldric"
+        user_team_name: _ "Humans"
+        recruit: {"Bowman", "Horseman", "Mage", "Spearman", "Knight", "Swordsman", "Peasant"}
+        ai: {
+            <NO_SCOUTS!
+            grouping: "defensive"
+            passive_leader: true
+            recruitment_pattern: {"fighter", "fighter", "archer", "mixed fighter"}
+        }
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <AI_CONTROLLER({}, 1, 2, {})
+
+    <STARTING_VILLAGES(2, 10)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Harak"
+        name: _ "Tan-Harak"
+        side: 3
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman"}
+        }
+        <GOLD(210, 250, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Hork"
+        name: _ "Tan-Hork"
+        side: 4
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Orcish Warrior"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer"}
+        }
+        <GOLD(210, 250, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+--{NO_SCOUTS}
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(2, 4, 8)
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Gulo"
+        name: _ "Tan-Gulo"
+        side: 5
+        canrecruit: true
+        recruit: {"Naga Fighter", "Vampire Bat"}
+        <GOLD(180, 220, 260)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "fighter", "scout"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <INCOME(2, 4, 8)
+    }
+
+--Time Areas broken - no visible change, use a halo with it
+    time_area: {
+        x: {1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5}             --,6,6
+        y: {17, 18, 19, 16, 17, 18, 19, 16, 17, 18, 19, 20, 16, 17, 18, 19, 17, 18, 19}  --,17,18
+        <MORNING!
+        <MORNING!
+        <AFTERNOON!
+        <AFTERNOON!
+        <DUSK!
+        <DAWN!
+    }
+
+    event: {
+        name: "prestart"
+
+--{PLACE_IMAGE (scenery/lighthouse.png) 3 18}
+        do: ->
+            Item{
+                x: 3
+                y: 18
+                image: "scenery/lighthouse.png"
+                halo: "halo/lighthouse-aura.png"
+            }
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 17, 24)
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>blue)", 20, 22)
+            PLACE_IMAGE("units/transport/galleon.png~RC(magenta>blue)", 21, 25)
+            PLACE_IMAGE("scenery/trapdoor-closed.png", 16, 30)
+            PLACE_IMAGE("scenery/signpost.png", 24, 24)
+            PLACE_IMAGE("scenery/signpost.png", 30, 44)
+            PLACE_IMAGE("scenery/signpost.png", 41, 32)
+            PLACE_IMAGE("scenery/signpost.png", 16, 4)
+            PLACE_IMAGE("scenery/signpost.png", 39, 11)
+            PLACE_IMAGE("scenery/signpost.png", 18, 17)
+
+            Recall{
+                id: "Lady Jessene"
+                x: 12
+                y: 27
+            }
+            Recall{
+                id: "Burin the Lost"
+                x: 14
+                y: 27
+            }
+            Recall{
+                id: "Sir Ruddry"
+                x: 13
+                y: 29
+            }
+            Recall{
+                id: "Sir Ladoc"
+                x: 13
+                y: 29
+            }
+            Recall{
+                id: "Minister Edren"
+                x: 14
+                y: 28
+            }
+
+            GUARD_UNIT("Swordsman", "Southbay Guard 1", _ "Southbay Guard", 2, 19, 33)
+            GUARD_UNIT("Swordsman", "Southbay Guard 2", _ "Southbay Guard", 2, 21, 30)
+            GUARD_UNIT("Swordsman", "Southbay Guard 3", _ "Southbay Guard", 2, 28, 24)
+            GUARD_UNIT("Swordsman", "Southbay Guard 4", _ "Southbay Guard", 2, 27, 22)
+-- wmllint: recognize Southbay Guard 1
+
+            Object{
+                id: "ruby_of_fire"
+                description: _ "The Ruby of Fire was imbued with magic in the distant west, and can be used to scorch enemies into submission."
+                silent: true
+                duration: "forever"
+                filter: {
+                    id: "Prince Haldric"
+                }
+                effect: {
+                    apply_to: "new_attack"
+                    name: "ruby of fire"
+                    description: _ "ruby of fire"
+                    icon: "attacks/fireball.png"
+                    type: "fire"
+                    range: "ranged"
+                    specials: {
+                        <WEAPON_SPECIAL_MAGICAL!
+                    }
+                    damage: 14
+                    number: 4
+                }
+
+                effect: {
+                    apply_to: "new_animation"
+                    attack_anim: {
+                        filter_attack: {
+                            name: "ruby of fire"
+                        }
+
+                        <MISSILE_FRAME_FIREBALL_XY(0, 0)
+                        start_time: -200
+                        frame: {
+                            sound: "fire.wav"
+                        }
+                    }
+                }
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of King Addroran IX"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                <AI_CONTROLLER_NOTE!
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Several months pass. Jessene has translated Lich-Lord Caror’s Book of Fire and Darkness. Prince Haldric is busy probing the secrets of the Ruby of Fire."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I think I’ve figured something out. Look."
+                image: "portraits/haldric-annoyed.png"
+            }
+
+            Animate_Unit{
+                filter: {
+                    id: "Prince Haldric"
+                }
+
+                facing: {
+                    x: 12, y: 28
+                }
+
+                flag: "attack"
+
+                primary_attack: {
+                    name: "ruby of fire"
+                }
+
+                hits: true
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Ouch! Hot, hot, hot! Gee, somebody should really attach this thing to a scepter or something! I think I’ll save it for closer-ranged combat for now."
+                image: "portraits/haldric-mad.png"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Watch it! Well, at least you’re improving."
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Humph. Fool of a boy’s just gonna burn us all up. Humans, always playing at being wizards."
+                image: "portraits/burin-annoyed.png"
+            }
+            Message{
+                speaker: "Southbay Guard 1"
+                message: _ "Orcs sighted! They’ve seized the frontier! To arms! To arms!"
+            }
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "For the glory of Southbay!"
+            }
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "Prince Haldric, I’ll concentrate on holding Southbay. You must defeat the orcs. The ships aren’t ready yet. We must defeat this army of orcs to buy us more time. Try not to kill us all with that ruby!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Very well. I’ll do my best."
+            }
+    }
+
+    event: {
+        name: "turn 5"
+        do: ->
+            Move_Unit_Fake{
+                type: "Merman Warrior"
+                side: 1
+                x: {1, 2, 3}
+                y: {21, 20, 20}
+            }
+
+            HERO("Merman Warrior", "Lord Typhon", _ "Lord Typhon", 1, 3, 20, "portraits/typhon.png")
+            LOYAL_UNIT(1, "Merman Fighter", 2, 20)
+            LOYAL_UNIT(1, "Merman Hunter", 4, 19)
+
+            Message{
+                speaker: "Lord Typhon"
+                message: _ "I come seeking the Crown Prince!"
+            }
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "Who is this fish man?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "He’s a large part of the reason your son made it to the lands of the east. Lord Typhon provided us with pearls and an escort for our voyages in exchange for steel trident points and fishhooks. It’s difficult to be a blacksmith when you live underwater."
+            }
+            Message{
+                speaker: "Lord Typhon"
+                message: _ "Indeed it is. But where is the Prince?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "The Crown Prince is dead. But we have need of your services again—"
+            }
+            Message{
+                speaker: "Lord Typhon"
+                message: _ "Under the same terms?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Agreed."
+            }
+            Message{
+                speaker: "Lord Typhon"
+                message: _ "Good. We need the steel for our own war in the deep. I formally place the might of the Merfolk at your disposal!"
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "You can now recruit merfolk!"
+                image: "wesnoth-icon.png"
+            }
+
+            Allow_Recruit{
+                side: 1
+                type: {"Merman Fighter", "Merman Hunter"}
+            }
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of King Addroran IX"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lord Typhon"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "turn 30"
+        do: ->
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "Make haste. We must secure the frontier or it’s all over!"
+            }
+    }
+
+    event: {
+        name: "turn 4"
+        do: ->
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 5
+                x: {45, 44, 43, 42}
+                y: {22, 22, 23, 23}
+            }
+
+-- wmllint: whofield LIVING_INTEL 2
+            LIVING_INTEL("Familiar", "Familiar", _ "Familiar", "portraits/familiar.png", 5, 42, 23)
+            Unit{
+                amend: true
+                facing: "sw"
+            }
+
+            Move_Unit_Fake{
+                type: "Ancient Lich"
+                side: 5
+                x: {45, 44, 43, 42, 42}
+                y: {22, 22, 23, 23, 24}
+            }
+
+-- wmllint: whofield UNDEAD_INTEL 2
+            UNDEAD_INTEL("Ancient Lich", "Lich-Lord Jevyan", _ "Lich-Lord Jevyan", "portraits/jevyan.png", 5, 42, 24)
+            Unit{
+                amend: true
+                facing: "sw"
+            }
+
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "King Addroran, your day is done. Prepare to be ground to dust. If you’re lucky I may raise you from death for my own amusement. Oh, and what’s this? I sense, I sense the Ruby of Fire."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "You monster! You’ve betrayed our people — to ally yourself with these orcs?!"
+            }
+
+            UNDEAD_INTEL("Death Knight", "Fool Prince", _ "Fool Prince", "portraits/undead/death-knight.png", 5, 43, 24)
+
+            Message{
+                speaker: "Lich-Lord Jevyan"
+                message: _ "Fool girl! My ambition is boundless; I will survive to rule the orcs and all else. That is more than can be said for you. King Addroran, meet your son — you’ll be joining him soon enough."
+            }
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "NO!"
+            }
+            Message{
+                speaker: "Fool Prince"
+                message: _ "Fath-er! Join... us..." -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "His older brother was more attractive..."
+            }
+
+            Kill{
+                id: "Lich-Lord Jevyan"
+            }
+
+            Move_Unit_Fake{
+                type: "Ancient Lich"
+                side: 5
+                x: {42, 42, 43, 44, 45}
+                y: {24, 23, 23, 22, 22}
+            }
+
+            LOYAL_UNIT(5, "Revenant", 41, 22)
+            LOYAL_UNIT(5, "Bone Shooter", 43, 24)
+            if NORMAL
+                LOYAL_UNIT(5, "Chocobone", 42, 23)
+                LOYAL_UNIT(5, "Chocobone", 43, 23)
+            
+
+            if HARD
+                LOYAL_UNIT(5, "Chocobone", 42, 23)
+                LOYAL_UNIT(5, "Chocobone", 43, 23)
+                LOYAL_UNIT(5, "Necrophage", 44, 23)
+                LOYAL_UNIT(5, "Necrophage", 44, 22)
+            
+            Kill{
+                id: "Familiar"
+            }
+
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 5
+                x: {42, 43, 44, 45}
+                y: {23, 23, 22, 22}
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Their reserves are arriving, and we haven’t secured the frontier! We’re dead!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 24
+            y: 24
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Southbay"
+                image: "wesnoth-icon.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 30
+            y: 44
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "To Clearwater Port"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 41
+            y: 32
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "To the Midlands &amp; Oldwood"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 16
+            y: 4
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "To the Northrun"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 39
+            y: 11
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "To the Midlands"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 18
+            y: 17
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "New Southbay"
+                image: "wesnoth-icon.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 16
+            y: 30
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "They sealed it, there is no escape for you!"
+                image: "wesnoth-icon.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "King Addroran IX"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I am finished."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We needed him to hold Southbay. We’re done for!"
+                image: "portraits/haldric-surprised.png"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve defeated the orcs. Let’s rig the ships and get out of here."
+            }
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "Oh, for my sons... — As we agreed. I will hold Southbay until my last breath."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "With the help of the Merfolk, and my knowledge of an island that will make a good re-provisioning point, we should be able to embark for the great lands that are to the east."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "What I don’t like is the fact that Lich-Lord Jevyan, after whom our very capital is named, betrayed my people. To make matters worse, he knows that you have that ruby."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "There’s not much we can do about that now. I dub this fine ship the Eldaric, in honor of my father. About that island..."
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Great, more boats, and now an ocean!"
+            }
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "After you make it to this new land, send some of the ships back, for there may still be survivors in Southbay."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Fool Prince"
+        }
+        do: ->
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "My son!"
+            }
+    }
+
+    event: {
+        name: "attack"
+
+        filter: {
+            id: "King Addroran IX"
+        }
+        do: ->
+            Message{
+                speaker: "King Addroran IX"
+                message: _ "For the glory of Southbay!"
+            }
+    }
+}

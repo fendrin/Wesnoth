@@ -1,0 +1,621 @@
+--textdomain wesnoth-dm
+
+-- During the plot of this campaign Delfador changes recall lists more
+-- often than most Wesnoth characters change their underwear.  This file
+-- exists to encapsulate all that machinery and the comments explaining
+-- what it does.
+
+-- That means: *ALL* recall list manipulation should be done *HERE*!
+-- The point is to have it in one place so the complexity can be audited.
+
+MEMOIRS_STORE_MATCHING_UNITS = (WML, VAR) ->
+-- Store filtered units on Defador's side, except him, into an array variable
+    Store_Unit{
+        kill: true
+        variable: VAR
+        filter: {
+            side: 1
+            and: {
+                not: {
+                    id: "Delfador"
+                }
+            }
+            <WML
+        }
+    }
+
+
+MEMOIRS_STORE_UNITS = (VAR) ->
+-- Store all units on Delfador's side, except him, into an array variable
+    MEMOIRS_STORE_MATCHING_UNITS({}, VAR)
+
+
+MEMOIRS_UNSTORE_UNITS = (VAR) ->
+-- Unstore units from an array back into existence
+    Foreach{
+        array: VAR
+        do: ->
+            Unstore_Unit{
+                variable: "this_item"
+                find_vacant: true
+                x: "recall"
+                y: "recall"
+            }
+            Heal_Unit{
+                filter: {
+                    id: this_item.id
+                }
+                amount: 999
+            }
+
+    }
+
+    Clear_Variable{
+        name: VAR
+    }
+}
+
+SUBSUME_SIDE_AND_VILLAGES = (SIDE) -> {
+-- first change village ownership
+    store_villages: {
+        owner_side: SIDE
+
+        variable: "side_villages"
+    }
+    foreach: {
+        array: "side_villages"
+        do: ->
+            Capture_Village{
+                side: 1
+                x: this_item.x, y: this_item.y
+            }
+
+    }
+    <CLEAR_VARIABLE("side_villages")
+
+    modify_unit: {
+        filter: {
+            side: SIDE
+        }
+        moves: this_unit.max_moves
+    }
+--next, turn off canrecruit for the leader and change all allegiances.
+    <MODIFY_UNIT({side: SIDE}
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 84:     canrecruit=yes) canrecruit no}
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 85:     {MODIFY_UNIT side={SIDE} side 1}
+
+        modify_side: {
+            side: SIDE
+            hidden: true
+        }
+        redraw: {
+            side: 1
+        }
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: MODIFY_UNIT closed by define at line 92
+
+-- At the end of Ur-Thorodur (8) Delf loses Lionel and his Wesnothian guards.
+-- In the otherworld scenarios Delf starts with an empty recall list
+-- and can only recruit undead.
+
+        SAVE_WESNOTH_VETERANS: () -> {
+            heal_unit: {
+                filter: {
+                    side: 1
+                }
+                amount: "full"
+                animate: false
+                moves: "full"
+                restore_attacks: true
+                restore_statuses: true
+            }
+            store_unit: {
+-- When next we meet, it will be in Garard's chambers
+                filter: {
+                    id: "Lionel"
+                }
+                variable: "Lionel"
+                kill: true
+            }
+            <MEMOIRS_STORE_UNITS("delfador_lionels_guard")
+        }
+
+-- At the beginning of Wasteland (11), Delf loses his undead veterans
+-- and gets to recruit elves. The undead will get one more chance to
+-- shine in Showdown in the Northern Swamp (20). Note: this macro needs
+-- to be called from a start or prestart event, before recruiting can
+-- occur.
+
+        SAVE_UNDEAD_VETERANS: () -> {
+            <MEMOIRS_STORE_UNITS("dead_recall")
+        }
+
+-- At the end of Wasteland (11), Chantal's side 3 gets absorbed into Delfador's
+-- side 1.
+
+        CHANTAL_FOLLOWS_DELFADOR: () -> {
+            <MODIFY_UNIT({id: "Chantal"}, "canrecruit", false)
+            <MODIFY_UNIT({id: "Chantal"}, "overlays", "misc/hero-icon.png")
+            <MODIFY_UNIT({id: "Chantal"}, "ellipse", "misc/ellipse-hero")
+            <MODIFY_UNIT({side: 3}, "side", 1)
+            modify_side: {
+                side: 3
+                hidden: true
+            }
+        }
+
+-- In Terror at the Ford of Parthyn (12), Delfador gets control of some
+-- loyalist troops and later some mages.  We'll use SUBSUME_SIDE_AND_VILLAGES
+-- for these.
+
+-- At the end of Terror at the Ford of Parthyn (12), Chantal leaves to
+-- warn the North Elves; she won't be available until the Elves and
+-- Delfador meet again.
+
+        CHANTAL_DEPARTS: () -> {
+            store_unit: {
+                variable: "chantal_store"
+                kill: true
+                filter: {
+                    id: "Chantal"
+                }
+            }
+        }
+
+-- At the beginning of The Return of Trouble (13) Kalenz must temporarily
+-- become the leader of side 1, with an empty recall list. Kalenz will
+-- rejoin Delfador at the end of To Save The King (15).
+
+        KALENZ_TAKES_CONTROL: () -> {
+-- Delfador departs the scene
+            store_unit: {
+                variable: "delfador_store"
+                kill: true
+                filter: {
+                    id: "Delfador"
+                }
+            }
+
+-- Survivors from Terror at the Ford of Parthyn will be conditionally
+-- available depending on which group Delfador is running with in
+-- the future.  No need to filter out Chantal as she is already gone.
+            <MEMOIRS_STORE_MATCHING_UNITS({race: "human"}, "delfador_human_veterans")
+            <MEMOIRS_STORE_MATCHING_UNITS({race: "elf"}
+                not: {
+                    id: "Kalenz"
+                }
+
+-- Kalenz, the new protagonist, should have an empty recall list
+                kill: {
+                    side: 1
+                    not: {
+                        id: "Kalenz"
+                    }
+                }
+
+-- New recruit list for Kalenz
+                set_recruit: {
+                    side: 1
+-- Don't cut Kalenz back to recruiting L1s only, it's not survivable
+-- in the scenario where this is used.
+                    recruit: {ELVES!, ELVES2!}
+                }
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: MEMOIRS_STORE_MATCHING_UNITS closed by define at line 200
+
+-- At the end of The Return of Trouble (13), Chantal rejoins Kalenz.
+
+                CHANTAL_RETURNS: (X, Y) -> {
+                    unstore_unit: {
+                        variable: "chantal_store"
+                        find_vacant: true
+                        x: X
+                        y: Y
+                    }
+                    <CLEAR_VARIABLE("chantal_store")
+                    heal_unit: {
+                        filter: {
+                            id: "Chantal"
+                        }
+                        amount: "full"
+                        animate: false
+                        moves: "full"
+                        restore_attacks: true
+                        restore_statuses: true
+                    }
+                }
+
+-- In Shadows (14) Delfador reappears partway through the scenario,
+-- still attached to side 1 but not its leader (which is still Kalenz).
+-- He brings with him some Wesnothian troops; his recall list is
+-- otherwise empty, and he has no keep in this scenario.
+
+                DELFADOR_REAPPEARS: (X, Y) -> {
+                    move_unit_fake: {
+                        type: delfador_store.type
+                        side: 1
+                        x: X
+                        y: Y
+                    }
+
+                    <VARIABLE("delfador_store.facing", "nw")
+                    unstore_unit: {
+                        variable: "delfador_store"
+                        find_vacant: true
+                        x: X
+                        y: Y
+                    }
+
+-- Force the fog to clear
+                    redraw: {
+                        clear_shroud: true
+                        side: 1
+                    }
+
+-- He's making a dramatic entrance.
+                    scroll_to: {
+                        x: X, y: Y
+                    }
+
+-- Delfador might have been wounded before he was stored. Full-heal him.
+                    <FULL_HEAL({id: "Delfador"})
+                    <MODIFY_UNIT({id: "Delfador"}, "canrecruit", false)
+                    <MAKE_HERO("Delfador")
+
+                    <CLEAR_VARIABLE("delfador_store")
+
+-- FIXME: Relies on an implementation accident.
+-- This sequence of declarations happens to put the units where we want
+-- them - Shock Troopers and Royal Guard north of Delfador, towards the
+-- enemy, and the White Mages behind him - but this is an accident of the
+-- vacancy-finding algorithm.  Ideally we want to use formula syntax to
+-- say things like x,y=$({X}-1),$({Y}+1) below, but  that doesn't work
+-- reliably yet in 1.7.0 (units randomly fail to appear when it's tried).
+                    <NAMED_UNIT(1, "Royal Guard", X, Y, "Clogrin", _ "Clogrin", {facing: "nw"})
+                    <NAMED_UNIT(1, "White Mage", X, Y, "Theorsten", _ "Theorsten", {facing: "nw"})
+                    <NAMED_UNIT(1, "White Mage", X, Y, "Igler", _ "Igler", {facing: "nw"})
+                    <NAMED_UNIT(1, "White Mage", X, Y, "Larsin", _ "Larsin", {facing: "nw"})
+                    <NAMED_UNIT(1, "White Mage", X, Y, "Aldrin", _ "Aldrin", {facing: "nw"})
+                    <NAMED_UNIT(1, "Shock Trooper", X, Y, "Gren", _ "Gren", {facing: "nw"})
+                    <NAMED_UNIT(1, "Shock Trooper", X, Y, "Droni", _ "Droni", {facing: "nw"})
+                    <NAMED_UNIT(1, "Shock Trooper", X, Y, "Artor", _ "Artor", {facing: "nw"})
+                }
+
+-- At the end of Shadows (14), control of side 1 needs to be handed
+-- back to Delfador. He gets his elvish veterans back, but he's not
+-- Kalenz (e.g current or former High Lord of the Elves) so he can't
+-- recruit L2s.  This macro will be used in Prince of Wesnoth (20) as
+-- well.
+
+                DELFADOR_TAKES_CONTROL: () -> {
+                    <MODIFY_UNIT({id: "Kalenz"}, "canrecruit", false)
+                    <MAKE_HERO("Kalenz")
+                    <UNMAKE_HERO("Delfador")
+                    <MODIFY_UNIT({id: "Delfador"}, "canrecruit", true)
+                    <MEMOIRS_UNSTORE_UNITS("delfador_elvish_veterans")
+                    disallow_recruit: {
+                        side: 1
+                        type: ELVES2!
+                    }
+                }
+
+-- At the end of Save the Prince (15), Delfador loses Kalenz, Chantal, his
+-- Elvish veterans, and the ability to recruit elves.  This is as it
+-- should be; he's returning to human lands. He also loses his rescue
+-- force of Wesnothians.
+
+                ELVES_DEPART: () -> {
+--[kill]
+--    id=Delfador
+--[/kill]
+                    kill: {
+                        id: "Clogrin"
+                    }
+                    kill: {
+                        id: "Aldrin"
+                    }
+                    kill: {
+                        id: "Theorsten"
+                    }
+                    kill: {
+                        id: "Igler"
+                    }
+                    kill: {
+                        id: "Larsin"
+                    }
+                    kill: {
+                        id: "Artos"
+                    }
+                    kill: {
+                        id: "Droni"
+                    }
+                    kill: {
+                        id: "Glen"
+                    }
+
+-- now store elvish NPCs
+                    store_unit: {
+                        variable: "chantal_store"
+                        kill: true
+                        filter: {
+                            id: "Chantal"
+                        }
+                    }
+                    store_unit: {
+                        variable: "kalenz_store"
+                        kill: true
+                        filter: {
+                            id: "Kalenz"
+                        }
+                    }
+-- store elves (to reappear later)
+                    <MEMOIRS_STORE_UNITS("delfador_elvish_veterans")
+                    disallow_recruit: {
+                        side: 1
+                        type: ELVES!
+                    }
+                }
+
+-- Delfador returns to Weldyn in The King's Council (16).  This is when he
+-- plugs back into the Wesnothian power structure, though the recruiting
+-- consequences are delayed because 16 is talk-only.
+--
+-- At the beginning of A New Ally (17), Delfador gets back the
+-- Wesnothians (his original recruit list), plus the human survivors
+-- from Terror at the Ford of Parthyn (12). However we don't bring back
+-- Lionel, the cutscene in Dark Skies over Weldyn (16) has him
+-- commanding the defenses of Weldyn.
+--
+
+                RESTORE_WESNOTHIAN_VETERANS: () -> {
+                    <MEMOIRS_UNSTORE_UNITS("delfador_lionels_guard")
+                    <MEMOIRS_UNSTORE_UNITS("delfador_human_veterans")
+                }
+
+-- At the end of A New Ally (17), the surviving Dwarvish units (and Ulrek)
+-- follow Delfador, going on his (human) recall list.
+
+                DWARVES_FOLLOW_DELFADOR: () -> {
+-- Relgorn departs for Knalga
+                    kill: {
+                        id: "Relgorn"
+                        fire_event: false
+                    }
+-- Ulrek and the rest of the dwarves accompany Delfador
+-- Ulrek is made a hero for the rest of his appearance,
+-- as Relgorn (his son) won't think well of Delfador in
+-- HttT if Ulrek gets killed.
+                    <MODIFY_UNIT({id: "Ulrek"}, "canrecruit", false)
+                    <MAKE_HERO("Ulrek")
+                    <MODIFY_UNIT({side: 2}, "side", 1)
+                    modify_side: {
+                        side: 2
+                        hidden: true
+                    }
+                }
+
+-- At the beginning of Portal of Doom (18), Delf acquires the ability to
+-- recruit dwarves via Ulrek.  (Should be called from the prestart event.)
+
+                DELFADOR_GETS_DWARVES: () -> {
+                    allow_recruit: {
+                        side: 1
+                        type: {DWARVES!, DWARVES2!}
+                    }
+                }
+
+-- At the beginning of Showdown in the Northern Swamp (19), Kalenz
+-- rejoins Delfador.  Chantal is not here for this one.
+
+                KALENZ_REJOINS_DELFADOR: (X, Y) -> {
+                    unstore_unit: {
+                        variable: "kalenz_store"
+                        find_vacant: true
+                        x: X
+                        y: Y
+                    }
+                    <CLEAR_VARIABLE("kalenz_store")
+                    heal_unit: {
+                        filter: {
+                            id: "Kalenz"
+                        }
+                        amount: "full"
+                        animate: false
+                        moves: "full"
+                        restore_attacks: true
+                        restore_statuses: true
+                    }
+-- Delfador regains the ability to recruit L1 elves through Kalenz
+-- This is mostly for storyline purpose, as Delfador will almost
+-- certainly already have better units for this sort of battle.
+                    allow_recruit: {
+                        side: 1
+                        type: ELVES!
+                    }
+-- FIXME: Should side 1 get Kalenz's veterans or ability to recruit L2s?
+                }
+
+-- Also at the beginning of Showdown in the Northern Swamp (19),
+-- any undead veterans Delfador has left from the Houses of the Dead
+-- and The Gate Between Worlds scenarios return to fight for the living.
+-- They get finally dispelled at the end of the scenario.
+
+                UNDEAD_REJOIN_DELFADOR: () -> {
+                    <MEMOIRS_UNSTORE_UNITS("dead_recall")
+                }
+
+-- Shortly afterwards, Lionel puts his troops under Delfador's command.
+-- We'll use SUBSUME_SIDE_AND_VILLAGES for this.
+
+-- At the end of Showdown in the Northern Swamp (19), Delfador departs
+-- the scene: Kalenz will lead side 1 in the next scenario, 26 years
+-- later.  This is preparation.
+                DELFADOR_DEPARTS_AGAIN: () -> {
+-- He's not going to be where he can recruit dwarves again.
+                    disallow_recruit: {
+                        side: 1
+                        type: {DWARVES!, DWARVES2!}
+                    }
+-- Delfador goes away
+                    store_unit: {
+                        variable: "delfador_store"
+                        kill: true
+                        filter: {
+                            id: "Delfador"
+                        }
+                    }
+-- Delfador dismissed his undead veterans
+                    <CLEAR_VARIABLE("dead_recall")
+-- It would be nice to let Delfador keep his other veterans, but that
+-- would stretch the storyline a bit far.  Human veterans will get
+-- old; dwarves have longer lifespans, but letting Delfador have
+-- them back would imply that dwarves had been following him around
+-- *in Wesnoth* for 26 years.  Revisit this if we let Delfador
+-- have his elvish veterans for this battle.
+-- If the player has recruited any elves, store them
+                    store_unit: {
+                        variable: "delfador_elvish_veterans"
+                        mode: "append"
+                        filter: {
+                            side: 1
+                            race: "elf"
+                            not: {
+                                id: "Kalenz"
+                            }
+                        }
+                    }
+                    <MEMOIRS_STORE_MATCHING_UNITS({
+                            not: {
+                                id: "Kalenz"
+                            }
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 489:     ) wesnoth_victors}
+                            <CLEAR_VARIABLE("wesnoth_victors")
+-- Kalenz will lead in next scenario
+                            <UNMAKE_HERO("Kalenz")
+                            <MODIFY_UNIT({id: "Kalenz"}, "canrecruit", true)
+                            modify_unit: {
+                                filter: {
+                                    id: "Kalenz"
+                                }
+                                x: "recall", y: "recall"
+                            }
+err: ../attic/data/campaigns/Delfadors_Memoirs/utils/sides.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: MEMOIRS_STORE_MATCHING_UNITS closed by define at line 497
+
+-- At the beginning of Prince of Wesnoth (20) Kalenz is running
+-- things again.  Delfador will make another entrance, but without the ability
+-- to recruit loyalists and mages (he's going against Prince Eldred)
+-- and gets back the Elvish recall list. Chantal reappears as well.
+
+-- GL-2016JUL It's been 26 years. All the elves should be in perfect health,
+-- and have advanced a level from when last seen. Kalenz was recalled to
+-- (2,19) earlier.
+
+                            DELFADOR_JOINS_ELVES: () -> {
+                                unstore_unit: {
+                                    variable: "chantal_store"
+                                    find_vacant: true
+                                    x: 4
+                                    y: 18
+                                }
+                                <CLEAR_VARIABLE("chantal_store")
+                                <FOREACH("delfador_elvish_veterans", "i")
+                                unstore_unit: {
+                                    variable: "delfador_elvish_veterans[#{i]"
+                                    find_vacant: true
+                                    x: 2, y: 19
+                                }
+                                <NEXT("i")
+                                clear_variable: {
+                                    name: "delfador_elvish_veterans"
+                                }
+                                kill: {
+                                    side: 1
+                                    not: {
+                                        race: "elf"
+                                    }
+                                }
+                                modify_unit: {
+                                    filter: {
+                                        side: 1
+                                    }
+                                    type: ""
+                                }
+                                heal_unit: {
+                                    filter: {
+                                        side: 1
+                                    }
+                                    amount: "full"
+                                    animate: false
+                                    moves: "full"
+                                    restore_attacks: true
+                                    restore_statuses: true
+                                }
+                                modify_unit: {
+                                    filter: {
+                                        side: 1
+                                        not: {
+                                            id: {"Kalenz", "Chantal"}
+                                        }
+                                    }
+                                    x: "recall", y: "recall"
+                                }
+--Lowel and Eldred are the enemy humans when this fires
+                                kill: {
+                                    race: "human"
+                                    not: {
+                                        id: "Lowel"
+                                        or: {
+                                            id: "Eldred"
+                                        }
+                                    }
+                                }
+                                disallow_recruit: {
+                                    side: 1
+                                    type: LOYALISTS!
+                                }
+                                disallow_recruit: {
+                                    side: 1
+                                    type: {"Mage", "Arch Mage", "Great Mage", "Silver Mage", "White Mage", "Red Mage"}
+                                }
+                            }
+
+-- At the end of Prince of Wesnoth (20), Delfador intervenes.
+
+                            DELFADOR_ARRIVES: (X, Y) -> {
+                                <CLEAR_VARIABLE("delfador_store")
+-- recreate Delfador as he is now 54, 26 years older than last time.
+                                unit: {
+                                    <OLD_DELFADOR!
+                                    x: X, y: Y
+                                    placement: "map"
+                                    passable: true
+                                    overwrite: false
+                                    side: 1
+                                }
+-- clears any fog around his appearance
+                                redraw: {
+                                    side: 1
+                                }
+                            }
+
+-- At the end of Prince of Wesnoth (20), Delfador gets control of side 1 again.
+-- We reuse the macro from scenario 14.
+
+-- At the beginning of Clash at the Manor (21), our favorite Elvish NPCs
+-- reappear. From this point onward Delfador recruits only elves.
+
+                            ELVISH_NPCS_REAPPEAR: () -> {
+--wmllint: validate-off
+                                unit: {
+                                    id: "Kalenz"
+                                    type: "Elvish High Lord"
+                                    placement: "leader"
+                                }
+
+                                unit: {
+                                    id: "Chantal"
+                                    type: "Elvish Shyde"
+                                    placement: "leader"
+                                }
+--wmllint: validate-on
+                            }
+
+-- We're done.

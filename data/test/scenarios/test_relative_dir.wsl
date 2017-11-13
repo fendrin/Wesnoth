@@ -1,0 +1,125 @@
+--Note that this is not actually a unit test,
+--it is just a test to visually inspect what
+--get relative dir, and the map location
+--rotation function, are doing, for purpose of
+--manual debugging.
+err: ../attic/data/test/scenarios/test_relative_dir.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 7: #define ROTATE_HEX_WITH_TERRAIN terrain
+
+Store_Rotate_Map_Location{
+    variable: "ml"
+    source: {
+        x: center.x
+        y: center.y
+    }
+    destination: {
+        x: ml.x
+        y: ml.y
+    }
+}
+Terrain{
+    x: ml.x
+    y: ml.y
+    terrain: "#{terrain}"
+}
+err: ../attic/data/test/scenarios/test_relative_dir.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! toplevel closed by define at line 23
+
+GENERIC_UNIT_TEST("test_relative_dir", {
+        is_unit_test: false
+        event: {
+            name: "start"
+            do: ->
+                Modify_Unit{
+                    filter: {
+                        side: {1, 2}
+                    }
+                    max_moves: 100
+                }
+        }
+
+        event: {
+            name: "moveto"
+            first_time_only: false
+            do: ->
+                Replace_Map{
+                    map: "#{test/maps/generic_unit_test.map}"
+                }
+
+                VARIABLE("mode", unit.side)
+                VARIABLE_OP("mode", "sub", 1)
+
+                Chat{
+err: ../attic/data/test/scenarios/test_relative_dir.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 50:             message = "mode = " $mode
+                }
+
+                VARIABLE("x", 0)
+                While{
+                    <VARIABLE_CONDITIONAL("x", "less_than", 17)
+                    do: ->
+                        VARIABLE("y", 0)
+                        While{
+                            <VARIABLE_CONDITIONAL("y", "less_than", 10)
+                            do: ->
+                                Store_Relative_Dir{
+                                    variable: "temp"
+                                    source: {
+                                        x: x1
+                                        y: y1
+                                    }
+                                    destination: {
+                                        x: x
+                                        y: y
+                                    }
+                                    mode: mode
+                                }
+                                Label{
+                                    x: x
+                                    y: y
+                                    text: temp
+                                }
+                                VARIABLE_OP("y", "add", 1)
+                            
+                        }
+                        VARIABLE_OP("x", "add", 1)
+                    
+                }
+
+                VARIABLE("ml.x", 7)
+                VARIABLE("ml.y", 5)
+
+                VARIABLE("center.x", x1)
+                VARIABLE("center.y", y1)
+
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+                ROTATE_HEX_WITH_TERRAIN("Hd")
+
+                VARIABLE("ml.x", 7)
+                VARIABLE("ml.y", 5)
+
+                Terrain{
+                    x: ml.x
+                    y: ml.y
+                    terrain: "Hd^Fp"
+                }
+
+                VARIABLE("ml.x", 11)
+                VARIABLE("ml.y", 5)
+
+                ROTATE_HEX_WITH_TERRAIN("Ai")
+                ROTATE_HEX_WITH_TERRAIN("Ai")
+                ROTATE_HEX_WITH_TERRAIN("Ai")
+
+                VARIABLE("ml.x", 11)
+                VARIABLE("ml.y", 5)
+
+                Terrain{
+                    x: ml.x
+                    y: ml.y
+                    terrain: "Md"
+                }
+        }
+})

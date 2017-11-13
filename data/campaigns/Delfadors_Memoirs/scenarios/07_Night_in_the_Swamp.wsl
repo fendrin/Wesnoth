@@ -1,0 +1,216 @@
+--textdomain wesnoth-dm
+Scenario{
+    name: _ "Night in the Swamp"
+    id: "07_Night_in_the_Swamp"
+    next_scenario: "08_Ur-Thorodor"
+    <MEMOIRS_MAP("07_Night_in_the_Swamp.map")
+    turns: 12
+
+-- There is one less turn than times, so time over displays on morning
+    <DUSK!
+    <FIRST_WATCH!
+    <FIRST_WATCH!
+    <FIRST_WATCH!
+    <FIRST_WATCH!
+    <FIRST_WATCH!
+    <SECOND_WATCH!
+    <SECOND_WATCH!
+    <SECOND_WATCH!
+    <SECOND_WATCH!
+    <SECOND_WATCH!
+    <DAWN!
+    <MORNING!
+
+    <SCENARIO_MUSIC("underground.ogg")	-- No story part, so no intro music
+    <EXTRA_SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+
+    <DM_TRACK(SEARCH_STAGE7!)
+
+    side: {
+        <YOUNG_DELFADOR!
+        side: 1
+        save_id: "Player"
+        persistent: true
+        controller: "human"
+        recruit: {"Mage", "Spearman", "Horseman", "Bowman", "Cavalryman", "Heavy Infantryman"}
+        team_name: "allies"
+        user_team_name: _ "Loyalists"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        side: 2
+        no_leader: true
+        team_name: "enemies"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+    }
+
+    victory_when_enemies_defeated: false
+
+    <MEMOIRS_DEATHS!
+
+    <if EASY then {
+        <MEMOIRS_GENERATOR_SKELETON(18, 3)
+        <MEMOIRS_GENERATOR_SKELETON(10, 16)
+    }
+
+    <if NORMAL then {
+        <MEMOIRS_GENERATOR_SKELETON(7, 5)
+        <MEMOIRS_GENERATOR_SKELETON(11, 19)
+    }
+
+    <if HARD then {
+        <MEMOIRS_GENERATOR_SKELETON(18, 3)
+        <MEMOIRS_GENERATOR_SKELETON(7, 5)
+        <MEMOIRS_GENERATOR_SKELETON(11, 19)
+err: ../attic/data/campaigns/Delfadors_Memoirs/scenarios/07_Night_in_the_Swamp.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 69: #endif HARD
+
+-- if the player manages to destroy all generators...
+-- an unlikely outcome unless we are on EASY
+        event: {
+            name: "new turn"
+            first_time_only: false
+            do: ->
+                If{
+                    not: {
+                        have_unit: {
+                            side: 2
+                        }
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Delfador"
+                            message: _ "I think that’s all of them! Let’s move on — the less time we spend in this swamp the better."
+                        }
+                        Endlevel{
+                            result: "victory"
+                            bonus: true
+                        }
+                    
+                }
+        }
+
+        event: {
+            name: "prestart"
+            do: ->
+                Objectives{
+                    side: 1
+                    objective: {
+                        description: _ "Survive until daybreak"
+                        condition: "win"
+                        show_turn_counter: true
+                    }
+                    objective: {
+                        <ALTERNATIVE_OBJECTIVE_CAPTION!
+                        description: _ "Destroy the stones"
+                        condition: "win"
+                    }
+                    objective: {
+                        description: _ "Death of Delfador"
+                        condition: "lose"
+                    }
+                    objective: {
+                        description: _ "Death of Lionel"
+                        condition: "lose"
+                    }
+
+                    gold_carryover: {
+                        bonus: true
+                        carryover_percentage: 80
+                    }
+
+                    note: {
+                        description: _ "Mages and Paladins are capable of destroying the stones"
+                    }
+                }
+        }
+
+        event: {
+            name: "start"
+            do: ->
+                MODIFY_UNIT({id: "Delfador"}, "facing", "nw")
+                Recall{
+                    id: "Lionel"
+                }
+                MODIFY_UNIT({id: "Lionel"}, "facing", "se")
+                Message{
+                    speaker: "Delfador"
+                    message: _ "These swamps seem to go on forever!"
+                }
+                Message{
+                    speaker: "Lionel"
+                    message: _ "One more day’s travel, I think. We should camp for the night now — we should be out of it by tomorrow evening."
+                }
+        }
+
+        event: {
+            name: "new turn"
+            do: ->
+                Message{
+                    speaker: "Delfador"
+                    message: _ "Those standing stones — they summon evil creatures!"
+                }
+                Message{
+                    speaker: "Lionel"
+                    message: _ "I saw this kind of thing in the north... These abominations are not much affected by swords, but they fear the light of day. We must hold them off as best we can."
+                }
+                Message{
+                    speaker: "Delfador"
+                    message: _ "Hmmm... if I could get nearer to the stones, I could perhaps break their power..."
+                }
+        }
+
+-- encourage the player who takes the hint about "swords"
+        event: {
+            name: "attack"
+            filter: {
+                type_adv_tree: "Heavy Infantryman"
+            }
+            filter_second: {
+                type_adv_tree: {"Skeleton", "Skeleton Archer"}
+            }
+            do: ->
+                Message{
+                    speaker: "unit"
+                    message: _ "This’ll splinter your bones, you vile monstrosity!"
+                }
+        }
+
+        event: {
+            name: "time over"
+            do: ->
+                If{
+                    have_unit: {
+                        side: 2
+                    }
+                    then: ->
+                        Message{
+                            speaker: "Delfador"
+                            message: _ "At last, morning is here... And the skeletons are disappearing!"
+                        }
+                        Kill{
+                            side: 2
+                        }
+                        Redraw{
+                        }
+                    
+                    else: ->
+                        Message{
+                            speaker: "Delfador"
+                            message: _ "At last, morning is here!"
+                        }
+                    
+                }
+                Message{
+                    speaker: "Lionel"
+                    message: _ "I hope I never see another night like that! Let’s leave this evil place as quickly as possible — I want to get us out of Illuven before dusk."
+                }
+                Endlevel{
+                    result: "victory"
+                    bonus: false
+                }
+        }
+err: ../attic/data/campaigns/Delfadors_Memoirs/scenarios/07_Night_in_the_Swamp.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by scenario at line 209

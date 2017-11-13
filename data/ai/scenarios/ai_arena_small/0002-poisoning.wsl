@@ -1,0 +1,143 @@
+--textdomain wesnoth-ai
+Event{
+    name: "preload"
+    first_time_only: false
+    do: ->
+        Lua{
+            code: [[ register_test('0002-poisoning','Poison use test'); ]]
+        }
+}
+
+Event{
+    name: "0002-poisoning"
+    first_time_only: false
+    do: ->
+        Message{
+            speaker: "narrator"
+            image: "wesnoth-icon.png"
+            message: _ "This situation should test the ability of AI to spread poison around..."
+        }
+        Unit{
+            side: 2
+            x: 23, y: 14
+            type: "Orcish Assassin"
+        }
+        Unit{
+            side: 2
+            x: 25, y: 17
+            type: "Orcish Assassin"
+        }
+        Unit{
+            side: 2
+            x: 19, y: 7
+            type: "Orcish Assassin"
+        }
+        Unit{
+            side: 2
+            x: 10, y: 14
+            type: "Orcish Assassin"
+        }
+        Unit{
+            side: 2
+            x: 20, y: 7
+            type: "Orcish Assassin"
+        }
+        Unit{
+            side: 3
+            x: 20, y: 5
+            type: "Drake Warden"
+            random_traits: "no"
+            modifications: {
+                <TRAIT_RESILIENT!
+            }
+        }
+        Unit{
+            side: 3
+            x: 21, y: 7
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 23, y: 16
+            type: "Drake Warden"
+            random_traits: 0
+            modifications: {
+                <TRAIT_RESILIENT!
+            }
+        }
+        Unit{
+            side: 3
+            x: 17, y: 5
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 15, y: 7
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 17, y: 8
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 19, y: 9
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 26, y: 18
+            type: "Ancient Wose"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            hitpoints: 3
+            x: 26, y: 14
+            type: "Drake Warden"
+            random_traits: 0
+        }
+        Unit{
+            side: 3
+            x: 9, y: 17
+            type: "Skeleton"
+        }
+        Label{
+            color: "255,0,0,0"
+            text: _ "Undead target test"
+            visible_in_fog: "yes"
+            x: "9"
+            y: "17"
+        }
+        Label{
+            color: "255,0,0,0"
+            text: _ "Target choose test"
+            visible_in_fog: "yes"
+            x: "19"
+            y: "6"
+        }
+        Label{
+            color: "255,0,0,0"
+            text: _ "Regeneration attack test"
+            visible_in_fog: "yes"
+            x: "25"
+            y: "19"
+        }
+        Label{
+            color: "255,0,0,0"
+            text: _ "Weapon test with low hp target"
+            visible_in_fog: "yes"
+            x: "26"
+            y: "14"
+        }
+        Modify_Side{
+            side: 3
+            switch_ai: test_path_to_idle_ai
+        }
+}

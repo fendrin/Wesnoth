@@ -1,0 +1,503 @@
+--textdomain wesnoth-ei
+
+Scenario{
+    id: "01_The_Outpost"
+    name: _ "The Outpost"
+    map: "campaigns/Eastern_Invasion/maps/01_The_Outpost.map"
+    next_scenario: "02_The_Escape_Tunnel"
+    turns: 16
+
+    <DEFAULT_SCHEDULE!
+
+    <SETUP_CAMPFIRES!
+
+    <SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+
+    story: {
+        part: {
+            music: "knolls.ogg"
+-- It is 625 YW. Konrad II is king, having reigned since 612.
+            story: _ "It was the thirteenth year of Konrad II’s reign when the strange occurrences in the Estmark Hills on the eastern border of Wesnoth began."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "Cattle and beasts of burden were found dead in the fields, and men went missing from their houses, with no clues but a thin stream of black blood. At first the settlers suspected raiders from the great desert, but when they sent scouts east they found nothing but a small mountain range and miles of swamp."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "The disappearances did not stop, and every day the terror grew greater. Eventually, the people living in the eastern villages sent a messenger to the King, asking for help. The messenger rode hard for many days and nights, and finally reached the city of Weldyn."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "When the King received news of the problem, his advisor Dacyn had much to say. Apparently, these attacks were connected to similar ones that occurred earlier on the far southern border, attacks by undead. Dacyn outlined a plan to combat these intrusions."
+            <EI_BIGMAP!
+        }
+        part: {
+-- The River Guard posts had been built in 470 YW.  They were
+-- abandoned in 544 YW; the wave of colonization had begun around
+-- 530 YW.
+            story: _ "In the days of the king Garard I, two strong-points had been built along the near bank of the Weldyn, south of Soradoc, to stop bandits and orcish raiders out of the Estmarks from entering Wesnoth. But in later years the River Guard posts had been abandoned, as colonists spread into the Estmarks and the orcs were driven in retreat north of the Great River."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "With unknown enemies pressing Wesnoth from the East, Konrad II decided to re-build and re-man the River Guard outposts, and use them to keep the Crown’s eye and hand firmly on the settled country to either side of the lower Weldyn. He sent two of the most promising young officers to them."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "To the northern outpost he sent Owaec, a clan noble. To the southern outpost, he sent Gweddry, who would be accompanied by Dacyn the mage. Our story begins there."
+            <EI_BIGMAP!
+        }
+        part: {
+            story: _ "All went well once the King’s forces arrived. There were no attacks for several weeks, and Gweddry’s men started to grow incautious. Then, at dawn one day, Gweddry and his men were roused by the startled cries of the night watchmen..."
+            show_title: true
+            <EI_BIGMAP!
+        }
+    }
+
+    <EI_TRACK(JOURNEY_01_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Spearman", "Cavalryman", "Mage", "Heavy Infantryman"}
+        <GOLD(180, 130, 120)
+        team_name: "wesnothians"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+-- wmlint: recognize Gweddry
+        <CHARACTER_STATS_GWEDDRY!
+
+        facing: "se"
+
+        unit: {
+            x: 9, y: 16
+            facing: "se"
+
+-- wmllint: recognize Dacyn
+            <CHARACTER_STATS_DACYN!
+        }
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Walking Corpse", "Skeleton Archer"}
+        } else {
+            recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer"}
+        }
+        <GOLD(40, 60, 80)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Dark Sorcerer"
+        id: "Mal-Sakkat"
+        name: _ "Mal-Sakkat"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer", "fighter"}
+            passive_leader: true
+            grouping: false
+            aggression: 0.8 -- Sakkat is the more aggressive side
+        }
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Vampire Bat", "Skeleton Archer"}
+        } else {
+            recruit: {"Vampire Bat", "Skeleton", "Skeleton Archer"}
+        }
+        <GOLD(50, 70, 100)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Dark Sorcerer"
+        id: "Mal-Talar"
+        name: _ "Mal-Talar"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            passive_leader: true
+            grouping: false
+            aggression: 0.6
+            scout_village_targeting: 0.9 -- Most combat-oriented side. Don't go for villages as much
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Gweddry"
+                }
+                value: 3
+            }
+        }
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        <if EASY then {
+            recruit: {"Vampire Bat", "Revenant", "Skeleton"}
+        } else {
+            recruit: {"Vampire Bat", "Revenant", "Bone Shooter", "Skeleton", "Skeleton Archer"}
+        }
+        <GOLD(80, 110, 130)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Lich"
+        id: "Mal-Uldhar"
+        name: _ "Mal-Uldhar"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            passive_leader: true
+            grouping: false
+            aggression: 0.6
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Dacyn"
+                }
+                value: 2
+            }
+        }
+    }
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Revenant", 1)
+
+    <unless EASY! then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(4, "Bone Shooter", 2)
+    }
+
+-- The intent here is that Gweddry starts with control of all
+-- villages west of the river (e.g. within Wesnoth) and those very
+-- close to the outpost east of the river. This will be worth
+-- about unit-build per turn. But he won't keep all of these
+-- for long...
+    <STARTING_VILLAGES(1, 9)
+    <STARTING_VILLAGES_AREA(1, 15, 2, 7)
+    <STARTING_VILLAGES_AREA(1, 5, 4, 4)
+
+    <STARTING_VILLAGES(2, 6)
+
+    <STARTING_VILLAGES(3, 5)
+
+    <STARTING_VILLAGES(4, 8)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defend the outpost"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            if EASY
+                Terrain{
+                    x: 4, y: 13
+                    terrain: "Gg"
+                }
+
+                Terrain{
+                    x: 5, y: 14
+                    terrain: "Gg^Ve"
+                }
+            
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Gweddry"
+                message: _ "What? What is going on?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Look. To the east. Undead approach!"
+            }
+
+            Message{
+                speaker: "Mal-Talar"
+                message: _ "Ah, interesting..."
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Men, to arms!"
+            }
+    }
+
+-- Dacyn's disappearance and Mal-Ravanal's appearance
+-- (turn refresh to be nice and let Dacyn heal everyone first)
+    event: {
+        name: "side 1 turn 7 refresh"
+        do: ->
+            REPLACE_SCENARIO_MUSIC("silence.ogg")
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "I sense a great evil... Can it be? Gweddry, I must not be seen."
+            }
+
+            LIGHT_SHIELD_EFFECT_OBJECT_ID("Dacyn")
+
+            Animate_Unit{
+                filter: {
+                    id: "Dacyn"
+                }
+                flag: "disappear"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Dacyn"
+                }
+
+                kill: true
+                variable: "stored_Dacyn"
+            }
+
+            Delay{
+                time: 100
+            }
+
+            Unit{
+-- wmllint: who CHARACTER_STATS_RAVANAL is Mal-Ravanal
+                <CHARACTER_STATS_RAVANAL!
+                x: 34, y: 14
+                side: 2
+                facing: "sw"
+                animate: true
+            }
+
+            Delay{
+                time: 1000
+            }
+
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "This is the resistance you spoke of, an untrained commander and a few fresh recruits? You will suffer for your incompetence. Destroy them, and dare not bother me again."
+            }
+
+            Message{
+                speaker: "Mal-Talar"
+-- wmllint: local spelling Archon
+                message: _ "Apologies, Dark Archon. They will die. And then?"
+            }
+
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "Slaughter the villagers and march onwards. You have wasted enough time here already."
+            }
+
+            Animate_Unit{
+                filter: {
+                    id: "Mal-Ravanal"
+                }
+                flag: "pre_teleport"
+            }
+
+            Kill{
+                id: "Mal-Ravanal"
+            }
+
+            Gold{
+                side: {2, 3, 4}
+                amount: 25
+            }
+
+            REPLACE_SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+            APPEND_MUSIC("knalgan_theme.ogg")
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "What?! We must hold the outpost! And where did Dacyn go?!"
+            }
+    }
+
+-- Dacyn pops out on keep and gives message about trapdoor.
+    event: {
+        <if EASY then {
+            name: "turn 10"
+        } else {
+            name: "turn 12"
+        }
+        scroll_to: {
+            x: 9, y: 16
+        }
+        do: ->
+            Item{
+                x: 9, y: 16
+                image: "scenery/trapdoor-open.png"
+            }
+
+            VARIABLE("stored_Dacyn.resting", false)
+
+            Unstore_Unit{
+                variable: "stored_Dacyn"
+                x: 10, y: 15
+                find_vacant: true
+            }
+
+            CLEAR_VARIABLE("stored_Dacyn")
+
+            Animate_Unit{
+                filter: {
+                    id: "Dacyn"
+                }
+                flag: "reappear"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Gweddry? Good! You are still alive. Quickly, we must leave this place!"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Where did you go?! And where did you come from?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "There is no time to explain. If you wish to survive, you will escape through this trapdoor."
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "But what about the outpost?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "This outpost is already lost. We must defeat this evil if Wesnoth is to survive. Now, come on, we do not have much time to spare!"
+            }
+
+            Gold{
+                side: {2, 3, 4}
+                amount: 100
+            }
+
+            Modify_Side{
+                side: {2, 3, 4}
+
+                <INCOME(5, 6, 7)
+            }
+
+            If{
+                have_unit: {
+                    id: "Gweddry"
+                    x: 9, y: 16
+                }
+                then: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+                else: ->
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Move Gweddry to the trapdoor"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Gweddry"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Dacyn"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        gold_carryover: {
+                            bonus: true
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+
+--you win when you move to the trapdoor
+            Event{
+                name: "moveto"
+                filter: {
+                    x: 9, y: 16
+                    id: "Gweddry"
+                }
+                do: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+            }
+    }
+
+-- You are urged to hurry
+    event: {
+        name: "turn 14"
+        do: ->
+            Message{
+                speaker: "Dacyn"
+                message: _ "Hurry! We cannot defeat this evil today! We must escape!"
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "Gweddry"
+                message: _ "Follow me, men! Through the trapdoor!"
+            }
+
+            Hide_Unit{
+                x: 9, y: 16
+            }
+
+            Redraw{}
+    }
+
+    <EARLY_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+}

@@ -1,0 +1,41 @@
+--textdomain wesnoth-multiplayer
+
+-- created by Horus2
+
+Multiplayer{
+    id: "multiplayer_Ruphus_Isle"
+    name: _ "2p — Ruphus Isle"
+    description: _ "Players must navigate the dispersive terrain of this small but topographically dense island."
+    map: "multiplayer/maps/2p_Ruphus_Isle.map"
+    random_start_time: "no"
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 2
+        canrecruit: true
+        controller: "human"
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        fog: true
+        village: {
+            x: 17
+            y: 23
+        }
+    }
+}

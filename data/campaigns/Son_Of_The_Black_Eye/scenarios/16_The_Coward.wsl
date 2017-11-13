@@ -1,0 +1,327 @@
+--textdomain wesnoth-sotbe
+Scenario{
+    id: "16_The_Coward"
+    name: _ "The Coward"
+    map: "campaigns/Son_Of_The_Black_Eye/maps/16_The_Coward.map"
+
+    turns: 22
+
+    victory_when_enemies_defeated: "yes"
+
+    <SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+
+    <DEFAULT_SCHEDULE_MORNING!
+
+    next_scenario: "17_The_Human_Attack"
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Grüü"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                <GREAT_HORDE_NOTE!
+            }
+    }
+
+    side: {
+        side: 1
+        id: "Kapou'e"
+        type: "Orcish Leader"
+        controller: "human"
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        gold: 200
+        <BLACK_FLAG!
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Orga"
+        name: _ "Orga"
+        side: 2
+        canrecruit: true
+        recruit: {"Goblin Knight", "Orcish Warrior", "Orcish Crossbowman", "Wolf Rider", "Orcish Grunt", "Orcish Archer", "Orcish Slayer", "Ogre"}
+        <GOLD(600, 700, 800)
+        user_team_name: _ "Rebels"
+        team_name: "rebels"
+        ai: {
+            aggression: 1.0
+            caution: 0.0
+            village_value: 0
+            villages_per_scout: 0
+            grouping: false
+        }
+    }
+
+    <STARTING_VILLAGES(2, 31)
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Knorgh"
+        name: _ "Knorgh"
+        side: 3
+        canrecruit: true
+        recruit: {"Wolf Rider", "Orcish Grunt", "Orcish Archer", "Young Ogre"}
+        gold: 150
+        user_team_name: _ "Rebels"
+        team_name: "rebels"
+    }
+
+    <STARTING_VILLAGES(3, 6)
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Nofhug"
+        name: _ "Nofhug"
+        side: 4
+        canrecruit: true
+        recruit: {"Wolf Rider", "Orcish Grunt", "Orcish Archer", "Young Ogre"}
+        gold: 150
+        user_team_name: _ "Rebels"
+        team_name: "rebels"
+    }
+
+    <STARTING_VILLAGES(4, 6)
+
+    story: {
+        part: {
+            story: _ "Kapou’e and his followers made a grueling march across the frozen Northlands. For the orcs it was a constant nightmare of freezing, marching and fighting. Food was scarce, and the stores that they managed to seize from rebellious tribes had to be strictly rationed. Many of the weaker orcs who weren’t killed in combat died from exhaustion, or fell behind and froze to death."
+            <SOTBE_BIGMAP!
+            <JOURNEY_15_OLD!
+        }
+
+        part: {
+            story: _ "Throughout this nightmare Kapou’e drove himself and his men ruthlessly. The spring thaw would soon be upon them and with it, the human army that Earl Lanbec’h was no doubt rallying. By that time the orcs had to be united one way or another, since if they were separated and scattered, they would surely be exterminated."
+            <SOTBE_BIGMAP!
+            <JOURNEY_15_OLD!
+        }
+
+        part: {
+            story: _ "And so they marched on, persevering in weather that would kill even the most hardened human, and through fierce bloody battles with belligerent tribes."
+            <SOTBE_BIGMAP!
+            <JOURNEY_15_OLD!
+        }
+
+        part: {
+            story: _ "Finally, after over three months, Kapou’e and his exhausted but hardened army arrived at Bitok, just before the spring thaw."
+            <SOTBE_BIGMAP!
+            <JOURNEY_15_OLD!
+        }
+    }
+
+    <SOTBE_TRACK(JOURNEY_16_NEW!)
+
+    <GOT_THE_GREAT_HORDE(1)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Unit{
+                side: 2
+                type: "Orcish Warlord"
+                id: "Shan Taum"
+                name: _ "Shan Taum"
+                profile: "portraits/shan_taum.png"
+                x: 12
+                y: 19
+                random_traits: false
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Grüü"
+                x: 45, y: 11
+            }
+
+            Recall{
+                id: "Inarix"
+                x: 44, y: 10
+            }
+
+            Recall{
+                id: "Jetto"
+                x: 44, y: 9
+            }
+
+            If{
+                have_unit: {
+                    id: "Jetto"
+                }
+
+                else: ->
+                    Role{
+                        side: 1
+                        x: "recall", y: "recall"
+                        type: {"Orcish Warlord", "Orcish Slurbow", "Saurian Flanker", "Troll Warrior", "Orcish Warrior", "Orcish Crossbowman", "Saurian Oracle", "Saurian Soothsayer", "Saurian Ambusher", "Troll", "Troll Rocklobber", "Orcish Slayer"}
+                        role: "initial_backup"
+                    }
+
+                    Recall{
+                        role: "initial_backup"
+                        x: 44, y: 9
+                    }
+                
+            }
+
+            If{
+                have_unit: {
+                    id: "Inarix"
+                }
+
+                else: ->
+                    Role{
+                        side: 1
+                        x: "recall", y: "recall"
+                        type: {"Orcish Warlord", "Orcish Slurbow", "Saurian Flanker", "Troll Warrior", "Orcish Warrior", "Orcish Crossbowman", "Saurian Oracle", "Saurian Soothsayer", "Saurian Ambusher", "Troll", "Troll Rocklobber", "Orcish Slayer"}
+                        role: "initial_backup2"
+                    }
+
+                    Recall{
+                        role: "initial_backup2"
+                        x: 44, y: 10
+                    }
+                
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Good morning, Shan Taum!"
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Message{
+                speaker: "Shan Taum"
+                image: "portraits/shan_taum.png~FL()"
+                message: _ "What... Kapou’e! What in the frozen northlands are you doing here?!"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Oh, I just thought I would take a bracing winter stroll and visit my father’s old friend. How could I not, given his impressive list of recent accomplishments."
+            }
+
+            Message{
+                speaker: "Shan Taum"
+                image: "portraits/shan_taum.png~FL()"
+                message: _ "Accomplishments?"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Well let’s see, first he betrays the trust of his sworn sovereign and becomes no less than a boot-licking spy for the humans. Then he goes on to engineer the death of half of the Great Council and in doing so makes himself directly responsible for the deaths of hundreds of orcs. And best of all, he is directly responsible for a bloody civil war right at the time when his people are on the edge of total extermination!"
+            }
+
+            Message{
+                speaker: "Shan Taum"
+                image: "portraits/shan_taum.png~FL()"
+                message: _ "LIES! THESE ARE ALL LIES!"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Tell you what, you ungrateful backstabbing traitor, if you surrender right now I will just cut off your head instead of torturing you to death."
+            }
+
+            Message{
+                speaker: "Shan Taum"
+                image: "portraits/shan_taum.png~FL()"
+                message: _ "How dare you accuse me of being a traitor, you turdlicker!"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Right... So what will it be, beheading or torture?"
+            }
+
+            Message{
+                speaker: "Shan Taum"
+                image: "portraits/shan_taum.png~FL()"
+-- wmllint: local spelling turdlicker
+                message: _ "Orga, kill this kid for me. I’ll be in my keep."
+            }
+
+            Message{
+                speaker: "Orga"
+                image: "portraits/orcs/warlord.png~FL()"
+                message: _ "Yes, sir!"
+            }
+
+            Kill{
+                id: "Shan Taum"
+            }
+
+            Move_Unit_Fake{
+                type: "Orcish Warlord"
+                side: 2
+                x: {12, 10}
+                y: {19, 20}
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "What! Fight like an orc, you gutless coward!"
+                image: "portraits/kapoue-angry.png"
+            }
+    }
+
+    event: {
+        name: "turn 4"
+        do: ->
+            Role{
+                side: 1
+                type: {"Orcish Warlord", "Orcish Slurbow", "Direwolf Rider", "Orcish Warrior", "Orcish Crossbowman", "Orcish Slayer", "Goblin Knight", "Goblin Pillager", "Orcish Grunt", "Orcish Archer", "Orcish Assassin", "Goblin Wolfrider", "Saurian Flanker", "Saurian Soothsayer", "Saurian Oracle", "Saurian Ambusher", "Saurian Augur", "Saurian Skirmisher"}
+                role: "Helper"
+            }
+
+            Message{
+                role: "Helper"
+                message: _ "Hey Chief, it’s pretty odd. Shan Taum doesn’t seem to have too many of his men around. He was given control of half the Great Horde. Do you think they left him?"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "I doubt it. Shan Taum knows how to dissemble. I’ll bet he sent them out like we did to clobber the other tribes to his rule. In any case, it will be convenient for us."
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Good, we crushed this pocket of resistance too. Now where in the world did that coward Shan Taum run off to?"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+}

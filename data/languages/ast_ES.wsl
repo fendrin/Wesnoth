@@ -1,0 +1,4 @@
+err: ../attic/data/languages/ast_ES.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1: [locale]
+err: ../attic/data/languages/ast_ES.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 2:     name="Asturianu"
+{   locale: "ast_ES"
+err: ../attic/data/languages/ast_ES.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by locale at line 2

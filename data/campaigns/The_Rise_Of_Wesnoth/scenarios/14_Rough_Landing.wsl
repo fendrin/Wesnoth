@@ -1,0 +1,417 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "14_Rough_Landing"
+    name: _ "Rough Landing"
+    next_scenario: "15_A_New_Land"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/14_Rough_Landing.map"
+
+    <TURNS(35, 32, 29)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+
+    story: {
+        part: {
+            background: "story/rough_landing.png"
+            show_title: true
+        }
+    }
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Naga Warrior"
+        id: "Abraxas"
+        name: _ "Abraxas"
+        side: 2
+        canrecruit: true
+        <GOLD(90, 145, 230)
+        <INCOME(2, 4, 8)
+        team_name: "Naga"
+        user_team_name: _ "Naga"
+        <if EASY then {
+            recruit: "Naga Fighter"
+        } else {
+            recruit: {"Naga Fighter", "Vampire Bat"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            aggression: 0.60
+            <if EASY then {
+                recruitment_pattern: "fighter"
+            } else {
+                recruitment_pattern: {"scout", "fighter", "fighter", "fighter"}
+            }
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    side: {
+        type: "Naga Warrior"
+        id: "Xamalia"
+        name: _ "Xamalia"
+        side: 3
+        canrecruit: true
+        <GOLD(90, 145, 230)
+        <INCOME(2, 4, 8)
+        team_name: "Naga"
+        user_team_name: _ "Naga"
+        <if EASY then {
+            recruit: "Naga Fighter"
+        } else {
+            recruit: {"Naga Fighter", "Vampire Bat"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            aggression: 0.60
+            <if EASY then {
+                recruitment_pattern: "fighter"
+            } else {
+                recruitment_pattern: {"scout", "fighter", "fighter", "fighter"}
+            }
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    side: {
+        type: "Naga Warrior"
+        id: "Gaxmail"
+        name: _ "Gaxmail"
+        side: 4
+        canrecruit: true
+        <GOLD(90, 145, 230)
+        <INCOME(2, 4, 8)
+        team_name: "Naga"
+        user_team_name: _ "Naga"
+        <if EASY then {
+            recruit: "Naga Fighter"
+        } else {
+            recruit: {"Naga Fighter", "Vampire Bat"}
+        }
+        ai: {
+            <NO_SCOUTS!
+            aggression: 0.60
+            <if EASY then {
+                recruitment_pattern: "fighter"
+            } else {
+                recruitment_pattern: {"scout", "fighter", "fighter", "fighter"}
+            }
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Recall{
+                id: "Lady Jessene"
+                x: 8
+                y: 25
+            }
+            Recall{
+                id: "Burin the Lost"
+                x: 8
+                y: 26
+            }
+            Recall{
+                id: "Sir Ruddry"
+                x: 10
+                y: 25
+            }
+
+            Recall{
+                id: "Sir Ladoc"
+                x: 10
+                y: 25
+            }
+
+            Recall{
+                id: "Minister Edren"
+                x: 10
+                y: 26
+            }
+
+            Recall{
+                id: "Lord Typhon"
+                x: 10
+                y: 24
+            }
+
+            PLACE_IMAGE("units/transport/galleon.png~RC(magenta>red)", 10, 27)
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lord Typhon"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "After a particularly bad series of storms the Eldaric has taken on water, and much of the fleet has been scattered. Lord Typhon suggests stopping at a group of small windswept islands to regroup."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "I don’t think I can take much more of this. I’m feeling ill!"
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Lord Typhon"
+                message: _ "Be careful, these islands aren’t safe. We’re in Naga territory. But this is the only place to stop with soft sand beaches to make landfall... The Nagas like to scavenge metal from ships that they capture here."
+            }
+
+            Message{
+                speaker: "Xamalia"
+                message: _ "Prey! Get them!"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "The fleet must regroup here. We have to defeat these monsters."
+            }
+    }
+
+-- Upon the first loss of an enemy side, a serpent is spawned in a location
+-- from which it can't reach any player unit in one turn. The side 2 serpent
+-- has a spawn delay of 1 turn, the side 3 serpent a delay of 2 turns and the
+-- side 4 serpent a delay of 3 turns; this is done so that the serpents can't
+-- all appear at once but will likely be spaced out more.
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: {2, 3, 4}
+        }
+
+        filter_condition: {
+            variable: {
+                name: "side_#{unit.side}_serpent_triggered"
+                boolean_not_equals: true
+            }
+        }
+        do: ->
+            VARIABLE("side_#{unit.side}_serpent_triggered", true)
+
+            Switch{
+                variable: "unit.side"
+
+                case: {
+                    value: 2
+                    do: ->
+                        VARIABLE("serpent_name", _ "Chompey the Serpent")
+                        VARIABLE("serpent_msg", _ "Graarrrrrr!")
+                }
+
+                case: {
+                    value: 3
+                    do: ->
+                        VARIABLE("serpent_name", _ "Scaly the Serpent")
+                        VARIABLE("serpent_msg", _ "Roarrrrrr!")
+                }
+
+                case: {
+                    value: 4
+                    do: ->
+                        VARIABLE("serpent_name", _ "Toothey the Serpent")
+                        VARIABLE("serpent_msg", _ "Hissssss!")
+                }
+            }
+
+-- This gets set to 1 when this gets run for the first time
+            VARIABLE_OP("serpent_spawn_delay", "add", 1)
+
+            VARIABLE("serpent_spawn_turn_number", "#{(#{turn_number + #{serpent_spawn_delay)")
+
+            Event{
+                name: "new turn"
+                delayed_variable_substitution: false
+
+-- We need to use this lengthy SLF twice, so macroify it here...
+                POSSIBLE_SERPENT_SPAWN_LOCS_SLF: () -> {
+                    terrain: "Wo*"
+
+                    not: {
+                        filter: {
+                        }
+                    }
+
+                    not: {
+                        filter: {
+                            side: 1
+                        }
+
+                        radius: 9
+                    }
+
+                    and: {
+                        filter: {
+                            side: 1
+                        }
+
+                        radius: 10
+                    }
+                }
+
+                filter_condition: {
+                    variable: {
+                        name: "turn_number"
+                        greater_than_equal_to: serpent_spawn_turn_number
+                    }
+
+                    have_location: {
+                        <POSSIBLE_SERPENT_SPAWN_LOCS_SLF!
+                    }
+                }
+                do: ->
+                    Store_Locations{
+                        <POSSIBLE_SERPENT_SPAWN_LOCS_SLF!
+
+                        variable: "possible_serpent_locs"
+                    }
+
+                    VARIABLE_OP("serpent_loc_i", "rand", "0..#{}(#{}possible_serpent_locs.length - 1)")
+
+                    Scroll_To{
+                        x: "#{}possible_serpent_locs[#{}serpent_loc_i].x", y: "#{}possible_serpent_locs[#{}serpent_loc_i].y"
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+                    NAMED_LOYAL_UNIT(unit.side, "Sea Serpent", "#{}possible_serpent_locs[#{}serpent_loc_i].x", "#{}possible_serpent_locs[#{}serpent_loc_i].y", {}, serpent_name)
+                    Unit{
+                        amend: true
+                        animate: true
+                    }
+
+                    Message{
+                        x: "#{}possible_serpent_locs[#{}serpent_loc_i].x", y: "#{}possible_serpent_locs[#{}serpent_loc_i].y"
+                        message: serpent_msg
+                    }
+
+                    Message{
+                        side: 1
+                        filter_location: {
+                            x: "#{}possible_serpent_locs[#{}serpent_loc_i].x", y: "#{}possible_serpent_locs[#{}serpent_loc_i].y"
+                            radius: 10
+                        }
+                        message: _ "Look out, a serpent has emerged from the deep."
+                    }
+
+                    CLEAR_VARIABLE("possible_serpent_locs,serpent_loc_i")
+            }
+
+            CLEAR_VARIABLE("serpent_name,serpent_msg,serpent_spawn_turn_number")
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ve defeated the nagas. The fleet should be able to regroup here."
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "The next time we see land, it should be the great continent to the east."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’ll be glad when this voyage is over. We’re almost there. Almost there."
+            }
+
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 4
+                x: {1, 2, 3}
+                y: {25, 25, 26}
+            }
+
+            LIVING_INTEL("Familiar", "Familiar", _ "Familiar", "portraits/familiar.png", 4, 3, 26)
+
+            Message{
+                speaker: "Familiar"
+                message: _ "<i>Clack</i>! <i>Clack!</i>"
+            }
+
+            Kill{
+                id: "Familiar"
+            }
+
+            Move_Unit_Fake{
+                type: "Familiar"
+                side: 4
+                x: {3, 3, 2, 1}
+                y: {26, 27, 27, 28}
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "I think we’re being followed..."
+            }
+
+            CLEAR_VARIABLE("side_2_serpent_triggered,side_3_serpent_triggered,side_4_serpent_triggered,serpent_spawn_delay")
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "We were too slow... The fleet will be scattered to the four corners of the world!"
+            }
+    }
+}

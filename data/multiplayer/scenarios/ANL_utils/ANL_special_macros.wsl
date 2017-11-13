@@ -1,0 +1,359 @@
+--textdomain wesnoth-anl
+
+COMPLETE_ACTION = (GOLD_NUMBER) -> {
+    set_variable: {
+        name: "finished"
+        value: true
+    }
+
+    set_variable: {
+        name: "unit.status.worked_this_turn"
+        value: true
+    }
+    set_variable: {
+        name: "unit.moves"
+        value: 0
+    }
+
+    unstore_unit: {
+        variable: "unit"
+    }
+
+    gold: {
+        amount: GOLD_NUMBER
+        side: side_number
+    }
+}
+
+ANL_SHOW_IF = (TYPE, TERRAINLIST) -> {
+    show_if: {
+        have_unit: {
+            side: side_number
+            x: x1, y: y1
+            type: TYPE
+            filter_location: {
+                terrain: TERRAINLIST
+            }
+        }
+    }
+}
+
+SET_NAMES = (SIDE) -> {
+    if: {
+        have_unit: {
+            side: SIDE
+            canrecruit: true
+        }
+        then: ->
+            Store_Unit{
+                filter: {
+                    side: SIDE
+                    canrecruit: true
+                }
+                variable: "leader"
+            }
+
+            Set_Variable{
+                name: "player_#{SIDE}.name"
+                value: leader.name
+            }
+
+            Unstore_Unit{
+                variable: "leader"
+            }
+        
+    }
+}
+
+SET_SIDE_VARIABLES = (SIDE) -> {
+    set_variables: {
+        name: "player_#{SIDE}"
+
+        value: {
+            farming: {
+                progress: 0
+                target: 4
+                gold: 3
+            }
+
+            mining: {
+                progress: 0
+                target: 5
+                gold: 4
+            }
+
+            warfare: {
+                progress: 0
+                target: 4
+                troop_available: 0
+            }
+
+            troop_1: false
+            troop_2: false
+            troop_3: false
+            troop_4: false
+            troop_5: false
+            troop_6: false
+            troop_7: false
+            troops: 0
+
+            research: {
+                current_target: "agriculture"
+                target_language_name: _ "agriculture" -- wmllint: ignore
+            }
+
+            leader_option_1: {
+                progress: 0
+                target: 4
+            }
+
+            ally_1: false
+            ally_2: false
+            ally_3: false
+            ally_4: false
+
+            leader_option_2: {
+                progress: 0
+                target: 4
+            }
+
+            ally_5: false
+            ally_6: false
+            ally_7: false
+            ally_8: false
+        }
+    }
+}
+
+PICK_RECRUIT_OPTION = (UNIT_IMAGE, UNIT_TYPE_STRING, UNIT_TYPE_NAME_STRING, VAR) -> {
+    option: {
+        image: UNIT_IMAGE
+        label: UNIT_TYPE_NAME_STRING
+        show_if: {
+            variable: {
+                name: "player_#{side_number}.#{VAR}"
+                equals: false
+            }
+        }
+        command: ->
+            Set_Variable{
+                name: "player_#{side_number}.#{VAR}"
+                value: true
+            }
+
+            Set_Variable{
+                name: "player_#{side_number}.troops"
+                add: 1
+            }
+
+            Allow_Recruit{
+                type: UNIT_TYPE_STRING
+                side: side_number
+            }
+        
+    }
+}
+
+ADDING_TO_CURRENT_RESEARCH_FIELD = (SIDE, NUMBER) -> {
+    switch: {
+        variable: "player_#{SIDE}.research.current_target"
+        case: {
+            value: "agriculture"
+            do: ->
+                Set_Variable{
+                    name: "player_#{SIDE}.farming.progress"
+                    add: NUMBER
+                }
+        }
+        case: {
+            value: "mining"
+            do: ->
+                Set_Variable{
+                    name: "player_#{SIDE}.mining.progress"
+                    add: NUMBER
+                }
+        }
+        case: {
+            value: "warfare"
+            do: ->
+                Set_Variable{
+                    name: "player_#{SIDE}.warfare.progress"
+                    add: NUMBER
+                }
+        }
+    }
+}
+
+ANL_RESCUE_TRAPPED_UNIT = (MOVETO_X, MOVETO_Y, UNIT_X, UNIT_Y) -> {
+    event: {
+        name: "moveto"
+        filter: {
+            side: {1, 2, 3, 4}
+            x: MOVETO_X
+            y: MOVETO_Y
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Let’s cut you free!"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "You release the creature from the web and it agrees to help you."
+                image: "wesnoth-icon.png"
+            }
+
+            Store_Unit{
+                filter: {
+                    x: UNIT_X
+                    y: UNIT_Y
+                }
+                variable: "critter"
+                kill: false
+            }
+
+            Set_Variable{
+                name: "critter.side"
+                value: side_number
+            }
+            Clear_Variable{
+                name: "critter.overlays"
+            }
+
+            Unstore_Unit{
+                variable: "critter"
+            }
+    }
+}
+
+ANL_PLACE_UNIT = (SIDE, TYPE, X, Y) -> {
+    unit: {
+        side: SIDE
+        type: TYPE
+        generate_name: true
+        ai_special: "guardian"
+        random_traits: false
+        x: X
+        y: Y
+    }
+}
+
+ANL_PLACE_GUARDIAN = (SIDE, TYPE, X, Y) -> {
+    unit: {
+        side: SIDE
+        type: TYPE
+        generate_name: true
+        ai_special: "guardian"
+        random_traits: false
+        role: "guardian"
+        x: X
+        y: Y
+        modifications: {
+            object: {
+                silent: true
+                duration: "forever"
+                effect: {
+                    apply_to: "movement_costs"
+                    replace: true
+                    movement_costs: {
+                        flat: UNREACHABLE!
+                        sand: UNREACHABLE!
+                        shallow_water: UNREACHABLE!
+                    }
+                }
+            }
+        }
+    }
+}
+
+ANL_PLACE_WOUNDED_UNIT = (SIDE, TYPE, X, Y, HITPOINTS_AMOUNT) -> {
+    unit: {
+        side: SIDE
+        type: TYPE
+        generate_name: true
+        hitpoints: HITPOINTS_AMOUNT
+        ai_special: "guardian"
+        random_traits: false
+        x: X
+        y: Y
+    }
+}
+
+ANL_PLACE_TRAPPED_UNIT = (SIDE, TYPE, X, Y) -> {
+    unit: {
+        side: SIDE
+        type: TYPE
+        generate_name: true
+        ai_special: "guardian"
+        random_traits: false
+        overlays: "projectiles/web.png"
+        x: X
+        y: Y
+    }
+}
+
+BUILD_SOUND_1 = () -> {
+    sound: {
+        name: "miss-1.ogg"
+    }
+    delay: {
+        time: 120
+    }
+    sound: {
+        name: "bite.ogg"
+    }
+    delay: {
+        time: 220
+    }
+    sound: {
+        name: "dart.wav"
+    }
+    delay: {
+        time: 180
+    }
+    sound: {
+        name: "dart.wav"
+    }
+}
+
+BUILD_SOUND_2 = () -> {
+    sound: {
+        name: "staff.wav"
+    }
+    delay: {
+        time: 100
+    }
+    sound: {
+        name: "pincers.ogg"
+    }
+    delay: {
+        time: 160
+    }
+    sound: {
+        name: "sling.ogg"
+    }
+}
+
+BUILD_SOUND_3 = () -> {
+    sound: {
+        name: "bite.ogg"
+    }
+    delay: {
+        time: 280
+    }
+    sound: {
+        name: "staff.wav"
+    }
+    delay: {
+        time: 100
+    }
+    sound: {
+        name: "dart.wav"
+    }
+    delay: {
+        name: 180
+    }
+    sound: {
+        name: "dart.wav"
+    }
+}

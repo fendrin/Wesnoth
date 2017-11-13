@@ -1,0 +1,132 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to set custom option values in SP
+----
+
+-- Hide custom option tree toggle in this dialog.
+__HIDE_CUSTOM_OPTION_TREE_TOGGLE = () -> {
+    }true
+
+    Window{
+        id: "sp_options_configure"
+        description: "SP custom option configre dialog"
+
+        resolution: {
+            definition: "default"
+            automatic_placement: true
+            vertical_placement: "center"
+            horizontal_placement: "center"
+
+            maximum_height: 800
+
+            <_GUI_CUSTOM_OPTIONS_TREE_LINKED_GROUPS!
+
+            tooltip: {
+                id: "tooltip"
+            }
+
+            helptip: {
+                id: "tooltip"
+            }
+
+            grid: {
+                row: {
+                    grow_factor: 0
+
+                    column: {
+                        grow_factor: 1
+                        border: "all"
+                        border_size: 5
+                        horizontal_alignment: "left"
+
+                        label: {
+                            definition: "title"
+                            label: _ "Configure Options"
+                        }
+
+                    }
+
+                }
+
+                row: {
+                    grow_factor: 0
+
+                    column: {
+                        grow_factor: 1
+                        border: "all"
+                        border_size: 5
+                        horizontal_alignment: "left"
+
+                        label: {
+                            definition: "default"
+                            label: _ "Configure settings for the selected custom modifications."
+                        }
+
+                    }
+
+                }
+
+                row: {
+                    grow_factor: 1
+
+                    column: {
+                        horizontal_grow: true
+                        vertical_grow: true
+
+                        <GUI_FORCE_WIDGET_MINIMUM_SIZE(500, 0, {
+                                grid: {
+                                    <_GUI_CUSTOM_OPTIONS_TREE!
+                                }
+                        })
+
+                    }
+
+                }
+
+                row: {
+                    grow_factor: 0
+
+                    column: {
+                        grow_factor: 0
+                        horizontal_alignment: "right"
+
+                        grid: {
+                            row: {
+                                grow_factor: 0
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_alignment: "right"
+
+                                    button: {
+                                        id: "ok"
+                                        definition: "default"
+                                        label: _ "OK"
+                                    }
+                                }
+
+                                column: {
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_alignment: "right"
+
+                                    button: {
+                                        id: "cancel"
+                                        definition: "default"
+                                        label: _ "Cancel"
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    __HIDE_CUSTOM_OPTION_TREE_TOGGLE = nil

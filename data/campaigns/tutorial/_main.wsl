@@ -1,0 +1,26 @@
+--textdomain wesnoth-tutorial
+
+Textdomain{
+    name: "wesnoth-tutorial"
+}
+
+-- wmlscope: set export=no
+
+if TUTORIAL
+    Binary_Path{
+        path: "data/campaigns/tutorial"
+    }
+
+    Units{
+        INCLUDE("campaigns/tutorial/units")
+    }
+
+    Lua{
+        code: "wesnoth.require 'campaigns/tutorial/lua/character_selection.lua'"
+    }
+
+    INCLUDE("campaigns/tutorial/utils")
+    INCLUDE("campaigns/tutorial/scenarios")
+
+
+-- wmllint: directory spelling quintain Galdrad

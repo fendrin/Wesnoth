@@ -1,0 +1,220 @@
+--textdomain wesnoth-lib
+
+__GUI_FILENAME_OPTIONS_GRID = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                grow_factor: 1
+
+                border: "all"
+                border_size: 5
+                horizontal_grow: true
+
+                text_box: {
+                    id: "path"
+                    definition: "default"
+                }
+
+            }
+
+            column: {
+                grow_factor: 0
+
+                border: "all"
+                border_size: 5
+                horizontal_grow: true
+
+                button: {
+                    id: "copy"
+                    definition: "action_copy"
+                    label: _ "filesystem^Copy"
+                    tooltip: _ "Copy this path to clipboard"
+                }
+
+            }
+
+            column: {
+                grow_factor: 0
+
+                border: "all"
+                border_size: 5
+                horizontal_grow: true
+
+                button: {
+                    id: "open"
+                    definition: "action_browse"
+                    label: _ "filesystem^Open"
+                    tooltip: _ "Open this file with an external application"
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "screenshot_notification"
+    description: "Notification dialog used after saving a game or map screenshot."
+
+    resolution: {
+        definition: "default"
+
+        click_dismiss: true
+        maximum_width: 600
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+
+                        label: _ "Screenshot Saved"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    definition: "default"
+                                    label: _ "Name:"
+                                }
+
+                            }
+
+                            column: {
+
+                                <__GUI_FILENAME_OPTIONS_GRID!
+
+                            }
+
+                        }
+
+                        row: {
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    label: _ "Size:"
+                                }
+
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                label: {
+                                    id: "filesize"
+                                    wrap: true
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 0
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                button: {
+                                    id: "browse_dir"
+                                    definition: "default"
+
+                                    label: _ "Screenshots..."
+
+                                    tooltip: _ "Browse the screenshots folder using a file manager"
+                                }
+
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+
+                                    label: _ "OK"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+}
+
+__GUI_FILENAME_OPTIONS_GRID = nil

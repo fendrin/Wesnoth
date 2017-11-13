@@ -1,0 +1,644 @@
+--textdomain wesnoth-l
+Scenario{
+    id: "05_Hide_and_Seek"
+    next_scenario: "06_The_Grey_Woods"
+    victory_when_enemies_defeated: false
+    name: _ "Hide and Seek"
+    map: "campaigns/Liberty/maps/05_Hide_and_Seek.map"
+    <TURNS(34, 30, 26)
+
+    time: {
+        id: "midnight"
+        name: _ "Midnight"
+        image: "schedule-midnight.png"
+        lawful_bonus: -25
+    }
+
+    <INTRO_AND_SCENARIO_MUSIC("wanderer.ogg", "underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("revelation.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+-- the music will change if the guards see you
+
+    <LIBERTY_BIGMAP(JOURNEY_05_NEW!)
+
+    side: {
+        type: "Bandit"
+        id: "Baldras"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Thug", "Footpad", "Poacher"}
+        gold: 0
+        income: -2
+        village_gold: 0
+        team_name: "good_guys"
+        user_team_name: _ "Rebels"
+        shroud: false
+        fog: true
+        share_maps: false
+        share_view: false
+    }
+
+    side: {
+        type: "Master Bowman"
+        id: "Quentin"
+        name: _ "Quentin"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        user_team_name: _ "Asheviere"
+        team_name: "bad_guys"
+        ai: {
+            ai_algorithm: "idle_ai"
+            passive_leader: true
+        }
+        shroud: false
+        fog: true
+    }
+
+    side: {
+        no_leader: true
+        side: 3
+        color: "blue"
+        controller: "ai"
+        team_name: "bad_guys"
+        user_team_name: _ "Asheviere"
+        ai: {
+            aggression: 1.0
+            caution: 0.0
+            grouping: false
+            simple_targeting: true
+        }
+        shroud: false
+        fog: true
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES_ALL(2)
+
+    side: {
+        type: "Rogue"
+        id: "Hans"
+        name: _ "Hans"
+        side: 4
+        color: "green"
+        canrecruit: true
+        controller: "ai"
+        facing: "sw"
+        ai: {
+            passive_leader: true
+        }
+        team_name: "good_guys"
+        user_team_name: _ "Rebels"
+        shroud: false
+        fog: true
+        share_maps: false
+        share_view: false
+        <FLAG_VARIANT6("ragged")
+    }
+
+--
+-- Prestart events
+--
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/oak-leaning.png~FL(horiz)", 12, 37)
+
+            Store_Side{
+                side: 1
+                variable: "stored_side_1"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Take Baldras to meet the leader of the insurgency"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Baldras"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Harper"
+                    condition: "lose"
+                }
+
+                note: {
+                    description: _ "Remember that in fog, units always see one hex further than they can move."
+                }
+
+                <TURNS_RUN_OUT!
+            }
+
+--some various city props
+            PLACE_IMAGE("scenery/well.png", 11, 36)
+
+            PLACE_IMAGE("items/scarecrow.png", 15, 22)
+
+            PLACE_IMAGE("items/straw-bale1.png", 1, 22)
+            PLACE_IMAGE("items/straw-bale2.png~FL(horiz)", 2, 22)
+            PLACE_IMAGE("items/straw-bale1.png~FL(horiz)", 1, 23)
+            PLACE_IMAGE("items/straw-bale1.png", 31, 27)
+
+            PLACE_IMAGE("items/archery-target-right.png~FL(horiz)", 4, 44)
+            PLACE_IMAGE("items/archery-target-right.png~FL(horiz)", 6, 45)
+            PLACE_IMAGE("items/archery-target-right.png~FL(horiz)", 5, 47)
+
+-- Here we preplace a few guards
+
+            SEEKER = (X, Y, TYPE) -> {
+                unit: {
+                    type: TYPE
+                    generate_name: true
+                    x: X, y: Y
+                    side: 2
+                    random_traits: true
+                }
+            }
+
+            SEEKER(2, 45, "Bowman")
+            SEEKER(3, 47, "Bowman")
+
+            RANDOM("a,b,c")
+            Switch{
+                variable: "random"
+
+                case: {
+                    value: "a"
+                    do: ->
+                        Store_Locations{
+                            x: {7, 19, 24, 30, 17, 25, 2, 6, 18, 2, 24, 13, 16, 3, 15, 17, 30, 19, 3, 27, 9}
+                            y: {13, 9, 10, 13, 18, 21, 22, 23, 27, 28, 30, 32, 32, 37, 37, 38, 38, 41, 42, 43, 47}
+                            variable: "guard_locs"
+                        }
+                }
+
+                case: {
+                    value: "b"
+                    do: ->
+                        Store_Locations{
+                            x: {2, 25, 14, 30, 5, 16, 25, 6, 2, 33, 16, 22, 13, 3, 15, 17, 28, 3, 7, 21}
+                            y: {10, 10, 13, 13, 19, 20, 21, 23, 28, 28, 31, 31, 32, 37, 37, 38, 39, 42, 48, 48}
+                            variable: "guard_locs"
+                        }
+                }
+
+                case: {
+                    value: "c"
+                    do: ->
+                        Store_Locations{
+                            x: {22, 7, 16, 26, 15, 4, 31, 19, 15, 30, 5, 4, 8, 15, 17, 27, 19, 3, 20}
+                            y: {12, 13, 13, 15, 18, 22, 23, 26, 27, 29, 32, 35, 35, 37, 38, 39, 41, 42, 46}
+                            variable: "guard_locs"
+                        }
+                }
+            }
+
+            For{
+                array: "guard_locs"
+-- The guard positions are designed to work with 4MP guards only, so
+-- we need to make sure the guards cannot get the quick trait, and we
+-- do this by randomizing their traits manually.
+                do: ->
+                    Set_Variables{
+                        name: "traits_without_quick"
+
+                        value: {
+                            <TRAIT_STRONG!
+                        }
+                        value: {
+                            <TRAIT_RESILIENT!
+                        }
+                        value: {
+                            <TRAIT_FEARLESS!
+                        }
+                        value: {
+                            <TRAIT_INTELLIGENT!
+                        }
+                    }
+
+                    VARIABLE_OP("first_trait", "rand", "0..3")
+                    Set_Variables{
+                        name: "this_guard_traits"
+                        to_variable: "traits_without_quick[first_trait].trait"
+                    }
+
+-- To prevent the same trait from being picked twice, we need to find
+-- and remove the first picked trait from the array.
+                    For{
+                        array: "traits_without_quick"
+                        variable: "j"
+                        do: ->
+                            If{
+                                variable: {
+                                    name: "traits_without_quick[j].trait.id"
+                                    equals: traits_without_quick[first_trait].trait.id
+                                }
+
+                                then: ->
+                                    CLEAR_VARIABLE("traits_without_quick[#{first_trait]")
+                                
+                            }
+                        
+                    }
+
+                    VARIABLE_OP("second_trait", "rand", "0..2")
+                    Set_Variables{
+                        name: "this_guard_traits"
+                        mode: "append"
+                        to_variable: "traits_without_quick[second_trait].trait"
+                    }
+
+                    RANDOM("Shock Trooper,Iron Mauler")
+
+                    Unit{
+                        type: random
+                        side: 2
+                        x: guard_locs[i].x, y: guard_locs[i].y
+                        generate_name: true
+                        random_traits: false
+                        modifications: {
+                            insert_tag: {
+                                name: "trait"
+                                variable: "this_guard_traits"
+                            }
+                        }
+                    }
+
+                    CLEAR_VARIABLE("this_guard_traits")
+                
+            }
+
+            CLEAR_VARIABLE("guard_locs,traits_without_quick,first_trait,second_trait,random")
+
+            Store_Unit{
+                filter: {
+                    id: "Baldras"
+                }
+
+                kill: true
+                variable: "stored_Baldras"
+            }
+
+            Unit{
+                side: 1
+                type: "Boat"
+                id: "Boat"
+                x: 1, y: 4
+            }
+
+            Hide_Unit{
+                x: 1, y: 4
+            }
+
+            Item{
+                x: 1, y: 4
+                image: "units/transport/boat.png"
+            }
+    }
+
+--
+-- Starting conversation and actions
+--
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Relentlessly pursued by riders patrolling the road to Elensefar, Baldras and his men traveled unseen along the swampy banks of the Great River to the city of Carcyn."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "narrator"
+                message: _ "They hid until nightfall, then crept out to find the help Lord Maddock hinted was here."
+                image: "wesnoth-icon.png"
+            }
+
+            Kill{
+                x: 1, y: 4
+                animate: false
+                fire_event: false
+            }
+
+            Remove_Item{
+                x: 1, y: 4
+            }
+
+            Move_Unit_Fake{
+                side: 1
+                type: "Boat"
+                x: {1, 7}
+                y: {4, 5}
+            }
+
+            Item{
+                x: 7, y: 5
+                image: "units/transport/boat.png"
+            }
+
+            Move_Unit_Fake{
+                side: 1
+                type: stored_Baldras.type
+                x: {7, 7}
+                y: {5, 6}
+            }
+
+            Unstore_Unit{
+                variable: "stored_Baldras"
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Recall{
+                id: "Harper"
+                x: 8, y: 5
+            }
+
+            Message{
+                speaker: "Baldras"
+                message: _ "I’m not sure where we’re supposed to go now. If we go into town we can start asking around for information."
+            }
+
+            Move_Unit_Fake{
+                type: "Thief"
+                side: 4
+                x: {7, 6}
+                y: {9, 6}
+            }
+
+            Unit{
+                type: "Thief"
+                side: 4
+                x: 6, y: 6
+                random_traits: true
+                id: "Link"
+                name: _ "Link"
+            }
+
+            Message{
+                speaker: "Baldras"
+                message: _ "Who are you?"
+            }
+            Message{
+                speaker: "Link"
+                message: _ "I have come to find you. You must make it through the city without being seen. The soldiers are normally out hunting for my kind, but a company of heavy infantry arrived three days ago and took over the patrols."
+            }
+            Message{
+                speaker: "Harper"
+                message: _ "They’re looking for us."
+            }
+            Message{
+                speaker: "Link"
+                message: _ "Well, good thing I found you first. Now hurry, you must make it past the city into the Grey Woods. There is a small path in the southeast that leads into the forest; look for the signpost. My brother Hans is waiting for you there and will take you to our master. Try to avoid the soldiers if you can."
+            }
+
+            HIGHLIGHT_IMAGE(26, 48, "scenery/signpost.png", {})
+
+            Scroll_To_Unit{
+                id: "Baldras"
+            }
+
+            MOVE_UNIT({id: "Link"}, 5, 8)
+
+            Kill{
+                id: "Link"
+                animate: false
+                fire_event: false
+            }
+
+            Redraw{
+            }
+
+            CLEAR_VARIABLE("stored_Baldras")
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            side: 2
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Redraw{
+                side: 1
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "Looks like these guards hold stationary posts, so if we’re careful enough we should be able to slip our way around them unnoticed."
+            }
+            Message{
+                speaker: "Baldras"
+                message: _ "Harper, you younger and faster folks need to be our eyes now. Scout ahead and try to find a way for us to get past the guards, but make sure to not stay where they can see you or we’re all in big trouble..."
+            }
+    }
+
+    event: {
+        name: "side 2 turn"
+        first_time_only: false
+        do: ->
+            If{
+                have_unit: {
+                    side: 1
+
+                    filter_vision: {
+                        visible: true
+                        side: 2
+                    }
+
+                    or: {
+                        side: 1
+
+                        filter_vision: {
+                            visible: true
+                            side: 3
+                        }
+                    }
+                }
+
+                then: ->
+-- if player is visible to enemies, flip all nearby enemies to side 3,
+-- which is the aggressive side and thus the nearby enemies will begin
+-- to pursue the player
+
+                    Modify_Unit{
+                        filter: {
+                            side: 2
+
+                            filter_location: {
+                                filter: {
+                                    side: 1
+                                }
+
+                                <QUANTITY("radius", 8, 11, 13)
+                            }
+                        }
+
+                        side: 3
+                    }
+                
+
+                else: ->
+-- if player isn't seen by enemies anymore, make all enemies idle again
+
+                    Modify_Unit{
+                        filter: {
+                            side: 3
+                        }
+
+                        side: 2
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 3
+        }
+        do: ->
+            INCIDENTAL_MUSIC("vengeful.ogg")
+
+            Message{
+                speaker: "Harper"
+                message: _ "They’ve seen us! <i>Run</i>!"
+            }
+    }
+
+    event: {
+        name: "attack_end"
+        filter: {
+            side: 2
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            IF_VAR(second_unit.hitpoints, "greater_than", 0, {
+                    then: ->
+                        Message{
+                            speaker: "Baldras"
+                            message: _ "Fall back, quickly! Maybe we can yet lose them!"
+                        }
+                    
+            })
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Hans"
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Gentlemen, please come this way and follow the path into the forest. Our leader is anxious to meet you."
+            }
+            Message{
+                speaker: "second_unit"
+                message: _ "As soon as we escape the Wesnoth death squad, we will be happy to oblige."
+            }
+            Message{
+                speaker: "Baldras"
+                message: _ "I haven’t run this much in years. If you were to ask me to infiltrate a heavily guarded city relying on nothing but the cover of darkness and my wits, I would say you were crazy."
+            }
+            Message{
+                speaker: "Baldras"
+                message: _ "As it turns out, I’m the crazy one. Let’s finish this folly."
+            }
+    }
+
+--
+-- Special event - if someone besides Baldras goes to the end, you get a
+-- message
+--
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 1
+
+            filter_adjacent: {
+                id: "Hans"
+            }
+
+            not: {
+                id: "Baldras"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Hans"
+                message: _ "You can come if you wish, but the leader is only interested in speaking to Baldras."
+            }
+
+            Allow_Undo{}
+    }
+
+--
+-- Victory
+--
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: 26
+            y: 48
+            id: "Baldras"
+        }
+        do: ->
+            Message{
+                speaker: "Hans"
+                message: _ "Fly, and we may yet evade them in the Grey Woods."
+            }
+
+            Message{
+                speaker: "Baldras"
+                message: _ "Lead the way."
+            }
+
+            Modify_Side{
+                side: 1
+                gold: stored_side_1.gold
+            }
+
+            CLEAR_VARIABLE("stored_side_1")
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+            }
+    }
+
+--
+-- Loss conditions - turns run out
+--
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Baldras"
+                message: _ "We have spent too much time here. Surely the Queen’s forces have returned to Dallben. Our mission is unfinished, but we must return to fight a suicide battle."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    <LIBERTY_DEATHS!
+
+    <VILLAGE_BURNED!
+}
+
+SEEKER = nil

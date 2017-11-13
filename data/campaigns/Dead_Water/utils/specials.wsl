@@ -1,13 +1,13 @@
 --textdomain wesnoth-dw
 
 SPECIAL_NOTES_STUN = () ->
-    _ " This unit is able to stun its enemies, disrupting their zones of control."
+err: ../attic/data/campaigns/Dead_Water/utils/specials.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
 
-WEAPON_SPECIAL_STUN = () -> {
-    damage: {
-        id: "tail_stun"
-        name: _ "stun"
-        description: _ "This attack hits so hard that the opponent is dazed and can no longer enforce a zone of control. The effect wears off on the opponent’s next turn."
-        multiply: 1
+    WEAPON_SPECIAL_STUN = () -> {
+        damage: {
+            id: "tail_stun"
+            name: _ "stun"
+            description: _ "This attack hits so hard that the opponent is dazed and can no longer enforce a zone of control. The effect wears off on the opponent’s next turn."
+            multiply: 1
+        }
     }
-}

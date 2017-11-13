@@ -1,0 +1,130 @@
+--textdomain wesnoth-lib
+----
+---- Dialog that tracks progress of a network transmission
+----
+
+Window{
+    id: "network_transmission"
+    description: "Dialog that tracks progress of a network transmission"
+
+    resolution: {
+        definition: "default"
+
+        maximum_width: 800
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+
+                column: {
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        id: "title"
+                        definition: "title"
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+
+                    label: {
+                        id: "subtitle"
+                        definition: "default"
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    grow_factor: 1
+                    horizontal_grow: true
+                    border: "all"
+                    border_size: 5
+
+                    progress_bar: {
+                        id: "progress"
+                        definition: "default"
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "right"
+
+                    label: {
+                        id: "numeric_progress"
+                        definition: "default"
+                    }
+
+                }
+
+            }
+
+            row: {
+
+                column: {
+
+                    horizontal_alignment: "right"
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+
+                                    label: _ "Cancel"
+                                }
+
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

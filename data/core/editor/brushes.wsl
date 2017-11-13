@@ -1,0 +1,80 @@
+--textdomain wesnoth-editor
+-- Editor brush definitions
+
+Brush{
+    id: "brush-1"
+    name: _ "Single Hex"
+    relative: {
+        x: 0
+        y: 0
+    }
+}
+
+Brush{
+    id: "brush-2"
+    radius: 1
+    name: _ "Radius 1 Hex"
+    relative: {
+        x: 0
+        y: 0
+    }
+}
+
+Brush{
+    id: "brush-3"
+    radius: 2
+    name: _ "Radius 2 Hex"
+    relative: {
+        x: 0
+        y: 0
+    }
+}
+
+Brush{
+    id: "brush-nw-se"
+    relative: {
+        x: -1
+        y: -1
+    }
+    relative: {
+        x: 1
+        y: 0
+    }
+    relative: {
+        x: 0
+        y: 0
+    }
+    name: _ "Hex Line NW-SE"
+}
+
+Brush{
+    id: "brush-sw-ne"
+    relative: {
+        x: -1
+        y: 0
+    }
+    relative: {
+        x: 1
+        y: -1
+    }
+    relative: {
+        x: 0
+    }
+    name: _ "Hex Line SW-NE"
+}
+
+-- [brush]
+-- 	[relative]
+-- 		x=0
+-- 		y=1
+-- 	[/relative]
+-- 	[relative]
+-- 		x=0
+-- 		y=-1
+-- 	[/relative]
+-- 	[relative]
+-- 		x=0
+-- 		y=0
+-- 	[/relative]
+-- 	name= _ "Hex Line N-S"
+-- [/brush]

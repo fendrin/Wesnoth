@@ -1,0 +1,948 @@
+--textdomain wesnoth-nr
+--- Common code for hero deaths.
+
+-- Tallin death
+HERODEATH_TALLIN = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Tallin"
+        }
+        do: ->
+            INCIDENTAL_MUSIC("sad.ogg")
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Argh! I am finished, but our campaign must... not end... crush... our... enemies... and... save... our... people..."
+            }
+
+            Message{
+                role: "Supporter"
+                message: _ "No, Tallin, we can’t do it without you!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+-- Camerin death
+HERODEATH_CAMERIN = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Camerin"
+        }
+        do: ->
+            INCIDENTAL_MUSIC("sad.ogg")
+
+            Message{
+                speaker: "Camerin"
+                message: _ "What... how can this happen?"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "He was stark raving mad, but I am sure going to miss him."
+            }
+    }
+}
+
+-- Hamel death in scenario 2,3 and 4
+HERODEATH_HAMEL = () -> {
+    event: {
+        name: "die"
+        filter: {
+            id: "Hamel"
+        }
+        do: ->
+            Message{
+                speaker: "Tallin"
+                message: _ "No! Without the dwarvish weapons we have no hope!"
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
+
+-- Krash death events
+HERODEATH_KRASH = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Krash"
+        }
+        do: ->
+            Message{
+                speaker: "Krash"
+                message: _ "(<i>Roars in pain</i>)"
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Krash!"
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Krash"
+        }
+        do: ->
+            INCIDENTAL_MUSIC("sad.ogg")
+
+            Message{
+                speaker: "Father Morvin"
+                message: _ "It’s no good, Tallin, he is gone."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "You wretched monsters! You are going to pay for this!"
+            }
+
+            Message{
+                speaker: "Camerin"
+                message: _ "Awww, I liked that guy!"
+            }
+    }
+}
+
+-- Elenia death
+HERODEATH_ELENIA = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Elenia"
+        }
+        do: ->
+            Music{
+                name: "sad.ogg"
+                play_once: true
+            }
+
+            Message{
+                speaker: "Elenia"
+                message: _ "Alas! My wanderings have come to an end."
+            }
+
+            Message{
+                speaker: "Tallin"
+                message: _ "Blast it, we have lost a valuable ally."
+            }
+
+            Message{
+                speaker: "Sister Thera"
+                message: _ "Farewell Elenia. May you find peace in your final journey."
+            }
+    }
+}
+
+NR_WHITE_MAGE_RESPAWN_AT = (HUB_CANDIDATE) -> {
+-- Find a respawn point, starting within 1 hex of the candidate,
+-- and increading in range if no suitable hex is found.
+-- Tallin will be the hub candidate if the specified unit is still jailed
+    find_respawn_point: {
+        respawn_near: HUB_CANDIDATE
+        variable: "respawn_point"
+    }
+
+    <FLASH_WHITE({
+            teleport: {
+                filter: {
+                    id: unit.id
+                }
+                x: respawn_point.x
+                y: respawn_point.y
+                animate: false
+            }
+    })
+
+    redraw: {}
+
+    scroll_to: {
+        x: respawn_point.x
+        y: respawn_point.y
+    }
+
+    delay: {
+        time: 500
+    }
+
+    heal_unit: {
+        filter: {
+            id: unit.id
+        }
+        filter_second: {
+            id: HUB_CANDIDATE
+        }
+
+        amount: "full"
+        animate: true
+    }
+
+    <CLEAR_VARIABLE("respawn_point")
+}
+
+-- Death event for Thera and Morvin
+-- This version includes death dialog
+HERODEATH_THERA_AND_MORVIN_WITH_DIALOG = () -> {
+    event: {
+        name: "prestart"
+
+-- These will allow their death/dialogs to play in a row, and then never again,
+-- to prevent annoyance.
+        do: ->
+            VARIABLE("death_dialog_index_thera", 1)
+            VARIABLE("death_dialog_index_morvin", 1)
+    }
+
+    event: {
+        name: "last breath"
+        first_time_only: false
+        filter: {
+            id: "Sister Thera"
+        }
+        do: ->
+            Switch{
+                variable: "death_dialog_index_thera"
+                case: {
+                    value: 1
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Ahhhh! Save me, my husband!"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "(<i>Rolls eyes</i>) Dramatic as always."
+                        }
+                }
+                case: {
+                    value: 2
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Ahhhhhhh!"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "You monsters think you are so tough don’t you? Well check this out."
+                        }
+                }
+                case: {
+                    value: 3
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Ahhhhhhh!"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "You incompetent fools, you think you can kill us? Good luck!"
+                        }
+                }
+                case: {
+                    value: 4
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+-- wmllint: local spelling Ack!
+                            message: _ "Ack! Stupid slobbering beast!"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Your efforts to destroy us are in vain, you foul creature."
+                        }
+                }
+                case: {
+                    value: 5
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "Oh no, Morvin! We have failed in our mission to help Tallin!"
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Failed? Never! The word failure is not in our dictionary."
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 6
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Alas! I am dying! Morvin darling, I wish you were beside me so that I may die in your arms! So that I may feel the kiss of your lips on mine one last time!"
+                        }
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "(<i>Rolls eyes</i>) Thera, do you always have to be so dramatic?"
+                                }
+
+                                Message{
+                                    role: "Supporter"
+                                    message: _ "Um... Father? Your wife just got killed..."
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Oh right. I CALL UPON THE LORDS OF LIGHT TO GRANT YOU LIFE!"
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 7
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "You cruel creature! How dare you use your brute strength against such a frail creature as me."
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Don’t worry, Thera, you will have plenty of opportunities to set him straight."
+                        }
+                }
+            }
+
+            NR_WHITE_MAGE_RESPAWN_AT("Father Morvin")
+
+            Switch{
+                variable: "death_dialog_index_thera"
+                case: {
+                    value: 1
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Thera, when this is all over, you should paint your face and join a theater."
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "Hey, don’t you always say that life is nothing but a drama?"
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Yes, it may be a drama, but that’s no excuse for overacting!"
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "(<i>Giggle</i>) Who needs an excuse for overacting?"
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 2
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Whoa! That trick is a bit hard on the constitution."
+                        }
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Well, be grateful that you are alive."
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "(<i>Giggle</i>) Thank you, honey."
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Thank the Lords of Light, not me!"
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 3
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Ouch! That hurts. Let’s try not to do that again, shall we?"
+                        }
+                }
+                case: {
+                    value: 4
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "There we go, payback time!"
+                        }
+                }
+                case: {
+                    value: 5
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "There we go, let’s give this one more shot!"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Just try not to kill yourself again."
+                        }
+                }
+                case: {
+                    value: 6
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+-- wmllint: local spelling unclerical
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Thera, you should know by now that it is very unclerical to make such a spectacle of yourself."
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "Come on, honey! Those were my dying words, after all!"
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "(<i>Rolls eyes</i>) Women!"
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 7
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Father Morvin"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "That’s darned right!"
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Thera! Language like that coming from you! You should really stop hanging around the dwarves so much."
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "(<i>Giggle</i>) Sorry."
+                                }
+                            
+                        }
+                }
+            }
+
+            If{
+                variable: {
+                    name: "death_dialog_index_thera"
+                    less_than_equal_to: 7
+                }
+                then: ->
+                    VARIABLE_OP("death_dialog_index_thera", "add", 1)
+                
+            }
+    }
+
+    event: {
+        name: "last breath"
+        first_time_only: false
+        filter: {
+            id: "Father Morvin"
+        }
+        do: ->
+            Switch{
+                variable: "death_dialog_index_morvin"
+                case: {
+                    value: 1
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Alas! So... close."
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Hey, that’s not right. The good guys aren’t supposed to die. Oh well, I’ll fix that."
+                        }
+                }
+                case: {
+                    value: 2
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Argh!"
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "You incompetent fools, you think you can kill us? Good luck!"
+                        }
+                }
+                case: {
+                    value: 3
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Argh!"
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Oh dear. Did you just go and get yourself killed again, Morvin? Well, I’ll fix that."
+                        }
+                }
+                case: {
+                    value: 4
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "The forces of good can never be defeated by the likes of you!"
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Yeah, try taking a bath and you <i>might</i> be able to kill him for good (<i>Wink wink</i>). But for the time being, abracadabra!"
+                        }
+                }
+                case: {
+                    value: 5
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Argh!"
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Stupid troll, maybe next time you should try killing someone who can be killed."
+                        }
+                }
+                case: {
+                    value: 6
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Argh! I’ll just come back and finish you in my next life."
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "Which might be sooner than you think."
+                        }
+                }
+                case: {
+                    value: 7
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Ack! I have been brained!"
+                        }
+
+                        Message{
+                            speaker: "Sister Thera"
+-- wmllint: local spelling Eew
+                            message: _ "Eew! Gross! Ahh never mind, I’ll get you cleaned up good."
+                        }
+                }
+            }
+
+            NR_WHITE_MAGE_RESPAWN_AT("Sister Thera")
+
+            Switch{
+                variable: "death_dialog_index_morvin"
+                case: {
+                    value: 1
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "There we go."
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Ahh yes, that’s better."
+                        }
+                }
+                case: {
+                    value: 2
+                    do: ->
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Ouch! That hurts. Let’s try not to do that again, shall we?"
+                        }
+                }
+                case: {
+                    value: 3
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Sister Thera"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "Morvin! You bad boy, always getting into trouble."
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Sorry, won’t do it again. Promise!"
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 4
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Sister Thera"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "I heard that, Thera."
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "Hey, just trying to give him an incentive to drown himself."
+                                }
+                            
+                        }
+                }
+                case: {
+                    value: 5
+-- no message for this case
+err: ../attic/data/campaigns/Northern_Rebirth/utils/herodeaths.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! case closed by do at line 631
+                case: {
+                    value: 6
+                    do: ->
+                        Message{
+                            speaker: "Sister Thera"
+                            message: _ "See?"
+                        }
+
+                        Message{
+                            speaker: "Father Morvin"
+                            message: _ "Now where did he go?!"
+                        }
+                }
+                case: {
+                    value: 7
+                    do: ->
+                        If{
+                            have_unit: {
+                                id: "Sister Thera"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Ahhh, Thera, you would make such a good housewife!"
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+-- wmllint: local spelling pouty
+                                    message: _ "Yes, if you would ever buy me a house! (<i>Pouty face</i>)"
+                                }
+
+                                Message{
+                                    speaker: "Father Morvin"
+                                    message: _ "Thera, don’t you think that this isn’t really a good time to talk about that?"
+                                }
+
+                                Message{
+                                    speaker: "Sister Thera"
+                                    message: _ "(<i>Giggle</i>) Sorry!"
+                                }
+                            
+                        }
+                }
+err: ../attic/data/campaigns/Northern_Rebirth/utils/herodeaths.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! case closed by switch at line 674
+            do: ->
+                If{
+                    variable: {
+                        name: "death_dialog_index_morvin"
+                        less_than_equal_to: 7
+                    }
+                    then: ->
+                        VARIABLE_OP("death_dialog_index_morvin", "add", 1)
+                    
+                }
+err: ../attic/data/campaigns/Northern_Rebirth/utils/herodeaths.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! case closed by event at line 685
+        do: ->
+            Event{
+                name: "victory"
+                do: ->
+                    CLEAR_VARIABLE("death_dialog_index_thera,death_dialog_index_morvin")
+            }
+err: ../attic/data/campaigns/Northern_Rebirth/utils/herodeaths.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! do closed by define at line 692
+
+-- Death event for Thera and Morvin
+-- This version does NOT include death dialog
+            HERODEATH_THERA_AND_MORVIN_NO_DIALOG = () -> {
+                event: {
+                    name: "last breath"
+                    first_time_only: false
+                    filter: {
+                        id: "Sister Thera"
+                    }
+                    do: ->
+                        NR_WHITE_MAGE_RESPAWN_AT("Father Morvin")
+                }
+
+                event: {
+                    name: "last breath"
+                    first_time_only: false
+                    filter: {
+                        id: "Father Morvin"
+                    }
+                    do: ->
+                        NR_WHITE_MAGE_RESPAWN_AT("Sister Thera")
+                }
+            }
+
+-- Death events for the lich brothers
+            HERODEATH_LICH_BROTHERS = () -> {
+                event: {
+                    name: "last breath"
+                    filter: {
+                        id: "Ro'Sothian"
+                    }
+                    do: ->
+                        INCIDENTAL_MUSIC("sad.ogg")
+
+                        Message{
+                            speaker: "Ro'Sothian"
+-- wmllint: local spelling outta
+                            message: _ "I have had enough! Come on brother, let’s get outta here."
+                        }
+
+                        FLASH_WHITE({})
+                }
+
+                event: {
+                    name: "die"
+                    filter: {
+                        id: "Ro'Sothian"
+                    }
+                    do: ->
+                        Message{
+                            speaker: "Tallin"
+                            message: _ "Dang it! They’re gone, and the creatures they control are leaving too. Without them, this is hopeless."
+                        }
+
+                        Endlevel{
+                            result: "defeat"
+                        }
+                }
+
+                event: {
+                    name: "last breath"
+                    filter: {
+                        id: "Ro'Arthian"
+                    }
+                    do: ->
+                        INCIDENTAL_MUSIC("sad.ogg")
+
+                        Message{
+                            speaker: "Ro'Arthian"
+                            message: _ "I have had enough! Come on brother, let’s get outta here."
+                        }
+
+                        FLASH_WHITE({})
+                }
+
+                event: {
+                    name: "die"
+                    filter: {
+                        id: "Ro'Arthian"
+                    }
+                    do: ->
+                        Message{
+                            speaker: "Tallin"
+                            message: _ "Dang it! They’re gone, and the creatures they control are leaving too. Without them, this is hopeless."
+                        }
+
+                        Endlevel{
+                            result: "defeat"
+                        }
+                }
+            }
+
+            HERODEATH_STALRAG = () -> {
+                event: {
+                    name: "last breath"
+                    filter: {
+                        id: "Stalrag"
+                    }
+                    do: ->
+                        INCIDENTAL_MUSIC("sad.ogg")
+
+                        Message{
+                            speaker: "Stalrag"
+                            message: _ "Farewell, my friends. I now go to join my fallen brothers."
+                        }
+
+                        Role{
+                            type: {"Dwarvish Berserker", "Dwarvish Ulfsurker"}
+                            role: "Shinsplitter"
+                        }
+
+                        If{
+                            not: {
+                                have_unit: {
+                                    role: "Shinsplitter"
+                                }
+                            }
+                            then: ->
+                                Recall{
+                                    role: "Shinsplitter"
+                                }
+                            
+                        }
+
+                        Message{
+                            role: "Shinsplitter"
+                            message: _ "No, Stalrag! Without you what will become of the Shinsplitters?"
+                        }
+
+                        Message{
+                            speaker: "Stalrag"
+                            message: _ "Shinsplitters... join Tallin... He is your new... leader... trust... and... serve... him... as... you... have... served... me."
+                        }
+
+                        Message{
+                            speaker: "Tallin"
+                            message: _ "Your death shall not go unavenged, brave Stalrag. DEATH TO THE ORCS!!"
+                        }
+
+                        Message{
+                            role: "Shinsplitter"
+                            message: _ "DIE, YOU FOUL SCUM!!"
+                        }
+                }
+            }
+
+-- Eryssa death
+            HERODEATH_ERYSSA = () -> {
+                event: {
+                    name: "last breath"
+                    filter: {
+                        id: "Eryssa"
+                    }
+                    do: ->
+                        INCIDENTAL_MUSIC("sad.ogg")
+
+                        Message{
+                            speaker: "Eryssa"
+                            message: _ "Alas, you must continue your mission without me!"
+                        }
+
+                        If{
+                            have_unit: {
+                                id: "Elenia"
+                            }
+                            then: ->
+                                Message{
+                                    speaker: "Elenia"
+                                    message: _ "Eryssa, no! Please don’t die!"
+                                }
+
+                                Message{
+                                    speaker: "Tallin"
+                                    message: _ "I am sorry, Elenia, we tried our best. (<i>Sigh</i>) I will never forget you, Eryssa."
+                                }
+                            
+                            else: ->
+                                Message{
+                                    speaker: "Tallin"
+                                    message: _ "You wretches are going to pay for this! FORWARD, MEN!"
+                                }
+                            
+                        }
+                }
+            }
+
+-- Macro shortcut whith everyone's death macros
+            HERODEATH_EVERYONE = () -> {
+                <HERODEATH_TALLIN!
+                <HERODEATH_CAMERIN!
+                <HERODEATH_KRASH!
+                <HERODEATH_ELENIA!
+                <HERODEATH_THERA_AND_MORVIN_NO_DIALOG!
+                <HERODEATH_STALRAG!
+                <HERODEATH_LICH_BROTHERS!
+                <HERODEATH_ERYSSA!
+
+                <SUPPORTER_DEATH_HANDLER!
+            }
+
+-- This death event makes sure there is always a supporter around
+            SUPPORTER_DEATH_HANDLER = () -> {
+                event: {
+                    name: "die"
+                    filter: {
+                        role: "Supporter"
+                    }
+                    do: ->
+                        Role{
+                            race: "human"
+                            alignment: "lawful"
+                            not: {
+                                id: "Camerin"
+                            }
+                            not: {
+                                id: "Tallin"
+                            }
+                            not: {
+                                usage: "healer"
+                            }
+                            not: {
+                                role: "Supporter"
+                            }
+                            role: "Supporter"
+                        }
+                }
+            }

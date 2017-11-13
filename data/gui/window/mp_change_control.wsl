@@ -1,0 +1,235 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the control panel window.
+----
+
+_GUI_SIDES_LISTBOX = () -> {
+    listbox: {
+        id: "sides_list"
+        definition: "default"
+
+        header: {
+            row: {
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    border: "all"
+                    border_size: 5
+
+                    label: {
+                        id: "side_title"
+                        definition: "default"
+                        label: _ "Side"
+                    }
+                }
+            }
+        }
+
+        list_definition: {
+            row: {
+                column: {
+                    vertical_grow: true
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+                        grid: {
+                            row: {
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    border: "all"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "side"
+                                        definition: "default"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+_GUI_NICKS_LISTBOX = () -> {
+    listbox: {
+        id: "nicks_list"
+        definition: "default"
+
+        header: {
+            row: {
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+                    border: "all"
+                    border_size: 5
+
+                    label: {
+                        id: "nick_title"
+                        definition: "default"
+                        label: _ "Nickname"
+                    }
+                }
+            }
+        }
+
+        list_definition: {
+            row: {
+                column: {
+                    vertical_grow: true
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+                        grid: {
+                            row: {
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    border: "all"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "nick"
+                                        definition: "default"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+Window{
+    id: "mp_change_control"
+    description: "Dialog used to change side's controller during MP."
+
+    resolution: {
+        definition: "default"
+        automatic_placement: true
+        vertical_placement: "center"
+        horizontal_placement: "center"
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_alignment: "left"
+
+                    label: {
+                        definition: "title"
+                        label: _ "Change Control"
+                    }
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_SIDES_LISTBOX!
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                <_GUI_NICKS_LISTBOX!
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+                                    label: _ "OK"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+                                    label: _ "Cancel"
+                                }
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_NICKS_LISTBOX = nil
+_GUI_SIDES_LISTBOX = nil

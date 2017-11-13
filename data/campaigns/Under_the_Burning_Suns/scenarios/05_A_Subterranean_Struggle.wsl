@@ -1,0 +1,2626 @@
+--textdomain wesnoth-utbs
+
+-- wmllint: directory spelling Griknagh
+
+Scenario{
+    id: "05_A_Subterranean_Struggle"
+    name: _ "A Subterranean Struggle"
+    next_scenario: "06a_In_the_Tunnels_of_the_Trolls"
+
+    <UTBS_MAP("05_A_Subterranean_Struggle.map")
+    victory_when_enemies_defeated: false
+    snapshot: "no"
+
+    <UNDERGROUND!
+    <TURNS(45, 43, 41)
+
+--TODO add extra music
+    <SCENARIO_MUSIC("underground.ogg")
+    <EXTRA_SCENARIO_MUSIC("legends_of_the_north.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+
+    <STORY_A_SUBTERRANEAN_STRUGGLE!
+
+    side: {
+        side: 1
+        id: "Kaleh"
+        type: "Quenoth Youth"
+        canrecruit: true
+        gold: 200
+        <INCOME(7, 5, 3)
+        controller: "human"
+        shroud: true
+        fog: false
+        <FLAG_VARIANT("long")
+        user_team_name: _ "team_name^Quenoth Elves"
+    }
+
+--Side=2 troll 1 (blue)
+    side: {
+        no_leader: true
+        side: 2
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: true
+        fog: false
+        hidden: true
+        team_name: "trolls"
+        user_team_name: _ "team_name^Trolls"
+
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            aggression: 0.8
+            caution: 0.05
+            grouping: "offensive"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 4
+                }
+                value: 9
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 5
+                }
+                value: 9
+            }
+        }
+    }
+
+--Side=3 troll 2 (green)
+    side: {
+        side: 3
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        hidden: true
+        team_name: "trolls"
+        user_team_name: _ "team_name^Trolls"
+
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+
+            aggression: 0.8
+            caution: 0.05
+            grouping: "offensive"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 4
+                }
+                value: 9
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 5
+                }
+                value: 9
+            }
+        }
+    }
+
+--Side=4 dwarf 1 (yellow)
+    side: {
+        side: 4
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        hidden: true
+        team_name: "dwarves"
+        user_team_name: _ "team_name^Dwarves"
+
+        recruit: {"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Thunderer", "Dwarvish Guardsman"}
+
+        ai: {
+            aggression: 0.8
+            caution: 0.05
+            grouping: "offensive"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 2
+                }
+                value: 9
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 3
+                }
+                value: 9
+            }
+        }
+        <FLAG_VARIANT("knalgan")
+    }
+
+--Side=5 dwarf 2 (purple)
+    side: {
+        side: 5
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        hidden: true
+        team_name: "dwarves"
+        user_team_name: _ "team_name^Dwarves"
+
+        recruit: {"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Thunderer", "Dwarvish Guardsman"}
+
+        ai: {
+            aggression: 0.8
+            caution: 0.05
+            grouping: "offensive"
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 2
+                }
+                value: 9
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 3
+                }
+                value: 9
+            }
+        }
+        <FLAG_VARIANT("knalgan")
+    }
+
+--Side=6 Ants
+    side: {
+        side: 6
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: false
+        fog: false
+        hidden: true
+        color: "white"
+
+        ai: {
+            aggression: 0.8
+            caution: 0.1
+
+            village_value: 0
+
+            recruitment_pattern: {"fighter", "fighter", "fighter", "fighter"}
+
+--causes ants to target cave spider
+            goal: {
+                name: "target"
+                criteria: {
+                    type: "Cave Spider"
+                }
+                value: 150
+            }
+
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 100
+            }
+
+            passive_leader: true
+        }
+    }
+
+--Side=7 Assassin & Cave Spider
+    side: {
+        side: 7
+        no_leader: true
+        gold: 0
+        income: 0
+        controller: "ai"
+        shroud: true
+        fog: false
+        hidden: true
+        color: "teal"
+
+        ai: {
+            aggression: 0.90
+            caution: 0.10
+        }
+
+--causes assassin to attack Kaleh more than other units
+
+        goal: {
+            name: "target"
+            criteria: {
+                id: "Kaleh"
+            }
+            value: 20
+        }
+    }
+
+-- Prestart functions:
+-- set starting scenario objectives
+-- increase cost of recruiting units
+-- place item images on map
+-- recall main heroes
+-- initialize starting variable
+-- create elf units
+-- create AI=guardian starting units
+
+--fires lighting central cavern
+    <ANIMATED_CAMPFIRE(31, 32)
+    <ANIMATED_CAMPFIRE(33, 21)
+
+    event: {
+        name: "prestart"
+
+--set starting scenario objectives
+        do: ->
+            Objectives{
+                summary: _ "Starting Objectives:"
+                objective: {
+                    description: _ "Explore underground"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Defeat enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kaleh"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Nym"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Zhul"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            INCREASE_RECRUIT_COSTS(1)
+
+--central cavern furnishings
+
+            PLACE_IMAGE("scenery/rock-cairn.png", 42, 21)
+            PLACE_IMAGE("scenery/rock-cairn.png", 38, 20)
+            PLACE_IMAGE("scenery/rock-cairn.png", 30, 20)
+
+            PLACE_IMAGE("items/burial.png", 27, 33)
+            PLACE_IMAGE("items/burial.png", 35, 34)
+            PLACE_IMAGE("items/burial.png", 43, 33)
+
+--recall heroes
+            Recall{
+                id: "Nym"
+            }
+
+            Recall{
+                id: "Zhul"
+            }
+
+            Recall{
+                id: "Elyssa"
+            }
+
+--create starting elves
+
+            Unit{
+                type: "Quenoth Fighter"
+                name: _ "Nantheos"
+                x: 4
+                y: 23
+                side: 1
+                modifications: {
+                    <TRAIT_QUICK!
+                    <TRAIT_STRONG!
+                }
+            }
+
+            Unit{
+                type: "Quenoth Fighter"
+                name: _ "Sylestria"
+                x: 5
+                y: 25
+                side: 1
+                modifications: {
+                    <TRAIT_INTELLIGENT!
+                    <TRAIT_RESILIENT!
+                }
+            }
+
+-- If Elyssa the Mage isn't there, boost starting group a bit
+
+            If{
+                not: {
+                    have_unit: {
+                        id: "Elyssa"
+                    }
+                }
+                then: ->
+                    Unit{
+                        type: "Quenoth Flanker"
+                        name: _ "Rygar"
+                        x: 6
+                        y: 24
+                        side: 1
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_RESILIENT!
+                        }
+                        <IS_LOYAL!
+                    }
+                
+            }
+    }
+
+-- starting events
+
+    event: {
+        name: "start"
+
+-- starting dialogue
+        do: ->
+            If{
+                have_unit: {
+                    id: "Elyssa"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "You mentioned that dwarves and trolls often lived underground, Elyssa. I’ve only heard myths, have you ever met a dwarf or a troll?"
+                    }
+
+                    Message{
+                        speaker: "Elyssa"
+                        message: _ "No I haven’t, I don’t often explore underground unless I have to. There are lots of nasty things that lurk far away from the light of the suns. But I’ve read a bit about them, and have even met a few people who had dealings with dwarves."
+                    }
+
+                    Message{
+                        speaker: "Nym"
+                        message: _ "What are dwarves like?"
+                    }
+
+                    Message{
+                        speaker: "Elyssa"
+                        message: _ "They’re a proud people, and some would say greedy. They love their gold and fine metals, and forge many beautiful things. I should warn you, they have little liking for elves. There was some betrayal many years ago, though I don’t know what happened."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "And what about trolls? I’m not sure I’d want to meet one face to face."
+                    }
+
+                    Message{
+                        speaker: "Elyssa"
+                        message: _ "Trolls and dwarves are natural enemies, living so close together. And many would say trolls are little more than brutes and savages. Trolls are huge and very strong, with skin as hard as stone, and can be fearsome foes. But I knew one man long ago who traded with a group of trolls and said they were quite honorable, as long as you didn’t try to cheat them."
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Well, with Eloh’s guidance, I hope we find these tunnels deserted. I’ll be happy if our biggest problem is not getting lost. I have little wish to meet either dwarves or trolls. But Eloh will watch over us."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Will she? I got the impression she was powerless underground."
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Where did you get that idea? Certainly Eloh is strongest during the day, when the suns are shining down on us. But it is said that even in the darkest of nights she will protect her faithful. And back during the Golden Age holy elven warriors led great crusades against orcs and other foul things that hid underground, killing them with Eloh’s aid. Faith is our shield, Kaleh. I think you should keep your doubts to yourself; it would not do to unduly worry our people. Eloh will always protect us, if we follow her path."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Then let us hope the rest of our journey may be as uneventful as it has been this far."
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "I’ve heard of dwarves, but do you have any idea, Zhul, what kinds of creatures we might encounter underground?"
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "These tunnels are foreign to me; I know little more than you do. All I know about dwarves is from the few tales from the Golden Age."
+                    }
+
+                    Message{
+                        speaker: "Nym"
+                        message: _ "What are they like?"
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "They lived deep under the earth, mining gold and fine metals and forging many beautiful things. We were once allies during the Golden Age, but in the strife and chaos of the fall we lost all contact. I don’t know if any survived. But in the golden age they were very helpful in our wars against the orcs and trolls."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "What are trolls?"
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Trolls were huge gray creatures as big as giants and very strong. They were reclusive creatures, hiding underground. We never had much contact with them, though some fought with the orcs in the great wars. They were mighty warriors. I’m sure they have all died off; I certainly would never want to meet one face to face."
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "But with Eloh’s guidance, I hope we find these tunnels deserted. I’d be happy if our biggest problem is not getting lost. Still, even underground Eloh will watch over us."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Will she? I got the impression she was powerless underground."
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Where did you get that idea? Certainly Eloh is strongest during the day, when the suns are shining down on us. But it is said that even in the darkest of nights she will protect her faithful. And back during the Golden Age holy elven warriors led great crusades against orcs and other foul things that hid underground, killing them with Eloh’s aid. Faith is our shield, Kaleh. I think you should keep your doubts to yourself; it would not do to unduly worry our people. Eloh will always protect us, if we follow her path."
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Then let us hope the rest of our journey may be as uneventful as it has been this far."
+                    }
+                
+            }
+    }
+
+-- Event 1: Spider and Ants
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: "12-18"
+            y: "20-29"
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Nym"
+                message: _ "All I’m saying is that these tunnels aren’t as bad as I expected."
+            }
+
+            Message{
+                speaker: "Kaleh"
+-- wmllint: local spelling Shhh
+                message: _ "Shhh! Did you hear something?"
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: "11-19"
+                y: "24-27"
+            }
+
+--make ants easy: 3 medium: 4 hard: 5
+
+            NOTRAIT_UNIT(6, "Giant Ant", 17, 26)
+            NOTRAIT_UNIT(6, "Giant Ant", 17, 27)
+            NOTRAIT_UNIT(6, "Giant Ant", 18, 26)
+
+            unless EASY!
+                NOTRAIT_UNIT(6, "Giant Ant", 18, 27)
+            
+
+            if HARD
+                NOTRAIT_UNIT(6, "Giant Ant", 19, 27)
+            
+
+--make spider
+            NOTRAIT_UNIT(7, "Cave Spider", 4, 25)
+
+            Redraw{
+            }
+
+            Scroll_To_Unit{
+                type: "Giant Ant"
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "Ants. Very big ants. Maybe they won’t be hostile."
+            }
+
+            Scroll_To_Unit{
+                type: "Cave Spider"
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "On the other hand, that spider probably is."
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "Caught between a spider and its prey. Not a good place to be."
+            }
+    }
+
+-- If player escapes cave spider, then reward player by killing it
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: "18-24"
+            y: "26-29"
+            side: 1
+        }
+        do: ->
+            If{
+                have_unit: {
+                    type: "Cave Spider"
+                }
+
+                then: ->
+                    Kill{
+                        type: "Cave Spider"
+                        animate: true
+                    }
+
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Whoa! Did you see that? That huge stalactite just fell and crushed the spider. Aren’t we lucky!"
+                    }
+
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Eloh must indeed be watching over us."
+                    }
+                
+            }
+    }
+
+-- When player approaches large cavern, a dying dwarf runs out and yells a warning.
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: "18-24"
+            y: "26-28"
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Nym"
+                message: _ "You know, if all we discover down here are insects, I’ll be very disappointed."
+            }
+
+            If{
+                have_unit: {
+                    id: "Elyssa"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Elyssa"
+                        message: _ "Spiders aren’t insects."
+                    }
+
+                    Message{
+                        speaker: "Nym"
+                        message: _ "Thanks for the clarification."
+                    }
+                
+            }
+
+            Move_Unit_Fake{
+                type: "Dwarvish Fighter"
+                side: 4
+                x: {25, 24, 23, 22, 21}
+                y: {28, 28, 29, 28, 29}
+            }
+
+--TODO maybe the wounded dwarf should really be wounded?
+            NAMED_NOTRAIT_UNIT(4, "Dwarvish Fighter", 21, 29, "Wounded Dwarf", _ "Wounded Dwarf")
+
+            Message{
+                speaker: "Wounded Dwarf"
+                message: _ "Help! They’re everywhere!"
+            }
+
+            Kill{
+                id: "Wounded Dwarf"
+                animate: true
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Nym, your timing is impeccable."
+            }
+
+            If{
+                have_unit: {
+                    id: "Elyssa"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Elyssa"
+                        message: _ "That’s a dwarf, but it looks like he’s been beaten to a pulp."
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "Zhul"
+                        message: _ "Short and hairy, he must be a dwarf. But he’s been beaten to a pulp."
+                    }
+                
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "I don’t know what ‘they’ are, but we can’t go back. Prepare yourselves for anything, everyone."
+            }
+    }
+
+-- EVENT 5 IS LISTED OUT OF ORDER BECAUSE FOR SOME REASON IT WASN'T
+-- FIRING WHEN PLACED AFTER EVENT 4.5. CURRENTLY THIS EVENT WORKS
+-- FINE WHEN IT IS HERE AND EVENT 6 FIRES FINE AFTER 4.5. SO EVEN
+-- THOUGH THE EVENTS ARE OUT OF ORDER, I'M LEAVING THEM THIS WAY
+-- BECAUSE IT SEEMS TO MAKE EVERYTHING WORK FINE.
+
+-- Event 5: Sighted dwarf/troll leader events
+
+    DWARF_ALLY_APPROACH_MESSAGES: () -> {
+        <VARIABLE("Fundin_approach_message", _ "What are you doing back here? The trolls hide in the southern tunnels, not this way.")
+        <VARIABLE("Nori_approach_message", _ "What are you doing back here? The trolls hide in the southern tunnels, not this way.")
+-- wmllint: local spelling stinkin'
+        <VARIABLE("Thungar_approach_message", _ "Nasty dwarves and stinkin’ elves, we will smash you all!")
+        <VARIABLE("Gnarl_approach_message", _ "Kill the elves! We must stop them here. This is our land, crush the intruders!")
+    }
+
+    TROLL_ALLY_APPROACH_MESSAGES: () -> {
+        <VARIABLE("Fundin_approach_message", _ "Treacherous elves, how can you fight with such horrid creatures as trolls? I will cleave all in two with my axe!")
+        <VARIABLE("Nori_approach_message", _ "If you think you can take these caves from us, then you are fools. We are masters of fighting underground and we will die to defend our home. Fight on, my brothers!")
+        <VARIABLE("Thungar_approach_message", _ "What you doing back here? Nasty dwarves are to the north, no dwarves this way. Go back and fight bravely.")
+        <VARIABLE("Gnarl_approach_message", _ "What you doing back here? Nasty dwarves are to the north, no dwarves this way. Go back and fight bravely.")
+    }
+
+    APPROACH_LEADER: (LEADER_ID, ENTER_X_SPAN, ENTER_Y_SPAN, REMOVE_X_SPAN, REMOVE_Y_SPAN) -> {
+        event: {
+            name: "moveto"
+
+            filter: {
+                x: ENTER_X_SPAN
+                y: ENTER_Y_SPAN
+                side: 1
+            }
+            do: ->
+                Remove_Shroud{
+                    x: REMOVE_X_SPAN
+                    y: REMOVE_Y_SPAN
+                    side: 1
+                }
+
+                Message{
+                    speaker: LEADER_ID
+err: ../attic/data/campaigns/Under_the_Burning_Suns/scenarios/05_A_Subterranean_Struggle.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 769:             message=${LEADER_ID}_approach_message
+                }
+        }
+    }
+
+-- NW dwarf
+    <APPROACH_LEADER("Fundin", "23-31", "8-17", "22-31", "7-17")
+
+-- NE dwarf
+    <APPROACH_LEADER("Nori", "41-51", "10-16", "40-52", "9-17")
+
+-- SW troll
+    <APPROACH_LEADER("Thungar", "23-31", "37-44", "21-32", "37-44")
+
+-- SE troll
+    <APPROACH_LEADER("Gnarl", "42-51", "37-45", "42-51", "37-46")
+    APPROACH_LEADER = nil
+
+-- victory events for trolls and dwarves here to make the ally event easier to follow
+    CLOAK_KILL_OBJECTIVES: () -> {
+        objectives: {
+            summary: _ "New Objectives:"
+            show: true
+            objective: {
+                description: _ "Defeat the Cloaked Figure"
+                condition: "win"
+            }
+            objective: {
+                description: _ "Death of Kaleh"
+                condition: "lose"
+            }
+            objective: {
+                description: _ "Death of Nym"
+                condition: "lose"
+            }
+            objective: {
+                description: _ "Death of Zhul"
+                condition: "lose"
+            }
+
+            gold_carryover: {
+                bonus: true
+                carryover_percentage: 40
+            }
+        }
+    }
+
+    TROLL_ALLY_VICTORY: () -> {
+        event: {
+            name: "troll_victory_test"
+
+            filter_condition: {
+                have_unit: {
+                    race: "dwarf"
+                    canrecruit: true
+                    count: 0
+                }
+            }
+            do: ->
+                Terrain{
+                    x: {22, 21, 20, 19, 19, 18, 17}
+                    y: {14, 14, 14, 15, 16, 16, 17}
+                    terrain: "Uu"
+                }
+
+                NAMED_NOTRAIT_UNIT(2, "Troll Shaman", 20, 14, "Zurg", _ "Zurg")
+
+                Remove_Shroud{
+                    x: "19-23"
+                    y: "12-16"
+                    side: 1
+                }
+
+                Redraw{
+                    side: 1
+                }
+
+                Delay{
+                    time: 200
+                }
+
+-- wmllint: recognize Cloaked Figure
+                Message{
+                    speaker: "Zurg"
+                    message: _ "Congratulations! Some of trolls didn’t think you strong enough to beat Dwarves."
+                }
+
+                Message{
+                    speaker: "Kaleh"
+                    message: _ "Where did you come from?"
+                }
+
+                Message{
+                    speaker: "Zurg"
+                    message: _ "There many secret tunnels that you sun dwellers not know of. Only troll know. We smarter than you think. Zurg would have killed dwarves himself, but he was just sent back from where real fighting is."
+                }
+
+                Message{
+                    speaker: "Zhul"
+                    message: _ "The real fighting? I thought that was what we were waist-deep in?"
+                }
+
+                Message{
+                    speaker: "Zurg"
+-- wmllint: local spelling tricksy
+                    message: _ "While you fighting, another clan of dwarves sneak around and flank us. They tricksy like that. We must leave you and run back to defend women and little trolls. Dwarves never give up, many trolls die today, very hard fighting. But dwarves make mistake, you stronger than dwarf or troll thought. You trolls’ secret weapon."
+                }
+
+                Message{
+                    speaker: "Nym"
+                    message: _ "How do you mean?"
+                }
+
+                Message{
+                    speaker: "Zurg"
+                    message: _ "Right before battle, we find secret passage just to the north leading straight to big dwarf stronghold. Hiding in stronghold is big important dwarf, directing the battle. Dwarves always think they best fighters around so they leave only a few dwarves guarding their stronghold. If you elves can break through dwarf defenses and kill dwarf chieftain, then it will do much damage to dwarves, make them afraid and confused, easy prey for trolls. You do this and we can drive them back. Then troll leader can help show you how to return to surface. You come with Zurg, he show you way to secret passage."
+                }
+
+                Message{
+                    speaker: "Elyssa"
+                    message: _ "Their knowledge of these tunnels is uncanny. I could have sworn a minute ago that that wall was solid rock."
+                }
+
+                If{
+                    have_unit: {
+                        id: "Cloaked Figure"
+                    }
+
+                    then: ->
+                        Message{
+                            speaker: "Kaleh"
+                            message: _ "Wait a moment, Zurg, we must deal with this mysterious cloaked figure before we can follow you."
+                        }
+
+--set new scenario objectives
+
+                        CLOAK_KILL_OBJECTIVES!
+                    
+
+                    else: ->
+                        Message{
+                            speaker: "Kaleh"
+                            message: _ "It sounds like our work is not yet done. Very well, gather yourselves together, we must follow Zurg."
+                        }
+
+                        Endlevel{
+                            result: "victory"
+                            next_scenario: "06b_In_the_Domain_of_the_Dwarves"
+                            bonus: true
+                            <NEW_GOLD_CARRYOVER(40)
+                        }
+                    
+                }
+        }
+    }
+
+    DWARF_ALLY_VICTORY: () -> {
+        event: {
+            name: "dwarf_victory_test"
+
+            filter_condition: {
+                have_unit: {
+                    race: "troll"
+                    canrecruit: true
+                    count: 0
+                }
+            }
+            do: ->
+                Terrain{
+                    x: {24, 23, 22, 21, 20, 19, 18}
+                    y: {44, 45, 45, 46, 46, 46, 45}
+                    terrain: "Uu"
+                }
+
+                Delay{
+                    time: 200
+                }
+
+                NAMED_NOTRAIT_UNIT(5, "Dwarvish Pathfinder", 21, 46, "Grimnir", _ "Grimnir")
+
+                Remove_Shroud{
+                    x: "20-26"
+                    y: "43-46"
+                    side: 1
+                }
+
+                Redraw{
+                    side: 1
+                }
+
+                Message{
+                    speaker: "Grimnir"
+                    message: _ "Congratulations, some of me boys didn’t think you could beat the trolls."
+                }
+
+                Message{
+                    speaker: "Kaleh"
+                    message: _ "Where did you come from?"
+                }
+
+                Message{
+                    speaker: "Grimnir"
+                    message: _ "Don’t think you know all the tunnels and passages that twist through these caves, elf. I would have killed him myself, but I was just sent back from the main front of the battle."
+                }
+
+                Message{
+                    speaker: "Zhul"
+                    message: _ "The front? I thought this was the front."
+                }
+
+                Message{
+                    speaker: "Grimnir"
+                    message: _ "While you were fighting, a separate clan of trolls sneaked around our sentries and flanked us, attacking our supply depots. There are more of those stinking buggers than we had originally thought. To tell you the truth, we are hard pressed. We’re going to have to pull back all our forces in these caves to reinforce the back lines. But your victory here has produced a unexpected opportunity."
+                }
+
+                Message{
+                    speaker: "Nym"
+                    message: _ "It has?"
+                }
+
+                Message{
+                    speaker: "Grimnir"
+                    message: _ "Right before the trolls overran this area of the mines, our scouts had found an old tunnel south of here that leads almost straight to the main lair of this tribe of trolls. We believe that protected in the lair is one of their main leaders who is directing the battle. We were going to try to sneak in and lead a surprise attack, but frankly we didn’t have enough dwarves to spare. If by using this passage you can sneak past their front lines and kill him, then it will throw the trolls into disarray and relieve the pressure on our front lines. If you do this our King has promised to help you return your people to the sunlit lands. When you’re ready I’ll show you the way. It’s not far."
+                }
+
+                Message{
+                    speaker: "Elyssa"
+                    message: _ "Their knowledge of these tunnels is uncanny. I could have sworn a minute ago that that wall was solid rock."
+                }
+
+                If{
+                    have_unit: {
+                        id: "Cloaked Figure"
+                    }
+
+                    then: ->
+                        Message{
+                            speaker: "Kaleh"
+                            message: _ "Wait a moment, Grimnir, we must deal with this mysterious cloaked figure before we can follow you."
+                        }
+
+                        CLOAK_KILL_OBJECTIVES!
+                    
+
+                    else: ->
+                        Message{
+                            speaker: "Kaleh"
+                            message: _ "It sounds like our work is not yet done. Very well, gather yourselves together, we must follow Grimnir."
+                        }
+
+                        Endlevel{
+                            result: "victory"
+                            next_scenario: "06a_In_the_Tunnels_of_the_Trolls"
+                            bonus: true
+                            <NEW_GOLD_CARRYOVER(40)
+                        }
+                    
+                }
+        }
+    }
+
+-- Event 2: Entering the large cavern
+
+--player chooses one side (trolls or dwarves) then:
+
+--assign allies
+--create troll and dwarf leaders
+--create dwarf and troll defenders, make one side attackers
+--change ally and enemy gold/income
+--capture all villages, destroy ally's tunnel villages
+--seal off exits from allies caves
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: "24-74"
+            y: "20-34"
+            side: 1
+        }
+
+--create 14 dwarves and 12 trolls
+
+--dwarves:
+-- 2 dwarvish steelclads, 3 dwarvish fighters, 1 dwarvish thunderguard, 2 dwarvish thunderers, 2 dwarvish guardsmen, 1 dwarvish ulfserker, 1 dwarvish steelclad (captain), and 1 dwarvish pathfinder and 1 dwarvish scout
+
+--trolls:
+-- 6 troll whelps, 2 trolls, 2 troll rocklobbers, 1 shaman, 1 shaman leader
+
+-- on EASY and NORMAL, reduce number of trolls and dwarves
+-- if EASY:
+-- Dwarves:  remove 1 fighter (39,21), and 1 thunderer (35,20)
+-- Trolls:   remove 2 troll whelps (37,32) (34,34)
+--       turn troll rocklobber into a whelp (33,32)
+
+-- if NORMAL:
+-- Dwarves:  remove 1 fighter (39,21)
+-- Trolls:   remove 2 troll whelps (37,32) (34,34)
+
+--Western side
+--battling over the castle
+--1 dwarvish fighter, 1 dwarvish thunderer, 1 dwarvish guardsman
+
+        DEFENDER: (SIDE, TYPE, X, Y, ROLE_STRING, NAME_STRING) -> {
+            unit: {
+                side: SIDE
+                type: TYPE
+                name: NAME_STRING
+                x: X
+                y: Y
+                random_traits: true
+                role: ROLE_STRING
+            }
+        }
+        do: ->
+            NAMED_UNIT(4, "Dwarvish Fighter", 30, 27, "first_dwarf", _ "Dwarf Defender", {role: "Dwarf Defender"})
+            NAMED_UNIT(4, "Dwarvish Thunderer", 30, 25, "second_dwarf", _ "Dwarf Defender", {role: "Dwarf Defender"})
+            DEFENDER(4, "Dwarvish Guardsman", 29, 30, "Dwarf Defender", _ "Dwarf Defender")
+
+--2 troll whelps
+            DEFENDER(3, "Troll Whelp", 31, 30, "Troll Defender", _ "Troll Defender")
+            DEFENDER(2, "Troll Whelp", 29, 28, "Troll Defender", _ "Troll Defender")
+
+--western reinforcements
+
+--1 dwarvish berserker, 1 dwarvish steelclad (captain), 1 dwarvish fighter, (added: 1 dwarvish scout)
+
+            DEFENDER(4, "Dwarvish Ulfserker", 30, 21, "Dwarf Defender", _ "Dwarf Defender")
+            NAMED_GENERIC_UNIT(4, "Dwarvish Steelclad", 32, 20, "Dwarf Leader", _ "Dwarf Leader")
+            DEFENDER(5, "Dwarvish Fighter", 34, 22, "Dwarf Defender", _ "Dwarf Defender")
+
+            DEFENDER(4, "Dwarvish Scout", 34, 26, "Dwarf Defender", _ "Dwarf Defender")
+
+--2 troll whelps, 1 troll rocklobber, 1 shaman (captain)
+
+            DEFENDER(2, "Troll Whelp", 29, 31, "Troll Defender", _ "Troll Defender")
+
+--unit was originally a troll
+            if HARD
+                DEFENDER(2, "Troll Whelp", 34, 31, "Troll Defender", _ "Troll Defender")
+            
+
+            if EASY
+                DEFENDER(2, "Troll Whelp", 33, 32, "Troll Defender", _ "Troll Defender")
+            } else {
+                DEFENDER(2, "Troll Rocklobber", 33, 32, "Troll Defender", _ "Troll Defender")
+            
+
+            NAMED_GENERIC_UNIT(2, "Troll Shaman", 28, 33, "Troll Leader", _ "Troll Leader")
+
+--Center
+--1 dwarvish thunderer (N village)
+
+            unless EASY!
+                DEFENDER(5, "Dwarvish Thunderer", 35, 20, "Dwarf Defender", _ "Dwarf Defender")
+            
+
+--Eastern side
+--battling over the center
+
+--1 dwarvish steelclad, 1 dwarvish guardsman, 1 dwarvish thunderer
+--1 dwarvish pathfinder
+            DEFENDER(5, "Dwarvish Steelclad", 40, 26, "Dwarf Defender", _ "Dwarf Defender")
+            DEFENDER(5, "Dwarvish Guardsman", 39, 24, "Dwarf Defender", _ "Dwarf Defender")
+            DEFENDER(5, "Dwarvish Thunderer", 42, 23, "Dwarf Defender", _ "Dwarf Defender")
+            DEFENDER(5, "Dwarvish Pathfinder", 44, 26, "Dwarf Defender", _ "Dwarf Defender")
+
+--1 troll whelp, 1 troll, 1 troll rocklobber
+            DEFENDER(2, "Troll Whelp", 41, 27, "Troll Defender", _ "Troll Defender")
+            DEFENDER(3, "Troll", 42, 29, "Troll Defender", _ "Troll Defender")
+            DEFENDER(3, "Troll Rocklobber", 39, 29, "Troll Defender", _ "Troll Defender")
+
+--eastern reinforcements
+
+--1 dwarvish steelclad, 1 dwarvish fighter
+
+            DEFENDER(5, "Dwarvish Steelclad", 42, 21, "Dwarf Defender", _ "Dwarf Defender")
+
+            if HARD
+                DEFENDER(5, "Dwarvish Fighter", 39, 21, "Dwarf Defender", _ "Dwarf Defender")
+            
+
+--2 troll whelps, 1 shaman
+
+            if HARD
+                DEFENDER(3, "Troll Whelp", 37, 32, "Troll Defender", _ "Troll Defender")
+            
+            DEFENDER(3, "Troll Whelp", 42, 32, "Troll Defender", _ "Troll Defender")
+            DEFENDER(3, "Troll Shaman", 44, 31, "Troll Defender", _ "Troll Defender")
+
+            DEFENDER = nil
+
+-- wmllint: recognize Dwarf Defender
+-- wmllint: recognize Troll Defender
+
+            Redraw{
+            }
+
+--reveal large cave x: 25-47 y: 19-35
+            Remove_Shroud{
+                side: 1
+                x: "25-47"
+                y: "19-35"
+            }
+
+--dwarf/troll/elf dialogue
+
+            CHECK_EXPLORER!
+            Message{
+                speaker: explorer.id
+                message: _ "Whoa."
+            }
+
+-- Unhide the dwarves' and trolls' sides
+            Modify_Side{
+                side: {2, 3, 4, 5}
+                hidden: false
+            }
+
+            Scroll_To_Unit{
+                x: 34, y: 22
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Scroll_To_Unit{
+                x: 42, y: 23
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Scroll_To_Unit{
+                x: 42, y: 29
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Scroll_To_Unit{
+                x: 33, y: 32
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Scroll_To_Unit{
+                x: 29, y: 27
+            }
+
+            Delay{
+                time: 400
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "I think I preferred the spider and the ants..."
+            }
+
+            Message{
+                speaker: "Dwarf Leader"
+                message: _ "Stand firm, boys, here they come!"
+            }
+
+            Message{
+                speaker: "Troll Leader"
+                message: _ "You invade our tunnels, you slaughter our women and children, by Griknagh we will make you pay!"
+            }
+
+            Message{
+                speaker: "Dwarf Leader"
+                message: _ "Tenacious savages, aren’t they? But these tunnels are rich in ore, and we won’t let a couple of trolls keep them from us."
+            }
+
+            Message{
+                speaker: "Troll Leader"
+                message: _ "Wait... What... Who are you?"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Uh..."
+            }
+
+            Message{
+                speaker: "Dwarf Leader"
+                message: _ "What by the names of my forefathers are they?"
+            }
+
+            Message{
+                speaker: "first_dwarf"
+-- TODO: update blond hair reference
+                message: _ "Wait a minute... Blond hair, pointy ears — they must be elves."
+            }
+
+            Message{
+                speaker: "second_dwarf"
+                message: _ "Elves?! What in the nine hells are elves doing down here?"
+            }
+
+            Message{
+                speaker: "Dwarf Leader"
+                message: _ "Never mind that, who are you?"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "I am Kaleh, and we are the Quenoth elves. What in Eloh’s name is going on here?"
+            }
+
+            Message{
+                speaker: "Troll Leader"
+                message: _ "They invade our land and kill our young. Dwarves always want more, always greedy for glittery rocks."
+            }
+
+            Message{
+                speaker: "Dwarf Leader"
+                message: _ "Those monsters killed me boys. Kaleh, if you be of stout heart, help us drive these lummoxes from our tunnels."
+            }
+
+            Message{
+                speaker: "Troll Leader"
+                message: _ "No, this is our home. Help us, little ones, and we will help you."
+            }
+
+            Message{
+                speaker: "Zhul"
+                message: _ "There’s too many of them for us to try to take them both on, and besides with all these branching tunnels we’ll have no idea which way to go. I think we should take them up on their offer; ally ourselves with one of the factions so we can get their help in finding a way back to the surface."
+            }
+
+            Message{
+                speaker: "Nym"
+                message: _ "But even if we do, what about all of our people? How can we safely escort them through this war zone?"
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "We won’t. If we keep the majority of our people hidden back up the passage we should be able to protect them, at least for a little while. In the meantime, we’ll go ahead and try to sort out this mess. I think you’re right Zhul, if we’re lucky we may just be able to negotiate a safe passage out of here."
+            }
+
+--choose side to ally with
+
+--set ally variable (1=dwarf 2=troll) and change elvish allegiance
+
+            Message{
+                speaker: explorer.id
+                message: _ "But they both look evenly matched. Who should we ally with?"
+
+                option: {
+                    label: _ "Let’s aid the dwarves."
+
+                    command: ->
+                        Set_Variable{
+                            name: "ally_race"
+                            value: "dwarf"
+                        }
+
+                        Modify_Side{
+                            side: 1
+                            team_name: "dwarves"
+                            user_team_name: _ "team_name^Dwarves"
+                        }
+
+                        Message{
+                            speaker: "Troll Leader"
+                            message: _ "Bah! Your kind all the same. Everyone turns on trolls. But you’ll see, Griknagh will smash you all."
+                        }
+
+                        DWARF_ALLY_APPROACH_MESSAGES!
+                        DWARF_ALLY_VICTORY!
+                        Event{
+                            name: "troll_victory_test"
+                            do: ->
+                                Endlevel{
+                                    result: "defeat"
+                                }
+                        }
+
+--set new scenario objectives
+
+                        Objectives{
+                            summary: _ "New Objectives:"
+                            show: true
+                            objective: {
+                                description: _ "Defeat troll leaders"
+                                condition: "win"
+                            }
+                            objective: {
+                                description: _ "Death of Kaleh"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Nym"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Zhul"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Fundin"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Nori"
+                                condition: "lose"
+                            }
+
+                            gold_carryover: {
+                                bonus: true
+                                carryover_percentage: 40
+                            }
+                        }
+                    
+                }
+
+                option: {
+                    label: _ "Let’s aid the trolls."
+
+                    command: ->
+                        Set_Variable{
+                            name: "ally_race"
+                            value: "troll"
+                        }
+
+                        Modify_Side{
+                            side: 1
+                            team_name: "trolls"
+                            user_team_name: _ "team_name^Trolls"
+                        }
+
+                        Message{
+                            speaker: "Dwarf Leader"
+                            message: _ "I knew elves couldn’t be trusted. Foolish boy, you will regret your betrayal. Taste dwarven steel!"
+                        }
+
+                        TROLL_ALLY_APPROACH_MESSAGES!
+                        TROLL_ALLY_VICTORY!
+                        Event{
+                            name: "dwarf_victory_test"
+                            do: ->
+                                Endlevel{
+                                    result: "defeat"
+                                }
+                        }
+
+--set new scenario objectives
+                        Objectives{
+                            summary: _ "New Objectives:"
+                            show: true
+                            objective: {
+                                description: _ "Defeat dwarf leaders"
+                                condition: "win"
+                            }
+                            objective: {
+                                description: _ "Death of Kaleh"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Nym"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Zhul"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Thungar"
+                                condition: "lose"
+                            }
+                            objective: {
+                                description: _ "Death of Gnarl"
+                                condition: "lose"
+                            }
+
+                            gold_carryover: {
+                                bonus: true
+                                carryover_percentage: 40
+                            }
+                        }
+                    
+                }
+            }
+
+-- change music playing
+
+            Music{
+                name: "battle.ogg"
+                immediate: true
+            }
+
+            Message{
+                speaker: explorer.id
+                message: _ "There seems to be an abandoned dwarvish fortress right in front of us. If we can fight our way to the keep, we should be able to start rallying our warriors to help in the battle."
+            }
+            CLEAR_VARIABLE("explorer")
+
+--add enemy units in tunnels who will arrive in main cavern at turn 2
+
+            If{
+                variable: {
+                    name: "ally_race"
+                    equals: "dwarf"
+                }
+
+                then: ->
+-- EASY: add 3 troll whelps, MED: add 3 trolls HARD: add 4 trolls
+-- (on easier difficulties, remove trolls closest to elves)
+
+                    if HARD
+                        NAMED_GENERIC_UNIT(2, "Troll Whelp", 25, 37, {}, _ "Troll Skirmisher")
+                    
+                    NAMED_GENERIC_UNIT(3, "Troll Whelp", 33, 38, {}, _ "Troll Skirmisher")
+                    NAMED_GENERIC_UNIT(3, "Troll Whelp", 42, 36, {}, _ "Troll Skirmisher")
+
+                    NAMED_GENERIC_UNIT(3, "Troll Whelp", 46, 35, {}, _ "Troll Skirmisher")
+                
+
+                else: ->
+-- add 3-4 dwarf enemies
+-- if EASY difficulty, then remove Dwarvish Thunderer
+
+-- (was a dwarvish steelclad)
+                    NAMED_GENERIC_UNIT(4, "Dwarvish Fighter", 26, 18, {}, _ "Dwarf Skirmisher")
+
+                    NAMED_GENERIC_UNIT(4, "Dwarvish Pathfinder", 28, 18, {}, _ "Dwarf Skirmisher")
+
+                    NAMED_GENERIC_UNIT(5, "Dwarvish Berserker", 38, 18, {}, _ "Dwarf Skirmisher")
+
+                    unless EASY!
+                        NAMED_GENERIC_UNIT(5, "Dwarvish Thunderguard", 44, 19, "Dwarf Thunderer", _ "Dwarf Thunderer")
+                    
+
+                    NAMED_GENERIC_UNIT(5, "Dwarvish Scout", 43, 18, {}, _ "Dwarf Skirmisher")
+                
+            }
+
+--increase recruitment options for enemies
+--set gold/income for allies and enemies
+
+-- I think the trolls are slightly more powerful than the dwarves
+-- So I'm giving trolls 2 less income than dwarves
+
+            If{
+                variable: {
+                    name: "ally_race"
+                    equals: "dwarf"
+                }
+
+                then: ->
+--ally with dwarves
+
+                    Allow_Recruit{
+                        type: "Troll Shaman"
+                        side: {2, 3}
+                    }
+
+--allies
+                    Modify_Side{
+                        filter_side: {
+                            side: {4, 5}
+                        }
+                        <INCOME(-2, -3, -4)
+                        <GOLD(50, 50, 25)
+                    }
+
+--enemies
+                    Modify_Side{
+                        filter_side: {
+                            side: {2, 3}
+                        }
+                        <INCOME(3, 5, 7)
+                        <GOLD(100, 125, 150)
+                    }
+
+                    Modify_Unit{
+                        filter: {
+                            role: "Troll Defender"
+                        }
+                        name: _ "Troll Skirmisher"
+                    }
+
+-- destroy dwarvish villages in tunnels and add troll villages
+                    Terrain{
+                        x: {28, 35}
+                        y: {19, 14}
+                        terrain: "Uu"
+                    }
+
+                    Terrain{
+                        x: {36, 43}
+                        y: {17, 18}
+                        terrain: "Xu"
+                    }
+
+                    Terrain{
+                        x: {25, 34, 47, 37}
+                        y: {36, 37, 36, 47}
+                        terrain: "Uu^Vu"
+                    }
+                
+
+                else: ->
+--ally with trolls
+
+--ulfserkers are too deadly, especially for elves with no defense
+
+                    Allow_Recruit{
+                        type: "Dwarvish Pathfinder"
+                        side: {4, 5}
+                    }
+
+--allies
+                    Modify_Side{
+                        filter_side: {
+                            side: {2, 3}
+                        }
+                        <INCOME(-2, -3, -4)
+                        <GOLD(50, 50, 25)
+                    }
+
+--enemies
+                    Modify_Side{
+                        filter_side: {
+                            side: {4, 5}
+                        }
+                        <INCOME(4, 6, 8)
+                        <GOLD(125, 150, 150)
+                    }
+
+                    Modify_Unit{
+                        filter: {
+                            role: "Dwarf Defender"
+                        }
+                        name: _ "Dwarf Skirmisher"
+                    }
+                
+            }
+
+--create 2 dwarf leaders (23,11) (45,10)
+            Unit{
+                type: "Dwarvish Explorer"
+                id: "Fundin"
+                name: _ "Fundin"
+                canrecruit: true
+                x: 23
+                y: 11
+                side: 4
+                modifications: {
+                    <TRAIT_RESILIENT!
+                }
+            }
+
+            Unit{
+                type: "Dwarvish Explorer"
+                id: "Nori"
+                name: _ "Nori"
+                canrecruit: true
+                x: 45
+                y: 10
+                side: 5
+                modifications: {
+                    <TRAIT_STRONG!
+                    <TRAIT_QUICK!
+                }
+            }
+
+--create 2 troll leaders (32,70) (52,72)
+            Unit{
+                type: "Troll Warrior"
+                id: "Thungar"
+                name: _ "Thungar"
+                canrecruit: true
+                x: 26
+                y: 43
+                side: 2
+                modifications: {
+                    <TRAIT_RESILIENT!
+                }
+            }
+
+            Unit{
+                type: "Troll Warrior"
+                id: "Gnarl"
+                name: _ "Gnarl"
+                canrecruit: true
+                x: 46
+                y: 45
+                side: 3
+                modifications: {
+                    <TRAIT_STRONG!
+                    <TRAIT_QUICK!
+                }
+            }
+
+-- capture villages for each troll/dwarf leader
+
+-- troll 1 (side2)
+
+-- in troll cave and western tunnels
+            Capture_Village{
+                x: "22-35", y: "36-43"
+                side: 2
+            }
+
+-- in main cavern
+            Capture_Village{
+                x: 31, y: 30
+                side: 2
+            }
+
+-- troll 2 (side3)
+
+-- in troll cave and eastern tunnels
+            Capture_Village{
+                x: "37-50", y: "36-47"
+                side: 3
+            }
+
+-- in main cavern
+            Capture_Village{
+                x: 36, y: 32
+                side: 3
+            }
+
+            Capture_Village{
+                x: 40, y: 26
+                side: 3
+            }
+
+-- dwarf 1 (side4)
+
+-- in dwarf cave and western tunnels
+            Capture_Village{
+                x: "24-35", y: "8-19"
+                side: 4
+            }
+
+-- in main cavern
+            Capture_Village{
+                x: 28, y: 24
+                side: 4
+            }
+
+-- dwarf 2 (side5)
+
+-- in dwarf cave and eastern tunnels
+            Capture_Village{
+                x: "36-51", y: "10-18"
+                side: 5
+            }
+
+-- in main cavern
+            Capture_Village{
+                x: 35, y: 27
+                side: 5
+            }
+
+            Fire_Event{
+                name: "queue_battle_events"
+            }
+    }
+
+-- Event 3: Enemy counter-attack (Battle Turn 3)
+
+-- if fighting dwarves: (3,4,5)
+-- run 2 dwarvish thunderguards down to western threatre,
+-- and 1 down to eastern bottleneck
+
+-- if fighting trolls: (3,4,5)
+-- run 2 troll shamans up to western threatre, and 1 up to eastern
+-- bottleneck (reduced to 1 on each side)
+
+    event: {
+        name: "enemy_attack"
+        do: ->
+            If{
+                variable: {
+                    name: "ally_race"
+                    equals: "dwarf"
+                }
+
+                then: ->
+--if allied with dwarves
+
+--west side
+
+                    Move_Unit_Fake{
+                        type: "Troll Shaman"
+                        side: 2
+                        x: {22, 23, 24, 25, 26, 27, 27, 27, 28}
+                        y: {37, 37, 36, 36, 35, 35, 34, 33, 32}
+                    }
+
+                    NAMED_GENERIC_UNIT(2, "Troll Shaman", 28, 32, "Troll Flamecaster", _ "Troll Flamecaster")
+
+                    if HARD
+
+                        Move_Unit_Fake{
+                            type: "Troll Shaman"
+                            side: 2
+                            x: {32, 33, 34, 34, 34, 34, 33, 32, 31, 30}
+                            y: {38, 38, 37, 36, 35, 34, 34, 33, 33, 32}
+                        }
+
+                        NAMED_GENERIC_UNIT(2, "Troll Shaman", 32, 32, {}, _ "Troll Flamecaster")
+                    
+
+--east side
+
+                    Move_Unit_Fake{
+                        type: "Troll Shaman"
+                        side: 3
+                        x: {47, 47, 47, 46, 45, 44, 43, 42, 42, 42, 42, 41}
+                        y: {37, 36, 35, 34, 34, 33, 33, 32, 31, 30, 29, 29}
+                    }
+
+                    NAMED_GENERIC_UNIT(3, "Troll Shaman", 41, 29, {}, _ "Troll Flamecaster")
+
+                    unless EASY!
+
+                        Move_Unit_Fake{
+                            type: "Troll Shaman"
+                            side: 3
+                            x: {47, 47, 47, 46, 45, 44, 43, 43, 43, 43}
+                            y: {27, 26, 25, 24, 24, 23, 23, 22, 21, 20}
+                        }
+
+                        NAMED_GENERIC_UNIT(3, "Troll Shaman", 43, 20, {}, _ "Troll Flamecaster")
+                    
+
+                    Message{
+                        speaker: "Troll Flamecaster"
+                        message: _ "Burn, burn and die!"
+                    }
+
+                    Color_Adjust{
+                        red: 255, green: 0, blue: 0
+                    }
+
+                    Redraw{
+                    }
+
+                    Delay{
+                        time: 100
+                    }
+
+                    Color_Adjust{
+                        red: 0, green: 0, blue: 0
+                    }
+
+                    Redraw{
+                    }
+
+                    Message{
+                        speaker: "Dwarf Leader"
+                        message: _ "Dive for cover!"
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Those new troll shamans are decimating the dwarves with blasts of fire! This doesn’t look good."
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            role: "Dwarf Defender"
+                            x: "24-46"
+                            y: "19-35"
+                        }
+                        variable: "victims"
+                        kill: false
+                    }
+
+--if easy kill 50%
+--if medium kill 60%
+--if hard kill 80%
+
+                    VARIABLE("deaths", victims.length)
+                    VARIABLE_OP("deaths", "multiply", ON_DIFFICULTY(0.6, 0.7, 0.8))
+                    VARIABLE_OP("deaths", "round", 0)
+
+--{DEBUG_MSG "Killing $deaths defenders out of $victims.length"}
+
+                    VARIABLE("i", 1)
+                    REPEAT(deaths, {
+                            <RANDOM("1..#{victims.length")
+                            <VARIABLE_OP("random", "sub", 1)
+
+                            <VARIABLE("casualty", victims[random].id)
+
+--have some dwarves scream as they die
+                            switch: {
+                                variable: "i"
+
+                                case: {
+                                    value: 1
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "Aauughh!"
+                                        }
+                                }
+
+                                case: {
+                                    value: 2
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "No...!"
+                                        }
+                                }
+
+                                case: {
+                                    value: 3
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "Help me!!"
+                                        }
+                                }
+                            }
+
+                            kill: {
+                                id: casualty
+                                animate: true
+                                fire_event: false
+                            }
+
+                            <VARIABLE_OP("i", "add", 1)
+
+-- Update the victims array
+                            store_unit: {
+                                filter: {
+                                    find_in: "victims"
+                                    not: {
+                                        id: casualty
+                                    }
+                                }
+
+                                variable: "victims"
+                                kill: false
+                            }
+                    })
+
+                    Message{
+                        speaker: "Dwarf Leader"
+                        message: _ "More accursed troll magic. Fall back!"
+                    }
+
+                    Message{
+                        speaker: "Dwarf Leader"
+-- wmllint: local spelling hurtin'
+                        message: _ "I need to go back and rally more reinforcements. We’re hurtin’, Kaleh, I’ll need your men to cover for us. Do your best, boy, and may your ancestors watch over you."
+                    }
+
+                    Kill{
+                        id: "Dwarf Leader"
+                        animate: false
+                    }
+                
+
+                else: ->
+--if allied with trolls
+
+--west side
+                    Move_Unit_Fake{
+                        type: "Dwarvish Thunderguard"
+                        side: 4
+                        x: {26, 27, 28, 29, 30, 30, 30, 30}
+                        y: {18, 19, 19, 19, 19, 20, 21, 22}
+                    }
+
+                    NAMED_GENERIC_UNIT(4, "Dwarvish Thunderguard", 30, 22, "Dwarf Grenadier", _ "Dwarf Grenadier")
+
+                    Move_Unit_Fake{
+                        type: "Dwarvish Thunderguard"
+                        side: 4
+                        x: {26, 27, 28, 29, 30, 30, 31, 32, 32}
+                        y: {18, 19, 19, 19, 19, 20, 21, 21, 22}
+                    }
+
+                    NAMED_GENERIC_UNIT(4, "Dwarvish Thunderguard", 32, 22, {}, _ "Dwarf Grenadier")
+
+                    if HARD
+
+                        Move_Unit_Fake{
+                            type: "Dwarvish Thunderguard"
+                            side: 4
+                            x: {26, 27, 28, 29, 30, 30, 31, 32, 33, 34}
+                            y: {18, 19, 19, 19, 19, 20, 21, 21, 22, 22}
+                        }
+
+                        NAMED_GENERIC_UNIT(4, "Dwarvish Thunderguard", 34, 22, {}, _ "Dwarf Grenadier")
+                    
+
+--east side
+
+                    Move_Unit_Fake{
+                        type: "Dwarvish Thunderguard"
+                        side: 5
+                        x: {45, 44, 44, 43, 42, 41, 41, 40}
+                        y: {18, 18, 19, 20, 20, 21, 22, 22}
+                    }
+
+                    NAMED_GENERIC_UNIT(5, "Dwarvish Thunderguard", 40, 22, {}, _ "Dwarf Grenadier")
+
+                    unless EASY!
+
+                        Move_Unit_Fake{
+                            type: "Dwarvish Thunderguard"
+                            side: 5
+                            x: {45, 44, 44, 43, 43, 42, 42}
+                            y: {18, 18, 19, 20, 21, 21, 22}
+                        }
+
+                        NAMED_GENERIC_UNIT(5, "Dwarvish Thunderguard", 42, 22, {}, _ "Dwarf Grenadier")
+                    
+
+                    Message{
+                        speaker: "Dwarf Grenadier"
+                        message: _ "Let’s blast those monsters back to the pits they spawned from! Fire in the hole!"
+                    }
+
+                    Color_Adjust{
+                        red: 255, green: 0, blue: 0
+                    }
+
+                    Redraw{
+                    }
+
+                    Delay{
+                        time: 100
+                    }
+
+                    Color_Adjust{
+                        red: 0, green: 0, blue: 0
+                    }
+
+                    Redraw{
+                    }
+
+                    Message{
+                        speaker: "Troll Leader"
+                        message: _ "More dwarven trickery! Fall back!"
+                    }
+
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "Those new dwarves are lobbing explosives at the trolls with devastating effect! I don’t think the trolls can take this much longer."
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            role: "Troll Defender"
+                            x: "24-46"
+                            y: "19-35"
+                        }
+                        variable: "victims"
+                        kill: false
+                    }
+
+--if easy kill 50%
+--if medium kill 60%
+--if hard kill 75%
+
+                    VARIABLE("deaths", victims.length)
+                    VARIABLE_OP("deaths", "multiply", ON_DIFFICULTY(0.5, 0.6, 0.75))
+                    VARIABLE_OP("deaths", "round", 0)
+
+--{DEBUG_MSG "Killing $deaths defenders out of $victims.length"}
+
+                    VARIABLE("i", 1)
+                    REPEAT(deaths, {
+                            <RANDOM("1..#{victims.length")
+                            <VARIABLE_OP("random", "sub", 1)
+
+                            <VARIABLE("casualty", victims[random].id)
+
+--have some trolls scream as they die
+                            switch: {
+                                variable: "i"
+
+                                case: {
+                                    value: 1
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "Aaughh!"
+                                        }
+                                }
+
+                                case: {
+                                    value: 2
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "No...!"
+                                        }
+                                }
+
+                                case: {
+                                    value: 3
+                                    do: ->
+                                        Message{
+                                            id: casualty
+                                            message: _ "Gaaghh!"  -- wmllint: no spellcheck
+                                        }
+                                }
+                            }
+
+                            kill: {
+                                id: casualty
+                                animate: true
+                                fire_event: false
+                            }
+
+                            <VARIABLE_OP("i", "add", 1)
+
+-- Update the victims array
+                            store_unit: {
+                                filter: {
+                                    find_in: "victims"
+                                    not: {
+                                        id: casualty
+                                    }
+                                }
+
+                                variable: "victims"
+                                kill: false
+                            }
+                    })
+
+                    Message{
+                        speaker: "Troll Leader"
+                        message: _ "I must go back and find more trolls to fight. You must hold them back, Kaleh. Be strong like rock. Griknagh will be with you."
+                    }
+
+                    Kill{
+                        id: "Troll Leader"
+                        animate: false
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("casualty,deaths,victims,i")
+    }
+
+-- Event 4: Ally reinforcements
+--   message: ally leader sent us to help you
+
+    ALLY_REINFORCEMENTS: () -> {
+
+        if: {
+            variable: {
+                name: "ally_race"
+                equals: "troll"
+            }
+
+            then: ->
+-- Troll
+-- Easy: 3 whelps 1 troll shaman, 1 rock lobber
+-- Medium: 3 whelps 1 troll shaman, 1 rock lobber
+-- Hard: 2 whelps 1 troll shaman, 1 rock lobber
+
+                Unit{
+                    type: "Troll Shaman"
+                    id: "Thu'lok"
+                    name: _ "Thu’lok"
+                    x: 34
+                    y: 32
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_RESILIENT!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                }
+
+                Unit{
+                    type: "Troll Whelp"
+                    id: "Harpo"
+                    name: _ "Harpo"
+                    x: 33
+                    y: 33
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_STRONG!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                }
+
+                Unit{
+                    type: "Troll Whelp"
+                    id: "Groucho"
+                    name: _ "Groucho"
+                    x: 34
+                    y: 33
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_INTELLIGENT!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                }
+
+                unless HARD!
+                    Unit{
+                        type: "Troll Whelp"
+                        name: _ "Chico"
+                        id: "Chico"
+                        x: 35
+                        y: 33
+                        side: 1
+                        unrenamable: true
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_RESILIENT!
+                        }
+                        <IS_LOYAL!
+                        role: "ally"
+                    }
+                
+
+                Unit{
+                    type: "Troll Rocklobber"
+                    name: _ "Groo"
+                    id: "Groo"
+                    x: 33
+                    y: 34
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_QUICK!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                }
+
+                Message{
+                    speaker: "Thu'lok"
+                    message: _ "Our leader sent us to help you. We fight for you until all the dwarves are dead. We will avenge the deaths of our people!"
+                }
+
+--dwarf cairns
+                Event{
+                    name: "moveto"
+                    filter: {
+                        x: {30, 38, 42}
+                        y: {20, 20, 21}
+                        side: 1
+                    }
+                    do: ->
+                        Message{
+                            role: "ally"
+                            message: _ "The dwarves use stone cairns to mark their territory. What a waste of good throwing stones."
+                        }
+
+                        Allow_Undo{
+                        }
+                }
+            
+
+            else: ->
+-- Dwarves
+-- Easy: 2 dwarvish fighters, 1 thunderer, 1 berserker,
+-- 1 dwarvish scout
+-- Medium: 2 dwarvish fighters, 1 thunderer, 1 berserker,
+-- 1 dwarvish scout
+-- Hard: 1 dwarvish fighter, 1 thunderer, 1 berserker,
+-- 1 dwarvish scout
+
+                Unit{
+                    type: "Dwarvish Fighter"
+                    id: "Dwalim"
+                    name: _ "Dwalim"
+                    x: 36
+                    y: 21
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_STRONG!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                    placement: "map_passable"
+                }
+
+                Unit{
+                    type: "Dwarvish Pathfinder"
+                    id: "Moin"
+                    name: _ "Moin"
+                    x: 35
+                    y: 21
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_QUICK!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                    placement: "map_passable"
+                }
+
+                Unit{
+                    type: "Dwarvish Thunderer"
+                    id: "Nordi"
+                    name: _ "Nordi"
+                    x: 37
+                    y: 21
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_INTELLIGENT!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                    placement: "map_passable"
+                }
+
+                Unit{
+                    type: "Dwarvish Berserker"
+                    id: "Byorn"
+                    name: _ "Byorn"
+                    x: 38
+                    y: 20
+                    side: 1
+                    unrenamable: true
+                    modifications: {
+                        <TRAIT_LOYAL!
+                        <TRAIT_RESILIENT!
+                    }
+                    <IS_LOYAL!
+                    role: "ally"
+                    placement: "map_passable"
+                }
+
+                unless HARD!
+
+                    Unit{
+                        type: "Dwarvish Fighter"
+                        id: "Runin"
+                        name: _ "Runin"
+                        x: 35
+                        y: 20
+                        side: 1
+                        unrenamable: true
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_QUICK!
+                        }
+                        <IS_LOYAL!
+                        role: "ally"
+                        placement: "map_passable"
+                    }
+                
+
+                Message{
+                    speaker: "Dwalim"
+                    message: _ "Looks like we came just in time. Our chief told us we’re to fight with you until all the trolls are dead. Tell us where to go — I want to kill me some troll!"
+                }
+
+--troll totems
+                Event{
+                    name: "moveto"
+
+                    filter: {
+                        x: {27, 35, 43}
+                        y: {33, 34, 33}
+                        side: 1
+                    }
+                    do: ->
+                        Message{
+                            role: "ally"
+                            message: _ "The trolls display the skulls of their enemies as a way of marking their territory. How barbaric."
+                        }
+
+                        Allow_Undo{
+                        }
+                }
+            
+        }
+
+    }
+
+-- Event 29: Return of the Assassin/Cloaked Figure (same guy, two names)
+
+-- Find the location of Kaleh and then find an adjacent
+-- hex the cloaked figure can pop up in. (any hex that is not impassable)
+
+    event: {
+        name: "call_assassin"
+        do: ->
+            Store_Locations{
+                filter: {
+                    id: "Kaleh"
+                }
+
+                variable: "dark_assassin_location"
+            }
+
+            Unit{
+                type: "Dark Assassin2"
+                id: "Cloaked Figure"
+                name: _ "Cloaked Figure"
+                side: 7
+                x: dark_assassin_location.x, y: dark_assassin_location.y
+                placement: "map_passable"
+                modifications: {
+                    <TRAIT_INTELLIGENT!
+                    <TRAIT_RESILIENT!
+                }
+            }
+
+            Message{
+                speaker: "Cloaked Figure"
+                image: "portraits/cloaked.png"
+                message: _ "Did you think you had escaped me, Kaleh? I am your shadow, I will always be there until you pay for what you have done."
+            }
+
+            Message{
+                speaker: "Cloaked Figure"
+                image: "portraits/cloaked.png"
+                message: _ "You want to flee, don’t you? But you cannot. They couldn’t escape her either. Even death could not save them. She will devour us all. But first I shall have my revenge. Do the dance of death for me, Kaleh! Dance! Dance!"
+            }
+            CLEAR_VARIABLE("dark_assassin_location")
+    }
+
+    event: {
+        name: "queue_battle_events"
+        do: ->
+            Event{
+                name: "turn #{(#{turn_number+3)"
+                delayed_variable_substitution: false
+                do: ->
+                    Fire_Event{
+                        name: "enemy_attack"
+                    }
+            }
+
+            Event{
+                name: "turn #{(#{turn_number+6)"
+                delayed_variable_substitution: false
+                do: ->
+                    ALLY_REINFORCEMENTS!
+            }
+
+--TODO 23 turns after the player entered the big cave?
+--isn't that a little too long?
+            Set_Variable{
+                name: "assassin_turn"
+                rand: "13..23"
+            }
+            Event{
+                name: "turn #{(#{turn_number}+#{assassin_turn})"
+                delayed_variable_substitution: false
+                do: ->
+                    Fire_Event{
+                        name: "call_assassin"
+                    }
+            }
+            CLEAR_VARIABLE("assassin_turn")
+    }
+
+-- Event 6: death events for each leader
+
+--for each death check to see if other leader is dead, if so
+--also send in dwarf/troll messenger with victory congratulations
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Fundin"
+        }
+        do: ->
+            Message{
+                speaker: "Fundin"
+                message: _ "The rest is silence..."
+            }
+
+            Kill{
+                id: "Fundin"
+                animate: true
+            }
+
+            Fire_Event{
+                name: "troll_victory_test"
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Nori"
+        }
+        do: ->
+            Message{
+                speaker: "Nori"
+                message: _ "I go to my ancestors..."
+            }
+
+            Kill{
+                id: "Nori"
+                animate: true
+            }
+
+            Fire_Event{
+                name: "troll_victory_test"
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Thungar"
+        }
+        do: ->
+            Message{
+                speaker: "Thungar"
+                message: _ "Arrghh!!"
+            }
+
+            Fire_Event{
+                name: "dwarf_victory_test"
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Gnarl"
+        }
+        do: ->
+            Message{
+                speaker: "Gnarl"
+                message: _ "I will be avenged..."
+            }
+
+            Kill{
+                id: "Gnarl"
+                animate: true
+            }
+
+            Fire_Event{
+                name: "dwarf_victory_test"
+            }
+    }
+
+-- When cloaked figure dies and if player has already killed both enemy
+-- leaders, then go to victory
+
+    event: {
+        name: "die"
+
+        filter: {
+            id: "Cloaked Figure"
+        }
+        do: ->
+            Kill{
+                id: "Cloaked Figure"
+                animate: false
+                fire_event: false
+            }
+
+            Message{
+                speaker: "Kaleh"
+                message: _ "Where did he go? How does he disappear like that? And what in Uria’s name was he ranting about? Whoever that is is starting to make me get edgy."
+            }
+
+-- if cloaked figure was delaying victory event from firing
+
+            If{
+                have_unit: {
+                    race: "dwarf"
+                    canrecruit: true
+                    count: 0
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "The cloaked figure is gone. Still, our work is not yet done. Gather yourselves together; we must follow Zurg."
+                    }
+
+                    Endlevel{
+                        result: "victory"
+                        next_scenario: "06b_In_the_Domain_of_the_Dwarves"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+
+            If{
+                have_unit: {
+                    race: "troll"
+                    canrecruit: true
+                    count: 0
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Kaleh"
+                        message: _ "The cloaked figure is gone. Still, our work is not yet done. Gather yourselves together; we must follow Grimnir."
+                    }
+
+                    Endlevel{
+                        result: "victory"
+                        next_scenario: "06a_In_the_Tunnels_of_the_Trolls"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+--at victory, clear variables:
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("Fundin_approach_message")
+            CLEAR_VARIABLE("Nori_approach_message")
+            CLEAR_VARIABLE("Thungar_approach_message")
+            CLEAR_VARIABLE("Gnarl_approach_message")
+    }
+
+-- if player runs out of time, display time over message
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Kaleh"
+                message: _ "Oh no, we took too long and enemy reinforcements have arrived. We’ll surely be overwhelmed now!"
+            }
+    }
+
+    <UTBS_INCLUDE("utils/deaths.cfg")
+}

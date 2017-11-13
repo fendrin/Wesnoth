@@ -1,0 +1,224 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the default toggle button.
+---- Since for this class 'default' is a bit hard we now use the checkbox as default.
+----
+
+_GUI_TEXT = (FONT_SIZE, FONT_COLOR) -> {
+    text: {
+        x: 5
+        y: GUI__TEXT_VERTICALLY_CENTRED!
+        w: "(width)"
+        h: "(text_height)"
+        font_size: FONT_SIZE
+        color: FONT_COLOR
+        text: "(text)"
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, WIDTH, HEIGHT, FONT_SIZE) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: WIDTH
+        min_height: HEIGHT
+
+        default_width: WIDTH
+        default_height: HEIGHT
+
+        max_width: 0
+        max_height: HEIGHT
+
+        text_extra_width: 0
+        text_font_size: FONT_SIZE
+
+        state: {
+            enabled: {
+
+                draw: {
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                }
+
+            }
+
+            disabled: {
+
+                draw: {
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_DISABLED__TITLE!)
+
+                }
+
+            }
+
+            focused: {
+
+                draw: {
+
+                    rectangle: {
+                        x: 0
+                        y: 0
+                        w: "(width)"
+                        h: "(height)"
+                        fill_color: "255, 255, 255, 76"
+                    }
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                }
+
+            }
+        }
+
+----
+---- Down
+----
+
+        state: {
+            enabled: {
+
+                draw: {
+
+                    rectangle: {
+                        x: 0
+                        y: 0
+                        w: "(width)"
+                        h: "(height)"
+                        fill_color: "255, 255, 255, 25"
+                    }
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png~ROTATE(180)"
+                    }
+                }
+
+            }
+
+            disabled: {
+
+                draw: {
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_DISABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png~ROTATE(180)~GS()"
+                    }
+
+                }
+
+            }
+
+            focused: {
+
+                draw: {
+
+                    rectangle: {
+                        x: 0
+                        y: 0
+                        w: "(width)"
+                        h: "(height)"
+                        fill_color: "255, 255, 255, 76"
+                    }
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png~ROTATE(180)"
+                    }
+
+                }
+
+            }
+        }
+
+----
+---- Up
+----
+        state: {
+            enabled: {
+
+                draw: {
+
+                    rectangle: {
+                        x: 0
+                        y: 0
+                        w: "(width)"
+                        h: "(height)"
+                        fill_color: "255, 255, 255, 25"
+                    }
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png"
+                    }
+                }
+
+            }
+
+            disabled: {
+
+                draw: {
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_DISABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png~GS()"
+                    }
+
+                }
+
+            }
+
+            focused: {
+
+                draw: {
+
+                    rectangle: {
+                        x: 0
+                        y: 0
+                        w: "(width)"
+                        h: "(height)"
+                        fill_color: "255, 255, 255, 76"
+                    }
+
+                    <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                    image: {
+                        x: "(width - 15)"
+                        y: "(height / 3)"
+                        name: "buttons/sliders/slider_arrow_blue.png"
+                    }
+
+                }
+
+            }
+        }
+
+    }
+}
+
+Toggle_Button_Definition{
+
+    id: "listbox_header"
+    description: "Checkbox."
+
+    <_GUI_RESOLUTION({}, 30, 20, GUI_FONT_SIZE_SMALL!)
+
+}
+
+_GUI_TEXT = nil
+_GUI_RESOLUTION = nil

@@ -1,0 +1,447 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "04b_The_Midlands"
+    name: _ "The Midlands"
+    next_scenario: "05_The_Oldwood"
+    bonus: true
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/04b_The_Midlands.map"
+    <TURNS(45, 42, 39)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+
+    story: {
+        part: {
+-- Same as in 04a!
+            story: _ "So it came to pass that Prince Haldric was forced from his home, never to return. With the help of his father’s noble sacrifice he has escaped through the southern pass. Haldric has left the lands of his home, and before him stretches the vast expanse of the southern kingdoms of his people."
+
+            background: "story/fall_of_eldaric.png"
+            music: "underground.ogg"
+        }
+        part: {
+            story: _ "To the southwest lay the Midlands. These were prosperous kingdoms, nestled between hill and forest. These had been the breadbasket of the Green Isle, exporting lumber and gemstones as well. The Midland kingdoms fed the city of Southbay, the largest city on the Isle. The coming of the Orcs threatened to lay waste to all this."
+            <TROW_GREEN_ISLE_BIGMAP!
+        }
+    }
+
+    <TROW_GI_TRACK(JOURNEY_04B_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 100
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Vrodis"
+        name: _ "Tan-Vrodis"
+--This is the nearest enemy, make him softer.
+        side: 2
+        canrecruit: true
+        recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        <GOLD(70, 110, 160)
+        user_team_name: _ "Orcs"
+        team_name: "orcs"
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Bok"
+        name: _ "Tan-Bok"
+        profile: "portraits/orcs/grunt-3.png"
+        side: 3
+        canrecruit: true
+        <GOLD(110, 150, 190)
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Spearman", "Goblin Impaler"}
+        }
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Hogar"
+        name: _ "Tan-Hogar"
+        profile: "portraits/orcs/grunt-2.png"
+        side: 4
+        canrecruit: true
+        <GOLD(110, 150, 190)
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(3, 4, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Warrior", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Warrior", "Orcish Crossbowman", "Goblin Spearman", "Goblin Impaler"}
+        }
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/signpost.png", 31, 22)
+            PLACE_IMAGE("scenery/signpost.png", 18, 15)
+
+            Recall{
+                id: "Lady Outlaw"
+            }
+
+            Recall{
+                id: "Burin the Lost"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Prince Haldric leads his refugee band into the Midlands and smoke is in the air."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "It is as we suspected, the orcs have sacked the Midlands. This is not a civilized way to fight a war! Look there, there are still orcs about... To arms!"
+                image: "portraits/haldric-annoyed.png"
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "All right! Charge!"
+            }
+
+            Message{
+                speaker: "Lady Outlaw"
+                message: _ "Feel my wrath, you orcish scum!"
+            }
+
+            Message{
+                speaker: "Tan-Vrodis"
+                message: _ "HUMANS... I see humans!"
+            }
+
+            Message{
+                speaker: "Tan-Bok"
+-- wmllint: local spelling Hogar
+                message: _ "Ha, Hogar! You said we wouldn’t see any action this far back from the front."
+            }
+
+            Message{
+                speaker: "Tan-Hogar"
+                message: _ "Shut yer mouth! Let’s just get ’em."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 31
+            y: 22
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+-- wmllint: local spelling SE
+                message: _ "SE — The Oldwood. Enter at Your Own Risk!"
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 18
+            y: 15
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+-- wmllint: local spelling SW
+                message: _ "SW — Southbay."
+                image: "scenery/signpost.png"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "attack"
+
+        filter_second: {
+            id: "Tan-Bok"
+        }
+        do: ->
+            Event{
+                name: "new turn"
+                do: ->
+                    Move_Unit_Fake{
+                        type: "Goblin Knight"
+                        side: 3
+                        x: {12, 12}
+                        y: {38, 37}
+                    }
+
+                    NAMED_LOYAL_UNIT(3, "Goblin Knight", 12, 37, "Grilg", _ "Grilg")
+
+                    LOYAL_UNIT(3, "Wolf Rider", 11, 38)
+                    LOYAL_UNIT(3, "Wolf Rider", 13, 38)
+                    if HARD
+                        LOYAL_UNIT(3, "Goblin Pillager", 12, 38)
+                    
+
+                    Message{
+                        speaker: "Grilg"
+                        message: _ "What? More humans here? Get them!"
+                    }
+            }
+    }
+
+    event: {
+        name: "attack"
+
+        filter_second: {
+            id: "Tan-Hogar"
+        }
+        do: ->
+            Event{
+                name: "new turn"
+                do: ->
+                    Move_Unit_Fake{
+                        type: "Orcish Slayer"
+                        side: 4
+                        x: {37, 36}
+                        y: {38, 37}
+                    }
+
+                    NAMED_LOYAL_UNIT(4, "Orcish Slayer", 36, 37, "Vrogar", _ "Vrogar")
+                    Unit{
+                        amend: true
+                        facing: "nw"
+                    }
+
+                    LOYAL_UNIT(4, "Orcish Assassin", 35, 38)
+                    LOYAL_UNIT(4, "Orcish Assassin", 37, 38)
+                    if HARD
+                        LOYAL_UNIT(4, "Orcish Crossbowman", 36, 38)
+                    
+
+                    Message{
+                        speaker: "Vrogar"
+-- wmllint: local spelling How'd
+                        message: _ "How’d they get behind us? I hate to miss such tasty meat."
+                    }
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Bok"
+        }
+        do: ->
+            Message{
+                speaker: "Tan-Hogar"
+                message: _ "Better him than me! Reserves!"
+            }
+
+            Gold{
+                side: 4
+                amount: 80
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Tan-Hogar"
+        }
+        do: ->
+            Message{
+                speaker: "Tan-Bok"
+                message: _ "Hogar was a fool! Reserves!"
+            }
+
+            Gold{
+                side: 3
+                amount: 80
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Sound{
+                name: "horse-canter.wav"
+            }
+
+            Unit{
+                side: 1
+                type: "Knight"
+                id: "Sir Ladoc"
+                name: _ "Sir Ladoc"
+                profile: "portraits/ladoc.png"
+                unrenamable: true
+                x: 40
+                y: 15
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_RESILIENT!
+                }
+                <IS_LOYAL!
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            MOVE_UNIT({id: "Sir Ladoc"}, 35, 15)
+
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "Hold there! You cannot pass. You’ve already stumbled on the orcish rear guard. The main body of their forces is on the road to Southbay. It is an army of nightmarish size."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’m Haldric, my father was King Eldaric IV in the lands northwest of here. Soldier, aren’t you on the wrong side of the lines?"
+            }
+
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "They overran my post. I got hit on the head pretty good. When I came to the orcish army had already passed my position."
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Tell me, how fares Southbay?"
+            }
+
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "Southbay won’t fall without one hell of a fight, sir. They’ll stand to the last! I only wish I was there!"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Well, we can’t go back, and the road ahead is blocked... I guess we’ll have to risk it and go through the Oldwood forest, then make a break for Clearwater Port."
+            }
+
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Oh great, now a forest. I should have stayed at home and taken my chances with the orcs!"
+                image: "portraits/burin-annoyed.png"
+            }
+
+            Message{
+                speaker: "Sir Ladoc"
+                message: _ "Sir, if you don’t mind, I’ll go with you."
+            }
+
+            Message{
+                speaker: "Lady Outlaw"
+                message: _ "On we go..."
+            }
+            Set_Variable{
+                name: "last_done"
+                value: "Midlands"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We have run out of time... We’ll be trapped in the midlands when winter comes!"
+            }
+    }
+}

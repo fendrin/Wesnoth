@@ -1,0 +1,52 @@
+--textdomain wesnoth
+
+Theme{
+    id: "Cutscene_Minimal"
+    hidden: true
+
+    resolution: {
+        id: "1024x768"
+        width: 1024
+        height: 768
+
+        screen: {
+            id: "screen"
+            rect: "0,0,1024,768"
+        }
+
+        main_map: {
+            id: "main-map"
+            rect: "0,0,1024,768"
+            xanchor: "left"
+            yanchor: "top"
+        }
+
+        <CUTSCENE_THEME_BACKGROUND!
+
+        menu: {
+            is_context_menu: true
+            items: {"describeunit", "endturn", "quit"}
+        }
+    }
+
+    partialresolution: {
+        id: "1024x600"
+        inherits: "1024x768"
+        width: 1024
+        height: 600
+    }
+
+    partialresolution: {
+        id: "800x600"
+        inherits: "1024x600"
+        width: 800
+        height: 600
+    }
+
+    partialresolution: {
+        id: "800x480"
+        inherits: "800x600"
+        width: 800
+        height: 480
+    }
+}

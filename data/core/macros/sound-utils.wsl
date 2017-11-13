@@ -1,0 +1,916 @@
+--textdomain wesnoth
+-- Music control macros, and declarations of sound resource lists.
+--
+-- As of 1.1.3, music is parsed as follows:
+--! 1. the [scenario]-level [music] tag
+--! 2. the [story]-level music key
+--! 3. any [event]-level [music] tags
+--
+-- If you change the music at a lower level, the tags above it will NOT
+-- be re-parsed and your scenario will sound wrong.  For example, if
+-- you set scenario music with the normal [scenario]-level music tag
+-- but change the music during the [story], it is never reset back to
+-- normal.  Therefore, these macros are intended to catch instances
+-- like that.  Of course, if you want something more elaborate, code it
+-- manually.
+
+-- These macros do not rely on any other macros.  Please don't change this.
+
+DEFAULT_MUSIC_PLAYLIST = () -> {
+-- A macro to define a standard playlist suitable for any level.  The
+-- music is defined twice to catch instances where music is changed in
+-- a story and not set back.
+    music: {
+        name: "knolls.ogg"
+        ms_before: 12000
+    }
+    music: {
+        name: "wanderer.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "battle.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "transience.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_king_is_dead.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "knalgan_theme.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_city_falls.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "nunc_dimittis.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "revelation.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "loyalists.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "breaking_the_chains.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "elvish-theme.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "legends_of_the_north.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "traveling_minstrels.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "underground.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "vengeful.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "frantic.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_dangerous_symphony.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "heroes_rite.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "suspense.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_deep_path.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "siege_of_laurelmor.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "casualties_of_war.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "silvan_sanctuary.ogg"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "battle-epic.ogg"
+        ms_before: 12000
+        append: true
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: "knolls.ogg"
+                ms_before: 12000
+            }
+            Music{
+                name: "wanderer.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "battle.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "transience.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "revelation.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "loyalists.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_king_is_dead.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "knalgan_theme.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_city_falls.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "nunc_dimittis.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "breaking_the_chains.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "elvish-theme.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "legends_of_the_north.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "traveling_minstrels.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "underground.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "vengeful.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "frantic.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_dangerous_symphony.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "heroes_rite.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "suspense.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_deep_path.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "siege_of_laurelmor.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "casualties_of_war.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "silvan_sanctuary.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "battle-epic.ogg"
+                ms_before: 12000
+                append: true
+            }
+    }
+}
+
+FULL_MUSIC_PLAYLIST = () -> {
+-- A macro to define a playlist of all tracks in alphabetical order.  The
+-- music is defined twice to catch instances where music is changed in
+-- a story and not set back
+    music: {
+        name: "battle-epic.ogg"
+        title: _ "Battle Epic"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "battle.ogg"
+        title: _ "Battle Music"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "breaking_the_chains.ogg"
+        title: _ "Breaking the Chains"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "casualties_of_war.ogg"
+        title: _ "Casualties of War"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "elf-land.ogg"
+        title: _ "Elf Land"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "elvish-theme.ogg"
+        title: _ "Elvish theme"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "frantic.ogg"
+        title: _ "Frantic"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "heroes_rite.ogg"
+        title: _ "Heroes Rite"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "into_the_shadows.ogg"
+        title: _ "Into the Shadows"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "journeys_end.ogg"
+        title: _ "Journey’s End"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "knalgan_theme.ogg"
+        title: _ "Knalgan Theme"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "knolls.ogg"
+        title: _ "The Knolls of Doldesh"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "legends_of_the_north.ogg"
+        title: _ "Legends of the North"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "love_theme.ogg"
+        title: _ "Love Theme"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "loyalists.ogg"
+        title: _ "Loyalists"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "northern_mountains.ogg"
+        title: _ "Over the Northern Mountains"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "northerners.ogg"
+        title: _ "Northerners"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "nunc_dimittis.ogg"
+        title: _ "Nunc Dimittis"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "revelation.ogg"
+        title: _ "Revelation"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "sad.ogg"
+        title: _ "Sad"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "siege_of_laurelmor.ogg"
+        title: _ "Siege of Laurelmor"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "silvan_sanctuary.ogg"
+        title: _ "Silvan Sanctuary"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "suspense.ogg"
+        title: _ "Suspense"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_city_falls.ogg"
+        title: _ "The City Falls"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_dangerous_symphony.ogg"
+        title: _ "The Dangerous Symphony"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_deep_path.ogg"
+        title: _ "The Deep Path"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "the_king_is_dead.ogg"
+        title: _ "The King is Dead"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "transience.ogg"
+        title: _ "Transience"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "traveling_minstrels.ogg"
+        title: _ "Traveling Minstrels"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "underground.ogg"
+        title: _ "Underground"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "vengeful.ogg"
+        title: _ "Vengeful Pursuit"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "wanderer.ogg"
+        title: _ "Still Another Wanderer"
+        ms_before: 12000
+        append: true
+    }
+    music: {
+        name: "weight_of_revenge.ogg"
+        title: _ "Weight of Revenge"
+        ms_before: 12000
+        append: true
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: "battle-epic.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "battle.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "breaking_the_chains.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "casualties_of_war.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "elf-land.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "elvish-theme.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "frantic.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "heroes_rite.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "into_the_shadows.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "journeys_end.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "knalgan_theme.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "knolls.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "legends_of_the_north.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "love_theme.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "loyalists.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "northern_mountains.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "northerners.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "nunc_dimittis.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "revelation.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "sad.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "siege_of_laurelmor.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "silvan_sanctuary.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "suspense.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_city_falls.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_dangerous_symphony.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_deep_path.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "the_king_is_dead.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "transience.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "traveling_minstrels.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "underground.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "vengeful.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "wanderer.ogg"
+                ms_before: 12000
+                append: true
+            }
+            Music{
+                name: "weight_of_revenge.ogg"
+                ms_before: 12000
+                append: true
+            }
+    }
+}
+
+SCENARIO_MUSIC = (MUSIC) -> {
+-- This music macro ensures that the correct music is selected
+-- for a scenario just in case it is changed by [story].
+-- It should be positioned at the top of the scenario file
+-- so it can be overridden by other prestart or start events.
+--
+-- It also allows for the convenient use of standardized
+-- intra-scenario music, should we decide to use one.
+    music: {
+        name: "revelation.ogg"
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: MUSIC
+                immediate: true
+                ms_after: 2000
+            }
+    }
+}
+
+EXTRA_SCENARIO_MUSIC = (MUSIC) -> {
+-- Use this immediately after the above SCENARIO_MUSIC macro to append extra
+-- tracks to the playlist.
+--
+-- Example:
+--! {SCENARIO_MUSIC battle.ogg}
+--! {EXTRA_SCENARIO_MUSIC knolls.ogg}
+--! {EXTRA_SCENARIO_MUSIC frantic.ogg}
+    event: {
+        amend: true
+        do: ->
+            Music{
+                name: MUSIC
+                append: true
+            }
+    }
+}
+
+INTRO_AND_SCENARIO_MUSIC = (INTRO_MUSIC, SCENARIO_MUSIC) -> {
+-- This works as SCENARIO_MUSIC does, except that it allows you to specify
+-- the music used for the story screen (if any) as well.
+    music: {
+        name: INTRO_MUSIC
+        immediate: true
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            Music{
+                name: SCENARIO_MUSIC
+                immediate: true
+                append: false
+                ms_after: 2000
+            }
+    }
+}
+
+LET_INTRO_MUSIC_FINISH = () -> {
+-- Use immediately following INTRO_AND_SCENARIO_MUSIC, to let the intro music
+-- finish before switching to scenario music.
+    event: {
+        amend: true
+        do: ->
+            Music{
+            amend: true
+                immediate: false
+            }
+    }
+}
+
+INCIDENTAL_MUSIC = (MUSIC) -> {
+-- To be played immediately to mark an incident,
+-- but not appended to the scenario playlist.
+-- The playlist will be resumed afterwards.
+    music: {
+        name: MUSIC
+        play_once: true
+    }
+}
+
+APPEND_MUSIC = (MUSIC) -> {
+-- Append to playlist.  Meant to be used after REPLACE_SCENARIO_MUSIC.
+    music: {
+        name: MUSIC
+        append: true
+    }
+}
+
+REPLACE_SCENARIO_MUSIC = (MUSIC) -> {
+-- To be used mid-scenario to replace the current playlist.
+    music: {
+        name: MUSIC
+        immediate: true
+        append: false
+    }
+}
+
+-- For some animations some units use a list of sounds, from which one is
+-- randomly picked every time, instead of a single sound. Here the most commonly
+-- used lists are wrapped inside macros.
+--
+-- These are used in unit .cfg files, for example like this:
+--
+--!     [animation]
+--!         hits=no
+--!         start_time=-200
+--!
+--!         [frame]
+--!             sound={SOUND_LIST:MISS}
+--!             image="units/dwarves/warrior-attack.png:200"
+--!         [/frame]
+
+SOUND_LIST.HOLY = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    SOUND_LIST.HOLY_MISS = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+        SOUND_LIST.MISS = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+            SOUND_LIST.THROW = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                SOUND_LIST.SWORD_SWISH = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                    SOUND_LIST.BAT_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                        SOUND_LIST.DRAKE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                            SOUND_LIST.DWARF_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                SOUND_LIST.DWARF_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                    SOUND_LIST.ELF_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                        SOUND_LIST.ELF_FEMALE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                            SOUND_LIST.GOBLIN_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                SOUND_LIST.GOBLIN_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                    SOUND_LIST.GRYPHON_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                        SOUND_LIST.GRYPHON_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                            SOUND_LIST.HORSE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                SOUND_LIST.HUMAN_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                    SOUND_LIST.HUMAN_FEMALE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                        SOUND_LIST.HUMAN_OLD_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                            SOUND_LIST.HUMAN_OLD_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                SOUND_LIST.HUMAN_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                    SOUND_LIST.HUMAN_FEMALE_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                        SOUND_LIST.LICH_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                            SOUND_LIST.NAGA_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                SOUND_LIST.OGRE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                    SOUND_LIST.OGRE_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                        SOUND_LIST.ORC_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                            SOUND_LIST.ORC_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                SOUND_LIST.ORC_SMALL_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                    SOUND_LIST.ORC_SMALL_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                        SOUND_LIST.SKELETON_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                            SOUND_LIST.SKELETON_BIG_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                SOUND_LIST.SKELETON_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                    SOUND_LIST.TROLL_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                        SOUND_LIST.TROLL_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                            SOUND_LIST.WOLF_GROWL = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                                SOUND_LIST.WOLF_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                                    SOUND_LIST.WOLF_DIE = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                                        SOUND_LIST.ZOMBIE_WEAK_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                                            SOUND_LIST.ZOMBIE_HIT = () -> {
+err: ../attic/data/core/macros/sound-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                                                                                                                                                                SOUND.HIT_AND_MISS = (HITSOUND, MISSSOUND, TIME) -> {
+-- A more convenient way of wiring in hit and miss sounds to an
+-- attack animation. Just specify the sounds to use and the time
+-- when they should trigger.
+
+                                                                                                                                                                    attack_sound_start_time: TIME
+                                                                                                                                                                    if: {
+                                                                                                                                                                        hits: true
+                                                                                                                                                                        attack_sound_frame: {
+                                                                                                                                                                            sound: HITSOUND
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                    else: ->
+                                                                                                                                                                        hits: false
+                                                                                                                                                                        Attack_Sound_Frame{
+                                                                                                                                                                            sound: MISSSOUND
+                                                                                                                                                                        }
+                                                                                                                                                                    
+                                                                                                                                                                }
+
+                                                                                                                                                                SOUND.HIT = (HITSOUND, TIME) -> {
+-- A more convenient way of wiring in hit only sounds to an
+-- attack animation. Just specify the sound to use and the time
+-- when it should trigger.
+
+                                                                                                                                                                    if: {
+                                                                                                                                                                        hits: true
+                                                                                                                                                                        attack_sound_start_time: TIME
+                                                                                                                                                                        attack_sound_frame: {
+                                                                                                                                                                            sound: HITSOUND
+                                                                                                                                                                        }
+                                                                                                                                                                    }
+                                                                                                                                                                }

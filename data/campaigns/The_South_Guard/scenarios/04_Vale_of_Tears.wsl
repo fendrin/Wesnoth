@@ -1,0 +1,684 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "04_Vale_of_Tears"
+
+    name: _ "Vale of Tears"
+    next_scenario: "05_Choice_in_the_Fog"
+
+    <SCENARIO_MUSIC("elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+
+    map: "campaigns/The_South_Guard/maps/04_Vale_of_Tears.map"
+
+    INCLUDE("campaigns/The_South_Guard/utils/sg_deaths.cfg")
+
+    <DEFAULT_SCHEDULE!
+
+    <TURNS(40, 32, 28)
+    victory_when_enemies_defeated: false
+
+    <TSG_BIGMAP(JOURNEY_04_NEW!)
+
+-- The South Guard
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+        <CUSTOM_SG_FLAG!
+
+        <GOLD(150, 125, 80)
+
+        canrecruit: true
+        recruit: {"Bowman", "Spearman", "Cavalryman"}
+
+        village: {
+            x: 3, y: 10
+        }
+
+        village: {
+            x: 4, y: 13
+        }
+
+        village: {
+            x: 8, y: 15
+        }
+    }
+
+    <STARTING_VILLAGES(1, 5)
+
+-- The Undead Hordes
+
+    side: {
+        side: 2
+        <if EASY then {
+            type: "Dark Adept"
+        }
+        <if NORMAL then {
+            type: "Dark Sorcerer"
+        }
+        <if HARD then {
+            type: "Necromancer"
+        }
+        id: "Mal A'kai"
+        name: _ "Mal A’kai"
+        facing: "sw"
+
+        <GOLD(70, 90, 120)
+
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        controller: "ai"
+
+        canrecruit: true
+        ai: {
+            <if EASY then {
+                recruitment_pattern: "fighter"
+            } else {
+                recruitment_pattern: {"fighter", "archer"}
+            }
+            <QUANTITY("aggression", 0.5, 0.6, 0.7)
+            <ATTACK_DEPTH(3, 4, 5)
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Ethiliel"
+                }
+                value: 3
+            }
+        }
+        <if EASY then {
+            recruit: {"Walking Corpse", "Skeleton"}
+        }
+        <if NORMAL then {
+            recruit: {"Walking Corpse", "Skeleton", "Skeleton Archer", "Ghoul"}
+        }
+        <if HARD then {
+            recruit: {"Walking Corpse", "Skeleton", "Revenant", "Skeleton Archer", "Bone Shooter", "Ghoul"}
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+    <STARTING_VILLAGES(2, 14)
+
+-- The Bandit Army
+
+    side: {
+        side: 3
+        type: "Outlaw"
+        id: "Jera Ilras"
+        name: _ "Jera Ilras"
+        facing: "sw"
+
+        <GOLD(30, 40, 80)
+
+        team_name: "undead"
+        user_team_name: _ "Bandits"
+        controller: "ai"
+
+        canrecruit: true
+        ai: {
+            <if EASY then {
+                recruitment_pattern: {"scout", "archer"}
+            } else {
+                recruitment_pattern: {"fighter", "scout", "archer"}
+            }
+            <QUANTITY("aggression", 0.2, 0.3, 0.4)
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Ethiliel"
+                }
+                value: 2
+            }
+            avoid: {
+                x: "27-35", y: "29-35"
+            }
+        }
+        <if EASY then {
+            recruit: {"Footpad", "Poacher"}
+        }
+        <if NORMAL then {
+            recruit: {"Footpad", "Thug", "Poacher"}
+        }
+        <if HARD then {
+            recruit: {"Footpad", "Thug", "Poacher", "Thief"}
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <STARTING_VILLAGES(3, 9)
+
+--start
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Sir Gerrick"
+            }
+            Recall{
+                id: "Ethiliel"
+            }
+            Recall{
+                id: "Minister Hylas"
+            }
+            Recall{
+                id: "Jarek"
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "We have followed you away from our homes and left them unguarded. Now, where can we find this sage who knows the southern forest well?"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "This is the Vale of Blossoming Trees. Our great sages come here to live when they feel that it is time for them to allow others to lead our people. The sage you speak of lives in a secluded village between the two lakes."
+            }
+
+            HIGHLIGHT_IMAGE(31, 32, "items/gohere.png", {})
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Why, my lady, are there humans camped to the south of us? Are they friends of the elves? I had thought that no humans had set foot in this valley."
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                image: "portraits/ethiliel-mad.png"
+                message: _ "What?! Those are no friends of the elves! They are brigands, and they must be destroyed!"
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "Perhaps they are allied with the bandits who have been sacking our towns! They have grown bold to attack the elves!"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "Destroy these intruders, and I will ask him to help you. He is ancient, and he remembers well Haldric’s betrayal of the elves, so if a human sets foot in his village first, he almost certainly will have nothing to do with us!"
+            }
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Sounds like a charming fellow..."
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "Yet, as she says, he is our best hope to rid our lands of this new menace. We do that which we must. Ethiliel, you make for Mebrin’s village. We will handle the intruders."
+            }
+
+            Message{
+                speaker: "Mal A'kai"
+                message: _ "Ha! You’re too late. We’ve taken what we want from this valley."
+            }
+
+            Message{
+                speaker: "Jera Ilras"
+                message: _ "Now your blood and tears will join that of the elves!"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    show_if: {
+                        not: {
+                            variable: {
+                                name: "undead_defeated"
+                                boolean_equals: true
+                            }
+                            variable: {
+                                name: "bandits_defeated"
+                                boolean_equals: true
+                            }
+                        }
+                    }
+                    description: _ "Cleanse the Vale of Tears"
+                    condition: "win"
+                }
+                objective: {
+                    show_if: {
+                        variable: {
+                            name: "mebrin_found"
+                            boolean_not_equals: true
+                        }
+                    }
+                    description: _ "Move Ethiliel to Mebrin’s village"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Deoran"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Sir Gerrick"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Minister Hylas"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Ethiliel"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "attack_end"
+
+        filter: {
+            side: 1
+        }
+
+        filter_attack: {
+            type: "pierce"
+        }
+
+        filter_second: {
+            type: {"Skeleton", "Revenant", "Deathblade", "Draug", "Skeleton Archer", "Bone Shooter", "Banebow"}
+        }
+
+-- only comment on pierce damage being useless if the player didn't
+-- actually kill the skeleton with it
+        filter_condition: {
+            variable: {
+                name: "second_unit.hitpoints"
+                greater_than: 0
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Our weapons are useless against these skeletons! They have nothing for our shafts to pierce but air!"
+            }
+    }
+
+    event: {
+        name: "attack_end"
+
+        filter: {
+            side: 1
+        }
+
+        filter_second: {
+            side: 2
+        }
+
+        filter_condition: {
+            have_unit: {
+                side: 2
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Deoran"
+                message: _ "We must clear out these undead if you are to reach Mebrin’s village! What should we do?"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "For now, I can slow them down. Where are the elves who used to live in this valley? They should come to our aid!"
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "You said this valley would be safe, and we find it filled with skeletal foes! Cannot some of your elf friends help us in our struggle?"
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            side: 1
+            not: {
+                id: {"Deoran", "Sir Gerrick", "Minister Hylas", "Ethiliel"}
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I shall not join these accursed undead! Bury me deeply my friends..."
+            }
+
+            Kill{
+                x: x1, y: y1
+                animate: true
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "You shall not die in vain! My bodyguard will avenge you!"
+            }
+
+            Fire_Event{
+                name: "bodyguard"
+            }
+    }
+
+    event: {
+        name: "bodyguard"
+        do: ->
+            VARIABLE("have_bodyguard", true)
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "You have a bodyguard?!"
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "You have a bodyguard?!"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Ethiliel"
+                }
+                variable: "ethiliel_loc"
+                kill: false
+            }
+
+            Store_Locations{
+                terrain: "*^F*"
+                and: {
+                    x: ethiliel_loc.x, y: ethiliel_loc.y
+                    radius: 3
+                }
+                variable: "bodyguard_loc"
+            }
+
+            VARIABLE("number", 0)
+            While{
+                variable: {
+                    name: "number"
+                    <if EASY then {
+                        less_than: 4
+                    }
+                    <if NORMAL then {
+                        less_than: 3
+                    }
+                    <if HARD then {
+                        less_than: 2
+                    }
+                }
+                do: ->
+-- fallback coordinates, in case no nearby vacant forest is found
+                    VARIABLE("guard_x", ethiliel_loc.x)
+                    VARIABLE("guard_y", ethiliel_loc.y)
+
+                    If{
+                        variable: {
+                            name: "number"
+                            less_than: bodyguard_loc.length
+                        }
+                        then: ->
+                            Set_Variable{
+                                name: "guard_x"
+                                value: bodyguard_loc[number].x
+                            }
+
+                            Set_Variable{
+                                name: "guard_y"
+                                value: bodyguard_loc[number].y
+                            }
+                        
+                    }
+
+                    Unit{
+                        role: "Elvish Bodyguard"
+                        name: _ "Elvish Bodyguard"
+                        type: "Elvish Ranger"
+                        side: 1
+                        x: guard_x, y: guard_y
+                        random_traits: true
+                        modifications: {
+                            <TRAIT_LOYAL!
+                        }
+                        <IS_LOYAL!
+                    }
+
+                    VARIABLE_OP("number", "add", 1)
+                
+            }
+
+            CLEAR_VARIABLE("bodyguard_loc,ethiliel_loc,number")
+            CLEAR_VARIABLE("guard_x,guard_y")
+
+            Message{
+                role: "Elvish Bodyguard"
+                message: _ "We stand ready, my lady, to protect you! We shall lead these men of Wesnoth into the fray!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            role: "Elvish Bodyguard"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "For my lady I fall..."
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mal A'kai"
+        }
+        do: ->
+            Message{
+                speaker: "Mal A'kai"
+                message: _ "Finally, release! Thank you, my friends..."
+            }
+
+            Kill{
+                x: x1, y: y1
+                animate: true
+            }
+
+            VARIABLE("undead_defeated", "yes")
+
+            If{
+                variable: {
+                    name: "mebrin_found"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "undead_defeated"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "bandits_defeated"
+                    boolean_equals: true
+                }
+                then: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Jera Ilras"
+        }
+        do: ->
+            Message{
+                speaker: "Jera Ilras"
+                message: _ "You’re too late! You’ll never find our stronghold, and even if you did, what can you do against the dead?"
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "You, at least, will trouble us no more!"
+            }
+
+            Kill{
+                x: x1, y: y1
+                animate: true
+            }
+
+            VARIABLE("bandits_defeated", "yes")
+
+            If{
+                variable: {
+                    name: "mebrin_found"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "undead_defeated"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "bandits_defeated"
+                    boolean_equals: true
+                }
+                then: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+-- Ethieliel arrives at Mebrin’s village
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Ethiliel"
+            x: 31, y: 32
+        }
+        do: ->
+            Remove_Item{
+                x: 31, y: 32
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "Mebrin! Are you there? We have come to seek your aid!"
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "..."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "Mebrin! Where are you?!"
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "..."
+                image: "wesnoth-icon.png"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "His home is empty... There are footprints leading away to the south... What can have happened here?"
+            }
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Maybe whoever summoned these undead knows where he is?"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                message: _ "There is no blood here, yet no Mebrin. Someone must have kidnapped him. But the undead would have slain him and made him one of them. Who then can have taken him?"
+            }
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Maybe the bandits who have been summoning the undead took him?"
+            }
+
+            Message{
+                speaker: "Ethiliel"
+                image: "portraits/ethiliel-mad.png"
+                message: _ "We must follow these footprints into the woods! Whoever took our greatest sage must pay! Nothing will stop the vengeance of the elves!"
+            }
+
+            Message{
+                speaker: "Deoran"
+                message: _ "Well, vengeance or no, if you will lead us into the forest, we will follow you and battle the undead!"
+            }
+
+            VARIABLE("mebrin_found", "yes")
+
+            If{
+                variable: {
+                    name: "mebrin_found"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "undead_defeated"
+                    boolean_equals: true
+                }
+                variable: {
+                    name: "bandits_defeated"
+                    boolean_equals: true
+                }
+                then: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            If{
+                variable: {
+                    name: "have_bodyguard"
+                    boolean_not_equals: true
+                }
+                then: ->
+                    Message{
+                        speaker: "Ethiliel"
+                        message: _ "Come, my bodyguard! We must make haste to follow the trail and find Mebrin."
+                    }
+
+                    Fire_Event{
+                        name: "bodyguard"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("mebrin_found,undead_defeated,bandits_defeated,have_bodyguard")
+    }
+}

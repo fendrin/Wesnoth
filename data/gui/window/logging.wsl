@@ -1,0 +1,187 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to select logging options.
+---- These first five things match the names from logging.cpp
+----
+_NAME = () -> {
+err: ../attic/data/gui/window/logging.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+    _DEBUG = () -> {
+err: ../attic/data/gui/window/logging.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+        _INFO = () -> {
+err: ../attic/data/gui/window/logging.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+            _WARN = () -> {
+err: ../attic/data/gui/window/logging.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+                _ERR = () -> {
+err: ../attic/data/gui/window/logging.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+                    _GUI_LOGGER_RADIOS = (GROUP, TOOLTIP) -> {
+                        column: {
+                            grow_factor: 0
+
+                            border: "all"
+                            border_size: 5
+
+                            toggle_button: {
+                                id: GROUP
+                                definition: "radio"
+                                linked_group: GROUP
+                                tooltip: TOOLTIP
+                            }
+
+                        }
+                    }
+
+                    Window{
+                        id: "log_settings"
+                        description: "Advanced options to control how much information is printed to console."
+
+                        resolution: {
+                            definition: "default"
+
+                            automatic_placement: true
+                            vertical_placement: "center"
+                            horizontal_placement: "center"
+
+                            linked_group: {
+                                id: _NAME!
+                                fixed_width: true
+                            }
+
+                            linked_group: {
+                                id: _DEBUG!
+                                fixed_width: true
+                            }
+
+                            linked_group: {
+                                id: _INFO!
+                                fixed_width: true
+                            }
+
+                            linked_group: {
+                                id: _WARN!
+                                fixed_width: true
+                            }
+
+                            linked_group: {
+                                id: _ERR!
+                                fixed_width: true
+                            }
+
+                            tooltip: {
+                                id: "tooltip"
+                            }
+
+                            helptip: {
+                                id: "tooltip"
+                            }
+
+                            grid: {
+                                row: {
+                                    column: {
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+                                        label: {
+                                            definition: "title"
+                                            label: _ "Logging Options"
+                                        }
+                                    }
+                                }
+
+                                row: {
+                                    grow_factor: 1
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+                                        vertical_grow: true
+
+                                        listbox: {
+                                            id: "logger_listbox"
+                                            definition: "default"
+                                            horizontal_scrollbar_mode: "never"
+
+                                            list_definition: {
+                                                row: {
+                                                    column: {
+                                                        vertical_grow: true
+                                                        horizontal_grow: true
+                                                        toggle_panel: {
+                                                            definition: "default"
+                                                            grid: {
+                                                                row: {
+                                                                    column: {
+                                                                        grow_factor: 1
+                                                                        horizontal_alignment: "right"
+
+                                                                        border: "all"
+                                                                        border_size: 5
+
+                                                                        label: {
+                                                                            id: _NAME!
+                                                                            definition: "default"
+                                                                            linked_group: _NAME!
+                                                                        }
+
+                                                                    }
+
+                                                                    <_GUI_LOGGER_RADIOS(_DEBUG!, "Debug level logging: maximum information")
+                                                                    <_GUI_LOGGER_RADIOS(_INFO!, "Info level logging: more information")
+                                                                    <_GUI_LOGGER_RADIOS(_WARN!, "Warning level logging: less information")
+                                                                    <_GUI_LOGGER_RADIOS(_ERR!, "Error level logging: minimum information")
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                row: {
+                                    grow_factor: 0
+                                    column: {
+                                        horizontal_alignment: "right"
+
+                                        grid: {
+                                            row: {
+                                                grow_factor: 0
+                                                column: {
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_alignment: "right"
+                                                    button: {
+                                                        id: "ok"
+                                                        definition: "default"
+                                                        label: _ "OK"
+                                                    }
+                                                }
+                                                column: {
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_alignment: "right"
+                                                    button: {
+                                                        id: "cancel"
+                                                        definition: "default"
+                                                        label: _ "Cancel"
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    _GUI_LOGGER_RADIOS = nil
+
+                    _NAME = nil
+                    _DEBUG = nil
+                    _INFO = nil
+                    _WARN = nil
+                    _ERR = nil

@@ -1,0 +1,7 @@
+--textdomain wesnoth-test
+Umc{
+    test: "umc load"
+}
+
+TEST_TRANSACTION!
+TEST_TRANSACTION_PARAM("defined", "parameter")

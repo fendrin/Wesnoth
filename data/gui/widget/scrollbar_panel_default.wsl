@@ -1,0 +1,72 @@
+--textdomain wesnoth-lib
+----
+---- Default definition of a scrollbar panel.
+----
+
+Scrollbar_Panel_Definition{
+
+    id: "default"
+    description: "The scrollbar default panel, we basically are an 'invisible' grid at the moment."
+
+    resolution: {
+
+        background: {
+
+            draw: {
+
+            }
+
+        }
+
+        foreground: {
+
+            draw: {
+
+            }
+
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+
+-- Needed since the widget is replaced with a dummy.
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+                        id: "_content_grid"
+                    }
+
+                }
+
+                column: {
+                    <GUI__VERTICAL_SCROLLBAR_GRID!
+                }
+
+            }
+
+            row: {
+
+                column: {
+                    <GUI__HORIZONTAL_SCROLLBAR_GRID!
+                }
+
+                column: {
+
+                    spacer: {
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

@@ -1,0 +1,56 @@
+--textdomain wesnoth-multiplayer
+
+Multiplayer{
+    id: "multiplayer_4p_Morituri"
+    name: _ "4p — Morituri"
+    map: "multiplayer/maps/4p_Morituri.map"
+    description: _ "Who will emerge from the confines of this perilous battlefield?" .. _ " Recommended setting of 2 gold per village."
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 1
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 2
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 3
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 4
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        canrecruit: true
+        controller: "human"
+        fog: true
+    }
+}

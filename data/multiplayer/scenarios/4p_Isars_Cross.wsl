@@ -1,0 +1,62 @@
+--textdomain wesnoth-multiplayer
+
+-- created by Becephalus 01/06, revised by Bec 5/06
+
+Multiplayer{
+    id: "multiplayer_Isars_Cross"
+    name: _ "4p — Isar’s Cross"
+    map: "multiplayer/maps/4p_Isars_Cross.map"
+    description: _ "A very small 2 vs. 2 map. Close quarters fighting means the successful rotation of units and planning of moves is important. Teams set for players 1+4 vs. 2+3 (northeast vs. southwest). Designed for 75 starting gold, 20 villages."
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 1
+        team_name: "south-west"
+        user_team_name: _ "teamname^Southwest"
+        canrecruit: true
+        controller: "human"
+        gold: 75
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 2
+        team_name: "north-east"
+        user_team_name: _ "teamname^Northeast"
+        canrecruit: true
+        controller: "human"
+        gold: 75
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 3
+        team_name: "north-east"
+        user_team_name: _ "teamname^Northeast"
+        canrecruit: true
+        controller: "human"
+        gold: 75
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 16
+        }
+        side: 4
+        team_name: "south-west"
+        user_team_name: _ "teamname^Southwest"
+        canrecruit: true
+        controller: "human"
+        gold: 75
+        fog: true
+    }
+}

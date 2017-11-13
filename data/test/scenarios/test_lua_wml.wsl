@@ -1,0 +1,79 @@
+GENERIC_UNIT_TEST("test_wml_actions", {
+        event: {
+            name: "start"
+            do: ->
+                Lua{
+                    code: [[
+				function wesnoth.wml_actions.foo(cfg)
+					if cfg.bar then
+						wesnoth.set_variable("result", cfg.bar)
+					end
+				end
+				]]
+                }
+
+                VARIABLE("result", 0)
+                ASSERT(VARIABLE_CONDITIONAL("result", "equals", 0))
+
+                Foo{
+                    bar: 1
+                }
+
+                ASSERT(VARIABLE_CONDITIONAL("result", "equals", "1"))
+
+                Foo{
+                    baz: 0
+                }
+
+                ASSERT(VARIABLE_CONDITIONAL("result", "equals", "1"))
+
+                Foo{
+                    bar: 2
+                }
+
+                RETURN(VARIABLE_CONDITIONAL("result", "equals", "2"))
+        }
+})
+
+GENERIC_UNIT_TEST("test_wml_conditionals", {
+        event: {
+            name: "start"
+            do: ->
+                Lua{
+                    code: [[
+				function wesnoth.wml_conditionals.foo(cfg)
+					return (cfg.bar == "baz")
+				end
+				]]
+                }
+
+                ASSERT({ foo: {
+                        bar: "baz"
+                    }
+                    <ASSERT({ not: {
+                            foo: {
+                                bar: "boo"
+                            }
+                        }
+                        <ASSERT({ foo: {
+                                bar: "baz"
+                            }
+                            or: {
+                                foo: {
+                                    bar: "boo"
+                                }
+                            }
+                            <ASSERT({ not: {
+                                    foo: {
+                                        bar: "baz"
+                                    }
+                                    and: {
+                                        foo: {
+                                            bar: "boo"
+                                        }
+                                    }
+                                }
+
+                                <SUCCEED!
+err: ../attic/data/test/scenarios/test_lua_wml.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: ASSERT closed by event at line 76
+err: ../attic/data/test/scenarios/test_lua_wml.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: ASSERT closed by table at line 77

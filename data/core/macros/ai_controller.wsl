@@ -1,0 +1,1109 @@
+--textdomain wesnoth
+
+AI_CONTROLLER_ALLOW_UNIT_CONTROL = (CONTROLLER_SIDE, UNIT_ID) -> {
+-- Right-click content menu item for issuing instructions to an allied AI unit
+    store_unit: {
+        filter: {
+            id: UNIT_ID
+        }
+
+        kill: false
+        variable: "ai_controller_unit"
+    }
+
+    if: {
+        variable: {
+            name: "ai_controller_unit.length"
+            greater_than: 0
+        }
+        then: ->
+            Set_Menu_Item{
+                id: "ai_controller_unit_control_#{UNIT_ID}"
+                description: _ "Ask #{ai_controller_unit.name to move here"
+                show_if: {
+                    side: CONTROLLER_SIDE
+                    have_unit: {
+                        id: UNIT_ID
+                    }
+                }
+                command: ->
+                    Modify_Unit{
+                        filter: {
+                            id: UNIT_ID
+                        }
+                        goto_x: x1, goto_y: y1
+                    }
+                
+            }
+        
+    }
+
+    event: {
+        name: "victory" --TODO: any scenario change
+        do: ->
+            Clear_Menu_Item{
+                id: "ai_controller_unit_control_#{UNIT_ID}"
+            }
+    }
+
+    <CLEAR_VARIABLE("ai_controller_unit")
+}
+
+AI_CONTROLLER_ALLOW_LEADER_CONTROL = (CONTROLLER_SIDE, CONTROLLED_SIDE) -> {
+-- Right-click content menu item for issuing instructions to an allied AI side's leader
+    store_unit: {
+        filter: {
+            side: CONTROLLED_SIDE
+            canrecruit: true
+        }
+
+        kill: false
+        variable: "ally_leader"
+    }
+
+    if: {
+        variable: {
+            name: "ally_leader.length"
+            greater_than: 0
+        }
+        then: ->
+            Set_Menu_Item{
+                id: "ai_controller_leader_control_#{CONTROLLED_SIDE}"
+                description: _ "Ask #{ally_leader.name (leader of side #{ally_leader.side) to move here"
+                show_if: {
+                    side: CONTROLLER_SIDE
+                    have_unit: {
+                        side: CONTROLLED_SIDE
+                        canrecruit: true
+                    }
+                }
+                command: ->
+                    CLEAR_AI_ALWAYS_ASPECT_LEADER_GOAL(CONTROLLED_SIDE)
+                    MODIFY_AI_ADD_ASPECT(CONTROLLED_SIDE, "leader_goal", AI_ASPECT_LEADER_GOAL_RISKY_MOVE_TO(x1, y1))
+                
+            }
+        
+    }
+
+    event: {
+        name: "victory" --TODO: any scenario change
+        do: ->
+            Clear_Menu_Item{
+                id: "ai_controller_leader_control_#{CONTROLLED_SIDE}"
+            }
+    }
+
+    <CLEAR_VARIABLE("ally_leader")
+}
+
+AI_CONTROLLER_NOTE = () -> {
+-- Note for the objectives that instructions can be issued to an allied AI side
+    note: {
+        description: _ "In this scenario, you may issue instructions to an allied side by right-clicking on a unit that belongs to it."
+    }
+}
+
+AI_CONTROLLER = (AFFIX, PLAYER_SIDES, ALLY_SIDES, VARIABLES_WML) -> {
+-- Right-click content menu item for issuing instructions to an allied AI side
+    event: {
+        name: "prestart"
+        do: ->
+            Set_Variables{
+                name: "ai_controller_#{AFFIX}"
+
+-- This block contains all the default settings and options.
+                literal: {
+                    enabled: true
+                    option_name: _ "Instruct ally"
+                    player_side: PLAYER_SIDES
+                    ally_sides: ALLY_SIDES
+                    disabled_for_sides: 0
+
+                    overview_message_has_instructions: {
+                        speaker: "narrator"
+                        caption: _ "Instruct ally"
+                        message: _ "#{ally_leader.name (side #{ally_side}) is carrying out the following instructions:"
+                        image: "wesnoth-icon.png"
+                    }
+
+                    overview_message_no_instructions: {
+                        speaker: "narrator"
+                        caption: _ "Instruct ally"
+                        message: _ "#{ally_leader.name (side #{ally_side}) has not been given any instructions and is acting normally."
+                        image: "wesnoth-icon.png"
+                    }
+
+-----------------
+
+                    aggression: {
+                        option_description: _ "Be more aggressive"
+                        currently_doing_description: _ "aggressive."
+
+                        show_if: {
+                        }
+
+                        actions_when_applied: {
+                            <MODIFY_AI_ADD_SIMPLE_ASPECT(ally_side, "aggression", "set_by_ai_controller", "0.9")
+                            <MODIFY_AI_ADD_SIMPLE_ASPECT(ally_side, "caution", "set_by_ai_controller", "0.1")
+                        }
+
+                        message_when_applied: {
+                        }
+                    }
+
+-----------------
+
+                    caution: {
+                        option_description: _ "Be more defensive"
+                        currently_doing_description: _ "defensive."
+
+                        actions_when_applied: {
+                            <MODIFY_AI_ADD_SIMPLE_ASPECT(ally_side, "aggression", "set_by_ai_controller", "0.1")
+                            <MODIFY_AI_ADD_SIMPLE_ASPECT(ally_side, "caution", "set_by_ai_controller", "1.0")
+                        }
+                    }
+
+-----------------
+
+                    focus_on_enemy: {
+                        option_description: _ "Focus on defeating..."
+                        currently_doing_description: _ "focusing on defeating #{ai_controller.side_#{ally_side}_current_settings.focus_on_enemy.side_description}."
+
+                        actions_when_applied: {
+                            set_variables: {
+                                name: "focus_on_enemy_options_message"
+
+                                insert_tag: {
+                                    name: "value"
+                                    variable: "header_message"
+                                }
+                            }
+
+                            <CLEAR_VARIABLE("focus_on_enemy_options_message.option")
+
+                            store_side: {
+                                side: ally_side
+                                variable: "stored_ally_side"
+                            }
+
+                            <VARIABLE("temp_i", 1)
+
+                            while: {
+                                variable: {
+                                    name: "temp_i"
+                                    less_than: 10
+                                }
+
+                                do: ->
+                                    Store_Side{
+                                        side: temp_i
+                                        variable: "stored_other_side"
+                                    }
+
+                                    If{
+                                        variable: {
+                                            name: "stored_ally_side.team_name"
+                                            not_equals: stored_other_side.team_name
+                                        }
+
+                                        have_unit: {
+                                            side: temp_i
+                                        }
+
+                                        then: ->
+                                            If{
+                                                have_unit: {
+                                                    side: temp_i
+                                                    canrecruit: true
+
+                                                    filter_vision: {
+                                                        side: side_number
+                                                        visible: true
+                                                    }
+                                                }
+
+                                                then: ->
+                                                    Store_Unit{
+                                                        filter: {
+                                                            side: temp_i
+                                                            canrecruit: true
+                                                        }
+
+                                                        kill: false
+                                                        variable: "side_i_leader"
+                                                    }
+
+                                                    VARIABLE("this_enemy_image", "#{side_i_leader.image~TC(#{temp_i},#{side_i_leader.flag_rgb})")
+                                                    VARIABLE("this_enemy_label", _ "Side #{temp_i")
+                                                    VARIABLE("this_enemy_description", "#{side_i_leader.name")
+                                                
+
+                                                else: ->
+                                                    VARIABLE("this_enemy_image", "misc/blank-hex.png")
+                                                    VARIABLE("this_enemy_label", _ "Side #{temp_i")
+                                                    VARIABLE("this_enemy_description", "")
+                                                    VARIABLE("ai_controller.side_#{ally_side}_current_settings.focus_on_enemy.side_description", _ "side #{temp_i")
+                                                
+                                            }
+
+                                            Set_Variables{
+                                                name: "focus_on_enemy_options_message.option"
+                                                mode: "append"
+
+                                                value: {
+                                                    image: this_enemy_image
+                                                    label: this_enemy_label
+                                                    description: this_enemy_description
+
+                                                    command: ->
+                                                        VARIABLE("ai_controller.side_#{ally_side}_current_settings.focus_on_enemy.side", temp_i)
+                                                        VARIABLE("ai_controller.side_#{ally_side}_current_settings.focus_on_enemy.side_description", _ "side #{temp_i (#{side_i_leader.name})")
+
+                                                        MODIFY_AI_ADD_GOAL(ally_side, {
+                                                                goal: {
+                                                                    id: "set_by_ai_controller"
+                                                                    value: 20
+                                                                    criteria: {
+                                                                        side: temp_i
+                                                                    }
+                                                                }
+                                                        })
+                                                    
+                                                }
+                                            }
+                                        
+                                    }
+
+                                    VARIABLE_OP("temp_i", "add", 1)
+                                
+                            }
+
+                            set_variables: {
+                                name: "focus_on_enemy_options_message.option"
+                                mode: "append"
+
+                                value: {
+                                    label: _ "Back"
+
+                                    command: ->
+                                    
+                                }
+                            }
+
+                            insert_tag: {
+                                name: "message"
+                                variable: "focus_on_enemy_options_message"
+                            }
+
+                            <CLEAR_VARIABLE("stored_ally_side,stored_other_side,focus_on_enemy_options_message,side_i_leader,temp_i,this_enemy_image,this_enemy_label,this_enemy_description")
+                        }
+                    }
+
+-----------------
+
+                    protect: {
+                        option_description: _ "Focus on protecting..."
+                        currently_doing_description: _ "focusing on protecting #{ai_controller.side_#{ally_side}_current_settings.protect.side_description}."
+
+                        actions_when_applied: {
+                            set_variables: {
+                                name: "protect_options_message"
+
+                                insert_tag: {
+                                    name: "value"
+                                    variable: "header_message"
+                                }
+                            }
+
+                            <CLEAR_VARIABLE("protect_options_message.option")
+
+                            store_side: {
+                                side: ally_side
+                                variable: "stored_ally_side"
+                            }
+
+                            <VARIABLE("temp_i", 1)
+
+                            while: {
+                                variable: {
+                                    name: "temp_i"
+                                    less_than: 10
+                                }
+
+                                do: ->
+                                    Store_Side{
+                                        side: temp_i
+                                        variable: "stored_other_side"
+                                    }
+
+                                    If{
+                                        variable: {
+                                            name: "ally_side"
+                                            not_equals: temp_i
+                                        }
+
+                                        variable: {
+                                            name: "stored_ally_side.team_name"
+                                            equals: stored_other_side.team_name
+                                        }
+
+                                        have_unit: {
+                                            side: temp_i
+                                        }
+
+                                        then: ->
+                                            If{
+                                                have_unit: {
+                                                    side: temp_i
+                                                    canrecruit: true
+                                                }
+
+                                                then: ->
+                                                    Store_Unit{
+                                                        filter: {
+                                                            side: temp_i
+                                                            canrecruit: true
+
+                                                            filter_vision: {
+                                                                side: side_number
+                                                                visible: true
+                                                            }
+                                                        }
+
+                                                        kill: false
+                                                        variable: "side_i_leader"
+                                                    }
+
+                                                    VARIABLE("this_ally_image", "#{side_i_leader.image~TC(#{temp_i},#{side_i_leader.flag_rgb})")
+                                                    VARIABLE("this_ally_label", _ "Side #{temp_i")
+                                                    VARIABLE("this_ally_description", "#{side_i_leader.name")
+                                                
+
+                                                else: ->
+                                                    VARIABLE("this_ally_image", "misc/blank-hex.png")
+                                                    VARIABLE("this_ally_label", _ "Side #{temp_i")
+                                                    VARIABLE("this_ally_description", "")
+                                                    VARIABLE("ai_controller.side_#{ally_side}_current_settings.protect.side_description", _ "side #{temp_i")
+                                                
+                                            }
+
+                                            Set_Variables{
+                                                name: "protect_options_message.option"
+                                                mode: "append"
+
+                                                value: {
+                                                    image: this_ally_image
+                                                    label: this_ally_label
+                                                    description: this_ally_description
+
+                                                    command: ->
+                                                        VARIABLE("ai_controller.side_#{ally_side}_current_settings.protect.side", temp_i)
+                                                        VARIABLE("ai_controller.side_#{ally_side}_current_settings.protect.side_description", _ "side #{temp_i (#{side_i_leader.name})")
+
+                                                        MODIFY_AI_ADD_GOAL(ally_side, {
+                                                                goal: {
+                                                                    id: "set_by_ai_controller"
+                                                                    name: "protect_unit"
+                                                                    value: 20
+                                                                    criteria: {
+                                                                        side: temp_i
+                                                                    }
+                                                                }
+                                                        })
+                                                    
+                                                }
+                                            }
+                                        
+                                    }
+
+                                    VARIABLE_OP("temp_i", "add", 1)
+                                
+                            }
+
+                            set_variables: {
+                                name: "protect_options_message.option"
+                                mode: "append"
+
+                                value: {
+                                    label: _ "Back"
+
+                                    command: ->
+                                    
+                                }
+                            }
+
+                            insert_tag: {
+                                name: "message"
+                                variable: "protect_options_message"
+                            }
+
+                            <CLEAR_VARIABLE("stored_ally_side,stored_other_side,side_i_leader,protect_options_message,temp_i,this_ally_image,this_ally_label,this_ally_description")
+                        }
+                    }
+
+-----------------
+
+                    <if __UNUSED then {
+                        defend_location: {
+                            type: "objective"
+
+                            ai: {
+                                goal: {
+                                    name: "protect_location"
+                                    criteria: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 454:                                 x=$ai_controller.side_$ally_side|_current_settings.defend_location.x
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 455:                                 y=$ai_controller.side_$ally_side|_current_settings.defend_location.y
+                                    }
+                                    protect_radius: 6
+                                    value: 20
+                                }
+                            }
+
+                            option: {
+                                label: _ "Defend a location..."
+
+                                show_if: {
+                                    variable: {
+                                        name: "ai_controller_#{AFFIX}.defend_location.disabled"
+                                        not_equals: true
+                                    }
+                                }
+
+                                command: ->
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 473:                             {VARIABLE ai_controller_{AFFIX}.defend_location.picker_active yes}
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 474:                             {VARIABLE ai_controller_{AFFIX}.defend_location.original_controller_invokation_x $x1}
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 475:                             {VARIABLE ai_controller_{AFFIX}.defend_location.original_controller_invokation_y $y1}
+                                    VARIABLE("ai_controller_finished", true)
+
+                                    Print{
+                                        text: _ "Right-click to select a location to defend"
+                                        duration: 100
+                                        <COLOR_WHITE!
+                                    }
+
+                                    Set_Menu_Item{
+                                        id: "ai_controller_defend_location_picker"
+                                        description: _ "Defend this location"
+
+                                        show_if: {
+                                            variable: {
+                                                name: "ai_controller_#{AFFIX}.defend_location.picker_active"
+                                                boolean_equals: true
+                                            }
+                                        }
+
+                                        command: ->
+                                            VARIABLE("ai_controller.side_#{ally_side}_current_settings.defend_location.x", x1)
+                                            VARIABLE("ai_controller.side_#{ally_side}_current_settings.defend_location.y", y1)
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 498:                                     {VARIABLE ai_controller_{AFFIX}.defend_location.picker_active no}
+
+                                            VARIABLE("order_type", "defend_location")
+
+                                            VARIABLE("ai_controller.side_#{ally_side}_current_settings.current_objective", "defend_location")
+                                            VARIABLE("ai_controller.side_#{ally_side}_current_settings.currently_doing_objective_description", _ "focusing on defending the area around #{x1},#{y1}.")
+
+                                            MODIFY_AI_ADD_GOAL(ally_side, {
+                                                    goal: {
+                                                        id: "set_by_ai_controller"
+                                                        name: "protect_location"
+                                                        value: 20
+                                                        criteria: {
+                                                            x: x1, y: y1
+                                                        }
+                                                    }
+                                            })
+
+                                            Print{
+                                                text: " "    -- wmllint: ignore
+                                                duration: 1
+                                            }
+
+                                            Fire_Event{
+                                                name: "menu item ai_controller"
+
+                                                primary_unit: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 525:                                             x=$ai_controller_{AFFIX}.defend_location.original_controller_invokation_x
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 526:                                             y=$ai_controller_{AFFIX}.defend_location.original_controller_invokation_y
+                                                }
+                                            }
+                                        
+                                    }
+
+                                    Event{
+                                        name: {"select", "recruit", "recall", "side turn", "menu item ai_controller"}
+                                        do: ->
+                                            If{
+                                                variable: {
+                                                    name: "ai_controller_#{AFFIX}.defend_location.picker_active"
+                                                    boolean_equals: true
+                                                }
+
+                                                then: ->
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 542:                                         {VARIABLE ai_controller_{AFFIX}.defend_location.picker_active no}
+
+                                                    Print{
+                                                        text: _ "Location selection canceled"
+                                                        duration: 100
+                                                        <COLOR_WHITE!
+                                                    }
+                                                
+                                            }
+                                    }
+                                
+                            }
+                        }
+                    }
+
+-----------------
+
+                    revoke_objective_orders: {
+                        option_description: _ "Clear objective orders"
+                        currently_doing_description: _ "none set."
+
+                        actions_when_applied: {
+                            <MODIFY_AI_DELETE_GOAL(ally_side, "set_by_ai_controller")
+
+                            <CLEAR_VARIABLE("ai_controller.side_#{ally_side}_current_settings.current_objective")
+                        }
+                    }
+
+-----------------
+
+                    revoke_behavior_orders: {
+                        option_description: _ "Clear behavior orders"
+                        currently_doing_description: _ "none set."
+
+                        actions_when_applied: {
+                            <MODIFY_AI_DELETE_ASPECT(ally_side, "aggression", "set_by_ai_controller")
+                            <MODIFY_AI_DELETE_ASPECT(ally_side, "caution", "set_by_ai_controller")
+
+                            <CLEAR_VARIABLE("ai_controller.side_#{ally_side}_current_settings.current_behavior")
+                        }
+                    }
+
+-----------------
+
+                    revoke_all_orders: {
+                        option_description: _ "Clear all orders"
+
+                        actions_when_applied: {
+                            <MODIFY_AI_DELETE_GOAL(ally_side, "set_by_ai_controller")
+                            <MODIFY_AI_DELETE_ASPECT(ally_side, "aggression", "set_by_ai_controller")
+                            <MODIFY_AI_DELETE_ASPECT(ally_side, "caution", "set_by_ai_controller")
+
+                            <CLEAR_VARIABLE("ai_controller.side_#{ally_side}_current_settings")
+                        }
+                    }
+                }
+            }
+
+            Set_Variables{
+                name: "ai_controller_#{AFFIX}"
+                mode: "merge"
+
+                literal: {
+                    <VARIABLES_WML
+                }
+            }
+
+            Set_Menu_Item{
+                id: "ai_controller_#{AFFIX}"
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 611:             description=$ai_controller_{AFFIX}.option_name
+
+                show_if: {
+                    have_unit: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 615:                     side=$ai_controller_{AFFIX}.ally_sides
+                        x: x1, y: y1
+
+                        not: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 619:                         side=$ai_controller_{AFFIX}.disabled_for_sides
+                        }
+                    }
+
+                    variable: {
+                        name: "ai_controller_#{AFFIX}.enabled"
+                        equals: true
+                    }
+
+                    variable: {
+                        name: "ai_controller_#{AFFIX}.player_side"
+                        contains: side_number
+                    }
+
+                    variable: {
+                        name: "ai_controller_#{AFFIX}.defend_location.picker_active"
+                        boolean_equals: false
+                    }
+                }
+
+                command: ->
+                    Store_Unit{
+                        filter: {
+                            x: x1, y: y1
+                        }
+
+                        kill: false
+                        variable: "ally_unit"
+                    }
+
+                    Store_Unit{
+                        filter: {
+                            side: ally_unit.side
+                            canrecruit: true
+                        }
+
+                        kill: false
+                        variable: "ally_leader"
+                    }
+
+                    VARIABLE("ally_side", ally_leader.side)
+
+                    If{
+                        variable: {
+                            name: "ai_controller.side_#{ally_side}_original_settings.side"
+                            equals: empty
+                        }
+
+                        then: ->
+                            Store_Side{
+                                side: ally_side
+                                variable: "ai_controller.side_#{ally_side}_original_settings"
+                            }
+
+                            Set_Variables{
+                                name: "ai_controller.side_#{ally_side}_original_settings.ai_settings"
+
+                                value: {
+                                    side: ally_side
+
+                                    insert_tag: {
+                                        name: "ai"
+                                        variable: "ally_leader.ai"
+                                    }
+                                }
+                            }
+                        
+                    }
+
+                    CLEAR_VARIABLE("ai_controller_finished")
+
+                    While{
+                        variable: {
+                            name: "ai_controller_finished"
+                            not_equals: true
+                        }
+
+                        do: ->
+                            If{
+                                variable: {
+                                    name: "ai_controller.side_#{ally_side}_current_settings.current_objective"
+                                    equals: empty
+                                }
+
+                                then: ->
+                                    VARIABLE("ai_controller.side_#{ally_side}_current_settings.currently_doing_objective_description", _ "none set.")
+                                
+                            }
+
+                            If{
+                                variable: {
+                                    name: "ai_controller.side_#{ally_side}_current_settings.current_behavior"
+                                    equals: empty
+                                }
+
+                                then: ->
+                                    VARIABLE("ai_controller.side_#{ally_side}_current_settings.currently_doing_behavior_description", _ "none set.")
+                                
+                            }
+
+                            If{
+                                variable: {
+                                    name: "ai_controller.side_#{ally_side}_current_settings.current_objective"
+                                    equals: empty
+                                }
+
+                                variable: {
+                                    name: "ai_controller.side_#{ally_side}_current_settings.current_behavior"
+                                    equals: empty
+                                }
+
+                                then: ->
+                                    Set_Variables{
+                                        name: "ai_controller_#{AFFIX}.main_menu_message"
+
+                                        insert_tag: {
+                                            name: "value"
+                                            variable: "ai_controller_#{AFFIX}.overview_message_no_instructions"
+                                        }
+                                    }
+                                
+
+                                else: ->
+                                    Set_Variables{
+                                        name: "ai_controller_#{AFFIX}.main_menu_message"
+
+                                        insert_tag: {
+                                            name: "value"
+                                            variable: "ai_controller_#{AFFIX}.overview_message_has_instructions"
+                                        }
+                                    }
+                                
+                            }
+
+-- wmllint: display on
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 754:                         {VARIABLE ai_controller_{AFFIX}.main_menu_message.message "$ai_controller_{AFFIX}.main_menu_message.message"+"
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 755: <span color='black'>-</span>"+"
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 756: "+_"Objective: $ai_controller.side_$ally_side|_current_settings.currently_doing_objective_description
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 757: Behavior: $ai_controller.side_$ally_side|_current_settings.currently_doing_behavior_description"+"
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 758: <span color='black'>-</span>"}
+-- wmllint: display off
+
+                            Set_Variables{
+                                name: "header_message"
+                                insert_tag: {
+                                    name: "value"
+                                    variable: "ai_controller_#{AFFIX}.main_menu_message"
+                                }
+                            }
+
+                            Set_Variables{
+                                name: "ai_controller_#{AFFIX}.main_menu_message.option"
+
+                                literal: {
+                                    label: _ "Set objective..."
+
+                                    command: ->
+                                        Set_Variables{
+                                            name: "set_objective_message"
+
+                                            insert_tag: {
+                                                name: "value"
+                                                variable: "header_message"
+                                            }
+                                        }
+
+                                        CLEAR_VARIABLE("set_objective_message.option")
+
+                                        Set_Variables{
+                                            name: "set_objective_message.option"
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 791:                                             label=$ai_controller_{AFFIX}.focus_on_enemy.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.focus_on_enemy.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("objective_picked", "focus_on_enemy")
+                                                
+                                            }
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 804:                                             label=$ai_controller_{AFFIX}.protect.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.protect.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("objective_picked", "protect")
+                                                
+                                            }
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 817:                                             label=$ai_controller_{AFFIX}.revoke_objective_orders.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.revoke_objective_orders.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("objective_picked", "revoke_objective_orders")
+                                                
+                                            }
+
+                                            value: {
+                                                label: _ "Back"
+
+                                                command: ->
+                                                
+                                            }
+                                        }
+
+                                        Insert_Tag{
+                                            name: "message"
+                                            variable: "set_objective_message"
+                                        }
+
+                                        If{
+                                            variable: {
+                                                name: "objective_picked"
+                                                not_equals: empty
+                                            }
+
+                                            then: ->
+                                                Insert_Tag{
+                                                    name: "command"
+                                                    variable: "ai_controller_#{AFFIX}.#{objective_picked}.actions_when_applied"
+                                                }
+
+                                                VARIABLE("ai_controller.side_#{ally_side}_current_settings.current_objective", objective_picked)
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 855:                                             {VARIABLE ai_controller.side_$ally_side|_current_settings.currently_doing_objective_description $ai_controller_{AFFIX}.$objective_picked|.currently_doing_description|}
+                                            
+                                        }
+
+                                        CLEAR_VARIABLE("set_objective_message,objective_picked")
+                                    
+                                }
+
+                                literal: {
+                                    label: _ "Set behavior..."
+
+                                    command: ->
+                                        Set_Variables{
+                                            name: "set_behavior_message"
+
+                                            insert_tag: {
+                                                name: "value"
+                                                variable: "header_message"
+                                            }
+                                        }
+
+                                        CLEAR_VARIABLE("set_behavior_message.option")
+
+                                        Set_Variables{
+                                            name: "set_behavior_message.option"
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 882:                                             label=$ai_controller_{AFFIX}.aggression.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.aggression.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("behavior_picked", "aggression")
+                                                
+                                            }
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 895:                                             label=$ai_controller_{AFFIX}.caution.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.caution.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("behavior_picked", "caution")
+                                                
+                                            }
+
+                                            value: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 908:                                             label=$ai_controller_{AFFIX}.revoke_behavior_orders.option_description
+
+                                                insert_tag: {
+                                                    name: "show_if"
+                                                    variable: "ai_controller_#{AFFIX}.revoke_behavior_orders.show_if"
+                                                }
+
+                                                command: ->
+                                                    VARIABLE("behavior_picked", "revoke_behavior_orders")
+                                                
+                                            }
+
+                                            value: {
+                                                label: _ "Back"
+
+                                                command: ->
+                                                
+                                            }
+                                        }
+
+                                        Insert_Tag{
+                                            name: "message"
+                                            variable: "set_behavior_message"
+                                        }
+
+                                        If{
+                                            variable: {
+                                                name: "behavior_picked"
+                                                not_equals: empty
+                                            }
+
+                                            then: ->
+                                                Insert_Tag{
+                                                    name: "command"
+                                                    variable: "ai_controller_#{AFFIX}.#{behavior_picked}.actions_when_applied"
+                                                }
+
+                                                VARIABLE("ai_controller.side_#{ally_side}_current_settings.current_behavior", behavior_picked)
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 946:                                             {VARIABLE ai_controller.side_$ally_side|_current_settings.currently_doing_behavior_description $ai_controller_{AFFIX}.$behavior_picked|.currently_doing_description|}
+                                            
+                                        }
+
+                                        CLEAR_VARIABLE("set_behavior_message,behavior_picked")
+                                    
+                                }
+
+                                literal: {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 955:                                 label=$ai_controller_{AFFIX}.revoke_all_orders.option_description
+
+                                    insert_tag: {
+                                        name: "show_if"
+                                        variable: "ai_controller_#{AFFIX}.revoke_all_orders.show_if"
+                                    }
+
+                                    insert_tag: {
+                                        name: "command"
+                                        variable: "ai_controller_#{AFFIX}.revoke_all_orders.actions_when_applied"
+                                    }
+                                }
+
+                                literal: {
+                                    label: _ "Exit"
+
+                                    command: ->
+                                        VARIABLE("ai_controller_finished", true)
+
+                                        unless MULTIPLAYER!
+                                            Allow_Undo{
+                                            }
+                                        
+                                    
+                                }
+                            }
+
+                            CLEAR_VARIABLE("header_message")
+
+                            Insert_Tag{
+                                name: "message"
+                                variable: "ai_controller_#{AFFIX}.main_menu_message"
+                            }
+                        
+                    }
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 991:                 {CLEAR_VARIABLE ally_unit,ally_side,ally_leader,ai_controller_{AFFIX}.main_menu_message,ai_controller_finished}
+
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 999:         {CLEAR_VARIABLE ai_controller,ai_controller_{AFFIX}}
+
+    }
+}
+
+DISABLE_AI_CONTROLLER = (AFFIX) -> {
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1004:     {VARIABLE ai_controller_{AFFIX}.enabled no}
+}
+
+DISABLE_AI_CONTROLLER_FOR_SIDE = (AFFIX, SIDE) -> {
+    if: {
+        variable: {
+            name: "ai_controller_#{AFFIX}.disabled_for_sides"
+            equals: 0
+        }
+
+        not: {
+            variable: {
+                name: "ai_controller_#{AFFIX}.disabled_for_sides"
+                contains: SIDE
+            }
+        }
+
+        then: ->
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1022:             {VARIABLE ai_controller_{AFFIX}.disabled_for_sides {SIDE}}
+        
+
+        else: ->
+            If{
+                variable: {
+                    name: "ai_controller_#{AFFIX}.disabled_for_sides"
+                    contains: SIDE
+                }
+
+                else: ->
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1033:                     {VARIABLE ai_controller_{AFFIX}.disabled_for_sides $ai_controller_{AFFIX}.disabled_for_sides|,{SIDE}}
+                
+            }
+        
+    }
+}
+
+ENABLE_AI_CONTROLLER_FOR_SIDE = (AFFIX, SIDE) -> {
+    if: {
+        variable: {
+            name: "ai_controller_#{AFFIX}.disabled_for_sides"
+            contains: SIDE
+        }
+
+        then: ->
+            Set_Variables{
+                name: "disabled_for_sides_array"
+
+                split: {
+                    list: "ai_controller_#{AFFIX}.disabled_for_sides"
+                    key: "side"
+                    separator: ','
+                }
+            }
+
+            For{
+                array: "disabled_for_sides_array"
+                variable: "disabled_for_side_i"
+                do: ->
+                    If{
+                        variable: {
+                            name: "disabled_for_sides_array[disabled_for_side_i].side"
+                            equals: SIDE
+                        }
+
+                        then: ->
+                            CLEAR_VARIABLE("disabled_for_sides_array[#{disabled_for_side_i]")
+                        
+                    }
+                
+            }
+
+            Set_Variable{
+                name: "ai_controller_#{AFFIX}.disabled_for_sides"
+
+                join: {
+                    variable: "disabled_for_sides_array"
+                    key: "side"
+                    separator: ','
+                }
+            }
+
+            CLEAR_VARIABLE("disabled_for_sides_array")
+        
+
+        else: ->
+err: ../attic/data/core/macros/ai_controller.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1089:             {VARIABLE ai_controller_{AFFIX}.ally_sides $ai_controller_{AFFIX}.ally_sides|,{SIDE}}
+        
+    }
+}
+
+-- A stub for scenario 7 of LoW
+AI_LOCATION = (AFFIX, STRING, RADIUS, X, Y) -> {
+    <SET_LABEL(X, Y, STRING)
+}
+
+AI_CONTROLLER_FUTURE_STRINGS = () -> {
+-- These will be used for the special orders menu and the order for telling
+-- the ally leader to move someplace
+    future_string_1: _ "Set special orders..."  --wmllint: ignore
+    future_string_2: _ "Move leader to..."  --wmllint: ignore
+    future_string_3: _ "Right-click to select a location to move leader to" --wmllint: ignore
+    future_string_4: _ "Move leader here"   --wmllint: ignore
+    future_string_5: _ "moving leader to #{x1},#{y1}."    --wmllint: ignore
+    future_string_6: _ "Clear special orders"   --wmllint: ignore
+    future_string_7: _ "Special: #{ai_controller.side_#{ally_side}_current_settings.currently_doing_special_description"  --wmllint: ignore
+}

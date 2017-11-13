@@ -1,0 +1,5 @@
+Locale{
+    name: "Русский (Russkij)"
+    sort_name: "Russkij"
+    locale: "ru_RU"
+}

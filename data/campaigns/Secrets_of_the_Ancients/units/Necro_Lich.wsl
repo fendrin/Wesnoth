@@ -1,0 +1,11 @@
+--textdomain wesnoth-units
+Unit_Type{
+    id: "Lich SotA"
+    base_unit: {
+        id: "Lich"
+    }
+    advances_to: "Ancient Lich SotA"
+    experience: 250
+    hide_help: true
+    do_not_list: true
+}

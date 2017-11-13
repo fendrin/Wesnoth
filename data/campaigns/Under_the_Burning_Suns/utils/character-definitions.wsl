@@ -1,0 +1,148 @@
+--textdomain wesnoth-utbs
+
+if UTBSNEW
+
+    KALEH: () -> {
+        id: "Kaleh"
+        name: _ "Kaleh"
+        gender: "male"
+        type: "Quenoth Youth"
+        canrecruit: true
+        unrenamable: true
+    }
+
+    NYM: () -> {
+        type: "Quenoth Youth"
+        id: "Nym"
+        name: _ "Nym"
+        gender: "female"
+        unrenamable: true
+        random_traits: false
+        profile: "portraits/nym.png"
+        upkeep: "loyal"
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_DEXTROUS!
+        }
+        <IS_HERO!
+    }
+
+    GARAK: () -> {
+        type: "Quenoth Champion"
+        id: "Garak"
+        name: _ "Garak"
+        profile: "portraits/garak.png"
+        unrenamable: true
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_STRONG!
+            object: {
+                effect: {
+                    apply_to: "new_ability"
+                    abilities: {
+                        <ABILITY_TEACHING!
+                    }
+                }
+                effect: {
+                    apply_to: "max_experience"
+                    increase: 850
+                }
+            }
+        }
+        <IS_HERO!
+    }
+
+    ZHUL: () -> {
+        type: "Quenoth Shaman"
+        id: "Zhul"
+        name: _ "Zhul"
+        profile: "portraits/zhul.png"
+        unrenamable: true
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_INTELLIGENT!
+        }
+        <IS_HERO!
+    }
+
+} else {
+
+    KALEH: () -> {
+        id: "Kaleh"
+        name: _ "Kaleh"
+        type: "Kaleh"
+        variation: "Youth"
+        canrecruit: true
+        unrenamable: true
+        modifications: {
+            <unless HARD! then {
+                <TRAIT_RESILIENT!
+                <if EASY then {
+                    <TRAIT_INTELLIGENT!
+                }
+            }
+        }
+    }
+
+    NYM: () -> {
+        type: "Nym Hunter"
+        id: "Nym"
+        name: _ "Nym"
+        unrenamable: true
+        random_traits: false
+        modifications: {
+            <TRAIT_LOYAL!
+            <unless HARD! then {
+                <TRAIT_RESILIENT!
+                <if EASY then {
+                    <TRAIT_QUICK!
+                }
+            }
+        }
+        <IS_HERO!
+    }
+
+    GARAK: () -> {
+        type: "Desert Marshal"
+        id: "Garak"
+        name: _ "Garak"
+        profile: "portraits/garak.png"
+        unrenamable: true
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_STRONG!
+            object: {
+                effect: {
+                    apply_to: "attack"
+                    range: "ranged"
+                    increase_damage: 1
+                }
+                effect: {
+                    apply_to: "new_ability"
+                    abilities: {
+                        <ABILITY_TEACHING!
+                    }
+                }
+                effect: {
+                    apply_to: "max_experience"
+                    increase: 850
+                }
+            }
+        }
+        <IS_HERO!
+    }
+
+    ZHUL: () -> {
+        type: "Desert Druid"
+        id: "Zhul"
+        name: _ "Zhul"
+        profile: "portraits/zhul.png"
+        unrenamable: true
+        modifications: {
+            <TRAIT_LOYAL!
+            <TRAIT_QUICK!
+            <TRAIT_INTELLIGENT!
+        }
+        <IS_HERO!
+    }
+

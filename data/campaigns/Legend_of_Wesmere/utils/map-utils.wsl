@@ -1,0 +1,420 @@
+--textdomain wesnoth-low
+
+LOW_MAP = (NAME) -> {
+    map_data: "#{campaigns/Legend_of_Wesmere/maps/#{NAME}}"
+}
+
+LOAD_SUBMAP = (X_SPAN, Y_SPAN, OFFSET_X, OFFSET_Y, MAP) -> {
+    store_unit: {
+        filter: {
+            x: "1-999"
+            y: "1-999"
+        }
+        variable: "MOVE_UNIT_store"
+        kill: true
+    }
+    store_villages: {
+        variable: "villages"
+    }
+
+    foreach: {
+        array: "MOVE_UNIT_store"
+        do: ->
+            VARIABLE_OP("this_item.x", "add", OFFSET_X)
+            VARIABLE_OP("this_item.y", "add", OFFSET_Y)
+            If{
+                variable: {
+                    name: "this_item.goto_x"
+                    numerical_not_equals: 0
+                }
+                then: ->
+                    VARIABLE_OP("this_item.goto_x", "add", OFFSET_X)
+                
+            }
+            If{
+                variable: {
+                    name: "this_item.goto_y"
+                    numerical_not_equals: 0
+                }
+                then: ->
+                    VARIABLE_OP("this_item.goto_y", "add", OFFSET_Y)
+                
+            }
+        
+    }
+
+    foreach: {
+        array: "villages"
+        do: ->
+--Make the villages on the old map neutral
+            Capture_Village{
+                x: this_item.x
+                y: this_item.y
+            }
+            VARIABLE_OP("this_item.x", "add", OFFSET_X)
+            VARIABLE_OP("this_item.y", "add", OFFSET_Y)
+        
+    }
+
+    replace_map: {
+        x: X_SPAN
+        y: Y_SPAN
+        <LOW_MAP(MAP)
+    }
+    shift_labels: {
+        x: OFFSET_X
+        y: OFFSET_Y
+    }
+
+    foreach: {
+        array: "MOVE_UNIT_store"
+        do: ->
+            Unstore_Unit{
+                variable: "this_item"
+                find_vacant: false
+            }
+        
+    }
+    <CLEAR_VARIABLE("MOVE_UNIT_store")
+
+    foreach: {
+        array: "villages"
+        do: ->
+            Capture_Village{
+                x: this_item.x
+                y: this_item.y
+                side: this_item.owner_side
+            }
+        
+    }
+    <CLEAR_VARIABLE("villages")
+}
+
+LOW_MASK_IN_EVENT = (NAME, X, Y) -> {
+    terrain_mask: {
+        x: X
+        y: Y
+        mask: "#{campaigns/Legend_of_Wesmere/masks/#{NAME}}"
+    }
+    redraw: {
+    }
+}
+
+LOW_MASK = (NAME, X, Y) -> {
+    event: {
+        name: "prestart"
+        do: ->
+            LOW_MASK_IN_EVENT(NAME, X, Y)
+    }
+}
+
+WINTER_MASK = (MASK_NAME) -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Terrain_Mask{
+                x: 1, y: 1
+                mask: "#{campaigns/Legend_of_Wesmere/masks/#{MASK_NAME}}"
+                border: true
+
+--seems not to work
+--Windmill
+                rule: {
+                    old: "Gg^Wm"
+                    new: "Aa"
+                    terrain: "Aa^Wm"
+                }
+
+--Encampment
+                rule: {
+                    old: "Ce"
+                    new: "Aa"
+                    terrain: "Cea"
+                }
+                rule: {
+                    use_old: false
+                    new: "Cea"
+                }
+
+--Encampment Keep
+                rule: {
+                    old: "Ke"
+                    new: "Aa"
+                    terrain: "Kea"
+                }
+                rule: {
+                    use_old: false
+                    new: "Kea"
+                }
+
+--human Village
+                rule: {
+                    old: "G*^Vh"
+                    new: "Aa"
+                    terrain: "Aa^Vha"
+                }
+                rule: {
+                    old: "G*^Vl"
+                    new: "Aa"
+                    terrain: "Aa^Vla"
+                }
+
+--Orc Village
+                rule: {
+                    old: "G*^Vo"
+                    new: "Aa"
+                    terrain: "Aa^Voa"
+                }
+                rule: {
+                    old: "H*^Vo"
+                    new: "Aa"
+                    terrain: "Ha^Voa"
+                }
+
+--   -dessert mountain
+--   [rule]
+--       old=M
+--   [/rule]
+
+--Orc Castle
+                rule: {
+                    old: "Co"
+                    new: "Aa"
+                    terrain: "Coa"
+                }
+
+--Orc Keep
+                rule: {
+                    old: "Ko"
+                    new: "Aa"
+                    terrain: "Koa"
+                }
+
+--dwarf Village
+                rule: {
+                    old: "H*^Vhh"
+                    new: "Aa"
+                    terrain: "Ha^Vhha"
+                }
+                rule: {
+                    old: "M*^Vhh"
+                    new: "Aa"
+                    terrain: "Ms^Vhha"
+                }
+
+--elvish Village
+                rule: {
+                    old: "G*^Ve"
+                    new: "Aa"
+                    terrain: "Aa^Vea"
+                }
+--flat hut Village
+                rule: {
+                    old: "G*^Vc"
+                    new: "Aa"
+                    terrain: "Aa^Vca"
+                }
+--hill hut Village
+                rule: {
+                    old: "H*^Vc"
+                    new: "Aa"
+                    terrain: "Ha^Vca"
+                }
+--forest
+                rule: {
+                    old: "G*^Fp"
+                    new: "Aa"
+                    terrain: "Aa^Fpa"
+                }
+--hills
+                rule: {
+                    old: "H*"
+                    new: "Aa"
+                    terrain: "Ha"
+                }
+--forested hills
+                rule: {
+                    old: "H*^Fp"
+                    new: "Aa"
+                    terrain: "Ha^Fpa"
+                }
+--deciduous forest
+                rule: {
+                    old: "G*^Fds"
+                    new: "Aa"
+                    terrain: "Aa^Fda"
+                }
+--deciduous forested hills
+                rule: {
+                    old: "H*^Fds"
+                    new: "Aa"
+                    terrain: "Ha^Fda"
+                }
+
+--water
+                rule: {
+                    old: "Ww*^*"
+                    new: "Aa"
+                    terrain: "Ai"
+                    layer: "base"
+                }
+
+-- that would brake the balance of S19
+--swamp
+--[rule]
+--    old=Ss
+--    new=Aa
+--    terrain=Ai
+--[/rule]
+--castle
+                rule: {
+                    new: {"Ce", "Ke"}
+                }
+                rule: {
+                    old: {"Ce", "Ke"}
+                    new: "Aa^Fpa"
+                }
+--mountains
+                rule: {
+                    old: "M*"
+                    new: "Aa"
+                    terrain: "Ms"
+                }
+--mountain village
+                rule: {
+                    old: "M*^Vhh"
+                    new: "Aa"
+                    terrain: "Ms^Vhha"
+                }
+
+--Grass
+                rule: {
+                    old: {"G*", "Re", "Rd", "G*^Efm", "Re^Gvs", "G*^Em"}
+                    new: "Aa"
+--don't specify terrain and it just uses the new terrain
+                }
+--Grass with obstacles
+                rule: {
+                    old: "G*^Es"
+                    new: "Aa"
+                    terrain: "Aa^Es"
+                }
+
+--Mushroom lichtung
+                rule: {
+                    old: "Gs^Uf"
+                    new: "Aa"
+                    terrain: "Aa"
+                }
+
+--default: Will match everything, since 'old' and 'new' aren't
+--specified. Set 'use_old=yes' to signal no change.
+                rule: {
+                    use_old: true
+                }
+            }
+    }
+}
+
+RIVER_FORD = (X, Y) -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Sound_Source{
+                id: "river_ford_#{X}_#{Y}"
+--sounds=ambient/river/ford.ogg
+                delay: 0
+                chance: 100
+                check_fogged: false
+                loop: -1
+                x: X
+                y: Y
+                full_range: 1
+                fade_range: 4
+            }
+    }
+}
+
+RIVER_SLOW = (X, Y) -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Sound_Source{
+                id: "river_slow_#{X}_#{Y}"
+--sounds=ambient/river/slow.ogg
+                delay: 0
+                chance: 100
+                check_fogged: false
+                loop: -1
+                x: X
+                y: Y
+                full_range: 3
+                fade_range: 5
+            }
+    }
+}
+
+RIVER_FAST = (X, Y) -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Sound_Source{
+                id: "river_fast_#{X}_#{Y}"
+--sounds=ambient/river/fast.ogg
+                delay: 0
+                chance: 100
+                check_fogged: false
+                loop: -1
+                x: X
+                y: Y
+                full_range: 2
+                fade_range: 4
+            }
+    }
+}
+
+BIRD_SOUND = (X, Y) -> {
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            Store_Time_Of_Day{
+                variable: "time_of_day"
+            }
+
+            If{
+                not: {
+                    variable: {
+                        name: "time_of_day.id"
+                        equals: "first_watch"
+                    }
+                    or: {
+                        variable: {
+                            name: "time_of_day.id"
+                            equals: "second_watch"
+                        }
+                    }
+                }
+                then: ->
+                    Sound_Source{
+                        id: "birds_#{X}_#{Y}"
+                        sounds: {"ambient/birds1.ogg", "ambient/birds2.ogg", "ambient/birds3.ogg"}
+                        delay: 50000
+                        chance: 10
+                        check_fogged: false
+                        loop: 1
+                        x: X
+                        y: Y
+                        full_range: 3
+                        fade_range: 5
+                    }
+                
+                else: ->
+                    Remove_Sound_Source{
+                        id: "birds_#{X}_#{Y}"
+                    }
+                
+            }
+            CLEAR_VARIABLE("time_of_day")
+    }
+}

@@ -1,0 +1,13 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a drawing.
+----
+
+Drawing_Definition{
+    id: "default"
+    description: "The default drawing."
+
+    resolution: {
+    }
+
+}

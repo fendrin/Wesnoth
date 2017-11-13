@@ -1,0 +1,1132 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to select an addon for installation.
+----
+
+_GUI_ADDON_DETAILS_SECTION = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+                vertical_alignment: "top"
+                horizontal_alignment: "left"
+
+                drawing: {
+                    id: "image"
+                    definition: "default"
+
+                    width: 72
+                    height: 72
+
+                    draw: {
+                        image: {
+                            name: "(text)"
+                            w: "(min(image_original_width, 72))"
+                            h: "(min(image_original_height, 72))"
+
+                            <GUI_CENTERED_IMAGE!
+                        }
+                    }
+
+                }
+
+            }
+
+            column: {
+                grow_factor: 1
+                horizontal_grow: true
+                vertical_grow: true
+
+                grid: {
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            horizontal_grow: true
+
+                            label: {
+                                id: "title"
+                                definition: "title"
+                                label: "Epic Addon Of Awesomeness"
+                                use_markup: true
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            horizontal_alignment: "left"
+
+                            grid: {
+
+                                row: {
+
+                                    column: {
+                                        border: "left,top,bottom"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        label: {
+                                            id: "byline"
+                                            definition: "default_small"
+                                            label: _ "By:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        scroll_label: {
+                                            id: "author"
+                                            definition: "default_small"
+
+                                            horizontal_scrollbar_mode: "never"
+                                            vertical_scrollbar_mode: "never"
+                                        }
+
+                                    }
+
+                                    column: {
+
+                                        spacer: {
+                                            width: 10
+                                        }
+
+                                    }
+
+                                    column: {
+                                        border: "left,top,bottom"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        label: {
+                                            id: "version_string"
+                                            definition: "default_small"
+                                            label: _ "Version:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        border: "left,top,bottom"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        scroll_label: {
+                                            id: "version"
+                                            definition: "default_small"
+
+                                            horizontal_scrollbar_mode: "never"
+                                            vertical_scrollbar_mode: "never"
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+                        grow_factor: 1
+
+                        column: {
+                            border: "all"
+                            border_size: 5
+                            vertical_grow: true
+                            horizontal_grow: true
+
+                            scroll_label: {
+                                id: "description"
+--definition = "description"
+                                label: _ "No description available."
+
+                                horizontal_scrollbar_mode: "never"
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            horizontal_grow: true
+
+                            stacked_widget: {
+                                id: "action_stack"
+
+                                layer: {
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            grow_factor: 1
+                                            horizontal_alignment: "center"
+
+                                            stacked_widget: {
+                                                id: "install_update_stack"
+
+                                                layer: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "all"
+                                                            border_size: 5
+                                                            horizontal_alignment: "center"
+
+                                                            button: {
+                                                                id: "install"
+                                                                definition: "addon_install"
+                                                                tooltip: _ "Install add-on"
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                                layer: {
+
+                                                    row: {
+
+                                                        column: {
+                                                            grow_factor: 1
+                                                            border: "all"
+                                                            border_size: 5
+                                                            horizontal_alignment: "center"
+
+                                                            button: {
+                                                                id: "update"
+                                                                definition: "addon_upgrade"
+                                                                tooltip: _ "Update add-on"
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "center"
+
+                                            button: {
+                                                id: "uninstall"
+                                                definition: "addon_uninstall"
+                                                tooltip: _ "Uninstall add-on"
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                layer: {
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "center"
+
+                                            button: {
+                                                id: "publish"
+                                                definition: "addon_publish"
+                                                tooltip: _ "Publish add-on"
+                                            }
+
+                                        }
+
+                                        column: {
+                                            grow_factor: 1
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "center"
+
+                                            button: {
+                                                id: "delete"
+                                                definition: "addon_delete"
+                                                tooltip: _ "Delete add-on"
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            horizontal_grow: true
+
+                            grid: {
+
+                                row: {
+                                    grow_factor: 1
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Type:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "type"
+                                            definition: "default_small"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "date^Uploaded:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "created"
+                                            definition: "default_small"
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+-- Keeps this label aligned with its value label should the latter wrap
+                                        vertical_alignment: "top"
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Status:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+-- Keeps this label aligned with its label should this wrap
+                                        vertical_alignment: "top"
+
+                                        label: {
+                                            id: "status"
+                                            definition: "default_small"
+                                            wrap: true
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "date^Updated:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "updated"
+                                            definition: "default_small"
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Size:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "size"
+                                            definition: "default_small"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Downloads:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "downloads"
+                                            definition: "default_small"
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    <GUI_HORIZONTAL_SPACER_LINE!
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            horizontal_grow: true
+
+                            grid: {
+
+                                row: {
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Dependencies:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "dependencies"
+                                            definition: "default_small"
+                                            label: _ "addon_dependencies^None"
+
+                                            use_markup: true
+                                            can_shrink: true
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Translations:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            id: "translations"
+                                            definition: "default_small"
+                                            label: _ "translations^None"
+                                            can_shrink: true
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+
+                                    column: {
+                                        grow_factor: 0
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "left"
+
+                                        label: {
+                                            definition: "default_small"
+                                            label: _ "Website:"
+                                        }
+
+                                    }
+
+                                    column: {
+                                        grow_factor: 1
+                                        horizontal_grow: true
+
+                                        stacked_widget: {
+                                            id: "feedback_stack"
+
+                                            layer: {
+
+                                                row: {
+
+                                                    column: {
+                                                        border: "all"
+                                                        border_size: 5
+                                                        horizontal_alignment: "left"
+
+                                                        label: {
+                                                            id: "url_none"
+                                                            label: _ "url^None"
+                                                            definition: "default_small"
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                            layer: {
+
+                                                row: {
+
+                                                    column: {
+                                                        grow_factor: 1
+                                                        border: "all"
+                                                        border_size: 5
+                                                        horizontal_grow: true
+
+                                                        text_box: {
+                                                            id: "url"
+                                                            definition: "default"
+                                                        }
+
+                                                    }
+
+                                                    column: {
+                                                        border: "all"
+                                                        border_size: 5
+                                                        horizontal_alignment: "right"
+
+                                                        button: {
+                                                            id: "url_copy"
+                                                            definition: "action_copy"
+                                                            label: _ "url^Copy"
+                                                            tooltip: _ "Copy this URL to clipboard"
+                                                        }
+
+                                                    }
+
+                                                    column: {
+                                                        border: "all"
+                                                        border_size: 5
+                                                        horizontal_alignment: "right"
+
+                                                        button: {
+                                                            id: "url_go"
+                                                            definition: "action_go"
+                                                            label: _ "url^Go"
+                                                            tooltip: _ "Visit this URL with a web browser"
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_ADDON_FILTER_OPTIONS = () -> {
+    grid: {
+
+        row: {
+            grow_factor: 1
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "left"
+
+                text_box: {
+                    id: "filter"
+                    definition: "filter"
+
+                    tooltip: _ "Filters on addon descripton, version, type or author."
+                }
+            }
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "left"
+
+                label: {
+                    definition: "default"
+                    label: _ "State:"
+                }
+
+            }
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+
+                horizontal_alignment: "left"
+
+                menu_button: {
+                    id: "install_status_filter"
+                    definition: "default"
+                }
+            }
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "left"
+
+                label: {
+                    definition: "default"
+                    label: _ "Type:"
+                }
+
+            }
+
+            column: {
+                grow_factor: 1
+                border: "all"
+                border_size: 5
+
+                horizontal_alignment: "left"
+
+                multimenu_button: {
+                    id: "type_filter"
+                    definition: "default"
+                    maximum_shown: 2
+                }
+            }
+
+            column: {
+                grow_factor: 0
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "right"
+
+                button: {
+-- NOTE: this isn't named "help" because it conflicts with
+-- a titlescreen hack in gui2::twindow::get_retval_by_id().
+                    id: "show_help"
+                    definition: "help_30"
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Window_Definition{
+    id: "addon_manager"
+    description: "A simple window without border decorations and the ability to set a custom background."
+
+    <_GUI_RESOLUTION_BORDERLESS_BASE({}, 10, 13, {
+            image: {
+                x: 0
+                y: 0
+                w: "(width)"
+                h: "(height)"
+
+--name = "dialogs/addon_manager_bg.jpg"
+            }
+    })
+}
+
+Window{
+    id: "addon_manager"
+    description: "Addon selection dialog."
+
+    resolution: {
+        window_width: 800
+        window_height: 600
+        definition: "addon_manager"
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        tooltip: {
+            id: "tooltip_large"
+        }
+
+        helptip: {
+            id: "tooltip_large"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+                    label: {
+                        definition: "title"
+
+                        label: _ "Get Add-ons"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    stacked_widget: {
+-- TODO: Make a definition for this?
+--definition = "box_display_no_blur_no_border"
+                        id: "main_stack"
+
+                        layer: {
+
+                            row: {
+                                grow_factor: 0
+
+                                column: {
+                                    grow_factor: 0
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    <_GUI_ADDON_FILTER_OPTIONS!
+
+                                }
+
+                            }
+
+                            row: {
+                                grow_factor: 1
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    addon_list: {
+                                        id: "addons"
+                                        definition: "default"
+                                        install_status_visibility: "visible"
+                                        install_buttons_visibility: "visible"
+                                    }
+
+                                }
+                            }
+                        }
+                        layer: {
+                            row: {
+                                grow_factor: 1
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    <_GUI_ADDON_DETAILS_SECTION!
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "left"
+
+                                button: {
+                                    id: "details_toggle"
+                                    definition: "default"
+                                    label: _ "Addon Details"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "update_all"
+                                    definition: "really_large"
+
+                                    label: _ "Update All"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+
+                                    label: _ "Exit"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+    resolution: {
+        definition: "addon_manager"
+
+        window_width: 1281
+        window_height: 801
+
+        <GUI_WINDOW_FULLSCREEN!
+
+        tooltip: {
+            id: "tooltip_large"
+        }
+
+        helptip: {
+            id: "tooltip_large"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+                    label: {
+                        definition: "title"
+
+                        label: _ "Get Add-ons"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 0
+                    horizontal_grow: true
+                    vertical_grow: true
+
+--border = "top"
+--border_size = 5
+
+                    <_GUI_ADDON_FILTER_OPTIONS!
+
+                }
+
+            }
+
+--{GUI_HORIZONTAL_SPACER_LINE}
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    border: "all"
+                    border_size: 5
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    panel: {
+                        definition: "box_display_no_blur_no_border"
+
+                        grid: {
+
+                            row: {
+                                grow_factor: 1
+
+                                column: {
+                                    grow_factor: 0
+                                    border: "all"
+                                    border_size: 10
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    addon_list: {
+                                        id: "addons"
+                                        definition: "default"
+                                        install_status_visibility: "visible"
+                                        install_buttons_visibility: "visible"
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    <_GUI_ADDON_DETAILS_SECTION!
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+--{GUI_HORIZONTAL_SPACER_LINE}
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "update_all"
+                                    definition: "really_large"
+
+                                    label: _ "Update All"
+                                }
+                            }
+
+                            column: {
+                                grow_factor: 0
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+
+                                    label: _ "Exit"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_ADDON_FILTER_OPTIONS = nil
+_GUI_ADDON_DETAILS_SECTION = nil

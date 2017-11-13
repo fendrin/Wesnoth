@@ -1,0 +1,82 @@
+--textdomain wesnoth-ai
+Event{
+    name: "preload"
+    first_time_only: false
+    do: ->
+        Lua{
+            code: [[ register_test('0004-filtered_combat','Filtered combat test'); ]]
+        }
+}
+
+Event{
+    name: "0004-filtered_combat"
+    first_time_only: false
+    do: ->
+        Message{
+            speaker: "narrator"
+            image: "wesnoth-icon.png"
+            message: _ "This situation should test the ability of AI to obey own unit and enemy unit filters while making attacks. Only dwarves should attack. Dark Adepts are not to be attacked."
+        }
+        Unit{
+            side: 2
+            x: 20, y: 7
+            type: "Dwarvish Berserker"
+        }
+        Unit{
+            side: 3
+            x: 20, y: 5
+            type: "Dark Adept"
+            random_traits: "no"
+            modifications: {
+                <TRAIT_RESILIENT!
+            }
+        }
+        Unit{
+            side: 2
+            x: 13, y: 21
+            type: "Elvish Sharpshooter"
+        }
+        Unit{
+            side: 3
+            x: 15, y: 22
+            type: "Peasant"
+        }
+        Unit{
+            side: 2
+            x: 23, y: 14
+            type: "Orcish Warlord"
+        }
+        Unit{
+            side: 3
+            x: 25, y: 15
+            type: "Dark Adept"
+        }
+        Unit{
+            side: 2
+            x: 4, y: 11
+            type: "Dwarvish Lord"
+        }
+        Unit{
+            side: 3
+            x: 5, y: 13
+            type: "Dark Sorcerer"
+        }
+        Modify_Side{
+            side: 3
+            switch_ai: test_path_to_idle_ai
+        }
+        MODIFY_AI_ADD_ASPECT(2, "attacks", {
+                facet: {
+                    name: "ai_default_rca::aspect_attacks"
+                    invalidate_on_gamestate_change: true
+                    filter_own: {
+                        race: "dwarf"
+                    }
+                    filter_enemy: {
+                        not: {
+                            type: "Dark Adept"
+                        }
+                    }
+                }
+        })
+}

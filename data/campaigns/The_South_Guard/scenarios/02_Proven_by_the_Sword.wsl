@@ -1,0 +1,652 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "02_Proven_by_the_Sword"
+
+    name: _ "Proven by the Sword"
+    next_scenario: "03_A_Desperate_Errand"
+
+    <SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+    map: "campaigns/The_South_Guard/maps/02_Proven_by_the_Sword.map"
+
+    INCLUDE("campaigns/The_South_Guard/utils/sg_deaths.cfg")
+    INCLUDE("campaigns/The_South_Guard/utils/sg_help.cfg")
+
+    label: {
+        x: 22, y: 16
+        text: _ "Westin"
+    }
+
+    <DEFAULT_SCHEDULE_SECOND_WATCH!
+
+    victory_when_enemies_defeated: false
+    turns: 9
+
+-- Scenario Introduction - Not all is right in Westin.
+
+    <SG_PROVEN_BY_THE_SWORD!
+    <TSG_BIGMAP(JOURNEY_02_NEW!)
+
+-- The South Guard
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+        <CUSTOM_SG_FLAG!
+
+        <GOLD(130, 100, 85)
+
+        canrecruit: true
+        recruit: {"Bowman", "Spearman"}
+    }
+
+    <STARTING_VILLAGES(1, 4)
+
+-- The Bandit Armies
+
+-- wmllint: local spelling Nalmath
+    side: {
+        side: 2
+        type: "Outlaw"
+        id: "Urza Nalmath"
+        name: _ "Urza Nalmath"
+
+        team_name: "bandits"
+        user_team_name: _ "Bandits"
+        controller: "ai"
+
+        <GOLD(20, 30, 40)
+
+        canrecruit: true
+        <QUANTITY("recruit", {"Ruffian", "Thief", "Footpad"}
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 71:         (Ruffian,Thug,Thief,Poacher)
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 72:         (Footpad,Thug,Thief,Poacher,Trapper)}
+
+            ai: {
+-- macroified the params here because they'll be reused later in the scenario
+                URZA_NALMATH_AI_PARAMS: () -> {
+                    <ATTACK_DEPTH(2, 3, 4)
+                    grouping: false
+                    <NO_SCOUTS!
+                    village_value: 3
+                }
+
+                <URZA_NALMATH_AI_PARAMS!
+
+                <QUANTITY("recruitment_pattern", {"fighter", "fighter", "scout", "fighter"}
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 86:             (fighter,archer,fighter,fighter)
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 87:             (scout,fighter,archer,fighter,fighter)}
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by ai at line 84
+                <FLAG_VARIANT6("ragged")
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by side at line 86
+
+            <STARTING_VILLAGES(2, 21)
+
+-- The Bandit Armies - Hidden Criminals
+
+            side: {
+                side: 3
+                no_leader: true
+                color: 2
+                hidden: true
+
+                team_name: "bandits"
+                user_team_name: _ "Bandits"
+
+                <NAMED_GENERIC_UNIT(2, "Footpad", 28, 13, {}, _ "Criminal")
+                <if NORMAL then {
+                    <NAMED_GENERIC_UNIT(2, "Footpad", 34, 14, {}, _ "Criminal")
+                }
+                <if HARD then {
+                    <NAMED_GENERIC_UNIT(2, "Footpad", 34, 14, {}, _ "Criminal")
+                    <NAMED_GENERIC_UNIT(2, "Thief", 22, 12, {}, _ "Criminal"), <GUARDIAN!
+                }
+
+                <NAMED_GENERIC_UNIT(2, "Footpad", 21, 17, {}, _ "Criminal"), <GUARDIAN!
+                <if NORMAL then {
+                    <NAMED_GENERIC_UNIT(2, "Poacher", 18, 22, {}, _ "Criminal"), <GUARDIAN!
+                }
+                <if HARD then {
+                    <NAMED_GENERIC_UNIT(2, "Thief", 18, 22, {}, _ "Criminal"), <GUARDIAN!
+                }
+                <FLAG_VARIANT6("ragged")
+            }
+
+            event: {
+                name: "prestart"
+
+-- Add a useful village on 'trivial' difficulty.
+                <if EASY then {
+                    <MODIFY_TERRAIN("Gg^Vh", 26, 20)
+                    capture_village: {
+                        side: 2
+                        x: 26, y: 20
+                    }
+                }
+
+-- Modify the size of the keep of the enemy on 'simple' and 'easy' difficulties.
+                <if NORMAL then {
+                    <MODIFY_TERRAIN("Ce", 18, 27)
+                }
+                <if HARD then {
+                    <MODIFY_TERRAIN("Ce", 18, 27)
+                    <MODIFY_TERRAIN("Ce", 19, 28)
+                }
+
+--make Urza Nalmath water-phobic
+                do: ->
+                    Object{
+                        silent: true
+                        filter: {
+                            side: 2
+                            canrecruit: true
+                        }
+                        effect: {
+                            apply_to: "movement_costs"
+                            replace: true
+                            movement_costs: {
+                                deep_water: UNREACHABLE!
+                                shallow_water: UNREACHABLE!
+                                swamp_water: UNREACHABLE!
+                            }
+                        }
+                    }
+            }
+
+            event: {
+                name: "start"
+                do: ->
+                    Recall{
+                        id: "Sir Gerrick"
+                    }
+
+                    if EASY
+                        Recall{
+                            type: {"Royal Guard", "Pikeman", "Swordsman", "Javelineer", "Master Bowman", "Longbowman"}
+                        }
+                        Recall{
+                            type: {"Royal Guard", "Pikeman", "Swordsman", "Javelineer", "Master Bowman", "Longbowman"}
+                        }
+                    
+                    if NORMAL
+                        Recall{
+                            type: {"Royal Guard", "Pikeman", "Swordsman", "Javelineer", "Master Bowman", "Longbowman"}
+                        }
+                    
+
+                    Message{
+                        speaker: "Deoran"
+                        message: _ "Look! There is smoke coming from Westin. That can only mean that bandits have overrun the garrison and are sacking the city!"
+                    }
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "If too much time passes and they are unchecked, they will leave the city in ruins and make a great slaughter of all who live therein. We must act quickly."
+                    }
+
+                    HIGHLIGHT_IMAGE(22, 16, "items/gohere.png", {})
+
+                    Message{
+                        speaker: "Urza Nalmath"
+                        message: _ "What?! If there are soldiers of Wesnoth coming from the northern forts, then my brother Mathin is surely dead... They will pay for his death, just as Sir Loris paid for his pride!"
+                    }
+
+                    Objectives{
+                        side: 1
+                        objective: {
+                            show_if: {
+                                variable: {
+                                    name: "citadel_secured"
+                                    boolean_not_equals: true
+                                }
+                            }
+                            description: _ "Occupy the Citadel of Westin"
+                            condition: "win"
+                        }
+                        objective: {
+                            show_if: {
+                                variable: {
+                                    name: "citadel_secured"
+                                    boolean_equals: true
+                                }
+                                not: {
+                                    have_unit: {
+                                        id: "Minister Hylas"
+                                    }
+                                }
+                            }
+                            description: _ "Bring Deoran to the Citadel of Westin"
+                            condition: "win"
+                        }
+                        objective: {
+                            show_if: {
+                                have_unit: {
+                                    id: "Minister Hylas"
+                                }
+                            }
+                            description: _ "Kill Urza Nalmath, the bandit leader"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Deoran"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Sir Gerrick"
+                            condition: "lose"
+                        }
+                        objective: {
+                            show_if: {
+                                have_unit: {
+                                    id: "Minister Hylas"
+                                }
+                            }
+                            description: _ "Death of Minister Hylas"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        gold_carryover: {
+                            bonus: true
+                            carryover_percentage: 40
+                        }
+                    }
+            }
+
+-- Someone from the South Guard reaches the citadel and holds it.
+
+            event: {
+                name: "moveto"
+                filter: {
+                    side: 1
+                    x: 22, y: 16
+                }
+                do: ->
+                    VARIABLE("citadel_secured", "yes")
+
+                    Modify_Turns{
+                        <QUANTITY("add", 31, 23, 19)
+                    }
+
+-- check if it is Deoran. If not, tell him to go to Westin
+                    If{
+                        have_unit: {
+                            x: 22, y: 16
+                            not: {
+                                id: "Deoran"
+                            }
+                        }
+                        then: ->
+                            Message{
+                                speaker: "unit"
+                                message: _ "At last the citadel is secured."
+                            }
+                            Message{
+                                speaker: "Sir Gerrick"
+                                message: _ "Now, Deoran, take your post of command at the Citadel of Westin."
+                            }
+                            Show_Objectives{}
+                        
+                    }
+            }
+
+-- Deoran arrives at the citadel
+
+            event: {
+                name: "moveto"
+                filter: {
+                    id: "Deoran"
+                    x: 22, y: 16
+                }
+                do: ->
+                    Remove_Item{
+                        x: 22, y: 16
+                    }
+
+                    Unit{
+                        type: "White Mage"
+                        id: "Minister Hylas"
+                        profile: "portraits/hylas.png"
+                        name: _ "Minister Hylas"
+                        unrenamable: true
+                        <IS_HERO!
+                        side: 1
+                        x: 21, y: 16
+                        modifications: {
+                            <TRAIT_LOYAL!
+                            <TRAIT_INTELLIGENT!
+                        }
+                    }
+
+                    Message{
+                        speaker: "Deoran"
+                        image: "portraits/deoran-mad.png"
+                        message: _ "More bandits?! They’ll feel the deadly bite of my lance!"
+                    }
+                    Message{
+                        speaker: "Minister Hylas"
+                        message: _ "Peace! For I am no enemy. I am Minister Hylas, advisor to Sir Loris! You came just in time! We couldn’t have held them off another day..."
+                    }
+                    Message{
+                        speaker: "Deoran"
+                        message: _ "Indeed, our arrival was timely. But where is Sir Loris? Where is the garrison of the city? I was sent by Haldric to relieve him and take command of the South Guard, for the King has heard no news from Westin in two months."
+                    }
+                    Message{
+                        speaker: "Minister Hylas"
+                        message: _ "Alas, Sir Loris will find no relief now. He is buried northwest of the city where he fell. For weeks we warned him of the new power of these bandits. And yet he would never lead his men against them until their strength had waxed and ours waned."
+                    }
+                    Message{
+                        speaker: "Deoran"
+                        image: "portraits/deoran-sad.png"
+                        message: _ "It grieves me to learn of his death, foolish though he may have been! Now, though, there are more pressing matters. Rise, men of Wesnoth! We must drive these bandits from our city!"
+                    }
+
+                    NAMED_LOYAL_UNIT(1, "Peasant", 18, 15, "Ufes", _ "Ufes")
+                    NAMED_LOYAL_UNIT(1, "Peasant", 18, 16, "Joran", _ "Joran")
+                    NAMED_LOYAL_UNIT(1, "Peasant", 19, 18, "Makees", _ "Makees")
+                    NAMED_LOYAL_UNIT(1, "Peasant", 20, 18, "Tyborg", _ "Tyborg")
+
+                    Message{
+                        speaker: "Ufes"
+                        message: _ "We will do our best to hold the city — you lead your men across the river and kill the bandit leader!"
+                    }
+
+                    If{
+                        have_unit: {
+                            id: "Urza Nalmath"
+                        }
+                        then: ->
+                            Show_Objectives{}
+
+                            Set_Recruit{
+                                side: 2
+                                <QUANTITY("recruit", "Walking Corpse"
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 372:                     (Walking Corpse,Skeleton,Vampire Bat)
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 373:                     (Skeleton,Skeleton Archer,Vampire Bat,Blood Bat)}
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by set_recruit at line 368
+
+-- update the [ai] params so that the recruitment_pattern matches the new
+-- recruits
+                                modify_side: {
+                                    side: 2
+
+                                    ai: {
+                                        <URZA_NALMATH_AI_PARAMS!
+
+                                        <QUANTITY("recruitment_pattern", "fighter"
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 385:                         (fighter,fighter,scout,fighter)
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 386:                         (fighter,archer,fighter,archer,scout)}
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by ai at line 379
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by modify_side at line 380
+
+                                    gold: {
+                                        side: 2
+                                        <QUANTITY("amount", 15, 30, 60)
+                                    }
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by then at line 386
+                                else: ->
+                                    Fire_Event{
+                                        name: "victory dance"
+                                    }
+                                
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by if at line 392
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by event at line 393
+
+-- Deoran is too late.
+
+                        event: {
+                            name: "turn 8"
+                            do: ->
+                                If{
+                                    variable: {
+                                        name: "citadel_secured"
+                                        boolean_not_equals: "yes"
+                                    }
+                                    then: ->
+                                        Message{
+                                            speaker: "Sir Gerrick"
+                                            message: _ "They are almost to the great hall! Hurry, Deoran! We must reach the citadel or all will be lost!"
+                                        }
+
+                                        if EASY
+                                            HIGHLIGHT_IMAGE(22, 16, "items/gohere.png", {})
+
+                                            Message{
+                                                speaker: "narrator"
+                                                message: _ "You must move someone here by the end of the next turn, or Westin will fall and you will be defeated!"
+                                                image: "wesnoth-icon.png"
+                                            }
+                                        
+                                    
+                                }
+                        }
+
+                        event: {
+                            name: "side 1 turn 9 end"
+                            do: ->
+                                If{
+                                    variable: {
+                                        name: "citadel_secured"
+                                        boolean_not_equals: "yes"
+                                    }
+                                    then: ->
+                                        Message{
+                                            speaker: "Sir Gerrick"
+                                            message: _ "We’re too late! They’re burning the city..."
+                                        }
+                                        Message{
+                                            speaker: "Deoran"
+                                            image: "portraits/deoran-sad.png"
+                                            message: _ "Westin has fallen! This is a problem too great for me to handle — I must return to Haldric and tell him of our loss..."
+                                        }
+
+                                        Endlevel{
+                                            result: "defeat"
+                                        }
+                                    
+                                }
+                        }
+
+-- The undead attack
+
+                        event: {
+                            name: "prerecruit"
+
+                            filter: {
+                                side: 2
+                                race: "undead"
+                            }
+                            do: ->
+                                Message{
+                                    speaker: "Urza Nalmath"
+                                    message: _ "Now the Guard will feel the wrath of my new friends! It is time for the dead to wage war! Rise, warriors!"
+                                }
+
+                                Event{
+                                    name: "side turn"
+                                    do: ->
+                                        Scroll_To_Unit{
+                                            race: "undead"
+                                        }
+
+                                        Message{
+                                            speaker: "Sir Gerrick"
+                                            message: _ "What devilry is this?! Those are no living men that fight for him!"
+                                            scroll: false
+                                        }
+                                        Message{
+                                            speaker: "Minister Hylas"
+                                            message: _ "He has made some pact with the undead. How could a mere brigand have gained such great powers?"
+                                            scroll: false
+                                        }
+                                        Message{
+                                            speaker: "Deoran"
+                                            message: _ "However he has done this fell thing, we must defeat him!"
+                                            scroll: false
+                                        }
+
+                                        if EASY
+                                            Message{
+                                                speaker: "narrator"
+                                                image: "units/human-magi/white-mage-magic-1.png~RC(magenta>red)"
+                                                message: _ "Not only will Minister Hylas’s <i>arcane</i> attack melt undead bones, but he can also heal wounded units near him."
+                                                scroll: false
+                                            }
+                                        
+                                }
+                        }
+
+-- Pillaging and burning the villages near Westin
+
+                        event: {
+                            name: "capture"
+                            filter: {
+                                side: 2
+                                race: "human"
+                            }
+                            do: ->
+                                Message{
+                                    speaker: "Urza Nalmath"
+                                    message: _ "Leave nothing standing! Burn their villages down and kill them all!"
+                                }
+                                Message{
+                                    speaker: "unit"
+                                    message: _ "We will avenge your brother’s death!"
+                                }
+                                Message{
+                                    speaker: "Sir Gerrick"
+                                    message: _ "They are burning our villages! We must stop them!"
+                                }
+                        }
+
+                        event: {
+                            name: "capture"
+                            first_time_only: false
+                            filter: {
+                                side: 2
+                                race: "human"
+                            }
+                            do: ->
+                                Sound{
+                                    name: "torch.ogg"
+                                }
+
+                                VARIABLE_OP("random_string", "value", "scenery/village-human-burned1.png,scenery/village-human-burned2.png,scenery/village-human-burned3.png,scenery/village-human-burned4.png")
+                                RANDOM(random_string)
+
+                                PLACE_IMAGE(random, x1, y1)
+                                CLEAR_VARIABLE("random,random_string")
+
+                                MODIFY_TERRAIN("Gg", x1, y1)
+
+                                Gold{
+                                    side: 2
+                                    amount: 10
+                                }
+                        }
+
+-- Victory
+
+                        event: {
+                            name: "last breath"
+                            filter: {
+                                id: "Urza Nalmath"
+                            }
+                            do: ->
+                                Message{
+                                    speaker: "unit"
+                                    message: _ "My brother has died unavenged! What have we done?!"
+                                }
+
+                                Kill{
+                                    x: x1, y: y1
+                                    animate: true
+                                }
+
+                                If{
+                                    have_unit: {
+                                        id: "Minister Hylas"
+                                        x: x2, y: y2
+                                    }
+
+                                    then: ->
+                                        Message{
+                                            speaker: "Deoran"
+                                            message: _ "How can a bandit have summoned undead?"
+                                        }
+                                    
+
+                                    else: ->
+                                        Message{
+                                            speaker: "second_unit"
+                                            message: _ "How can a bandit have summoned undead?"
+                                        }
+                                    
+                                }
+
+                                If{
+                                    have_unit: {
+                                        id: "Minister Hylas"
+                                    }
+                                    then: ->
+                                        Fire_Event{
+                                            name: "victory dance"
+                                        }
+                                    
+                                }
+                        }
+
+                        event: {
+                            name: "victory dance"
+                            do: ->
+                                Message{
+                                    speaker: "Minister Hylas"
+                                    message: _ "Just before the bandit raids began, an ambassador came to Sir Loris from the elves of the Aethenwood west of here. He asked that a knight be sent to discuss a new threat to Wesnoth."
+                                }
+
+                                Message{
+                                    speaker: "Deoran"
+                                    message: _ "And did Sir Loris go to the elves?"
+                                }
+
+                                Message{
+                                    speaker: "Minister Hylas"
+                                    message: _ "No. He suspected the elves of some trickery and made no reply to them. Perhaps they know the origin of these dead warriors we now face."
+                                }
+
+                                Message{
+                                    speaker: "Deoran"
+                                    message: _ "My men have been trained to fight the living. I do not know that we can protect the city from foes so dark as these. I shall go meet the elves and see if they can be of any aid!"
+                                }
+
+                                Message{
+                                    speaker: "Minister Hylas"
+                                    message: _ "I will accompany you, my lord. I have studied the arts of holy magic and my skill may be of some use against the dark ones."
+                                }
+
+                                Message{
+                                    speaker: "narrator"
+                                    message: _ "Deoran sent a rider to request mounted reinforcements and set out at once towards the Aethenwood..."
+                                    image: "wesnoth-icon.png"
+                                }
+
+                                CLEAR_VARIABLE("citadel_secured")
+
+                                Endlevel{
+                                    result: "victory"
+                                    bonus: true
+                                    <NEW_GOLD_CARRYOVER(40)
+                                }
+                        }
+err: ../attic/data/campaigns/The_South_Guard/scenarios/02_Proven_by_the_Sword.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: QUANTITY closed by scenario at line 639
+
+                    URZA_NALMATH_AI_PARAMS = nil

@@ -1,0 +1,215 @@
+--textdomain wesnoth-dm
+Scenario{
+    name: _ "The Road to Weldyn"
+    id: "03_The_Road_to_Weldyn"
+    next_scenario: "04_Leollyn"
+    <MEMOIRS_MAP("03_The_Road_to_Weldyn.map")
+    turns: 24
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("wanderer.ogg") -- No story text, so no intro music
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+
+    <DM_TRACK(SEARCH_STAGE3!)
+
+    side: {
+        <YOUNG_DELFADOR!
+        side: 1
+        save_id: "Player"
+        persistent: true
+        controller: "human"
+        recruit: {"Mage", "Spearman", "Horseman", "Bowman"}
+        team_name: "allies"
+        user_team_name: _ "Mages"
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        type: "Orcish Warrior"
+        id: "Urthaka-Tan"
+        name: _ "Urthaka-Tan"
+        facing: "se"
+        side: 2
+        canrecruit: true
+        <if HARD then {
+            recruit: {"Orcish Grunt", "Orcish Archer", "Wolf Rider", "Troll Whelp"}
+        } else {
+            recruit: {"Orcish Grunt", "Troll Whelp", "Wolf Rider"}
+        }
+        <GOLD(150, 200, 250)
+        <INCOME(0, 2, 2)
+        team_name: "enemies"
+        user_team_name: _ "Pillagers"
+-- make them more aggressive at night
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.7
+            caution: 0.25
+        }
+        ai: {
+            time_of_day: {"morning", "afternoon"}
+            aggression: 0.0
+            caution: 0.50
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    <MEMOIRS_DEATHS!
+
+    <STARTING_VILLAGES(1, 10)
+
+    label: {
+        x: 9, y: 4
+        text: _ "The Great Valley"
+    }
+    label: {
+        x: 6, y: 16
+        text: _ "Fort Brell"  -- wmllint: no spellcheck
+    }
+    label: {
+        x: 21, y: 17
+        text: _ "Fort Miryen" -- wmllint: no spellcheck
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Urthaka-Tan"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 80
+                }
+            }
+    }
+
+------------------------------
+-- starting dialog
+------------------------------
+    event: {
+        name: "start"
+        do: ->
+            MODIFY_UNIT({id: "Delfador"}, "facing", "sw")
+            Message{
+                speaker: "narrator"
+                message: _ "Delfador followed Methor’s advice, and headed over the hills towards Weldyn. But the roads were more dangerous than he had expected..."
+                image: "wesnoth-icon.png"
+            }
+            Move_Unit_Fake{
+                side: 1
+                type: "Bowman"
+                x: {23, 24, 25, 26, 27, 28, 29, 30, 31}
+                y: {22, 21, 21, 20, 21, 21, 21, 21, 22}
+            }
+            NAMED_UNIT(1, "Bowman", 31, 22, "Derrin", _ "Derrin", {role: "bowman_advisor"})
+            FACING("ne")
+            Move_Unit_Fake{
+                side: 1
+                type: "Horseman"
+                x: {23, 24, 25, 26, 27, 28, 29, 30, 30}
+                y: {22, 21, 21, 20, 21, 21, 21, 21, 22}
+            }
+            NAMED_UNIT(1, "Horseman", 30, 22, "Feorth", _ "Feorth", {})
+            FACING("ne")
+            Move_Unit_Fake{
+                side: 1
+                type: "Horseman"
+                x: {29, 29, 29, 30, 30}
+                y: {18, 19, 20, 20, 21}
+            }
+            NAMED_UNIT(1, "Horseman", 30, 21, "Gar", _ "Gar", {})
+            FACING("ne")
+            Message{
+                speaker: "Derrin"
+                message: _ "Beware, stranger! I come to warn you — a party of orcs have moved into the Great Valley to the north, and have been raiding the lands around. If you press on westward, you will have to fight them."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I cannot turn back now... If I fight these orcs, will your villagers help me?"
+            }
+            Message{
+                speaker: "Derrin"
+                message: _ "You see me armed for war because we were mustering to aid our kin. We can help each other — and you’ll not be sorry to fight beside us, for this region trains the best bowmen in Wesnoth."
+            }
+    }
+
+------------------------------
+-- bowmen carp at orcs
+------------------------------
+    event: {
+        name: "attack"
+        filter: {
+            type_adv_tree: "Bowman"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Take this, you slimy invader!"
+            }
+    }
+
+------------------------------
+-- warn player that orcs are more dangerous at night
+------------------------------
+    event: {
+        name: "turn 4"
+        do: ->
+            Role{
+                role: "bowman_advisor"
+                type: {"Master Bowman", "Longbowman", "Bowman"}
+                search_recall_list: false
+                reassign: false
+            }
+            Message{
+                role: "bowman_advisor"
+                message: _ "Beware! Night is falling — that’s when the orcs tend to attack!"
+            }
+    }
+
+------------------------------
+-- closing dialog
+------------------------------
+    event: {
+        name: "victory"
+        do: ->
+            Role{
+                role: "bowman_advisor"
+                type: {"Master Bowman", "Longbowman", "Bowman"}
+                search_recall_list: false
+                reassign: false
+                else: ->
+                    Unit{
+                        side: 1
+                        type: "Bowman"
+                        role: "bowman_advisor"
+                        placement: "leader"
+                    }
+                
+            }
+            Message{
+                role: "bowman_advisor"
+                message: _ "Thank you, Delfador, for helping to rid our land of those pestilent orcs. Your magic was more help than we looked for, and we are in your debt."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "You are welcome... But I am wondering what orcs were doing so deep inside the borders of Wesnoth."
+            }
+            Message{
+                role: "bowman_advisor"
+                message: _ "Perhaps some of our lads had better go with you as far as Weldyn. These lands are not safe for a lone traveler, and we may learn what drew the orcs so far south."
+            }
+    }
+}

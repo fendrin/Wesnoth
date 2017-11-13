@@ -1,0 +1,14 @@
+--textdomain wesnoth-httt
+Unit_Type{
+    id: "Injured Sergeant"
+    base_unit: {
+        id: "Sergeant"
+    }
+    name: _ "Injured Sergeant"
+    image: "units/human-loyalists/lieutenant-die-6.png"
+    movement_costs: {
+        mountains: 9
+    }
+    hide_help: true
+    do_not_list: true
+}

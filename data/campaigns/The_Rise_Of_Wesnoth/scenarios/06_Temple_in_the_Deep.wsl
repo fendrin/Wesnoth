@@ -1,0 +1,335 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "06_Temple_in_the_Deep"
+    name: _ "Temple in the Deep"
+    next_scenario: "07_Return_to_Oldwood"
+    victory_when_enemies_defeated: false
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/06_Temple_in_the_Deep.map"
+    <TURNS(37, 34, 31)
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("underground.ogg")
+
+-- Mo story part
+    <TROW_GI_TRACK(JOURNEY_06_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        side: 1
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        canrecruit: true
+        gold: 100
+        controller: "human"
+        shroud: true
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        side: 2
+        type: "Lich"
+        id: "Lich-Lord Lenvan"
+        name: _ "Lich-Lord Lenvan"
+        canrecruit: true
+        recruit: {"Revenant", "Deathblade", "Bone Shooter", "Skeleton", "Skeleton Archer"}
+        <GOLD(160, 280, 400)
+        <INCOME(6, 10, 14)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        ai: {
+            aggression: 1.0
+            recruitment_pattern: {"fighter", "archer"}
+            <NO_SCOUTS!
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+    event: {
+        name: "prestart"
+
+        <if EASY then {
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 3, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 22, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 10, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 16, 16)
+        }
+        <if NORMAL then {
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 3, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 22, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 10, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 16, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 12, 17)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 14, 17)
+        }
+        <if HARD then {
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 3, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 22, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 10, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 16, 16)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 12, 17)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 14, 17)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 10, 15)
+            <LOYAL_UNIT(2, "Tentacle of the Deep", 16, 15)
+        }
+        do: ->
+            PLACE_IMAGE("items/chest.png", 13, 1)
+            PLACE_IMAGE("items/dragonstatue.png", 12, 1)
+            PLACE_IMAGE("items/dragonstatue.png~FL(horiz)", 14, 1)
+
+            OBJ_POTION_HOLY(13, 19, "holy_helper")
+
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Minister Edren"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the Lich-Lord"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Retrieve the Fire Ruby (with Prince Haldric)"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "Prince Haldric and his company, grim and watchful, descend into catacombs below the temple, buried deep in the bedrock, in the very roots of the world itself. In the distance Haldric hears a booming voice."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "Lich-Lord Lenvan"
+                message: _ "Free! I’m free at last! No mere magi could seal me in here forever! Rise, my soldiers of darkness, the world will be ours once more!"
+            }
+            Message{
+                speaker: "Burin the Lost"
+                message: _ "Back underground... Och. this feels much better! As for the current residents, ugh!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Let’s send these monsters to their final rest."
+                image: "portraits/haldric-mad.png"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Lich-Lord Lenvan"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "All my days are ended."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "The world won’t miss him one bit."
+            }
+            If{
+                variable: {
+                    name: "Have_Ruby"
+                    boolean_equals: true
+                }
+                then: ->
+                    Endlevel{
+                        result: "victory"
+                        bonus: true
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "What’s that! No! The tree-folk are sealing us back in here. They must think that we’ve failed. We’re trapped."
+                image: "portraits/haldric-surprised.png"
+            }
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            type: "Tentacle of the Deep"
+        }
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "I don’t like the look of that pool at all."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 13
+            y: 1
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "Have_Ruby"
+                    boolean_equals: true
+                }
+                then: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "You already have the Fire Ruby."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Allow_Undo{
+                    }
+                
+                else: ->
+                    If{
+                        have_unit: {
+                            id: "Prince Haldric"
+                            x: 13
+                            y: 1
+                        }
+
+                        then: ->
+                            VARIABLE("Have_Ruby", true)
+
+                            Sound{
+                                name: "open-chest.wav"
+                            }
+
+                            Message{
+                                speaker: "narrator"
+                                message: _ "As you open the chest you see it, the Ruby of Fire. It is the size of an apple, and burns with an internal fire, which is refracted through its faces. You can feel the power flowing from it..."
+                                image: "wesnoth-icon.png"
+                            }
+
+                            Message{
+                                speaker: "Prince Haldric"
+                                message: _ "It’s funny that the lich-lord didn’t have this on his person. Since I don’t actually know what this thing does, I’ll just put it in the bottom of my pack for right now."
+                            }
+
+                            If{
+                                not: {
+                                    have_unit: {
+                                        id: "Lich-Lord Lenvan"
+                                    }
+                                }
+                                then: ->
+                                    Endlevel{
+                                        result: "victory"
+                                        bonus: true
+                                        <NEW_GOLD_CARRYOVER(40)
+                                    }
+                                
+                            }
+                        
+
+                        else: ->
+                            Sound{
+                                name: "ugg.wav"
+                            }
+
+                            Message{
+                                speaker: "narrator"
+                                message: _ "Maybe you should move somebody else to the chest."
+                                image: "wesnoth-icon.png"
+                            }
+                            Allow_Undo{
+                            }
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’m glad that’s over! We have the Ruby of Fire, and that Lich-Lord is now a pile of dust, let’s get out of these catacombs!"
+            }
+            CLEAR_VARIABLE("Have_Ruby")
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            side: 1
+            not: {
+                id: "Prince Haldric"
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Lich-Lord Lenvan"
+                }
+                then: ->
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "He’s raising our dead!"
+                        image: "portraits/haldric-surprised.png"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            side: 1
+        }
+        filter_second: {
+            not: {
+--Basically not any type that has plague
+                type: {"Walking Corpse", "Soulless"}
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Lich-Lord Lenvan"
+                }
+                then: ->
+                    RISE_UP_RISE_UP!
+                
+            }
+    }
+}

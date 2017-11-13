@@ -1,0 +1,74 @@
+--textdomain wesnoth-httt
+Event{
+    name: "last breath"
+    filter: {
+        id: "Konrad"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "We are vanquished, for I have been defeated!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Li'sar"
+        side: 1
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I can’t believe it should end like this!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Kalenz"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "Argh! I am finished!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+Event{
+    name: "last breath"
+    filter: {
+        id: "Delfador"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "No! This is the end! We have been defeated!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Warven"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "At least I die an honorable death."
+        }
+
+        VARIABLE("have_warven", false)
+}

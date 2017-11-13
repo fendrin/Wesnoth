@@ -1,0 +1,869 @@
+--textdomain wesnoth-sota
+
+-- Several enemies are placed on the map at the start. Three others are placed later on
+-- specific turns. It is possible for the player to occupy their castles before they
+-- appear, or wait nearby to assassinate them before they can recruit. This strategy will
+-- backfire as the leader will get at least a castle's worth of units a turn earlier in
+-- this case. Several events and macros control this. (About half of this file actually.)
+
+-- This is slightly hackish since the closer contains VAR_NAME...
+-- wmlindent: opener "{NEAREST_HEX "
+-- wmlindent: closer "location}"
+
+Scenario{
+    name: _ "Against the World"
+    map: "campaigns/Secrets_of_the_Ancients/maps/21_Against_the_World.map"
+
+    id: "21_Against_the_World"
+    next_scenario: "22_Epilogue"
+    victory_when_enemies_defeated: false
+
+    story: {
+        part: {
+            story: _ "30 VI, 23 YW
+
+From the northern part of the kingdom of Knalga, the tunnel split into many passageways. Being able to feel the life force of the dwarves allowed us to take mostly unoccupied tunnels, which we did."
+        }
+        part: {
+            background_layer: {
+                image: "story/ford-of-abez-2.jpg"
+                scale: false
+            }
+            story: _ "3 VII, 23 YW
+
+We finally made it out of the mountains. We crossed the Ford of Abez late this morning, and hiked the rest of the day south-east, making for the town of Tath. We planned to split up there. I was going to go south to Dan’Tonk and Weldyn to spread our news, and Ras-Tabahn was to head toward Elensefar to carry out his plan of carving out a special place for us in the world. (And becoming some sort of king as well I suppose.)"
+        }
+        part: {
+            background_layer: {
+                image: "story/ford-of-abez-2.jpg"
+                scale: false
+            }
+            story: _ "It was not to be. We were about to start on our separate journeys when the plains suddenly became more crowded."
+        }
+    }
+
+    <MORNING!
+    <AFTERNOON!
+    <DUSK!
+    <FIRST_WATCH!
+    <SECOND_WATCH!
+    <DAWN!
+    <DEFAULT_MUSIC_PLAYLIST!
+    turns: -1
+
+    side: {
+        <SIDE_1_BOTH!
+        <GOLD(500, 450, 400)
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Cavalry"
+        team_name: "bad"
+        <GOLD(200, 300, 400)
+        recruit: {"Knight", "Dragoon"}
+        no_leader: true
+        <INCOME(10, 12, 15)
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        user_team_name: _ "Saurians"
+        team_name: "bad"
+        <GOLD(350, 450, 550)
+        recruit: {"Saurian Ambusher", "Saurian Oracle", "Saurian Soothsayer"}
+        no_leader: true
+        hidden: true
+        income: -2  -- Until they arrive.
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        user_team_name: _ "Dwarves"
+        team_name: "bad"
+        <GOLD(350, 450, 550)
+        recruit: {"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Lord", "Dwarvish Thunderguard", "Dwarvish Pathfinder", "Dwarvish Runesmith"}
+        no_leader: true
+        hidden: true
+        income: -2  -- Until they arrive.
+    }
+
+    side: {
+        side: 5
+        controller: "ai"
+        user_team_name: _ "Magi"
+        team_name: "bad"
+        <GOLD(300, 400, 500)
+        recruit: {"Mage", "Red Mage", "White Mage"}
+        no_leader: true
+        hidden: true
+        income: -2  -- Until they arrive.
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        side: 6
+        controller: "ai"
+        user_team_name: _ "Elves"
+        team_name: "bad"
+        <GOLD(250, 320, 400)
+        recruit: {"Elvish Hero", "Elvish Sharpshooter", "Elvish Sorceress", "Elvish Druid"}
+        no_leader: true
+        hidden: true
+        income: -2  -- Until they arrive.
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    side: {
+        side: 7
+        controller: "ai"
+        user_team_name: _ "Merfolk"
+        team_name: "bad"
+        <GOLD(150, 250, 300)
+        recruit: {"Mermaid Priestess", "Mermaid Enchantress", "Mermaid Initiate", "Merman Warrior", "Merman Netcaster", "Merman Spearman"}
+        no_leader: true
+        <INCOME(4, 6, 8)
+        ai: {
+-- We want the merfolk to pick up villages, but not to start slithering
+-- over land towards the player's keep, which they would normally do.
+-- To prevent it, we make them avoid everything except water and
+-- villages (and their own castle). This is only active through turn 3
+-- because a micro-ai is going to take over on turn 4 and send them
+-- down the river.
+            turns: "1-3"
+            avoid: {
+                terrain: {"!", "Chw", "Khw", "W*", "*^V*"}
+            }
+        }
+        <FLAG_VARIANT("long")
+    }
+
+    side: {
+        side: 8
+        controller: "ai"
+        user_team_name: _ "Nagas"
+        team_name: "bad"
+        no_leader: true
+        gold: 0
+        ai: {
+            leader_ignores_keep: true
+        }
+    }
+
+-- This grabs an extra unit from a list for this side. (See the next macro for more
+-- info.)
+    EXTRA_STARTING_UNIT: (SIDE, INDEX) -> {
+-- This variable name is used a lot, and it would be a problem if it were set:
+        clear_variable: {
+            name: "location"
+        }
+-- We need a variable for the next if statement:
+        set_variable: {
+            name: "side"
+            value: SIDE
+        }
+--The dwarf leader arrives early enough that he is guaranteed to be able to reach
+-- his keep, so we will put *his* units on castle hexes.
+        if: {
+            variable: {
+                name: "side"
+                equals: 4
+            }
+            then: ->
+                FIND_CASTLE_HEX(4, "location")
+            
+        }
+-- The other leaders need more flexible placement.
+        if: {
+            variable: {
+                name: "location.length"
+                less_than: 1
+            }
+            then: ->
+                Set_Variables{
+                    name: "location"
+                    to_variable: "leader_location"
+                }
+            
+        }
+        unit: {
+            x: location.x
+            y: location.y
+            side: SIDE
+            type: starting_units_list[INDEX].type
+        }
+        gold: {
+-- It costs about as much as a level-2 unit whether it is or not. This way it
+-- has little impact on the total number of units that will be fielded:
+            side: SIDE
+            amount: -35
+        }
+    }
+
+-- When an enemy leader of a new side arrives on the map, it could find the player's
+-- units sitting on its castle tiles so it can't recruit, or waiting to assassinate it.
+-- This would make it too easy for the player. In this case, the AI will get a castle-full
+-- of units without having to recruit them. Many of them will be more powerful than what
+-- it would have been able to recruit in the first place, making this strategy backfire
+-- on the player.
+    ADD_EXTRA_STARTING_UNITS: (SIDE) -> {
+-- close_units will be units from side 1 that can reach the castle this turn (before
+-- the leader can recruit), prevent the leader from getting to its keep, or attack
+-- the leader.
+        clear_variable: {
+            name: "close_units"
+        }
+
+        store_locations: {
+            filter: {
+                side: SIDE
+                canrecruit: true
+            }
+            variable: "leader_location"
+        }
+        store_locations: {
+-- If the leader managed to make it to its keep, these will be castle tiles:
+            x: leader_location.x
+            y: leader_location.y
+            radius: 1
+            variable: "adjacent_to_leader"
+        }
+
+        store_unit: {
+            filter: {
+                side: 1
+                not: {
+                    x: "recall", y: "recall"
+                }
+            }
+            variable: "side1_units"
+        }
+
+-- For each unit on side-1, store its reachable locations. Then, check each hex
+-- adjacent to the enemy leader to see if one matches one of those locations.
+        for: {
+            array: "side1_units"
+            variable: "u"
+            do: ->
+                Store_Reachable_Locations{
+                    filter: {
+                        id: side1_units[u].id
+                    }
+                    moves: "max"
+                    variable: "reachable_locations"
+                }
+                For{
+                    array: "adjacent_to_leader"
+                    variable: "a"
+                    do: ->
+                        If{
+                            have_location: {
+-- If an enemy unit can reach this hex...
+                                x: adjacent_to_leader[a].x
+                                y: adjacent_to_leader[a].y
+                                find_in: "reachable_locations"
+                            }
+                            then: ->
+-- ...then add it to the close_units list:
+                                Set_Variables{
+                                    name: "close_units"
+                                    mode: "append"
+                                    to_variable: "side1_units[#{u]"
+                                }
+                                Break{
+-- So we don't store the unit again.
+                                }
+                            
+                        }
+                    
+                }
+            
+        }
+
+-- We need a variable to use in the switch statement:
+        set_variable: {
+            name: "side"
+            value: SIDE
+        }
+-- This statement creates an array of types for the units that will be added to the
+-- incoming leader's side. The first five are added in order. The sixth is an extra
+-- high-level unit used in special circumstances, and the last is a generic kind of
+-- unit that will be used to finish filling up the keep. (Or the hexes around the
+-- leader if it couldn't reach its keep.) We also have a different message from
+-- each of the leaders depending on whether there are side-1 units nearby.
+        switch: {
+            variable: "side"
+            case: {
+                value: 4
+                do: ->
+                    If{
+                        variable: {
+                            name: "close_units.length"
+                            greater_than: 0
+                        }
+                        then: ->
+                            Set_Variables{
+                                name: "starting_units_list"
+                                split: {
+                                    list: "Dwarvish Explorer,Dwarvish Thunderguard,Dwarvish Explorer,Dwarvish Runemaster,Dwarvish Runesmith,Dwarvish Arcanister,Dwarvish Thunderguard"
+                                    key: "type"
+                                    separator: ","
+                                }
+                            }
+                            Message{
+                                speaker: "Thrigalurd"
+                                message: _ "The enemy already attempts to breach our castle walls! Up arms lads, look lively!"
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Thrigalurd"
+                                message: _ "Now we avenge the fallen of Knalga!"
+                            }
+                        
+                    }
+            }
+            case: {
+                value: 5
+                do: ->
+                    If{
+                        variable: {
+                            name: "close_units.length"
+                            greater_than: 0
+                        }
+                        then: ->
+                            Set_Variables{
+                                name: "starting_units_list"
+                                split: {
+                                    list: "White Mage,Silver Mage,Mage of Light,Red Mage,Mage of Light,Great Mage,Red Mage"
+                                    key: "type"
+                                    separator: ","
+                                }
+                            }
+                            Message{
+                                speaker: "Carmyna"
+                                message: _ "The enemy is already poised to attack! They must have anticipated our arrival. No rest my friends; we go to work immediately."
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Carmyna"
+                                message: _ "The battle is already underway. So many of our comrades have fallen! We must incinerate these undead and rid the world of this evil."
+                            }
+                        
+                    }
+            }
+            case: {
+                value: 6
+                do: ->
+                    If{
+                        variable: {
+                            name: "close_units.length"
+                            greater_than: 0
+                        }
+                        then: ->
+                            Set_Variables{
+                                name: "starting_units_list"
+                                split: {
+                                    list: "Elvish Sorceress,Elvish Sharpshooter,Elvish Enchantress,Elvish Druid,Elvish Enchantress,Elvish Sylph,Elvish Sorceress"
+                                    key: "type"
+                                    separator: ","
+                                }
+                            }
+                            Message{
+                                speaker: "Galoïndrath"
+                                message: _ "What is this? The enemy lurking in wait in our forests? To arms! Let us immediately rid our land of this foulness!"
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Galoïndrath"
+                                message: _ "Never again will these monsters use the spirits of our ancestors against us. We will burn them down!"
+                            }
+                        
+                    }
+            }
+        }
+
+        for: {
+            array: "close_units"
+            variable: "i"
+            do: ->
+-- For each side 1 unit in range, add a unit from the list:
+                If{
+                    variable: {
+                        name: "i"
+                        less_than: 7
+                    }
+                    then: ->
+                        EXTRA_STARTING_UNIT(SIDE, i)
+                    
+                }
+
+-- If the close unit is an ancient lich waiting to assassinate the leader, it
+-- is going to find it protected by an equally-powerful unit. This doesn't
+-- completely prevent an assassination, but it makes the loss of the lich
+-- almost certain if the attempt fails (which is the most likely outcome).
+                If{
+                    have_unit: {
+                        id: close_units[i].id
+                        type: {"Ancient Lich", "Ancient Lich SotA"}
+                    }
+                    then: ->
+-- Using "5" as the index chooses a level-4 unit:
+                        EXTRA_STARTING_UNIT(SIDE, 5)
+                    
+                }
+            
+        }
+
+-- If the AI got just a couple units, they would go off to die one at a time. We
+-- finish filling up the keep so that doesn't happen. Also, this will make leader
+-- assassination by backstabbing shadows or nightgaunts very difficult. We will
+-- do nothing if side 1 wasn't nearby, and no extra units were added. In that case,
+-- the leader will just recruit as normal.
+        store_unit: {
+            filter: {
+                side: SIDE
+            }
+            variable: "extra_starting_units"
+        }
+        if: {
+            variable: {
+                name: "extra_starting_units.length"
+                greater_than: 1  -- *One* unit is the leader.
+            }
+            then: ->
+                Repeat{
+                    times: "#{(7 - #{extra_starting_units.length)"
+                    do: ->
+                        EXTRA_STARTING_UNIT(SIDE, 6)
+                    
+                }
+            
+            else: ->
+                Set_Variable{
+                    name: "extra_units_message"
+                    value: "empty"
+                }
+            
+        }
+
+-- Having a unit sitting directly on the keep is rude of the player, so the AI gets
+-- an extra, powerful unit to kick it off.
+        store_starting_location: {
+            side: SIDE
+            variable: "keep_location"
+        }
+        if: {
+            have_unit: {
+                side: 1
+                x: keep_location.x
+                y: keep_location.y
+            }
+            then: ->
+-- Using "5" chooses a level-4 unit:
+                EXTRA_STARTING_UNIT(SIDE, 5)
+            
+        }
+
+        clear_variable: {
+            name: {"adjacent_to_leader", "side1_units", "side", "reachable_locations", "starting_units_list", "keep_location", "leader_location", "location", "close_units", "extra_starting_units"}
+        }
+    }
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat all enemy leaders"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Ardryn-Na"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Ras-Tabahn"
+                    condition: "lose"
+                }
+
+                <HAS_NO_TURN_LIMIT!
+                <IS_LAST_SCENARIO!
+            }
+
+            RECALL_LOYAL_UNITS!
+
+            Item{
+                x: 33, y: 42
+                image: "scenery/tent-fancy-red.png"
+            }
+            Item{
+                x: 7, y: 39
+                image: "scenery/mine-abandoned.png"
+            }
+    }
+
+-- *************************** PLAY ***************************
+    event: {
+        name: "turn 2"
+        do: ->
+            Move_Unit_Fake{
+                type: "Saurian Flanker"
+                side: 3
+                x: {58, 47}
+                y: {16, 19}
+            }
+            Unit{
+                side: 3
+                x: 47, y: 19
+                type: "Saurian Flanker"
+                name: _ "Fizztsars"
+                id: "Fizztsars"
+                canrecruit: true
+            }
+            Message{
+                speaker: "Fizztsars"
+                message: _ "We have arrived, Taxsstrimon. We will fight bessside you."  -- no spellcheck
+            }
+            Message{
+                speaker: "Taxtrimon"
+                message: _ "Well met Fizztsars. Now these creatures will certainly fall."
+            }
+            Modify_Side{
+                side: 3
+                hidden: false
+                <INCOME(10, 15, 20)
+            }
+    }
+
+    event: {
+        <if EASY then {
+            name: "turn 3"
+        } else {
+            name: "turn 4"
+        }
+        do: ->
+            Move_Unit_Fake{
+                type: "Dwarvish Dragonguard"
+                side: 4
+                x: {7, 8, 8}
+                y: {39, 39, 37}
+            }
+            Unit{
+                side: 4
+                x: 8, y: 37
+                type: "Dwarvish Dragonguard"
+                name: _ "Thrigalurd"
+                id: "Thrigalurd"
+                canrecruit: true
+            }
+            Modify_Side{
+                side: 4
+                <INCOME(5, 7, 10)
+                hidden: false
+            }
+
+            ADD_EXTRA_STARTING_UNITS(4)
+
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Look! The dwarves circled around in front of us."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "That’s why getting through Knalga was so easy."
+            }
+
+-- The Merfolk leader will have recruited all he can for now. We turn him
+-- into a "messenger" and send him down the river in the east towards the
+-- player's keep. He will be escorted by all of his soldiers.
+            Micro_Ai{
+                side: 7
+                ai_type: "messenger_escort"
+                action: "add"
+                id: "Mauapan"
+                waypoint_x: {56, 45}
+                waypoint_y: {9, 24}
+            }
+    }
+
+-- When the Merfolk leader arrives near the player's keep, his "escorts" (all his
+-- soldiers) will be turned loose.
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Mauapan"
+            x: 45, y: 24
+        }
+        micro_ai: {
+            side: 7
+            ai_type: "messenger_escort"
+            action: "delete"
+        }
+    }
+
+    event: {
+        name: {"turn 12", "enemies defeated"}
+
+-- Find the nearest hext to (4,13) that doesn't have unit on it:
+        do: ->
+            NEAREST_HEX(4, 13, 30, {
+                    not: {
+                        filter: {
+                        }
+                    }
+                    "location}"
+
+                    move_unit_fake: {
+                        type: "Great Mage"
+                        gender: "female"
+                        side: 5
+                        x: {1, location.x}
+                        y: {14, location.y}
+                    }
+
+                    unit: {
+                        side: 5
+                        x: location.x
+                        y: location.y
+                        type: "Great Mage"
+                        gender: "female"
+                        name: _ "Carmyna"
+                        id: "Carmyna"
+-- This is so she can't be assassinated by a single, lucky Ancient Lich:
+                        modifications: {
+                            <TRAIT_RESILIENT!
+                        }
+                        canrecruit: true
+                    }
+                    modify_side: {
+                        side: 5
+                        income: 0
+                        hidden: false
+                    }
+
+                    <ADD_EXTRA_STARTING_UNITS(5)
+
+                    message: {
+                        speaker: "Ardonna"
+                        message: _ "They just keep coming! Has nobody even considered what we offer?"
+                    }
+
+-- Now that almost everybody is here, killing the leaders will end it. The
+-- player could *theoretically* avoid meeting the elves, but this is awfully
+-- unlikely.
+                    event: {
+                        name: "enemies defeated"
+                        do: ->
+                            Message{
+                                speaker: "Ras-Tabahn"
+                                message: _ "Well. That was intense."
+                            }
+                            Message{
+                                speaker: "Ardonna"
+                                message: _ "At last we are victorious!"
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                carryover_report: false
+                            }
+                    }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/21_Against_the_World.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 674
+
+                event: {
+                    name: "turn 13"
+                    do: ->
+                        NEAREST_HEX(53, 34, 30, {
+                                not: {
+                                    filter: {
+                                    }
+                                }
+                                "location}"
+
+                                move_unit_fake: {
+                                    type: "Elvish High Lord"
+                                    side: 6
+                                    x: {58, location.x}
+                                    y: {36, location.y}
+                                }
+
+                                unit: {
+                                    side: 6
+                                    x: location.x
+                                    y: location.y
+                                    type: "Elvish High Lord"
+                                    name: _ "Galoïndrath"
+                                    id: "Galoïndrath"
+-- This is so he can't be assassinated by a single, lucky Ancient Lich:
+                                    modifications: {
+                                        <TRAIT_RESILIENT!
+                                    }
+                                    canrecruit: true
+                                }
+                                modify_side: {
+                                    side: 6
+                                    <INCOME(5, 7, 10)
+                                    hidden: false
+                                }
+
+                                <ADD_EXTRA_STARTING_UNITS(6)
+
+                                message: {
+                                    speaker: "Ardonna"
+                                    message: _ "The whole world is against us."
+                                }
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/21_Against_the_World.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 718
+
+-- *************************** ENDING / OPENING ***************************
+                            PLACE_NAGA: () -> {
+                                unit: {
+                                    side: 8
+                                    x: 51, y: 20
+                                    type: "Naga Warrior"
+                                }
+                            }
+
+                            PLACE_RIDER: (TYPE) -> {
+                                <FIND_CASTLE_HEX(2, "location")
+                                unit: {
+                                    x: location.x
+                                    y: location.y
+                                    type: TYPE
+                                    side: 2
+                                }
+                            }
+
+                            event: {
+                                name: "start"
+                                do: ->
+                                    Move_Unit_Fake{
+                                        type: "Paladin"
+                                        side: 3
+                                        x: {40, 33}
+                                        y: {43, 42}
+                                    }
+                                    Unit{
+                                        side: 2
+                                        x: 33, y: 42
+                                        type: "Paladin"
+                                        name: _ "Gwendir"
+                                        id: "Gwendir"
+                                        canrecruit: true
+                                    }
+                                    Unit{
+                                        side: 2
+                                        x: 33, y: 42
+                                        type: "Knight"
+                                        id: "adviser"
+                                    }
+                                    if EASY
+                                        PLACE_RIDER("Paladin")
+                                        REPEAT(4, PLACE_RIDER("Knight"))
+                                    
+                                    if NORMAL
+                                        REPEAT(2, PLACE_RIDER("Paladin"))
+                                        REPEAT(3, PLACE_RIDER("Knight"))
+                                    
+                                    if HARD
+                                        REPEAT(3, PLACE_RIDER("Paladin"))
+                                        REPEAT(2, PLACE_RIDER("Knight"))
+                                    
+                                    Message{
+                                        speaker: "adviser"
+                                        message: _ "This is the place Crelanu’s gryphon told us to come, and yon party has an ill-favored look."
+                                    }
+                                    Message{
+                                        speaker: "Gwendir"
+                                        message: _ "Yes, I believe that is our quarry."
+                                    }
+                                    Message{
+                                        speaker: "Ras-Tabahn"
+                                        message: _ "Crelanu! Still he haunts us. Remind me again why we didn’t kill him."
+                                    }
+                                    Message{
+                                        speaker: "Gwendir"
+                                        message: _ "Ardonna of Tarrynth and Rassin Tabin, you stand convicted of necromancy, and sentenced to death!"
+                                    }
+                                    Message{
+                                        speaker: "Ras-Tabahn"
+                                        message: _ "Is that all? Death holds no terror for us as we have died already. You will follow shortly."
+                                    }
+                                    Message{
+                                        speaker: "Gwendir"
+                                        message: _ "The blessed swords of our order will soon give you cause to fear again."
+                                    }
+                                    Message{
+                                        speaker: "adviser"
+                                        message: _ "Sir, the magi have not yet arrived."
+                                    }
+                                    Message{
+                                        speaker: "Gwendir"
+                                        message: _ "No matter. We need not fear this darkness, and we need not wait on the schoolteachers."
+                                    }
+
+                                    Move_Unit_Fake{
+                                        type: "Naga Myrmidon"
+                                        side: 8
+                                        x: {58, 51}
+                                        y: {15, 20}
+                                    }
+                                    Unit{
+                                        side: 8
+                                        x: 51, y: 20
+                                        type: "Naga Myrmidon"
+                                        name: _ "Taxtrimon"
+                                        id: "Taxtrimon"
+                                        canrecruit: true
+                                    }
+                                    if EASY
+                                        REPEAT(10, PLACE_NAGA!)
+                                    
+                                    if NORMAL
+                                        REPEAT(13, PLACE_NAGA!)
+                                    
+                                    if HARD
+                                        REPEAT(16, PLACE_NAGA!)
+                                    
+                                    Message{
+                                        speaker: "Taxtrimon"
+                                        message: _ "We have found them! These magi destroyed a profitable business venture, and killed our males. We will take vengeance. You horse humans can assist us."
+                                    }
+
+                                    Move_Unit_Fake{
+                                        type: "Merman Hoplite"
+                                        side: 7
+                                        x: {31, 36}
+                                        y: {1, 5}
+                                    }
+                                    Unit{
+                                        side: 7
+                                        x: 36, y: 5
+                                        type: "Merman Hoplite"
+                                        name: _ "Mauapan"
+                                        id: "Mauapan"
+                                        canrecruit: true
+                                    }
+                                    Message{
+                                        speaker: "Mauapan"
+                                        message: _ "I will also assist. Too many innocents have died. This ends today."
+                                    }
+                                    Message{
+                                        speaker: "Ardonna"
+                                        message: _ "We are surrounded. We must defeat this horde."
+                                    }
+                            }
+
+                            <TURN_INTO_A_LICH!
+                            <HERO_DEATHS!
+                            <MANAGE_PROFILE!
+                            <KIDS_ADVANCE!
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/21_Against_the_World.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by scenario at line 863

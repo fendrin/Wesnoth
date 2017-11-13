@@ -1,0 +1,123 @@
+GENERIC_UNIT_TEST("test_max_menu_items", {
+        event: {
+            name: "side 1 turn"
+            first_time_only: false
+            do: ->
+                VARIABLE("current_side", 1)
+        }
+        event: {
+            name: "side 2 turn"
+            first_time_only: false
+            do: ->
+                VARIABLE("current_side", 2)
+        }
+        event: {
+            name: "start"
+            do: ->
+                Set_Menu_Item{
+                    id: "bar1"
+                    description: "foo1"
+                }
+                Set_Menu_Item{
+                    id: "bar2"
+                    description: "foo2"
+                    show_if: {
+                        <VARIABLE_CONDITIONAL("current_side", "equals", 1)
+                    }
+                }
+                Set_Menu_Item{
+                    id: "bar3"
+                    description: "foo3"
+                    command: ->
+                        Chat{
+                            message: "ASDFSAASDF"
+                        }
+                    
+                }
+                Set_Menu_Item{
+                    id: "bar4"
+                    description: "foo4"
+                }
+                Set_Menu_Item{
+                    id: "bar5"
+                    description: "foo5"
+                    show_if: {
+                        <VARIABLE_CONDITIONAL("current_side", "equals", 1)
+                    }
+                }
+                Set_Menu_Item{
+                    id: "bar6"
+                    description: "foo6"
+                }
+                Set_Menu_Item{
+                    id: "bar7"
+                    description: "foo7"
+                }
+                Set_Menu_Item{
+                    id: "bar8"
+                    description: "foo8"
+                }
+                Clear_Menu_Item{
+                    id: "bar5"
+                }
+                Set_Menu_Item{
+                    id: "bar9"
+                    description: "foo9"
+                    show_if: {
+                        <VARIABLE_CONDITIONAL("current_side", "equals", 1)
+                    }
+                }
+                Set_Menu_Item{
+                    id: "bar10"
+                    description: "foo10"
+                    show_if: {
+                        <VARIABLE_CONDITIONAL("current_side", "equals", 1)
+                    }
+                }
+                Set_Menu_Item{
+                    id: "bar12"
+                    description: "foo12"
+                }
+                Set_Menu_Item{
+                    id: "bar13"
+                    description: "foo13"
+                    command: ->
+                        Chat{
+                            message: "ASDFSAASDF"
+                        }
+                    
+                }
+                Set_Menu_Item{
+                    id: "bar14"
+                    description: "foo14"
+                }
+                Set_Menu_Item{
+                    id: "bar15"
+                    description: "foo15"
+                }
+                Set_Menu_Item{
+                    id: "bar16"
+                    description: "foo16"
+                }
+                Set_Menu_Item{
+                    id: "bar17"
+                    description: "foo17"
+                }
+                Set_Menu_Item{
+                    id: "bar18"
+                    description: "foo18"
+                }
+                Set_Menu_Item{
+                    id: "bar19"
+                    description: "foo19"
+                }
+                Set_Menu_Item{
+                    id: "bar20"
+                    description: "foo20"
+                }
+                Set_Menu_Item{
+                    id: "bar21"
+                    description: "foo21"
+                }
+        }
+})

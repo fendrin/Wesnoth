@@ -1,0 +1,94 @@
+
+AI_NOTIFICATION_STAGE = (CODE) -> {
+    ai: {
+        ai_algorithm: "idle_ai"
+        stage: {
+            id: "check_validity"
+            engine: "lua"
+            code: CODE
+        }
+    }
+}
+
+ASPECT_NOTIFICATION = () ->
+[[
+local H = wesnoth.require('helper')
+local expected = H.get_variable_array('expected')
+local aspect = wesnoth.get_variable('test_attribute')
+if ai.aspects[aspect] ~= expected[wesnoth.current.turn].value then
+	wesnoth.set_variable('is_valid', false)
+	local msg = 'Failed on turn ' .. tostring(wesnoth.current.turn)
+	msg = msg .. ' (time: ' .. wesnoth.get_time_of_day().id .. ')'
+	msg = msg .. '; ' .. aspect
+	msg = msg .. ' was ' .. tostring(ai.aspects[aspect])
+	msg = msg .. ' but expected to be '
+	msg = msg .. tostring(expected[wesnoth.current.turn].value)
+	wesnoth.wml_actions.wml_message{message=msg, logger='error'}
+end
+]]
+    true
+
+    SPLIT = (LIST, SEP) ->
+        Split{
+            list: LIST
+            key: "value"
+            separator: SEP
+        }
+    
+
+    AI_ASPECT_UNIT_TEST = (NAME, TEST_ATTRIBUTE, EXPECTED, AIWML, CONTENT) ->
+        AI_UNIT_TEST(NAME, ASPECT_NOTIFICATION!, TEST_ATTRIBUTE, EXPECTED, AIWML, CONTENT)
+    
+
+    AI_UNIT_TEST = (NAME, TEST_CODE, TEST_ATTRIBUTE, EXPECTED, AIWML, CONTENT) ->
+        Test{
+            name: "AI Unit Test " .. NAME
+            map: "test/maps/generic_unit_test.map"
+            turns: -1
+            id: NAME
+            is_unit_test: true
+
+            <DEFAULT_SCHEDULE!
+
+            side: {
+                side: 1
+                controller: "computer"
+                name: "Alice"
+                type: "Elvish Archer"
+                id: "alice"
+                <AI_NOTIFICATION_STAGE(TEST_CODE)
+                <AIWML
+            }
+            side: {
+                side: 2
+                controller: "computer"
+                name: "Bob"
+                type: "Orcish Grunt"
+                id: "bob"
+                ai: {
+                    ai_algorithm: "idle_ai"
+                }
+            }
+
+            event: {
+                name: "prestart"
+                do: ->
+                    VARIABLE("is_valid", true)
+                    VARIABLE("test_attribute", TEST_ATTRIBUTE)
+                    Set_Variables{
+                        name: "expected"
+                        <EXPECTED
+                    }
+            }
+            event: {
+                name: "turn 12 end"
+                do: ->
+                    RETURN(VARIABLE_CONDITIONAL("is_valid", "boolean_equals", true))
+            }
+
+            <CONTENT
+        }
+    
+
+    INCLUDE("test/scenarios/ai/config")
+    INCLUDE("test/scenarios/ai/modify")

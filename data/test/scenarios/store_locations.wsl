@@ -1,0 +1,11 @@
+GENERIC_UNIT_TEST("store_locations_one", {
+        event: {
+            name: "start"
+            do: ->
+                Store_Locations{
+                    x: 1, y: 1
+                    variable: "tmp"
+                }
+                RETURN(VARIABLE_CONDITIONAL("tmp.terrain", "equals", "Gg^Kov"))
+        }
+})

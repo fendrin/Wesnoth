@@ -1,0 +1,554 @@
+--textdomain wesnoth-sotbe
+
+Scenario{
+    id: "17_The_Human_Attack"
+    name: _ "The Human Attack"
+    map: "campaigns/Son_Of_The_Black_Eye/maps/17_The_Human_Attack.map"
+
+    turns: 25
+
+    victory_when_enemies_defeated: "yes"
+
+    <SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    <DEFAULT_SCHEDULE_MORNING!
+
+    next_scenario: "18_Northern_Alliance"
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Hold off the humans"
+                    show_turn_counter: true
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat Earl Lanbec’h")
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Kapou’e"
+                }
+                objective: {
+                    description: _ "Death of Al’Brock"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Flar’Tar"
+                    condition: "lose"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Grüü"
+                }
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+
+                <AI_CONTROLLER_NOTE!
+
+                <GREAT_HORDE_NOTE!
+            }
+    }
+
+    side: {
+        side: 1
+        id: "Kapou'e"
+        type: "Orcish Leader"
+        controller: "human"
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        gold: 350
+        <BLACK_FLAG!
+    }
+
+    <STARTING_VILLAGES(1, 10)
+
+    <AI_CONTROLLER({}, 1, {2, 3}, {})
+
+    side: {
+        <ALBROCK_SIDE!
+        <GOLD(200, 150, 125)
+    }
+
+    <STARTING_VILLAGES(2, 6)
+
+    side: {
+        <FLARTAR_SIDE!
+        <GOLD(200, 150, 125)
+    }
+
+    <STARTING_VILLAGES(3, 6)
+
+    side: {
+        type: "Grand Marshal"
+        id: "Earl Lanbec'h"
+        name: _ "Earl Lanbec’h"
+        profile: "portraits/lanbech.png"
+        side: 4
+        canrecruit: true
+        recruit: {"Dragoon", "Swordsman", "Pikeman", "Longbowman", "Shock Trooper", "Mage", "Duelist", "White Mage", "Red Mage", "Lancer", "Knight", "Spearman", "Bowman", "Cavalryman", "Horseman"}
+        team_name: "villains"
+        user_team_name: _ "Villains"
+        <GOLD(600, 800, 1000)
+        <INCOME(30, 40, 50)
+        ai: {
+            leader_value: 50.0
+            villages_per_scout: 10
+            passive_leader: true
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Earl Lanbec'h"
+                }
+                protect_radius: 8
+                value: 20
+            }
+        }
+        ai: {
+            time_of_day: {"dawn", "morning", "afternoon"}
+            aggression: 0.9
+            caution: 0.2
+            village_value: 0.2
+            grouping: "offensive"
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.2
+            caution: 0.5
+            village_value: 0.8
+            grouping: "defensive"
+        }
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(4, 10)
+
+    story: {
+        part: {
+            story: _ "As Kapou’e expected, by the time his forces had been defeated Shan Taum was nowhere to be found. Gritting his teeth and vowing that he would yet make a mug out of the traitor’s skull, Kapou’e gathered his men and headed for Dorest."
+            <SOTBE_BIGMAP!
+            <JOURNEY_16_OLD!
+        }
+
+        part: {
+            story: _ "Once there he found his generals, Al’Brock and Flar’Tar, had already arrived along with hundreds of bloodthirsty orcs. The warriors of the tribes that Kapou’e had cowed into submission were also present. In addition, the remaining shamans of the Great Council were also present to help in whatever way they could to preserve the unity of the Horde."
+            <SOTBE_BIGMAP!
+            <JOURNEY_16_OLD!
+        }
+
+        part: {
+            story: _ "Their presence proved to be unnecessary. It came as a shock to Kapou’e to discover, after a few days, that his people held him in awe. News of Kapou’e’s exploits had been widely circulated — from his rescue of the shamans at Barag Gór, to his forced march through the northern blizzards. Younger grunts especially worshiped him with such fervor that he found it almost frightening."
+            <SOTBE_BIGMAP!
+            <JOURNEY_16_OLD!
+        }
+
+        part: {
+            story: _ "Days passed, the snows melted and Kapou’e readied his defenses. A few weeks after Kapou’e’s arrival, riders caught sight of Earl Lanbec’h’s army."
+            <SOTBE_BIGMAP!
+            <JOURNEY_16_OLD!
+        }
+    }
+
+    <SOTBE_TRACK(JOURNEY_17_NEW!)
+
+    <GOT_THE_GREAT_HORDE({1, 2, 3})
+
+    event: {
+        name: "prestart"
+        do: ->
+            LOYAL_UNIT(4, "Halberdier", 21, 26)
+            LOYAL_UNIT(4, "Halberdier", 23, 26)
+
+            LOYAL_UNIT(4, "Pikeman", 19, 27)
+            LOYAL_UNIT(4, "Pikeman", 25, 27)
+
+            LOYAL_UNIT(4, "Javelineer", 16, 27)
+            LOYAL_UNIT(4, "Javelineer", 28, 27)
+
+            LOYAL_UNIT(4, "Iron Mauler", 16, 29)
+            LOYAL_UNIT(4, "Iron Mauler", 28, 29)
+
+            LOYAL_UNIT(4, "Shock Trooper", 16, 31)
+            LOYAL_UNIT(4, "Shock Trooper", 28, 31)
+
+            LOYAL_UNIT(4, "Shock Trooper", 17, 33)
+            LOYAL_UNIT(4, "Shock Trooper", 27, 33)
+
+            LOYAL_UNIT(4, "Shock Trooper", 19, 33)
+            LOYAL_UNIT(4, "Shock Trooper", 25, 33)
+
+            LOYAL_UNIT(4, "Swordsman", 21, 34)
+            LOYAL_UNIT(4, "Swordsman", 23, 34)
+
+            MODIFY_UNIT({side: 4, canrecruit: false}, "ai_special", "guardian")
+            MODIFY_UNIT({x: "23-42"}, "facing", "sw")
+    }
+
+-- This helps prevent the allies from suiciding themselves by preventing them
+-- from leaving their castles and surrounding villages
+    event: {
+        name: {"side 2 turn refresh", "side 3 turn refresh"}
+        first_time_only: false
+        do: ->
+            Modify_Unit{
+                filter: {
+                    side: side_number
+                    canrecruit: true
+                }
+
+                movement_costs: {
+                    flat: 99
+                }
+            }
+
+            Event{
+                name: "side turn end"
+                do: ->
+                    Modify_Unit{
+                        filter: {
+                            side: side_number
+                            canrecruit: true
+                        }
+
+                        movement_costs: {
+                            flat: 1
+                        }
+                    }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Grüü"
+            }
+            Recall{
+                id: "Jetto"
+            }
+            Recall{
+                id: "Inarix"
+            }
+
+            Message{
+                speaker: "Earl Lanbec'h"
+                message: _ "This is it, men! It is time to make these orcs pay for all that they have done to us. Attack without compromise, we have several detachments of reinforcements on their way. Spare no orc and let us take back this land which is rightfully ours!"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Forward, men! Our wolves will feed well tonight!"
+            }
+
+            Message{
+                speaker: "Grüü"
+-- wmllint: local spelling softlings
+                message: _ "Come here, human softlings. Grüü has a little present for you..."
+            }
+    }
+
+    HUMAN_REINFORCEMENTS: (ID_GENERAL) -> {
+        unit: {
+            type: "General"
+            id: ID_GENERAL
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Swordsman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Swordsman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Longbowman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Longbowman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Horseman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Horseman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Spearman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        unit: {
+            type: "Spearman"
+            side: 4
+            x: 22
+            y: 38
+            generate_name: true
+            random_traits: true
+        }
+
+        scroll_to: {
+            x: 22, y: 38
+        }
+    }
+
+    event: {
+        name: "turn 6"
+        do: ->
+            HUMAN_REINFORCEMENTS("general1")
+
+            Message{
+                speaker: "narrator"
+                message: _ "As a fresh day dawned, more human forces arrived."
+                image: "wesnoth-icon.png"
+            }
+    }
+
+    event: {
+        name: "turn 10"
+        do: ->
+            HUMAN_REINFORCEMENTS("Bruce")
+-- wmllint: recognize Bruce
+
+            Message{
+                speaker: "Bruce"
+                message: _ "We have arrived, my lord."
+            }
+    }
+
+    event: {
+        name: "turn 14"
+        do: ->
+            HUMAN_REINFORCEMENTS("general3")
+
+            Message{
+                speaker: "Earl Lanbec'h"
+                message: _ "Ahhh, perfect, more reinforcements."
+            }
+    }
+
+    event: {
+        name: "wrapup"
+        do: ->
+            Move_Unit_Fake{
+                type: "General"
+                side: 4
+                x: {35, 34, 33, 32, 31, 31, 32, 32, 32, 32, 32}
+                y: {30, 30, 31, 30, 30, 29, 28, 27, 26, 25, 24}
+            }
+
+            Unit{
+                side: 4
+                type: "General"
+                id: "Howgarth III"
+                name: _ "Howgarth III"
+                profile: "portraits/howgarth.png"
+                random_traits: false
+                x: 32
+                y: 24
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 4
+                x: {35, 34, 33, 32, 31, 31, 32, 32, 32, 32, 31}
+                y: {30, 30, 31, 30, 30, 29, 28, 27, 26, 25, 25}
+            }
+
+            Unit{
+                side: 4
+                type: "Royal Guard"
+                x: 31
+                y: 25
+                generate_name: true
+                random_traits: true
+            }
+
+            Move_Unit_Fake{
+                type: "Royal Guard"
+                side: 4
+                x: {35, 34, 33, 32, 31, 31, 32, 32, 32, 32, 32, 33}
+                y: {30, 30, 31, 30, 30, 29, 28, 27, 26, 25, 24, 24}
+            }
+
+            Unit{
+                side: 4
+                type: "Royal Guard"
+                x: 33
+                y: 24
+                generate_name: true
+                random_traits: true
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "Hold it! What in the wide green world is going on here!"
+            }
+
+            Message{
+                speaker: "Earl Lanbec'h"
+                image: "portraits/lanbech.png~FL()"
+                message: _ "Howgarth? You and your interfering alliance always show up at the worst possible time."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Just who do you think you are, slug?"
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "I am Howgarth of the Northern Alliance, successor to the late Rahul I."
+            }
+
+            Message{
+                speaker: "Earl Lanbec'h"
+                image: "portraits/lanbech.png~FL()"
+                message: _ "This is a strictly territorial matter, Howgarth. The Northern Alliance has no right to intervene in this affair."
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "The hell I don’t, Earl Lanbec’h, the Northern Alliance was witness to a treaty some twenty seven years ago between your people and the orcs, which both of you are no doubt violating. It is our duty as the orchestrator and witness of this treaty to see that it is honored."
+            }
+
+            Message{
+                speaker: "Earl Lanbec'h"
+                image: "portraits/lanbech.png~FL()"
+                message: _ "Well, good for you. As a matter of fact, this land is clearly defined under your precious treaty as human territory. So if you are so keen on being all high and noble, then muster your men to help us push back this orcish menace."
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "Cease your lies, Lanbec’h. We all know that you were the one who started this war. But enough, it is time for all this to end. I call for both sides to parley and we shall discuss this matter."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Ha ha, very funny, old fool. You think we are stupid enough to fall for that? I’ve not forgotten what you people did to my father."
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "What in the world are you talking about?"
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "I am Kapou’e, son of the Black-Eye Karun. Twenty-seven years ago you people assassinated my father after inviting him to join the Northern Alliance."
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "What? We received word that he declined our invitation and that was the end of the matter. I know nothing of his assassination. As a matter of fact, I was there when the orcish messenger brought Rahul Karun’s reply."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Messenger, what messenger?"
+                image: "portraits/kapoue-angry.png"
+            }
+
+            Message{
+                speaker: "Howgarth III"
+                message: _ "If I remember correctly, it was some orc named Shan Taum."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Funny, that name sounds oddly familiar..."
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Fire_Event{
+                name: "wrapup"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "last breath"
+
+        filter: {
+            id: "Earl Lanbec'h"
+        }
+        do: ->
+            VARIABLE("unit.hitpoints", 1)
+
+            Unstore_Unit{
+                variable: "unit"
+                find_vacant: false
+            }
+
+            Fire_Event{
+                name: "wrapup"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+    <GENERALS_MUST_SURVIVE!
+}

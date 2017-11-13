@@ -1,0 +1,843 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "Hills of the Shorbear Clan"
+    id: "5_Hills_of_the_Shorbear_Clan"
+    turns: 24
+    map: "campaigns/Sceptre_of_Fire/maps/5_Hills_of_the_Shorbear_Clan.map"
+    next_scenario: "6_Towards_the_Caves"
+
+-- the music will change in the end of the opening dialogue
+    <SCENARIO_MUSIC("knolls.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout", "Gryphon Rider"}
+        gold: 200
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        village: {
+            x: 5, y: 2
+        }
+        village: {
+            x: 10, y: 1
+        }
+        <FLAG_VARIANT("knalgan")
+    }
+
+    side: {
+        type: "Dwarvish Lord"
+        id: "Glonoin"
+        name: _ "Glonoin"
+        side: 2
+        canrecruit: true
+        <RECRUIT({"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Thunderer", "Dwarvish Guardsman"}, {"Dwarvish Steelclad", "Dwarvish Thunderguard", "Dwarvish Thunderer", "Dwarvish Guardsman"}, {"Dwarvish Steelclad", "Dwarvish Thunderguard", "Dwarvish Thunderer", "Dwarvish Stalwart", "Dwarvish Pathfinder", "Dwarvish Scout"})
+        <GOLD(200, 300, 400)
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "fighter", "mixed fighter"}
+            aggression: -0.5
+            caution: 0.5
+            village_value: 0.1
+            leader_value: 0
+            villages_per_scout: 0
+            grouping: "defensive"
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 2
+                    canrecruit: true
+                }
+                protect_radius: 4
+                value: 2
+            }
+        }
+        team_name: "enemies"
+        user_team_name: _ "Enemies"
+        <FLAG_VARIANT("knalgan")
+    }
+
+    <STARTING_VILLAGES(2, 6)
+
+    side: {
+        no_leader: true
+        side: 3
+        <RECRUIT({"Elvish Ranger", "Elvish Scout", "Elvish Hero"}, {"Elvish Ranger", "Elvish Marksman", "Elvish Scout", "Elvish Hero"}, {"Elvish Ranger", "Elvish Marksman", "Elvish Scout", "Elvish Hero"})
+        <GOLD(250, 300, 350)
+        ai: {
+            recruitment_pattern: {"scout", "scout", "fighter", "archer"}
+            turns: "1-6"
+            aggression: 1.0
+            caution: 0.1
+            village_value: 2
+            leader_value: 1
+            grouping: false
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 3
+                    canrecruit: true
+                }
+                value: 0.5
+            }
+        }
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer"}
+            turns: "6-20"
+            aggression: 0.5
+            caution: 0.2
+            village_value: 2
+            grouping: "offensive"
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 3
+                    canrecruit: true
+                }
+                value: 1
+            }
+        }
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "archer", "scout"}
+            turns: "20-24"
+            aggression: 1.0
+            caution: 0
+            village_value: 0
+            leader_value: 10
+            grouping: false
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 3
+                    canrecruit: true
+                }
+                value: 0
+            }
+        }
+        team_name: "enemies"
+        user_team_name: _ "Enemies"
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    story: {
+        part: {
+            story: _ "All dwarves are known for a love of gold and a heart of stone. The Shorbears were no exception. They were crafters of crafters — they made tools. The best in the land. And they bartered well."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_05_NEW!)
+
+    <SOF_DEATHS!
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Glonoin, the Shorbear clan leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Krawg"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Thursagan"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Durstorn"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- wmllint: directory spelling Shorbear Shorbears
+    event: {
+        name: "start"
+--durstorn, noiraran and kuhnar
+        do: ->
+            Unit{
+                x: 11, y: 1
+                type: "Dwarvish Lord"
+                id: "Durstorn"
+                name: _ "Durstorn"
+                unrenamable: true
+                side: 1
+                <IS_HERO!
+                profile: "portraits/durstorn-insane.png"
+                random_traits: false
+                modifications: {
+                    <TRAIT_LOYAL!
+                }
+            }
+            Unit{
+                x: 11, y: 1
+                type: "Dwarvish Thunderguard"
+                id: "Noiraran"
+                name: _ "Noiraran"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_INTELLIGENT!
+                }
+                <IS_LOYAL!
+            }
+            Unit{
+                x: 11, y: 1
+                type: "Dwarvish Steelclad"
+                id: "Kuhnar"
+                name: _ "Kuhnar"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_QUICK!
+                }
+                <IS_LOYAL!
+            }
+--alanin, baglur, krawg and thursagan
+            Recall{
+                id: "Alanin"
+            }
+            Recall{
+                id: "Baglur"
+            }
+            Recall{
+                id: "Krawg"
+            }
+            Recall{
+                id: "Thursagan"
+            }
+
+            MODIFY_UNIT({id: "Alanin"}, "profile", "portraits/alanin-old.png~BLIT(portraits/alanin-winter-overlay.png,0,0)")
+
+--dialogue starts
+            Message{
+                speaker: "Kuhnar"
+                message: _ "Here we are; the hills of the Shorbear clan. What are we here for, anyway?"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "If I understand it correctly, we’re here to bargain with the Shorbears, and arrange for us to use their tools to cut the ruby."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Exactly."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "And I’ll be doing the talking; I remember what happened last time you negotiated a deal! We lost five thousand pieces of silver."
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Och, it’s some o’ them cave-dwarves. What business do you have here?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "I’m Lord Durstorn, king of my tribe. I have been told you are great jeweler-workers, and so we come to rent some of your tools for a short time, a few years at most."
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "You’re a king?! Must be a pretty small kingdom for you to come yourself to bargain with us!"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "You insult me! Do you want my business, or not?"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Well, fine, I’ll hear your offer."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "We’d like to rent your best tools for a short period of time. We’ll only be cutting one jewel with it. My starting offer is two hundred silver."
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "It must be worth a lot for you to come this way and offer that much! How much are you going to sell it for, eh?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "That’s none of your concern!"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "I’ll take twenty-five hundred, minimum."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: WHISPER(_ "Durstorn, that would be a quarter of all our profits!")
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "I know that. Uh, Glonoin, how about five hundred?"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Twenty-three hundred is my lowest offer. I can tell I don’t need the money as much as you need the jewel cut!"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "You must be mad! I’ll offer one thousand, but no higher!"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Two thousand, and I’ll go no lower!"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: WHISPER(_ "What are we going to do? We can’t go much higher!")
+            }
+            Message{
+                speaker: "Baglur"
+                message: WHISPER(_ "Offer him fifteen hundred, but don’t go up, even if he refuses.")
+            }
+            Message{
+                speaker: "Durstorn"
+                message: WHISPER(_ "Bah! Getting this cut isn’t worth that much; what with Rugnur’s mistake earlier, and all the other expenses, if we pay more than a thousand we’ll barely even make a profit!")
+            }
+            Message{
+                speaker: "Thursagan"
+                message: WHISPER(_ "So what are you going to do?")
+            }
+            Message{
+                speaker: "Durstorn"
+                message: WHISPER(_ "Fight him, and take the tools by force.")
+            }
+            Message{
+                speaker: "Thursagan"
+                message: WHISPER(_ "Are you mad?!")
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Of course not! Now, Glonoin; one thousand was my final offer. If you won’t accept it, we will take the tools from you by force!"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "I’d like to see you try!"
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "You’re making a mistake, Durstorn."
+            }
+
+            Music{
+                name: "the_city_falls.ogg"
+                immediate: true
+                append: false
+            }
+            Music{
+                name: "battle.ogg"
+                append: true
+            }
+
+            Message{
+                speaker: "Durstorn"
+                message: _ "Shut up, all of you! Attack them!"
+            }
+    }
+
+    event: {
+        name: "turn 3"
+        do: ->
+            Unit{
+                x: 1, y: 35
+                side: 3
+                id: "Lyndar"
+                name: _ "Lyndar"
+                canrecruit: true
+                type: "Elvish Marshal"
+            }
+            MOVE_UNIT({id: "Lyndar"}, 3, 33)
+            Message{
+                speaker: "Lyndar"
+                message: _ "Aha! I’ve spent years looking for you dwarves, but now I’ve found you! Prepare to die!"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Who the devil are you?"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "I thought we left the elves behind at the gates four years ago! It seems we have two enemies now."
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "So, elves, are you against these dwarves too? They’re attacking my clan for absolutely no reason!"
+            }
+            Message{
+                speaker: "Lyndar"
+                message: _ "I see. So you don’t have the ruby?"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "No, they do. They wanted to rent my tools to cut it, but they didn’t offer me nearly enough!"
+            }
+            Message{
+                speaker: "Lyndar"
+                message: _ "How about this — I help you defeat them, and you let me keep the ruby when we have?"
+            }
+            Message{
+                speaker: "Glonoin"
+                message: _ "Deal!"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Ah, they don’t scare me! We can take both of them!"
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Don’t be a fool! We can’t take the elves, and it was a mistake to attack these dwarves, but if we have to fight we should retreat once we get what we came for, the tools!"
+            }
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Glonoin, the Shorbear clan leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Have all heroes in the Shorbear caves while no enemies are in the caves"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Krawg"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Thursagan"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Durstorn"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    IN_CAVES: () -> {
+        filter_location: {
+            x: 19, y: 17
+            radius: 6
+-- x=16-22,15-23,13-25,15-22,17-21
+-- y=   11,   12,13-19,   20,   21
+        }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Glonoin"
+        }
+        do: ->
+            Kill{
+                id: "Glonoin"
+                animate: false
+                fire_event: false
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Ha! Now we can get those tools easily, and go back to our own caves."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "And how do you plan on doing that? There are elves swarming these hills, trying to kill us."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "You are right... well, we will be able to break out eventually, and while we’re here, we’ll be able to finally make the sceptre."
+            }
+            If{
+                have_unit: {
+                    id: "Rugnur"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Alanin"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Krawg"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Thursagan"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Durstorn"
+                    <IN_CAVES!
+                }
+                then: ->
+                    If{
+                        have_unit: {
+                            side: {2, 3}
+                            <IN_CAVES!
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Thursagan"
+                                message: _ "Well, back to the battle — we are all in the caves, but there are still enemies in here also!"
+                            }
+                            Message{
+                                speaker: "Durstorn"
+                                message: _ "Indeed. Kill them! And make sure no more enter. Then we can close the gates."
+                            }
+
+                            VARIABLE("ready_to_close", true)
+
+                            Objectives{
+                                side: 1
+                                objective: {
+                                    description: _ "Have all heroes in the Shorbear caves while no enemies are in the caves"
+                                    condition: "win"
+                                }
+                                objective: {
+                                    description: _ "Death of Rugnur"
+                                    condition: "lose"
+                                }
+                                objective: {
+                                    description: _ "Death of Alanin"
+                                    condition: "lose"
+                                }
+                                objective: {
+                                    description: _ "Death of Krawg"
+                                    condition: "lose"
+                                }
+                                objective: {
+                                    description: _ "Death of Thursagan"
+                                    condition: "lose"
+                                }
+                                objective: {
+                                    description: _ "Death of Durstorn"
+                                    condition: "lose"
+                                }
+
+                                <TURNS_RUN_OUT!
+
+                                gold_carryover: {
+                                    bonus: false
+                                    carryover_percentage: 40
+                                }
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "Thursagan"
+                                message: _ "We have driven all of the dwarves and elves out of these caves. They are not ours, though, and we can’t stay here forever."
+                            }
+                            Message{
+                                speaker: "Durstorn"
+                                message: _ "True. I suspect these elves will try to besiege us here."
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Thursagan"
+                        message: _ "Well, back to the battle — we need everyone to get into the Shorbear caves. And then stop any enemies from coming in here."
+                    }
+                    Message{
+                        speaker: "Durstorn"
+                        message: _ "Indeed. Everyone to the caves, and kill those still inside!"
+                    }
+
+                    VARIABLE("ready_to_close", true)
+
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Have all heroes in the Shorbear caves while no enemies are in the caves"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Rugnur"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Alanin"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Krawg"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Thursagan"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Durstorn"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        gold_carryover: {
+                            bonus: false
+                            carryover_percentage: 40
+                        }
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: {2, 3}
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "ready_to_close"
+                    equals: true
+                }
+                have_unit: {
+                    id: "Rugnur"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Alanin"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Krawg"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Thursagan"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Durstorn"
+                    <IN_CAVES!
+                }
+                then: ->
+                    If{
+                        have_unit: {
+                            side: {2, 3}
+                            <IN_CAVES!
+                        }
+                        else: ->
+                            Message{
+                                speaker: "Durstorn"
+                                message: _ "We have driven all of the dwarves and elves out of these caves! Now, seal the gates!"
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            side: 1
+
+            not: {
+                not: {
+                    id: "Rugnur"
+                }
+                not: {
+                    id: "Alanin"
+                }
+                not: {
+                    id: "Krawg"
+                }
+                not: {
+                    id: "Thursagan"
+                }
+                not: {
+                    id: "Durstorn"
+                }
+            }
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "ready_to_close"
+                    equals: true
+                }
+                have_unit: {
+                    id: "Rugnur"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Alanin"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Krawg"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Thursagan"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Durstorn"
+                    <IN_CAVES!
+                }
+                then: ->
+                    If{
+                        have_unit: {
+                            side: {2, 3}
+                            <IN_CAVES!
+                        }
+                        then: ->
+                            Allow_Undo{}
+                        
+                        else: ->
+                            Message{
+                                speaker: "Durstorn"
+                                message: _ "We have driven all of the dwarves and elves out of these caves! Now, seal the gates!"
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+                else: ->
+                    Allow_Undo{}
+                
+            }
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            If{
+                variable: {
+                    name: "ready_to_close"
+                    equals: true
+                }
+                have_unit: {
+                    id: "Rugnur"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Alanin"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Krawg"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Thursagan"
+                    <IN_CAVES!
+                }
+                have_unit: {
+                    id: "Durstorn"
+                    <IN_CAVES!
+                }
+                then: ->
+                    If{
+                        have_unit: {
+                            side: {2, 3}
+                            <IN_CAVES!
+                        }
+                        else: ->
+                            Message{
+                                speaker: "Durstorn"
+                                message: _ "We have driven all of the dwarves and elves out of these caves! Now, seal the gates!"
+                            }
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Durstorn"
+        }
+        do: ->
+            Message{
+                speaker: "Durstorn"
+                message: _ "Gaanngh..." -- wmllint: no spellcheck
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "turn 10"
+        do: ->
+            Gold{
+                side: 3
+                amount: 200
+            }
+    }
+}

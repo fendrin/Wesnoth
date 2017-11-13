@@ -1,0 +1,42 @@
+-- This test checks conditional tags
+
+GENERIC_UNIT_TEST("check_conditionals_1", {
+        event: {
+            name: "start"
+            do: ->
+                If{
+                    true: {}
+                    and: {
+                        true: {}
+                    }
+                    or: {
+                        true: {}
+                    }
+                    not: {
+                        false: {}
+                    }
+                    then: ->
+                        SUCCEED!
+                    
+                }
+        }
+})
+
+GENERIC_UNIT_TEST("check_conditionals_2", {
+        event: {
+            name: "start"
+            do: ->
+                If{
+                    true: {}
+                    and: {
+                        true: {}
+                    }
+                    or: {
+                        false: {}
+                    }
+                    then: ->
+                        SUCCEED!
+                    
+                }
+        }
+})

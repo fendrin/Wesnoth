@@ -1,0 +1,666 @@
+--textdomain wesnoth-low
+Scenario{
+    name: _ "Human Alliance"
+    id: "14_Human_Alliance"
+
+    random_start_time: false
+    allow_new_game: false
+    force_lock_settings: true
+
+    experience_modifier: 100
+    next_scenario: "15_The_Treaty"
+
+    <LOW_MAP("14_Human_Alliance.map")
+
+--out of turns leads to victory
+    <TURNS(18, 20, 22)
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE_AFTERNOON!
+
+--     -TODO split the villages instead of leaving them unassigned in MP?
+    <unless MULTIPLAYER! then {
+        <STARTING_VILLAGES_ELF(1)
+    }
+    <STARTING_VILLAGES_HUMAN(2)
+    <STARTING_VILLAGES_TROLL(3)
+
+    <INTRO_AND_SCENARIO_MUSIC("revelation.ogg", "loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("northerners.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+    <EXTRA_SCENARIO_MUSIC("elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+
+    story: {
+        <if MULTIPLAYER then {
+            part: {
+                delay: 4000
+                title: _ "<i>The Legend of Wesmere</i>
+Chapter Four"
+            }
+        }
+        part: {
+            title: _ "Chapter Four
+<i>The Alliance</i>"
+--delay=4000
+--show_title=yes
+        }
+        part: {
+            story: _ "With the human-elf alliance revived, our heroes hurried to the battlefield..."
+            delay: 4000
+            <LOW_BIGMAP!
+            <TREASURY_COMPLETE!
+            <BOOK_COMPLETE!
+            <ALLIANCE_STAGE2!
+        }
+    }
+
+    PLAYER_GOLD: () -> {
+        <GOLD(550, 400, 350)
+    }
+    MULTIPLAYER_GOLD: () -> {
+        <GOLD(65, 50, 40)
+    }
+
+    side: {
+        side: 1
+        <PLAYABLE!
+        save_id: "Kalenz"
+
+        <KALENZ!
+-- wmllint: recognize Kalenz
+        x: 25
+        y: 11
+
+        <unless MULTIPLAYER! then {
+            <PLAYER_GOLD!
+            unit: {
+                <LANDAR!
+                x: 25
+                y: 13
+            }
+            unit: {
+                <CLEODIL!
+                x: 27
+                y: 12
+            }
+            unit: {
+                <OLURF!
+                x: 36
+                y: 10
+            }
+        } else {
+            <MULTIPLAYER_GOLD!
+        }
+    }
+    event: {
+        name: "prestart"
+        do: ->
+            RECALL_LOYALS!
+    }
+
+    side: {
+        side: 2
+        no_leader: true
+        <PLAYABLE!
+        unit: {
+            id: "Aldar"
+            type: "General"
+            name: _ "Aldar"
+            profile: "portraits/aldar.png"
+            x: 42
+            y: 27
+            canrecruit: true
+            extra_recruit: {"Fencer", "Heavy Infantryman", "Dragoon", "Longbowman", "Duelist", "Halberdier", "Horseman", "Cavalier", "Cavalryman", "Royal Guard", "Mage", "Swordsman", "Bowman", "White Mage", "Red Mage", "Spearman"}
+        }
+
+        <GOLD(550, 500, 450)
+
+        <LOYALIST_SETUP!
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        side: 3
+        allow_player: false
+        team_name: "orcs"
+        user_team_name: _ "Enemies"
+        no_leader: true
+        <INCOME(220, 280, 360)
+        <GOLD(520, 630, 800)
+
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer", "mixed fighter"}
+            <ATTACK_DEPTH(4, 5, 6)
+        }
+        ai: {
+            time_of_day: {"dusk", "first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+
+        unit: {
+            type: "Orcish Warlord"
+            id: "Pirror"
+            name: _ "Pirror"
+            canrecruit: true
+            x: 10
+            y: 2
+            <if EASY then {
+                extra_recruit: {"Orcish Grunt", "Orcish Assassin", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight"}
+            }
+
+            <if NORMAL then {
+                extra_recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Goblin Spearman"}
+            }
+
+            <if HARD then {
+                extra_recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler", "Goblin Rouser", "Direwolf Rider"}
+            }
+        }
+
+        unit: {
+            type: "Orcish Warlord"
+            id: "Tan-Grub"
+            name: _ "Tan-Grub"
+            profile: "portraits/orcs/warlord.png"
+            canrecruit: true
+            x: 10
+            y: 33
+            <if EASY then {
+                extra_recruit: {"Orcish Grunt", "Orcish Assassin", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight"}
+            }
+
+            <if NORMAL then {
+                extra_recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Orcish Slayer", "Orcish Warrior", "Goblin Spearman"}
+            }
+
+            <if HARD then {
+                extra_recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler", "Goblin Rouser", "Direwolf Rider"}
+            }
+        }
+
+        unit: {
+            x: 46
+            y: 5
+            type: "Great Troll"
+            id: "Grol"
+            name: _ "Grol"
+            canrecruit: true
+--TODO think about adding troll shamans
+            <if EASY then {
+                extra_recruit: {"Troll Whelp", "Troll"}
+            }
+            <if NORMAL then {
+                extra_recruit: {"Troll Whelp", "Troll", "Troll Rocklobber"}
+            }
+            <if HARD then {
+                extra_recruit: {"Troll Whelp", "Troll", "Troll Rocklobber", "Troll Warrior"}
+            }
+        }
+    }
+
+    side: {
+        side: 4
+        no_leader: true
+        <PLAYABLE!
+        save_id: "Galtrid"
+        previous_save_id: "Kalenz"
+        <if MULTIPLAYER then {
+            <MULTIPLAYER_GOLD!
+        } else {
+            <PLAYER_GOLD!
+        }
+
+        unit: {
+-- wmllint: recognize Galtrid
+            <GALTRID!
+            x: 15
+            y: 12
+        }
+
+        <unless MULTIPLAYER! then {
+            unit: {
+-- wmllint: recognize El_Isomithir
+                <EL_ISOMITHIR!
+                x: 13
+                y: 15
+            }
+
+            unit: {
+-- wmllint: recognize Eradion
+                <ERADION!
+                x: 15
+                y: 15
+            }
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 0
+                objective: {
+                    description: _ "Last for the end of turns"
+                    condition: "win"
+                    show_turn_counter: true
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Landar"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Olurf"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Cleodil"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Aldar"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 80
+                }
+            }
+    }
+
+    event: {
+        name: "side 1 turn 1"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "Tremble, orcs! The vengeance of the Elves is upon you!!"
+            }
+            Message{
+                id: "Aldar"
+                message: _ "So it is true! The elves have come to our aid!"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "Hey! Do I look like an elf?"
+            }
+            Message{
+                id: "Landar"
+                message: _ "I can scarce believe I am fighting besides these betrayers."
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "We cannot be choosy about our allies when our need is dire."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Indeed not. Save your anger for our enemies, Landar."
+            }
+            Message{
+                id: "Landar"
+                message: _ "I shall. But when our need is not so dire, there must be a reckoning..."
+            }
+            Message{
+                id: "Tan-Grub"
+--canrecruit=yes
+--race=orc
+                message: _ "An elven army to the north? And they have dwarves with them? We must defeat them in detail before they combine, which means attacking before our reinforcements arrive. Maybe we can beat the humans before the elves can intervene. Overrun city and castle!"
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "The brazen cry of a war-horn is heard in the distance."
+                sound: "horn-signals/horn-2.ogg"
+                image: "portraits/goblins/rouser-2.png"
+            }
+
+            Unit{
+                id: "Aldun"
+                name: _ "Aldun"
+                type: "Horseman"
+                random_traits: true
+                side: 2
+                x: 33
+                y: 24
+                facing: "sw"
+            }
+            MOVE_UNIT({id: "Aldun"}, 21, 16)
+
+            Message{
+                id: "Aldun"
+                message: _ "General Aldar has received your message. He asks that you engage the orcish reinforcements from the north, preventing them from joining with their fellows here. Those fresh troops must not be allowed to enter the battle! Our reinforcements should arrive in a few days."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Very well... But have you any word of the elvish troops marching to join us? We are too few to defeat the enemy without them."
+            }
+            Message{
+                id: "Aldun"
+                message: _ "We have no news from the Ka’lian."
+            }
+
+            Message{
+                id: "Galtrid"
+                message: _ "Kalenz! We come to fight beside you!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Where is the rest of the elvish army? They were promised and should be here!"
+            }
+            Message{
+                id: "Eradion"
+                message: _ "The Great Council has decided it was too risky to send troops here. But some of us dissented and have come to fight beside you."
+            }
+            Message{
+                id: "Landar"
+                message: _ "That is well! If the Ka’lian is too fearful or blind to see what is needed, we must do it ourselves."
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "It is not well that we have become so divided as this."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "No, it is not. But if we do not defeat these orcs here and now our divisions will all be moot. I will take every sword-arm I can get and be glad of them."
+            }
+    }
+
+    <MP_SIDE(5, {
+--Landar's side
+            no_leader: true
+            <PLAYABLE!
+            save_id: "Landar"
+
+            unit: {
+                <LANDAR!
+                x: 27
+                y: 12
+            }
+            <MULTIPLAYER_GOLD!
+    })
+
+    <MP_SIDE(6, {
+--Olurf's side
+            no_leader: true
+            save_id: "Olurf"
+
+            unit: {
+                <OLURF!
+                x: 36
+                y: 10
+            }
+            <PLAYABLE!
+
+            <MULTIPLAYER_GOLD!
+    })
+
+    <MP_SIDE(7, {
+--Cleodil's side
+            <PLAYABLE!
+            save_id: "Cleodil"
+            no_leader: true
+            unit: {
+                <CLEODIL!
+                x: 25
+                y: 13
+            }
+
+            <MULTIPLAYER_GOLD!
+    })
+
+    <MP_SIDE(8, {
+--El'Isomithir's side
+            <PLAYABLE!
+            no_leader: true
+            previous_save_id: "Landar"
+            save_id: "El_Isomithir"
+            unit: {
+                <EL_ISOMITHIR!
+                x: 13
+                y: 15
+            }
+
+            <MULTIPLAYER_GOLD!
+    })
+
+    <MP_SIDE(9, {
+--Eradion's side
+            <PLAYABLE!
+            save_id: "Eradion"
+            previous_save_id: "Cleodil"
+            no_leader: true
+            unit: {
+                <ERADION!
+                x: 15
+                y: 15
+            }
+
+            <MULTIPLAYER_GOLD!
+    })
+
+----- reenforcements for the player ----
+
+    event: {
+        name: "turn 9"
+
+        foreach: {
+            array: "l3_store_kalenz"
+            do: ->
+                Unstore_Unit{
+                    find_vacant: true
+                    variable: "this_item"
+                    x: 9
+                    y: 15
+                }
+                Role{
+                    role: "l3_store"
+                    id: this_item.id
+                }
+                MODIFY_UNIT({id: this_item.id}, "facing", "ne")
+            
+        }
+
+        <if MULTIPLAYER then {
+            foreach: {
+                array: "l3_store_landar"
+                do: ->
+                    Unstore_Unit{
+                        find_vacant: true
+                        variable: "this_item"
+                        x: 9
+                        y: 15
+                    }
+                    Role{
+                        role: "l3_store"
+                        id: this_item.id
+                    }
+                    MODIFY_UNIT({id: this_item.id}, "facing", "ne")
+                    MODIFY_UNIT({id: this_item.id}, "side", 13)
+                
+            }
+        }
+        do: ->
+            If{
+                not: {
+                    variable: {
+                        name: "l3_store_kalenz.length"
+                        numerical_equals: 0
+                    }
+                }
+                <if MULTIPLAYER then {
+                    or: {
+                        not: {
+                            variable: {
+                                name: "l3_store_landar.length"
+                                numerical_equals: 0
+                            }
+                        }
+                    }
+                }
+                then: ->
+                    Message{
+                        role: "l3_store"
+                        message: _ "Kalenz! We come to fight beside you!"
+                    }
+                    Message{
+                        id: "Kalenz"
+                        message: _ "Where is the rest of the elvish army? They were promised and should be here!"
+                    }
+                    Message{
+                        role: "l3_store"
+                        message: _ "The Great Council has decided it was too risky to send troops here. But some of us dissented and have come to fight beside you."
+                    }
+                    Message{
+                        id: "Landar"
+                        message: _ "That is well! If the Ka’lian is too fearful or blind to see what is needed, we must do it ourselves."
+                    }
+                    Message{
+                        id: "Cleodil"
+                        message: _ "It is not well that we have become so divided as this."
+                    }
+                    Message{
+                        id: "Kalenz"
+                        message: _ "No, it is not. But if we do not defeat these orcs here and now our divisions will all be moot. I will take every sword-arm I can get and be glad of them."
+                    }
+                
+            }
+--TODO else -- the player has to know that the kalian refused help.
+            CLEAR_VARIABLE("l3_store_kalenz")
+            if MULTIPLAYER
+                CLEAR_VARIABLE("l3_store_landar")
+            
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Unit{
+                type: "Paladin"
+                id: "Kulrad"
+                name: _ "Kulrad"
+                side: 2
+                x: 38
+                y: 30
+            }
+
+            GENERIC_UNIT(2, "Knight", 43, 33)
+            GENERIC_UNIT(2, "Knight", 43, 36)
+
+            GENERIC_UNIT(2, "Horseman", 38, 34)
+            GENERIC_UNIT(2, "Horseman", 42, 35)
+            GENERIC_UNIT(2, "Horseman", 39, 34)
+            GENERIC_UNIT(2, "Horseman", 43, 37)
+            GENERIC_UNIT(2, "Horseman", 41, 37)
+            GENERIC_UNIT(2, "Horseman", 41, 39)
+
+            Message{
+                id: "Kulrad"
+                message: _ "I see foul orcs to be ridden down! Charge!"
+            }
+            Message{
+                race: "orc"
+                canrecruit: true
+                message: _ "More of the cursed horse-pokers!! Run, let’s get out of here!"
+            }
+
+--TODO move the message in a macro
+            Message{
+                speaker: "narrator"
+                message: _ "The not-at-all-brazen cry of a war-horn is heard in the distance."
+--TODO rethink about which signal to use here
+                sound: "horn-signals/horn-8.ogg"
+                image: "portraits/goblins/rouser-2.png"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                save: false
+            }
+    }
+
+-- [event]
+--     name=enemies defeated
+--     [message]
+--         id=Aldar
+--         message= _ "This is only a pause in their onslaught. Reform, men, and bind your wounds as you may. They’ll be back."
+--     [/message]
+--     -TODO CRAB
+--     -[modify_ai]
+--     -
+--     -[/modify_ai]
+-- [/event]
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "We have thwarted the Orcs once again!"
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "And we revived the alliance with the Humans, which is no small thing."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Indeed it is not. As always, Cleodil, you speak with the wisdom and care that befits a healer. That is a good reminder for those who must walk the path of steel and warfare, and touches my heart."
+            }
+            Message{
+                id: "Olurf"
+                message: _ "A good fight against foul enemies. These orcs make a dwarf’s hackles rise; I might even fight them for free, next time."
+            }
+            Message{
+                id: "Aldar"
+                message: _ "The King is here! Hail Haldric II, King of Wesnoth!"
+            }
+--TODO Landar is quiet?
+            Kill{
+                id: "Aldun"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Aldar"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Tath will fall! We have failed!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Grol"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I die? Great Chief never said anything about fighting elves and dwarves!"
+            }
+    }
+
+    <DEFAULT_VICTORY(0.3)
+    INCLUDE("campaigns/Legend_of_Wesmere/utils/deaths.cfg")
+}
+
+PLAYER_GOLD = nil
+MULTIPLAYER_GOLD = nil

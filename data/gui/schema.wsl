@@ -1,0 +1,2494 @@
+Wml_Schema{
+    type: {
+        name: "bool"
+        value: "^true}false}yes}no#{"
+    }
+    type: {
+        name: "border"
+        value: "^(top}bottom}left}right}all)?(,\\s*(top}bottom}left}right}all))*#{"
+    }
+    type: {
+        name: "color"
+        value: "^(?:2[0-5][0-5]}[01]?\\d?\\d)[.,]\\s*(?:2[0-5][0-5]}[01]?\\d?\\d)[.,]\\s*(?:2[0-5][0-5]}[01]?\\d?\\d)[.,]\\s*(?:2[0-5][0-5]}[01]?\\d?\\d)#{"
+    }
+    type: {
+        name: "f_bool"
+        value: "^.*#{"
+    }
+    type: {
+        name: "f_h_align"
+        value: "^.*#{"
+    }
+    type: {
+        name: "f_int"
+        value: "^.*#{"
+    }
+    type: {
+        name: "f_string"
+        value: "^.*#{"
+    }
+    type: {
+        name: "f_tstring"
+        value: "^_?.*#{"
+    }
+    type: {
+        name: "f_unsigned"
+        value: "^.+#{"
+    }
+    type: {
+        name: "font_family"
+        value: "^(sans}monospace)?#{"
+    }
+    type: {
+        name: "font_style"
+        value: "^(normal}bold}italic}underline}light)?#{"
+    }
+    type: {
+        name: "function"
+        value: "^_?.*#{"
+    }
+    type: {
+        name: "grow_direction"
+        value: "^horizontal}vertical#{"
+    }
+    type: {
+        name: "h_align"
+        value: "^left}right}center#{"
+    }
+    type: {
+        name: "int"
+        value: "^-?\\d+#{"
+    }
+    type: {
+        name: "resize_mode"
+        value: "^scale}stretch}tile}tile_center#{"
+    }
+    type: {
+        name: "scrollbar_mode"
+        value: "^always}never}auto}initial_auto#{"
+    }
+    type: {
+        name: "string"
+        value: "^.*#{"
+    }
+    type: {
+        name: "t_string"
+        value: "^_?.*#{"
+    }
+    type: {
+        name: "unsigned"
+        value: "^\\d+#{"
+    }
+    type: {
+        name: "v_align"
+        value: "^top}bottom}center#{"
+    }
+    tag: {
+        name: "root"
+        min: "1"
+        max: "1"
+        tag: {
+            name: "generic"
+            min: "0"
+            max: "0"
+            tag: {
+                name: "listbox_grid"
+                min: "0"
+                max: "-1"
+                tag: {
+                    name: "row"
+                    min: "0"
+                    max: "-1"
+                    tag: {
+                        name: "column"
+                        min: "0"
+                        max: "-1"
+                        super: "gui/window/resolution/grid/row/column"
+                        link: {
+                            name: "gui/window/resolution/grid/row/column/toggle_button"
+                        }
+                        link: {
+                            name: "gui/window/resolution/grid/row/column/toggle_panel"
+                        }
+                        key: {
+                            name: "icon"
+                            type: "t_string"
+                            default: ""
+                        }
+                        key: {
+                            name: "label"
+                            type: "t_string"
+                            default: ""
+                        }
+                        key: {
+                            name: "tooltip"
+                            type: "t_string"
+                            default: ""
+                        }
+                        key: {
+                            name: "help"
+                            type: "t_string"
+                            default: ""
+                        }
+                        tag: {
+                            name: "widget"
+                            min: "0"
+                            max: "-1"
+                            key: {
+                                name: "id"
+                                type: "t_string"
+                                default: ""
+                            }
+                            key: {
+                                name: "icon"
+                                type: "t_string"
+                                default: ""
+                            }
+                            key: {
+                                name: "label"
+                                type: "t_string"
+                                default: ""
+                            }
+                            key: {
+                                name: "tooltip"
+                                type: "t_string"
+                                default: ""
+                            }
+                            key: {
+                                name: "help"
+                                type: "t_string"
+                                default: ""
+                            }
+                        }
+                    }
+                    key: {
+                        name: "grow_factor"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "shape"
+                min: "0"
+                max: "1"
+                key: {
+                    name: "immutable"
+                    type: "bool"
+                    default: false
+                }
+            }
+            tag: {
+                name: "state"
+                min: "0"
+                max: "1"
+                tag: {
+                    name: "draw"
+                    min: "0"
+                    max: "0"
+                    tag: {
+                        name: "circle"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/shape"
+                        key: {
+                            name: "border_color"
+                            type: "color"
+                            default: ""
+                        }
+                        key: {
+                            name: "border_thickness"
+                            type: "unsigned"
+                            default: "1"
+                        }
+                        key: {
+                            name: "fill_color"
+                            type: "f_color"
+                            default: ""
+                        }
+                        key: {
+                            name: "debug"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "radius"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                    }
+                    tag: {
+                        name: "image"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/shape"
+                        key: {
+                            name: "debug"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "h"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "name"
+                            type: "f_string"
+                            default: ""
+                        }
+                        key: {
+                            name: "resize_mode"
+                            type: "resize_mode"
+                            default: "scale"
+                        }
+                        key: {
+                            name: "vertical_mirror"
+                            type: "f_bool"
+                            default: false
+                        }
+                        key: {
+                            name: "w"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "actions"
+                            type: "string"
+                            default: ""
+                        }
+                    }
+                    tag: {
+                        name: "line"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/shape"
+                        key: {
+                            name: "color"
+                            type: "f_color"
+                            default: ""
+                        }
+                        key: {
+                            name: "debug"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "thickness"
+                            type: "unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x1"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x2"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y1"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y2"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "alpha"
+                            type: "f_unsigned"
+                            default: 255
+                        }
+                    }
+                    tag: {
+                        name: "pre_commit"
+                        min: "0"
+                        max: "1"
+                        super: "generic/shape"
+                        tag: {
+                            name: "blur"
+                            min: "0"
+                            max: "1"
+                            key: {
+                                name: "depth"
+                                type: "unsigned"
+                                default: 0
+                            }
+                        }
+                    }
+                    tag: {
+                        name: "rectangle"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/shape"
+                        key: {
+                            name: "border_color"
+                            type: "f_color"
+                            default: ""
+                        }
+                        key: {
+                            name: "border_thickness"
+                            type: "unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "debug"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "fill_color"
+                            type: "f_color"
+                            default: ""
+                        }
+                        key: {
+                            name: "h"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "w"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                    }
+                    tag: {
+                        name: "round_rectangle"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/state/draw/rectangle"
+                        key: {
+                            name: "corner_radius"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                    }
+                    tag: {
+                        name: "text"
+                        min: "0"
+                        max: "-1"
+                        super: "generic/shape"
+                        key: {
+                            name: "color"
+                            type: "f_color"
+                            default: ""
+                        }
+                        key: {
+                            name: "debug"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "font_family"
+                            type: "font_family"
+                            default: "sans"
+                        }
+                        key: {
+                            name: "font_size"
+                            type: "unsigned"
+                            mandatory: true
+                        }
+                        key: {
+                            name: "font_style"
+                            type: "font_style"
+                            default: ""
+                        }
+                        key: {
+                            name: "h"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "maximum_height"
+                            type: "f_int"
+                            default: -1
+                        }
+                        key: {
+                            name: "maximum_width"
+                            type: "f_int"
+                            default: -1
+                        }
+                        key: {
+                            name: "text"
+                            type: "f_tstring"
+                            default: ""
+                        }
+                        key: {
+                            name: "text_alignment"
+                            type: "f_h_align"
+                            default: "left"
+                        }
+                        key: {
+                            name: "text_markup"
+                            type: "f_bool"
+                            default: false
+                        }
+                        key: {
+                            name: "text_link_aware"
+                            type: "f_bool"
+                            default: false
+                        }
+                        key: {
+                            name: "text_link_color"
+                            type: "string"
+                            default: "#ffff00"
+                        }
+                        key: {
+                            name: "w"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "x"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                        key: {
+                            name: "y"
+                            type: "f_unsigned"
+                            default: 0
+                        }
+                    }
+                }
+            }
+            tag: {
+                name: "widget_definition"
+                min: "0"
+                max: "1"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    key: {
+                        name: "default_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "default_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "max_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "max_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "min_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "min_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    tag: {
+                        name: "linked_group"
+                        min: "0"
+                        max: "-1"
+                        key: {
+                            name: "fixed_height"
+                            type: "bool"
+                            default: false
+                        }
+                        key: {
+                            name: "fixed_width"
+                            type: "bool"
+                            default: false
+                        }
+                        key: {
+                            name: "id"
+                            type: "string"
+                            mandatory: true
+                        }
+                    }
+                    key: {
+                        name: "text_extra_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "text_extra_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "text_font_family"
+                        type: "font_family"
+                        default: "sans"
+                    }
+                    key: {
+                        name: "text_font_size"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "text_font_style"
+                        type: "font_style"
+                        default: ""
+                    }
+                    key: {
+                        name: "window_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "window_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+                key: {
+                    name: "description"
+                    type: "t_string"
+                    mandatory: true
+                }
+                key: {
+                    name: "id"
+                    type: "string"
+                    mandatory: true
+                }
+            }
+            tag: {
+                name: "widget_instance"
+                min: "0"
+                max: "-1"
+                key: {
+                    name: "debug_border_color"
+                    type: "color"
+                    default: ""
+                }
+                key: {
+                    name: "debug_border_mode"
+                    type: "unsigned"
+                    default: 0
+                }
+                key: {
+                    name: "definition"
+                    type: "string"
+                    default: "default"
+                }
+                key: {
+                    name: "help"
+                    type: "t_string"
+                    default: ""
+                }
+                key: {
+                    name: "id"
+                    type: "string"
+                    default: ""
+                }
+                key: {
+                    name: "label"
+                    type: "t_string"
+                    default: ""
+                }
+                key: {
+                    name: "linked_group"
+                    type: "string"
+                    default: ""
+                }
+                key: {
+                    name: "size_text"
+                    type: "t_string"
+                    default: ""
+                }
+                key: {
+                    name: "tooltip"
+                    type: "t_string"
+                    default: ""
+                }
+                key: {
+                    name: "use_tooltip_on_label_overflow"
+                    type: "bool"
+                    default: true
+                }
+                key: {
+                    name: "use_markup"
+                    type: "bool"
+                    default: false
+                }
+                key: {
+                    name: "can_shrink"
+                    type: "bool"
+                    default: false
+                }
+            }
+        }
+        tag: {
+            name: "gui"
+            min: "0"
+            max: "1"
+            tag: {
+                name: "addon_list_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "button_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_pressed"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "menu_button_definition"
+                min: "0"
+                max: "-1"
+                super: "gui/button_definition"
+            }
+            tag: {
+                name: "multimenu_button_definition"
+                min: "0"
+                max: "-1"
+                super: "gui/button_definition"
+            }
+            tag: {
+                name: "drawing_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "horizontal_listbox_definition"
+                min: "0"
+                max: "-1"
+                super: "gui/listbox_definition"
+            }
+            tag: {
+                name: "grid_listbox_definition"
+                min: "0"
+                max: "-1"
+                super: "gui/listbox_definition"
+            }
+            tag: {
+                name: "horizontal_scrollbar_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_pressed"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    key: {
+                        name: "left_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "maximum_positioner_length"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "minimum_positioner_length"
+                        type: "unsigned"
+                        mandatory: true
+                    }
+                    key: {
+                        name: "right_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "image_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "label_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    key: {
+                        name: "link_aware"
+                        type: "bool"
+                        default: false
+                    }
+                    key: {
+                        name: "link_color"
+                        type: "string"
+                        default: "#ffff00"
+                    }
+                }
+            }
+            tag: {
+                name: "listbox_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "matrix_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "content"
+                        min: "1"
+                        max: "1"
+                        super: "gui/window/resolution/grid"
+                    }
+                    tag: {
+                        name: "state_disabled"
+                        min: "1"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "1"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "minimap_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "chatbox_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "gui/panel_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "multi_page_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "panel_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "background"
+                        min: "0"
+                        max: "1"
+                        link: {
+                            name: "generic/state/draw"
+                        }
+                    }
+                    tag: {
+                        name: "foreground"
+                        min: "0"
+                        max: "1"
+                        link: {
+                            name: "generic/state/draw"
+                        }
+                    }
+                    key: {
+                        name: "bottom_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "left_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "right_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "top_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "progress_bar_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "repeating_button_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_pressed"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                }
+            }
+            tag: {
+                name: "scroll_label_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "content_grid"
+                        min: "0"
+                        max: "1"
+                        super: "gui/window/resolution/grid"
+                    }
+                    tag: {
+                        name: "scrollbar_grid"
+                        min: "0"
+                        max: "1"
+                        super: "gui/window/resolution/grid"
+                    }
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "scrollbar_panel_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "gui/window_definition/resolution"
+                }
+            }
+            tag: {
+                name: "settings"
+                min: "0"
+                max: "1"
+                key: {
+                    name: "double_click_time"
+                    type: "unsigned"
+                    mandatory: true
+                }
+                key: {
+                    name: "has_helptip_message"
+                    type: "t_string"
+                    mandatory: true
+                }
+                key: {
+                    name: "help_show_time"
+                    type: "unsigned"
+                    default: 0
+                }
+                key: {
+                    name: "popup_show_delay"
+                    type: "unsigned"
+                    default: 0
+                }
+                key: {
+                    name: "popup_show_time"
+                    type: "unsigned"
+                    default: 0
+                }
+                key: {
+                    name: "repeat_button_repeat_time"
+                    type: "unsigned"
+                    default: 0
+                }
+                key: {
+                    name: "sound_button_click"
+                    type: "string"
+                    default: ""
+                }
+                key: {
+                    name: "sound_slider_adjust"
+                    type: "string"
+                    default: ""
+                }
+                key: {
+                    name: "sound_toggle_button_click"
+                    type: "string"
+                    default: ""
+                }
+                key: {
+                    name: "sound_toggle_panel_click"
+                    type: "string"
+                    default: ""
+                }
+            }
+            tag: {
+                name: "size_lock_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "slider_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_pressed"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    key: {
+                        name: "left_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "maximum_positioner_length"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "minimum_positioner_length"
+                        type: "unsigned"
+                        mandatory: true
+                    }
+                    key: {
+                        name: "right_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "spacer_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+            }
+            tag: {
+                name: "stacked_widget_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "text_box_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    key: {
+                        name: "text_x_offset"
+                        type: "f_unsigned"
+                        default: ""
+                    }
+                    key: {
+                        name: "text_y_offset"
+                        type: "f_unsigned"
+                        default: ""
+                    }
+                }
+            }
+            tag: {
+                name: "tip"
+                min: "0"
+                max: "-1"
+                key: {
+                    name: "source"
+                    type: "t_string"
+                    mandatory: true
+                }
+                key: {
+                    name: "text"
+                    type: "t_string"
+                    mandatory: true
+                }
+            }
+            tag: {
+                name: "toggle_button_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state"
+                        min: "1"
+                        max: "-1"
+                        tag: {
+                            name: "enabled"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                        tag: {
+                            name: "disabled"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                        tag: {
+                            name: "focused"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                    }
+                }
+            }
+            tag: {
+                name: "toggle_panel_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state"
+                        min: "1"
+                        max: "-1"
+                        tag: {
+                            name: "enabled"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                        tag: {
+                            name: "disabled"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                        tag: {
+                            name: "focused"
+                            min: "0"
+                            max: "1"
+                            super: "generic/state"
+                        }
+                    }
+                    key: {
+                        name: "bottom_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "left_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "right_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "top_border"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "tree_view_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "unit_preview_pane_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "gui/panel_definition/resolution"
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            tag: {
+                name: "vertical_scrollbar_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "generic/widget_definition/resolution"
+                    tag: {
+                        name: "state_disabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_enabled"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_focused"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    tag: {
+                        name: "state_pressed"
+                        min: "0"
+                        max: "1"
+                        super: "generic/state"
+                    }
+                    key: {
+                        name: "bottom_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "maximum_positioner_length"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "minimum_positioner_length"
+                        type: "unsigned"
+                        mandatory: true
+                    }
+                    key: {
+                        name: "top_offset"
+                        type: "unsigned"
+                        default: 0
+                    }
+                }
+            }
+            tag: {
+                name: "window"
+                min: "0"
+                max: "-1"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    tag: {
+                        name: "background"
+                        min: "0"
+                        max: "1"
+                    }
+                    tag: {
+                        name: "foreground"
+                        min: "0"
+                        max: "1"
+                    }
+                    tag: {
+                        name: "grid"
+                        min: "1"
+                        max: "1"
+                        tag: {
+                            name: "row"
+                            min: "0"
+                            max: "-1"
+                            tag: {
+                                name: "column"
+                                min: "0"
+                                max: "-1"
+                                tag: {
+                                    name: "addon_list"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "install_status_visibility"
+                                        type: "string"
+                                        default: "visible"
+                                    }
+                                    key: {
+                                        name: "install_buttons_visibility"
+                                        type: "string"
+                                        default: "invisible"
+                                    }
+                                }
+                                tag: {
+                                    name: "button"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "return_value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "return_value_id"
+                                        type: "string"
+                                        default: ""
+                                    }
+                                }
+                                tag: {
+                                    name: "menu_button"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "gui/window/resolution/grid/row/column/button"
+                                    tag: {
+                                        name: "option"
+                                        min: "0"
+                                        max: "-1"
+                                        key: {
+                                            name: "label"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                        key: {
+                                            name: "tooltip"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                        key: {
+                                            name: "icon"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                    }
+                                }
+                                tag: {
+                                    name: "multimenu_button"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "gui/window/resolution/grid/row/column/button"
+                                    key: {
+                                        name: "maximum_shown"
+                                        type: "int"
+                                        default: "-1"
+                                    }
+                                    tag: {
+                                        name: "option"
+                                        min: "0"
+                                        max: "-1"
+                                        key: {
+                                            name: "label"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                        key: {
+                                            name: "tooltip"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                        key: {
+                                            name: "checkbox"
+                                            type: "bool"
+                                            default: ""
+                                        }
+                                    }
+                                }
+                                tag: {
+                                    name: "drawing"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    link: {
+                                        name: "generic/state/draw"
+                                    }
+                                    key: {
+                                        name: "height"
+                                        type: "f_unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "width"
+                                        type: "f_unsigned"
+                                        default: 0
+                                    }
+                                }
+                                tag: {
+                                    name: "horizontal_listbox"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "footer"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "header"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "list_data"
+                                        min: "0"
+                                        max: "1"
+                                        super: "generic/listbox_grid"
+                                    }
+                                    tag: {
+                                        name: "list_definition"
+                                        min: "0"
+                                        max: "1"
+                                        tag: {
+                                            name: "row"
+                                            min: "1"
+                                            max: "1"
+                                            super: "generic/listbox_grid/row"
+                                        }
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "has_minimum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                    key: {
+                                        name: "has_maximum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                }
+                                tag: {
+                                    name: "horizontal_scrollbar"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "image"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "instance"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "label"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "characters_per_line"
+                                        type: "unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "text_alignment"
+                                        type: "h_align"
+                                        default: "left"
+                                    }
+                                    key: {
+                                        name: "wrap"
+                                        type: "bool"
+                                        default: false
+                                    }
+                                }
+                                tag: {
+                                    name: "grid_listbox"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "footer"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "header"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "list_data"
+                                        min: "0"
+                                        max: "1"
+                                        super: "generic/listbox_grid"
+                                    }
+                                    tag: {
+                                        name: "list_definition"
+                                        min: "0"
+                                        max: "1"
+                                        tag: {
+                                            name: "row"
+                                            min: "1"
+                                            max: "1"
+                                            super: "generic/listbox_grid/row"
+                                        }
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "has_minimum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                    key: {
+                                        name: "has_maximum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                }
+                                tag: {
+                                    name: "listbox"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "footer"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "header"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "list_data"
+                                        min: "0"
+                                        max: "1"
+                                        super: "generic/listbox_grid"
+                                    }
+                                    tag: {
+                                        name: "list_definition"
+                                        min: "0"
+                                        max: "1"
+                                        tag: {
+                                            name: "row"
+                                            min: "1"
+                                            max: "1"
+                                            super: "generic/listbox_grid/row"
+                                        }
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "has_minimum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                    key: {
+                                        name: "has_maximum"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                }
+                                tag: {
+                                    name: "matrix"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "bottom"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "left"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "main"
+                                        min: "1"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid/row/column"
+                                    }
+                                    tag: {
+                                        name: "right"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "top"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                }
+                                tag: {
+                                    name: "minimap"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "chatbox"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "definition"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                }
+                                tag: {
+                                    name: "multi_page"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "page_data"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    tag: {
+                                        name: "page_definition"
+                                        min: "0"
+                                        max: "-1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                }
+                                tag: {
+                                    name: "pane"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "item_definition"
+                                        min: "1"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "grow_direction"
+                                        type: "grow_direction"
+                                        mandatory: true
+                                    }
+                                    key: {
+                                        name: "parallel_items"
+                                        type: "unsigned"
+                                        mandatory: true
+                                    }
+                                }
+                                tag: {
+                                    name: "panel"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    link: {
+                                        name: "gui/window/resolution/grid"
+                                    }
+                                }
+                                tag: {
+                                    name: "password_box"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "label"
+                                        type: "t_string"
+                                        default: ""
+                                    }
+                                }
+                                tag: {
+                                    name: "progress_bar"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "repeating_button"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "gui/window/resolution/grid/row/column/button"
+                                }
+                                tag: {
+                                    name: "scroll_label"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "wrap"
+                                        type: "bool"
+                                        default: true
+                                    }
+                                    key: {
+                                        name: "text_alignment"
+                                        type: "f_h_align"
+                                        default: "left"
+                                    }
+                                }
+                                tag: {
+                                    name: "scrollbar_panel"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "definition"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                }
+                                tag: {
+                                    name: "size_lock"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "height"
+                                        type: "f_unsigned"
+                                        mandatory: true
+                                    }
+                                    key: {
+                                        name: "width"
+                                        type: "f_unsigned"
+                                        mandatory: true
+                                    }
+                                    tag: {
+                                        name: "widget"
+                                        min: "1"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid/row/column"
+                                    }
+                                }
+                                tag: {
+                                    name: "slider"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "best_slider_length"
+                                        type: "unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "maximum_value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "maximum_value_label"
+                                        type: "t_string"
+                                        default: ""
+                                    }
+                                    key: {
+                                        name: "minimum_value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "minimum_value_label"
+                                        type: "t_string"
+                                        default: ""
+                                    }
+                                    key: {
+                                        name: "step_size"
+                                        type: "unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                }
+                                tag: {
+                                    name: "spacer"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "height"
+                                        type: "f_unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "width"
+                                        type: "f_unsigned"
+                                        default: 0
+                                    }
+                                }
+                                tag: {
+                                    name: "stacked_widget"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "layer"
+                                        min: "0"
+                                        max: "-1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                }
+                                tag: {
+                                    name: "text_box"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "history"
+                                        type: "string"
+                                        default: ""
+                                    }
+                                    key: {
+                                        name: "max_input_length"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "label"
+                                        type: "t_string"
+                                        default: ""
+                                    }
+                                }
+                                tag: {
+                                    name: "toggle_button"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    key: {
+                                        name: "icon"
+                                        type: "f_string"
+                                        default: ""
+                                    }
+                                    key: {
+                                        name: "return_value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "return_value_id"
+                                        type: "string"
+                                        default: ""
+                                    }
+                                }
+                                tag: {
+                                    name: "toggle_panel"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    link: {
+                                        name: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "return_value"
+                                        type: "int"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "return_value_id"
+                                        type: "string"
+                                        default: ""
+                                    }
+                                }
+                                tag: {
+                                    name: "tree_view"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "node"
+                                        min: "0"
+                                        max: "-1"
+                                        tag: {
+                                            name: "node_definition"
+                                            min: "0"
+                                            max: "-1"
+                                            super: "gui/window/resolution/grid"
+                                            key: {
+                                                name: "return_value_id"
+                                                type: "string"
+                                                default: ""
+                                            }
+                                        }
+                                        key: {
+                                            name: "id"
+                                            type: "string"
+                                            default: ""
+                                        }
+                                        key: {
+                                            name: "unfolded"
+                                            type: "bool"
+                                            default: false
+                                        }
+                                    }
+                                    key: {
+                                        name: "horizontal_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                    key: {
+                                        name: "indentation_step_size"
+                                        type: "unsigned"
+                                        default: 0
+                                    }
+                                    key: {
+                                        name: "vertical_scrollbar_mode"
+                                        type: "scrollbar_mode"
+                                        default: "initial_auto"
+                                    }
+                                }
+                                tag: {
+                                    name: "unit_preview_pane"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "definition"
+                                        min: "0"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid"
+                                    }
+                                    key: {
+                                        name: "image_mods"
+                                        type: "string"
+                                        default: "right"
+                                    }
+                                }
+                                tag: {
+                                    name: "vertical_scrollbar"
+                                    min: "0"
+                                    max: "1"
+                                    super: "generic/widget_instance"
+                                }
+                                tag: {
+                                    name: "viewport"
+                                    min: "0"
+                                    max: "-1"
+                                    super: "generic/widget_instance"
+                                    tag: {
+                                        name: "widget"
+                                        min: "1"
+                                        max: "1"
+                                        super: "gui/window/resolution/grid/row/column"
+                                    }
+                                }
+                                link: {
+                                    name: "gui/window/resolution/grid"
+                                }
+                                key: {
+                                    name: "border"
+                                    type: "border"
+                                    default: ""
+                                }
+                                key: {
+                                    name: "border_size"
+                                    type: "unsigned"
+                                    default: 0
+                                }
+                                key: {
+                                    name: "grow_factor"
+                                    type: "unsigned"
+                                    default: 0
+                                }
+                                key: {
+                                    name: "horizontal_alignment"
+                                    type: "h_align"
+                                    default: ""
+                                }
+                                key: {
+                                    name: "horizontal_grow"
+                                    type: "bool"
+                                    default: false
+                                }
+                                key: {
+                                    name: "vertical_alignment"
+                                    type: "v_align"
+                                    default: ""
+                                }
+                                key: {
+                                    name: "vertical_grow"
+                                    type: "bool"
+                                    default: false
+                                }
+                            }
+                            key: {
+                                name: "grow_factor"
+                                type: "unsigned"
+                                default: 0
+                            }
+                        }
+                        key: {
+                            name: "id"
+                            type: "string"
+                            default: ""
+                        }
+                        key: {
+                            name: "linked_group"
+                            type: "string"
+                            default: 0
+                        }
+                    }
+                    tag: {
+                        name: "helptip"
+                        min: "0"
+                        max: "1"
+                        super: "gui/window/resolution/tooltip"
+                    }
+                    tag: {
+                        name: "linked_group"
+                        min: "0"
+                        max: "-1"
+                        key: {
+                            name: "fixed_height"
+                            type: "bool"
+                            default: false
+                        }
+                        key: {
+                            name: "fixed_width"
+                            type: "bool"
+                            default: false
+                        }
+                        key: {
+                            name: "id"
+                            type: "string"
+                            mandatory: true
+                        }
+                    }
+                    tag: {
+                        name: "tooltip"
+                        min: "0"
+                        max: "1"
+                        key: {
+                            name: "id"
+                            type: "string"
+                            mandatory: true
+                        }
+                    }
+                    key: {
+                        name: "automatic_placement"
+                        type: "bool"
+                        default: true
+                    }
+                    key: {
+                        name: "click_dismiss"
+                        type: "bool"
+                        default: false
+                    }
+                    key: {
+                        name: "definition"
+                        type: "string"
+                        default: "default"
+                    }
+                    key: {
+                        name: "functions"
+                        type: "function"
+                        default: ""
+                    }
+                    key: {
+                        name: "height"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "horizontal_placement"
+                        type: "h_align"
+                        default: ""
+                    }
+                    key: {
+                        name: "maximum_height"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "maximum_width"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "reevaluate_best_size"
+                        type: "f_bool"
+                        default: false
+                    }
+                    key: {
+                        name: "vertical_placement"
+                        type: "v_align"
+                        default: ""
+                    }
+                    key: {
+                        name: "width"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "window_height"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "window_width"
+                        type: "unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "x"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                    key: {
+                        name: "y"
+                        type: "f_unsigned"
+                        default: 0
+                    }
+                }
+                key: {
+                    name: "description"
+                    type: "t_string"
+                    mandatory: true
+                }
+                key: {
+                    name: "id"
+                    type: "string"
+                    mandatory: true
+                }
+            }
+            tag: {
+                name: "window_definition"
+                min: "0"
+                max: "-1"
+                super: "generic/widget_definition"
+                tag: {
+                    name: "resolution"
+                    min: "0"
+                    max: "-1"
+                    super: "gui/panel_definition/resolution"
+                    link: {
+                        name: "gui/panel_definition/resolution/background"
+                    }
+                    link: {
+                        name: "gui/panel_definition/resolution/foreground"
+                    }
+                    link: {
+                        name: "gui/window/resolution/grid"
+                    }
+                }
+            }
+            key: {
+                name: "description"
+                type: "t_string"
+                mandatory: true
+            }
+            key: {
+                name: "id"
+                type: "string"
+                mandatory: true
+            }
+        }
+    }
+}

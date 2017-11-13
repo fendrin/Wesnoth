@@ -1,0 +1,412 @@
+--textdomain wesnoth-sotbe
+
+Scenario{
+    id: "06_Black_Flag"
+    name: _ "Black Flag"
+    map: "campaigns/Son_Of_The_Black_Eye/maps/06_Black_Flag.map"
+    <TURNS(26, 24, 22)
+
+    <DEFAULT_SCHEDULE!
+
+    next_scenario: "07_The_Desert_of_Death"
+
+    <SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+
+    side: {
+        side: 1
+        id: "Kapou'e"
+        type: "Orcish Leader"
+        controller: "human"
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        gold: 150
+        <BLACK_FLAG!
+    }
+
+    side: {
+        type: "General"
+        id: "Slowhand"
+        name: _ "Slowhand"
+        side: 2
+        team_name: "Humans"
+        user_team_name: _ "Humans"
+        canrecruit: true
+        recruit: {"Swordsman", "Fencer", "Mage", "Heavy Infantryman", "Bowman"}
+        <GOLD(110, 130, 150)
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(2, 6)
+
+    side: {
+        side: 3
+        no_leader: true
+        team_name: "Humans"
+        user_team_name: _ "Humans"
+
+        ai: {
+            <MODIFY_AI_ADD_CANDIDATE_ACTION(3, "main_loop", {
+                    candidate_action: {
+                        engine: "lua"
+                        name: "transport"
+                        id: "transport"
+                        max_score: 300000
+                        location: "campaigns/Son_Of_The_Black_Eye/ai/ca_transport_S6.lua"
+                    }
+            })
+        }
+    }
+
+    side: {
+        type: "General"
+        id: "Harman"
+        name: _ "Harman"
+        side: 4
+        team_name: "Humans"
+        user_team_name: _ "Humans"
+        canrecruit: true
+        facing: "sw"
+        recruit: {"Swordsman", "Fencer", "Mage", "Heavy Infantryman", "Bowman"}
+        <GOLD(100, 125, 150)
+        <FLAG_VARIANT("loyalist")
+    }
+
+    <STARTING_VILLAGES(4, 4)
+
+    side: {
+        side: 5
+        team_name: "Kapoue"
+        user_team_name: _ "Kapou’e"
+        no_leader: true
+    }
+
+    <SOTBE_TRACK(JOURNEY_06_NEW!)
+
+    event: {
+        name: "prestart"
+        do: ->
+            UNIT(5, "Orcish Grunt", 16, 12, {})
+            UNIT(5, "Orcish Archer", 17, 12, {})
+            UNIT(5, "Orcish Grunt", 20, 9, {})
+            UNIT(5, "Orcish Archer", 25, 12, {})
+            UNIT(5, "Orcish Grunt", 32, 23, {})
+            UNIT(5, "Orcish Archer", 31, 25, {})
+
+            Unit{
+                side: 2
+                id: "Landing Galleon"
+                type: "Transport Galleon"
+                ai_special: "guardian"
+                x: 6
+                y: 9
+            }
+
+            Unit{
+                <if EASY then {
+                    type: "Orcish Warrior"
+                } else {
+                    type: "Orcish Grunt"
+                }
+                id: "Affman"
+                name: _ "Affman"
+                side: 5
+                x: 27, y: 20
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Slowhand and Harman"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Kapou’e"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Grüü"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Pirk"
+                x: 26
+                y: 1
+            }
+            Recall{
+                id: "Gork"
+                x: 27
+                y: 1
+            }
+            Recall{
+                id: "Vraurk"
+                x: 28
+                y: 1
+            }
+
+            Recall{
+                id: "Grüü"
+                x: 25, y: 2
+            }
+
+            Recall{
+                id: "Jetto"
+                x: 24, y: 1
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "So, here is Tirigaz. But what’s going on?"
+            }
+            Message{
+                speaker: "Pirk"
+                message: _ "Looks like humans have attacked here too. You were right, Kapou’e, the humans have declared all-out war on us."
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Listen, if we are to meet with the rest of the Great Council, we have to repel this attack. You shamans hide here in the forest until we defeat them. It will be faster and easier for us if we don’t have to worry about protecting you."
+            }
+            Message{
+                speaker: "Gork"
+                message: _ "This is a wise choice. Good luck, Son of the Black-Eye."
+            }
+            Message{
+                speaker: "Slowhand"
+                image: "/portraits/humans/general.png~FL()"
+                message: _ "Haha! Our plan is going well, let’s surround them on land while our allies attack them from sea!"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: {"Pirk", "Gork", "Vraurk"}
+                }
+                variable: "stored_shamans"
+                kill: true
+            }
+    }
+
+    event: {
+        name: "turn 2"
+        do: ->
+            Message{
+                speaker: "Affman"
+                message: _ "Look, a party of our kind approaches from the North."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Greetings from Kapou’e, Son of the Black-Eye Karun."
+            }
+
+            Message{
+                speaker: "Affman"
+                message: _ "Son of the great Black-Eye Karun?! You do us honor, Chief."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Do not grovel like humans, just tell me what’s going on here."
+            }
+
+            Message{
+                speaker: "Affman"
+                message: _ "I don’t really know, one day all was calm and peaceful and the next day a fleet of human ships showed up and began spewing out troops. Did our best to hold them off, but they captured the northern keep. And then human reinforcements arrived from their settlements to the South."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Are the shamans safe?"
+            }
+
+            Message{
+                speaker: "Affman"
+                message: _ "When we realized that there was no way we could hold the humans off, we sent them east to a place near the Mourned Hills along with most of our women and children. The rest of us remained here to buy them some time."
+            }
+
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Wise decision. We have actually come to speak to the shamans, but while we are here we must help you out of this scrape. Grüü, hold them while I run to the keep and organize our forces to counterattack. We can’t defeat them by sea without ships, but we can destroy the foothold they have gained on the land."
+            }
+
+            Message{
+                speaker: "Grüü"
+                message: _ "I love this strategy, Chief!"
+            }
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            If{
+                variable: {
+                    name: "turn_number"
+                    <if EASY then {
+                        less_than: 4
+                    } else {
+                        less_than: 5
+                    }
+                }
+
+                then: ->
+                    NOTRAIT_UNIT(3, "Transport Galleon", 1, 30)
+
+                    Store_Locations{
+                        x: "14-28"
+                        y: "14-29"
+                        terrain: "Ww"
+
+                        filter_adjacent_location: {
+                            terrain: "!, W*"
+                        }
+
+                        not: {
+                            find_in: "already_picked_transport_destination_surroundings"
+                        }
+
+                        variable: "possible_transport_destinations"
+                    }
+
+                    VARIABLE_OP("transport_destination_index", "rand", "1..#{possible_transport_destinations.length")
+                    VARIABLE_OP("transport_destination_index", "sub", 1)
+
+                    Modify_Unit{
+                        filter: {
+                            x: 1, y: 30
+                        }
+
+                        variables: {
+                            destination_x: possible_transport_destinations[transport_destination_index].x
+                            destination_y: possible_transport_destinations[transport_destination_index].y
+                        }
+                    }
+
+                    Store_Locations{
+                        x: possible_transport_destinations[transport_destination_index].x
+                        y: possible_transport_destinations[transport_destination_index].y
+                        radius: 2
+
+                        filter_radius: {
+                            terrain: "Ww"
+                        }
+
+                        or: {
+                            find_in: "already_picked_transport_destination_surroundings"
+                        }
+
+                        variable: "already_picked_transport_destination_surroundings"
+                    }
+
+                    CLEAR_VARIABLE("transport_destination_index,possible_transport_destinations")
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            side: 3
+            not: {
+                type: "Transport Galleon"
+            }
+        }
+        do: ->
+            Message{
+                x: x1, y: y1
+                message: _ "Let’s get those orcs!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+
+        filter: {
+            type: "Transport Galleon"
+            x: 1, y: 30
+        }
+        do: ->
+            Kill{
+                id: unit.id
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Slowhand"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Aaaargh! I die!"
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Finally, you pay for what you did to my orc brothers!"
+                image: "portraits/kapoue-angry.png"
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Kapou'e"
+                message: _ "We are victorious at last. Someone go tell the shamans that they can come out now."
+            }
+
+            Foreach{
+                array: "stored_shamans"
+                do: ->
+                    Unstore_Unit{
+                        variable: "this_item"
+                        find_vacant: true
+                    }
+                
+            }
+            CLEAR_VARIABLE("stored_shamans")
+
+            Message{
+                speaker: "Gork"
+                message: _ "Congratulations on your victory, Kapou’e. You do honor to the memory of your father."
+            }
+            Message{
+                speaker: "Kapou'e"
+                message: _ "Thanks, but I have news. Since the forces here were certain they were going to be defeated, they sent the shamans to the Mourned Hills. If we want to meet them, we must go after them."
+            }
+            Message{
+                speaker: "Pirk"
+                message: _ "Oh, great. That means we have to cross the Desert of Death which is full of poisonous giant scorpions and human outlaws. And bypassing it would take too long! Not to mention after this desert, we’ll have to cross the Silent Forest!"
+            }
+            Message{
+                speaker: "Grüü"
+                message: _ "Well, we have no choice... I’ve never tasted scorpions but I am sure they are good. This journey will be fun."
+            }
+
+            CLEAR_VARIABLE("already_picked_transport_destination_surroundings")
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+}

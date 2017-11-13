@@ -1,0 +1,100 @@
+--textdomain wesnoth-tb
+Textdomain{
+    name: "wesnoth-tb"
+}
+
+-- wmlscope: set export=no
+Campaign{
+    id: "Two_Brothers"
+    rank: 5
+    year: "363 YW"
+    icon: "units/human-loyalists/knight/knight.png~RC(magenta>red)~CROP(6,4,72,72)"
+    image: "data/campaigns/Two_Brothers/images/campaign_image.png"
+    name: _ "A Tale of Two Brothers"
+    abbrev: _ "AToTB"
+    define: "CAMPAIGN_TWO_BROTHERS"
+    first_scenario: "01_Rooting_Out_a_Mage"
+
+    <CAMPAIGN_DIFFICULTY("EASY", "units/human-loyalists/horseman/horseman.png~RC(magenta>red)", _ "Horseman", _ "Beginner"), <DEFAULT_DIFFICULTY!
+    <CAMPAIGN_DIFFICULTY("HARD", "units/human-loyalists/grand-knight/grand-knight.png~RC(magenta>red)", _ "Knight", _ "Challenging")
+
+    description: _ "An evil mage is threatening the small village of Maghre and its inhabitants. The village’s mage sends to his warrior brother for help, but not all goes as planned. Can you help?
+
+" .. _ "(Novice level, 4 scenarios.)"
+
+    about: {
+        images: "story/Two_Brothers_M1P1.png,story/Two_Brothers_M1P2.png,story/Two_Brothers_M2P1.png,story/Two_Brothers_M4P1_the_end.png"
+    }
+
+    about: {
+        title: _ "Campaign Design"
+        entry: {
+            name: "Eric J. Mesoy (Circon)"
+        }
+        entry: {
+            name: "Nils Kneuper (Ivanovic)"
+        }
+    }
+    about: {
+        title: _ "Prose and Story Edits"
+        entry: {
+            name: "Eric S. Raymond (esr)"
+        }
+        entry: {
+            name: "A-Red"
+        }
+    }
+    about: {
+        title: _ "Campaign Maintenance"
+        entry: {
+            name: "Nils Kneuper (Ivanovic)"
+        }
+        entry: {
+            name: "Charles Dang (vultraz)"
+        }
+    }
+    about: {
+        title: _ "Artwork and Graphics Design"
+        entry: {
+            name: "Arkadiusz Danileki (szopen)"
+        }
+        entry: {
+            name: "Kathrin Polikeit (Kitty)"
+            comment: "current portraits"
+        }
+        entry: {
+            name: "MadMax"
+        }
+        entry: {
+            name: "Stefan"
+        }
+    }
+    about: {
+        title: _ "Miscellaneous"
+        entry: {
+            name: "Bartek Waresiak (Dragonking)"
+        }
+        entry: {
+            name: "Christoph Berg (chrber)"
+        }
+        entry: {
+            name: "Daravel"
+        }
+        entry: {
+            name: "Jozrael"
+        }
+        entry: {
+            name: _ "And special thanks to everyone else who I forgot to mention."
+        }
+    }
+}
+
+if CAMPAIGN_TWO_BROTHERS
+    Binary_Path{
+        path: "data/campaigns/Two_Brothers"
+    }
+    INCLUDE("campaigns/Two_Brothers/utils")
+    INCLUDE("campaigns/Two_Brothers/scenarios")
+
+
+-- wmllint: directory spelling Baran Arvith Maghre Brena Tairach Toen Caric Mordak

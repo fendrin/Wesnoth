@@ -1,0 +1,362 @@
+--textdomain wesnoth-utbs
+-- by Asa Swain
+
+Textdomain{
+    name: "wesnoth-utbs"
+}
+
+-- wmlscope: set export=no
+Campaign{
+    id: "Under_the_Burning_Suns"
+    name: _ "Under the Burning Suns"
+    icon: "data/campaigns/Under_the_Burning_Suns/images/units/elves-desert/kaleh.png"
+    image: "data/campaigns/Under_the_Burning_Suns/images/campaign_image.png"
+    abbrev: _ "UtBS"
+    rank: 250
+    year: "300 AF"
+    define: "CAMPAIGN_UNDER_THE_BURNING_SUNS"
+    first_scenario: "01_The_Morning_After"
+
+    description: _ "In the distant future a small band of elves struggles to survive amidst the ruins of fallen empires. Lead your people out of the desert on an epic journey to find a new home.
+
+" .. _ "(Expert level, 10 scenarios.)"
+
+    <CAMPAIGN_DIFFICULTY("EASY", "data/campaigns/Under_the_Burning_Suns/images/units/elves-desert/hunter.png~RC(magenta>red)", _ "Desert Hunter", _ "Normal")
+    <CAMPAIGN_DIFFICULTY("NORMAL", "data/campaigns/Under_the_Burning_Suns/images/units/elves-desert/sentinel.png~RC(magenta>red)", _ "Desert Sentinel", _ "Challenging")
+    <CAMPAIGN_DIFFICULTY("HARD", "data/campaigns/Under_the_Burning_Suns/images/units/elves-desert/prowler.png~RC(magenta>red)", _ "Desert Prowler", _ "Nightmare")
+    <CAMPAIGN_DIFFICULTY("EASY_NEW", "data/campaigns/Under_the_Burning_Suns/images/units/quenoth/fighter.png~RC(magenta>red)", _ "Fighter", _ "Normal, redesigned elf units")
+    <CAMPAIGN_DIFFICULTY("NORMAL_NEW", "data/campaigns/Under_the_Burning_Suns/images/units/quenoth/warrior.png~RC(magenta>red)", _ "Warrior", _ "Challenging, redesigned elf units"), <DEFAULT_DIFFICULTY!
+    <CAMPAIGN_DIFFICULTY("HARD_NEW", "data/campaigns/Under_the_Burning_Suns/images/units/quenoth/champion.png~RC(magenta>red)", _ "Champion", _ "Nightmare, redesigned elf units")
+
+-- UTBS credits
+    about: {
+        title: _ "Campaign Design"
+        entry: {
+            name: "Asa Swain"
+        }
+        entry: {
+            name: "Piotr Cychowski (Mist/cycholka)"
+        }
+    }
+    about: {
+        title: _ "Campaign Maintenance"
+        entry: {
+            name: "Ignacio R. Morelle (shadowm)"
+        }
+        entry: {
+            name: "Jan Rietema (Rhuvaen)"
+        }
+        entry: {
+            name: "Lari Nieminen (zookeeper)"
+        }
+        entry: {
+            name: "Piotr Cychowski (Mist/cycholka)"
+        }
+        entry: {
+            name: "Simon Forsyth (Alarantalara)"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+        }
+    }
+    about: {
+        title: _ "Artwork and Graphics Design"
+        entry: {
+            name: "Dan Gerhards (beetlenaut)"
+            comment: "new Flesh Golem sprites"
+        }
+        entry: {
+            name: "David Limbrock (Kwandulin)"
+            comment: "New Kaleh and Nym sprites"
+        }
+        entry: {
+            name: "doofus-01"
+            comment: "Monster Crab sprite"
+        }
+        entry: {
+            name: "Hogne Haskjold (Frame)"
+        }
+        entry: {
+            name: "Ignacio R. Morelle (shadowm)"
+        }
+        entry: {
+            name: "J.W. Bjerk (Eleazar)"
+        }
+        entry: {
+            name: "James Woo (Pickslide)"
+        }
+        entry: {
+            name: "Javier Hoyos (Vendanna)"
+        }
+        entry: {
+            name: "Marcus Rosén (sleepwalker)"
+            comment: "Dark Assassin sprite and animations"
+        }
+        entry: {
+            name: "Mark Goodenough (Ranger M)"
+        }
+        entry: {
+            name: "Mikolaj Machowski (Emdot)"
+        }
+        entry: {
+            name: "Murray Cook (Zhukov)"
+        }
+        entry: {
+            name: "Peter Geinitz (Shadow)"
+        }
+        entry: {
+            name: "Richard Kettering (Jetrel)"
+        }
+        entry: {
+            name: "Sangel"
+        }
+        entry: {
+            name: "Samuel Wilson (megane)"
+        }
+        entry: {
+            name: "Scott Klempner"
+        }
+        entry: {
+            name: "Vincent Langner (Vyncyn)"
+            comment: "Spider Lich and Human Commander sprites"
+        }
+        entry: {
+            name: "Zerovirus"
+            comment: "Naga Hunter sprite"
+        }
+    }
+    about: {
+        title: _ "Miscellaneous"
+        entry: {
+            name: "Fabian Müller (Fabi/Fendrin)"
+        }
+        entry: {
+            name: "Mark Polo"
+        }
+        entry: {
+            name: "Matthias Schoeck (mattsc)"
+            comment: "Messenger AI"
+        }
+        entry: {
+            name: "Isaac"
+        }
+        entry: {
+            name: "Ringcaat (Thorin N. Tatge)"
+        }
+        entry: {
+            name: _ "And special thanks to everyone else who I forgot to mention."
+        }
+    }
+}
+
+--textdomain wesnoth
+Language{
+    amend: true
+    EASY_NEW: _ "Easy"
+    NORMAL_NEW: _ "Medium"
+    HARD_NEW: _ "Hard"
+}
+--textdomain wesnoth-utbs
+
+if CAMPAIGN_UNDER_THE_BURNING_SUNS
+
+    if EASY_NEW
+        EASY: () -> {
+            }true
+            UTBSNEW: () -> {
+                }true
+            
+
+            if NORMAL_NEW
+                NORMAL: () -> {
+                    }true
+                    UTBSNEW: () -> {
+                        }true
+                    
+
+                    if HARD_NEW
+                        HARD: () -> {
+                            }true
+                            UTBSNEW: () -> {
+                                }true
+                            
+
+                            if UTBSNEW
+
+-- Need to re-load this for ON_DIFFICULTY to not break due to a missing
+-- EASY/NORMAL/HARD symbol
+                                INCLUDE("core/macros/utils.cfg")
+                            
+
+                            Binary_Path{
+                                path: "data/campaigns/Under_the_Burning_Suns"
+                            }
+
+-- Define macro that expands into include paths for this campaign
+                            UTBS_INCLUDE: (TARGET_VALUE) -> {
+err: ../attic/data/campaigns/Under_the_Burning_Suns/_main.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 196:     {campaigns/Under_the_Burning_Suns/{TARGET_VALUE}}
+                            }
+
+-- Define macro that expands into map_data keys that include this campaign's path
+                            UTBS_MAP: (TARGET_VALUE) -> {
+                                map_data: "#{campaigns/Under_the_Burning_Suns/maps/#{TARGET_VALUE}}"
+                            }
+
+--Append utils folder
+                            UTBS_INCLUDE("utils")
+
+                            if UTBSNEW
+-- Add global events
+                                Campaign{
+                                    amend: true
+                                    <WEAPON_SPECIAL_DAZE_EVENTS!
+                                    <ABILITY_FORMATION_EVENTS!
+                                    <ABILITY_DISENGAGE_EVENTS!
+                                    <ABILITY_SUPPORT_EVENTS!
+
+-- Quenoth Youths have a non-null advances_to= in order to prevent them from
+-- having purple xp bars (until all advancements have been gained); these
+-- events make sure that they've nullified before advancement (to prevent the
+-- unit type from appearing in the advancement menu) and restored afterwards.
+                                    event: {
+                                        name: "pre advance"
+                                        first_time_only: false
+
+                                        filter: {
+                                            type: {"Quenoth Youth", "Quenoth Youth 2", "Quenoth Youth 3"}
+                                        }
+                                        do: ->
+                                            VARIABLE("unit.advances_to", "null")
+
+                                            Unstore_Unit{
+                                                variable: "unit"
+                                                find_vacant: false
+                                                advance: false
+                                            }
+                                    }
+                                    event: {
+                                        name: "post advance"
+                                        first_time_only: false
+
+                                        filter: {
+                                            type: "Quenoth Youth 3"
+
+                                            not: {
+                                                filter_wml: {
+                                                    modifications: {
+                                                        advancement: {
+                                                            exclude_amla: {"warrior_2_1", "warrior_2_2"}
+                                                        }
+                                                        advancement: {
+                                                            exclude_amla: {"hunter_2_1", "hunter_2_2"}
+                                                        }
+                                                        advancement: {
+                                                            exclude_amla: {"leader_2_1", "leader_2_2"}
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        do: ->
+                                            VARIABLE("unit.advances_to", "Quenoth Youth 3")
+
+                                            Unstore_Unit{
+                                                variable: "unit"
+                                                find_vacant: false
+                                                advance: false
+                                            }
+                                    }
+
+-- On recruit, this switches the higher-recruit-cost units to the normal
+-- types, so that the different cost variations don't need to be taken into
+-- account for example in unit filters.
+                                    DISCARD_RECRUIT_COST_HELPER_UNITS: (TYPE) -> {
+                                        event: {
+                                            name: "recruit"
+                                            first_time_only: false
+
+                                            filter: {
+                                                race: "elf"
+                                            }
+
+                                            filter_condition: {
+                                                variable: {
+                                                    name: "unit.type"
+                                                    contains: TYPE
+                                                }
+
+                                                variable: {
+                                                    name: "unit.type"
+                                                    not_equals: TYPE
+                                                }
+                                            }
+                                            do: ->
+                                                VARIABLE("unit.type", TYPE)
+
+                                                Unstore_Unit{
+                                                    variable: "unit"
+                                                    find_vacant: false
+                                                }
+                                        }
+                                    }
+
+                                    <DISCARD_RECRUIT_COST_HELPER_UNITS("Quenoth Fighter")
+                                    <DISCARD_RECRUIT_COST_HELPER_UNITS("Quenoth Scout")
+                                    <DISCARD_RECRUIT_COST_HELPER_UNITS("Quenoth Mystic")
+                                    <DISCARD_RECRUIT_COST_HELPER_UNITS("Tauroch Rider")
+                                }
+                            
+
+--Append Units
+                            Units{
+                                <UTBS_INCLUDE("units/units.cfg")
+
+                                <if UTBSNEW then {
+                                    <UTBS_INCLUDE("units/quenoth")
+                                } else {
+                                    <UTBS_INCLUDE("units/elves")
+                                }
+
+                                <UTBS_INCLUDE("units/humans")
+                                <UTBS_INCLUDE("units/monsters")
+                                <UTBS_INCLUDE("units/nagas")
+                                <UTBS_INCLUDE("units/orcs")
+                                <UTBS_INCLUDE("units/undead")
+
+                                hide_help: {
+-- wmllint: markcheck off
+                                    type_adv_tree: {"Elvish Fighter", "Elvish Shaman", "Elvish Archer", "Elvish Scout", "Elvish Lord", "Wose"}
+-- wmllint: markcheck on
+                                    type: "Elvish Lady"
+                                }
+                            }
+
+                            if UTBSNEW
+                                UTBS_INCLUDE("scenarios")
+                            } else {
+                                UTBS_INCLUDE("scenarios_old")
+                            
+
+                            Lua{
+                                code: "wesnoth.require 'campaigns/Under_the_Burning_Suns/lua/theme.lua'"
+                            }
+
+                        
+
+                        if EDITOR
+                            Binary_Path{
+                                path: "data/campaigns/Under_the_Burning_Suns"
+                            }
+                            Editor_Group{
+                                id: "utbs"
+                                name: _ "Under the Burning Suns"
+                                icon: "group_mainline"
+                            }
+                            INCLUDE("campaigns/Under_the_Burning_Suns/utils/terrain.cfg")
+                            INCLUDE("campaigns/Under_the_Burning_Suns/utils/terrain_graphics.cfg")
+                        
+
+-- wmllint: directory spellings Kaleh Nym Zhul Garak Quenoth Eloh Uria Tanuil
+-- wmllint: directory spellings Melusand Esanoo Zurg Grimnir Tanstafaal
+-- wmllint: directory spellings Yechnagoth Zocthanol Zhangor Sela Naia Keratur
+-- wmllint: directory spellings Jarl Rogrimir

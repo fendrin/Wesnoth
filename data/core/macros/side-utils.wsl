@@ -1,0 +1,239 @@
+--textdomain wesnoth
+
+-- Side-utils macros for balancing AI behaviour and setting village ownership.
+-- You can, for example give an AI side the possibility to recruit high
+-- level units but not to have too many of them at the same time.
+
+-- Note: These generate events, so they need to be placed directly
+-- under your [scenario] tag, and not within an event such as start or
+-- prestart.
+
+LIMIT_CONTEMPORANEOUS_RECRUITS = (SIDES, TYPE, LIMIT_NUMBER) -> {
+-- Limit the number of units passing a specified filter that a side
+-- can have simultaneously. When the number of matching units
+-- side has reaches or exceeds LIMIT_NUMBER, that side is prevented from
+-- recruiting more until the number of units of that type drops
+-- below LIMIT_NUMBER again.
+--
+-- Allow sides 2 and 3 no more than 2 Troll Rocklobbers at a time
+--! {LIMIT_CONTEMPORANEOUS_RECRUITS 2,3 "Troll Rocklobber" 2}
+    event: {
+        name: "side turn"
+        first_time_only: false
+        filter_condition: {
+-- Note: we cannot simply check if {SIDES} contains $side_number,
+-- because that would break for side numbers >9 ("12" would contain
+-- both "1" and "2", etc). So instead, we check whether there exists
+-- a unit which belongs both to the current side as well as {SIDES}.
+            have_unit: {
+                side: side_number
+
+                and: {
+                    side: SIDES
+                }
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    side: side_number
+                    type: TYPE
+                    count: "#{LIMIT_NUMBER}-99999"
+                }
+
+                then: ->
+                    Disallow_Recruit{
+                        side: side_number
+                        type: TYPE
+                    }
+                
+
+                else: ->
+                    Allow_Recruit{
+                        side: side_number
+                        type: TYPE
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "recruit"
+        first_time_only: false
+        filter: {
+            side: SIDES
+            type: TYPE
+        }
+        filter_condition: {
+            have_unit: {
+                side: side_number
+                type: TYPE
+                count: "#{LIMIT_NUMBER}-99999"
+            }
+        }
+        do: ->
+            Disallow_Recruit{
+                side: side_number
+                type: TYPE
+            }
+    }
+}
+
+LIMIT_RECRUITS = (SIDE, TYPE, LIMIT_NUMBER) -> {
+-- Limit the total number of units passing a specified filter that a given
+-- side can recruit in the scenario.
+--
+-- Allow side 2 no more than 1 Draug in the entire scenario
+--! {LIMIT_RECRUITS 2 Draug 1}
+
+    event: {
+        name: "prestart"
+
+-- the array holding the recruit-limited types is cleared here, because
+-- it could hold values carried over from the previous scenario
+err: ../attic/data/core/macros/side-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 95:         {CLEAR_VARIABLE side_{SIDE}_limited_recruits}
+
+err: ../attic/data/core/macros/side-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 97:         {VARIABLE side_{SIDE}_limited_recruits_length -1}
+
+    }
+
+    event: {
+        name: "victory"
+
+-- Clear our variables on victory
+err: ../attic/data/core/macros/side-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 105:         {CLEAR_VARIABLE side_{SIDE}_limited_recruits,side_{SIDE}_limited_recruits_length}
+
+    }
+
+-- when the side recruits this given type for the first time, it's recorded
+-- in an array that holds info on all the recruit-limited types for this side
+
+    event: {
+        name: "recruit"
+        first_time_only: true
+
+        filter: {
+            side: SIDE
+            type: TYPE
+        }
+err: ../attic/data/core/macros/side-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 120:         {VARIABLE_OP side_{SIDE}_limited_recruits_length add 1}
+
+err: ../attic/data/core/macros/side-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 122:         {VARIABLE side_{SIDE}_limited_recruits[$side_{SIDE}_limited_recruits_length|].type $unit.type}
+
+    }
+
+-- and every time when the side recruits this given type, we increment a
+-- counter, and if it matches or exceeds the limit, we disallow recruiting
+-- more of those units
+
+    event: {
+        name: "recruit"
+        first_time_only: false
+
+        filter: {
+            side: SIDE
+            type: TYPE
+        }
+
+        foreach: {
+            array: "side_#{SIDE}_limited_recruits"
+            do: ->
+                If{
+                    variable: {
+                        name: "this_item.type"
+                        equals: unit.type
+                    }
+
+                    then: ->
+                        VARIABLE_OP("this_item.number_recruited", "add", 1)
+                        If{
+                            variable: {
+                                name: "this_item.number_recruited"
+                                greater_than_equal_to: LIMIT_NUMBER
+                            }
+
+                            then: ->
+                                Disallow_Recruit{
+                                    side: SIDE
+                                    type: TYPE
+                                }
+                            
+                        }
+                    
+                }
+            
+        }
+    }
+}
+
+CAPTURE_VILLAGES_OF_TYPE = (TERRAIN, SIDE, X, Y, RADIUS) -> {
+-- Change ownership of the villages on a specified terrain type
+-- near a specified location.
+    capture_village: {
+        side: SIDE
+        terrain: TERRAIN
+        and: {
+            x: X, y: Y
+            radius: RADIUS
+        }
+    }
+}
+
+CAPTURE_VILLAGES = (SIDE, X, Y, RADIUS) -> {
+-- Change ownership of all villages near a specified location.
+    <CAPTURE_VILLAGES_OF_TYPE("*^V*", SIDE, X, Y, RADIUS)
+}
+
+STARTING_VILLAGES = (SIDE, RADIUS) -> {
+-- Macro to make a side start a scenario with villages.
+-- Creates an event, so it must be called from within the
+-- toplevel scenario tag.  Also note that this relies on the
+-- side having a unit with canrecruit-yes at start; if it
+-- doesn't, you should use STARTING_VILLAGES_AREA instead.
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Starting_Location{
+                side: SIDE
+                variable: "temp_starting_location"
+            }
+
+            CAPTURE_VILLAGES(SIDE, temp_starting_location.x, temp_starting_location.y, RADIUS)
+            CLEAR_VARIABLE("temp_starting_location")
+    }
+}
+
+STARTING_VILLAGES_AREA = (SIDE, X, Y, RADIUS) -> {
+-- Make a side start with ownership of villages in a given area.
+-- Creates an event, so it must be called from within the
+-- toplevel scenario tag.
+    event: {
+        name: "prestart"
+        do: ->
+            CAPTURE_VILLAGES(SIDE, X, Y, RADIUS)
+    }
+}
+
+STARTING_VILLAGES_ALL = (SIDE) -> {
+-- Make a side start with ownership of all villages.
+-- Creates an event, so it must be called from within the
+-- toplevel scenario tag.
+    event: {
+        name: "prestart"
+        do: ->
+            Capture_Village{
+                side: SIDE
+                terrain: "*^V*"
+            }
+    }
+}
+
+TRANSFER_VILLAGE_OWNERSHIP = (FROM_SIDE, TO_SIDE) -> {
+-- Transfers ownership of all villages of one side to another side. Useful
+-- when you're for example moving all units of some side to another, and want
+-- to transfer the village ownership as well.
+    capture_village: {
+        owner_side: FROM_SIDE
+        side: TO_SIDE
+    }
+}

@@ -1,0 +1,210 @@
+--textdomain wesnoth-sota
+
+Scenario{
+    name: _ "Together Again"
+    map: "campaigns/Secrets_of_the_Ancients/maps/13_Together_Again.map"
+    theme: "Cutscene_Minimal"
+
+    id: "13_Together_Again"
+    next_scenario: "14_Entering_the_Northlands"
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/elf-road.jpg"
+                scale: false
+            }
+            story: _ "21 IV, 23 YW
+
+I never would have been able to escape the trees without ghosts. They had proven their worth and saved my life. Thus Ras-Tabahn had also moved up in my estimation. After we escaped the trees, we met no more resistance on the road, and soon arrived at the meeting place where Ras-Tabahn was waiting."
+        }
+        <JOURNEY_PART(13)
+    }
+
+    <DEFAULT_MUSIC_PLAYLIST!
+
+    side: {
+        <SIDE_1_ARDONNA!
+        gold: 0
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            For{
+                array: "rastabahn_recall_list"
+                variable: "i"
+                do: ->
+                    Unstore_Unit{
+                        variable: "rastabahn_recall_list[#{i]"
+                    }
+                
+            }
+            Gold{
+                side: 1
+                amount: rastabahn_gold
+            }
+            Clear_Variable{
+                name: {"rastabahn_gold", "rastabahn_recall_list"}
+            }
+
+-- Only one Shynal will be recalled.
+            Recall{
+                id: "Shynal"
+                x: 13, y: 2
+            }
+            Recall{
+                id: "Corpse Shynal"
+                x: 13, y: 2
+            }
+            Recall{
+                id: "Carcyn"
+                x: 14, y: 3
+            }
+            Recall{
+                id: "Ras-Tabahn"
+                x: 14, y: 2
+            }
+            Modify_Unit{
+                filter: {
+                    side: 1
+                }
+                facing: "sw"
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Ardonna"
+                }
+                facing: "ne"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Delay{
+                time: 1000
+            }
+            Move_Unit{
+                id: "Ardonna"
+                to_x: 13
+                to_y: 3
+            }
+            Recall{
+                id: "Bone Captain"
+                x: 12, y: 3
+                show: false
+            }
+            Recall{
+                id: "Vendraxis"
+                x: 13, y: 4
+                show: false
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Vendraxis"
+                }
+                facing: "ne"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Greetings Ardonna! (<i>Cough</i>) I was successful, and I see that you were as well."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Well met, Ras-Tabahn. Yes I was. Now, can you explain the mission you spoke of?"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Gladly. I assume you studied the great mage Crelanu in history class. He fought with King Haldric the First. Since he faced the immortal lords of the Green Isle directly, he undoubtedly knows more than we about their methods. Recently, I have learned where to find him."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Of course I know about Crelanu. But can we force him to reveal his knowledge to us?"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "That shouldn’t be necessary. I have also learned that he wrote a book containing all his secrets, which must include all he knows of immortality. We need only borrow this book. I knew that getting that book was not something I could accomplish on my own, but now, with a force such as ours, it should be easily done."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Yes, that seems like a plan with a good chance of success. I will join you in your effort."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "I thought as much. We must cross the Great River, and head north into the Heart Mountains."
+            }
+            If{
+                have_unit: {
+                    id: "Vendraxis"
+                }
+                then: ->
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Before we leave, I have an unrelated question. Vendraxis here has said that my name is untrue. Do you have an idea what could that mean?"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Ardonna"
+                        message: _ "Before we leave, I have an unrelated question. I met a mystic who said that my name was untrue. Do you have an idea what could that mean?"
+                    }
+                
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Possibly. When an academy mage completes his studies, he is granted syllables of power, which become his new name. You are well beyond that point, but you are with the free magi now, so choose your own name. I was originally Rassin Tabin, but that is fairly ordinary, and at one point, it no longer suited."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "I suppose you are right. I am no longer the ordinary girl Ardonna, and Vendraxis was correct. From now I shall be... Ardryn-Na."
+            }
+-- We will change her name, but will keep using the same id.
+            Modify_Unit{
+                filter: {
+                    id: "Ardonna"
+                }
+                name: _ "Ardryn-Na"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "Well then Ardryn-Na, let us head north."
+            }
+            Delay{
+                time: 1000
+            }
+
+-- Now that Ardonna is the leader again, we need to add DAs to her list, and
+-- maybe Chocobones too:
+            Allow_Recruit{
+                side: 1
+                type: "Dark Adept SotA"
+            }
+            If{
+                variable: {
+                    name: "bird_bones_found"
+                    equals: true
+                }
+                then: ->
+                    Allow_Recruit{
+                        side: 1
+                        type: "Chocobone"
+                    }
+                
+            }
+
+            Endlevel{
+                result: "victory"
+                linger_mode: false
+                carryover_report: false
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+            }
+    }
+    JOURNEY_STAGE8 = nil
+    JOURNEY_STAGE9 = nil
+    JOURNEY_STAGE10 = nil
+    JOURNEY_STAGE11 = nil
+    JOURNEY_STAGE12 = nil
+    JOURNEY_STAGE13 = nil
+}

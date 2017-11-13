@@ -1,0 +1,552 @@
+--textdomain wesnoth-tsg
+Scenario{
+    id: "06a_Tidings_Good_and_Ill"
+
+    name: _ "Tidings, Good and Ill"
+    next_scenario: "07a_Into_the_Depths"
+
+    <SCENARIO_MUSIC("loyalists.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+
+    map: "campaigns/The_South_Guard/maps/06a_Tidings_Good_and_Ill.map"
+
+    INCLUDE("campaigns/The_South_Guard/utils/sg_deaths.cfg")
+    INCLUDE("campaigns/The_South_Guard/utils/sg_help.cfg")
+
+    <DEFAULT_SCHEDULE_DUSK!
+
+    turns: 18
+    victory_when_enemies_defeated: false
+
+    <TSG_BIGMAP(JOURNEY_06A_NEW!)
+
+-- Deoran will be removed and Gerrick instated as the leader in a prestart
+-- event.
+
+    side: {
+        side: 1
+        type: "Horseman Commander"
+        id: "Deoran"
+        name: _ "Deoran"
+        profile: "portraits/deoran.png"
+        unrenamable: true
+
+        team_name: "South_Guard"
+        user_team_name: _ "South Guard"
+        controller: "human"
+        <CUSTOM_SG_FLAG!
+
+        gold: 0
+        income: 0
+
+        shroud: true
+        fog: true
+
+        canrecruit: true
+    }
+
+-- Miscellaneous Enemy Combatants
+
+    side: {
+        side: 2
+
+        team_name: "Various_Baddies"
+        user_team_name: _ "Enemies"
+        no_leader: true
+        hidden: true
+
+        controller: "ai"
+
+        <NAMED_GENERIC_UNIT(2, "Saurian Skirmisher", 8, 21, "Ssesseth", _ "Ssesseth"), <GUARDIAN!
+        <NAMED_GENERIC_UNIT(2, "Saurian Skirmisher", 17, 16, "Zasz", _ "Zasz"), <GUARDIAN!
+        <NAMED_GENERIC_UNIT(2, "Saurian Skirmisher", 8, 16, "Zerix", _ "Zerix"), <GUARDIAN!
+
+        <NAMED_GENERIC_UNIT(2, "Giant Scorpion", 14, 16, "Scorpion", _ "Scorpion"), <GUARDIAN!
+        <NAMED_GENERIC_UNIT(2, "Ogre", 4, 10, "Kramak", _ "Kramak"), <GUARDIAN!
+
+        <NAMED_GENERIC_UNIT(2, "Naga Fighter", 13, 9, "Issorai", _ "Issorai"), <GUARDIAN!
+        <NAMED_GENERIC_UNIT(2, "Naga Fighter", 14, 9, "Zarr", _ "Zarr"), <GUARDIAN!
+
+--wmllint: local spelling Xeila
+        <if EASY then {
+            <NAMED_GENERIC_UNIT(2, "Dark Adept", 8, 1, "Abdur", _ "Abdur"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Naga Fighter", 12, 8, "Queen Xeila", _ "Queen Xeila"), <GUARDIAN!
+        }
+
+        <if NORMAL then {
+            <NAMED_GENERIC_UNIT(2, "Saurian Skirmisher", 9, 14, "Ssanur", _ "Ssanur"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Dark Adept", 8, 1, "Abdur", _ "Abdur"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Naga Warrior", 12, 8, "Queen Xeila", _ "Queen Xeila"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Naga Fighter", 13, 7, "Lesssh", _ "Lesssh"), <GUARDIAN!
+        }
+
+        <if HARD then {
+            <NAMED_GENERIC_UNIT(2, "Saurian Ambusher", 9, 14, "Ssanur", _ "Ssanur"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Dark Adept", 8, 1, "Abdur", _ "Abdur"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Dark Adept", 7, 1, "Kallen", _ "Kallen"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Naga Myrmidon", 12, 8, "Queen Xeila", _ "Queen Xeila"), <GUARDIAN!
+            <NAMED_GENERIC_UNIT(2, "Naga Warrior", 13, 7, "Lesssh", _ "Lesssh"), <GUARDIAN!
+        }
+    }
+
+--prestart
+
+    event: {
+        name: "prestart"
+
+-- Store away Deoran, Ethiliel and her bodyguards, so
+-- that only Gerrick, human troops and the rest of the elves remain.
+-- wmllint: recognize Ethiliel
+-- wmllint: recognize Minister Hylas
+-- wmllint: recognize Elvish Bodyguard
+-- wmllint: recognize Sir Gerrick
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: "Deoran"
+                }
+
+                kill: true
+                variable: "stored_Deoran"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Ethiliel"
+                }
+
+                kill: true
+                variable: "stored_Ethiliel"
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Minister Hylas"
+                }
+
+                kill: true
+                variable: "stored_Hylas"
+            }
+
+            Store_Unit{
+                filter: {
+                    side: 1
+                    role: "Elvish Bodyguard"
+                }
+
+                kill: true
+                variable: "stored_elvish_bodyguards"
+            }
+
+-- Store Deoran’s gold so it can be restored in Into the Depths and set
+-- Gerrick’s gold to 75.
+
+            Store_Side{
+                side: 1
+                variable: "stored_Deoran_side"
+            }
+
+            Modify_Side{
+                side: 1
+                gold: 75
+            }
+
+-- Recall Gerrick and set him as the leader.
+
+            Recall{
+                id: "Sir Gerrick"
+                x: 16, y: 23
+            }
+
+            MODIFY_UNIT({id: "Sir Gerrick"}, "overlays", "")
+            MODIFY_UNIT({id: "Sir Gerrick"}, "canrecruit", true)
+            MODIFY_UNIT({id: "Sir Gerrick"}, "ellipse", "")
+
+            Set_Recruit{
+                side: 1
+                recruit: {"Elvish Fighter", "Elvish Shaman"}
+            }
+
+            If{
+                variable: {
+                    name: "has_mermen"
+                    equals: "yes"
+                }
+                then: ->
+                    Allow_Recruit{
+                        side: 1
+                        type: "Merman Hunter"
+                    }
+                
+            }
+
+            Unit{
+                type: "Elvish Ranger"
+                id: "Eliomir"
+                name: _ "Eliomir"
+                x: 17, y: 22
+                facing: "sw"
+                side: 1
+                modifications: {
+                    <TRAIT_LOYAL!
+                    <TRAIT_DEXTROUS!
+                }
+                <IS_LOYAL!
+            }
+    }
+
+--start
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Eliomir"
+                message: _ "Sir Gerrick, you must make it back to Kerlath Province and warn your people of the danger from the south. We will lead you through the forest and clear any foes from your path. You may choose some of your veterans to go with you as well, and any ones you leave behind will still have time to join Ethiliel and Deoran."
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: {"8-10", 9}
+                y: {"0-1", 2}
+            }
+
+            HIGHLIGHT_IMAGE(9, 1, "items/gohere.png", {})
+
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "With the bandits and undead vanquished behind us, what foes can there be ahead? Let us hope this is a speedy journey, for the specter of winter looms."
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Sir Gerrick to the north end of the woods"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Defeat the Queen Xeila"
+                    condition: "win"
+                    show_if: {
+                        variable: {
+                            name: "naga_queen_sighted"
+                            boolean_equals: true
+                        }
+                        have_unit: {
+                            id: "Queen Xeila"
+                        }
+                    }
+                }
+                objective: {
+                    description: _ "Death of Sir Gerrick"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 0
+                }
+
+                note: {
+                    description: _ "Recalled units will be unavailable to Deoran."
+                }
+            }
+    }
+
+-- The nagas are sighted, and move to defend their home.
+-- They are enraged if you allied with the mermen in "Born to the Banner"
+
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Queen Xeila"
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "has_mermen"
+                    equals: "yes"
+                }
+                then: ->
+                    Message{
+-- wmllint: local spelling Hss
+                        speaker: "Queen Xeila"
+                        message: _ "Hss... Here are the humans who have made a pact with the cursed mermen! Hss..."
+                    }
+                    Message{
+                        speaker: "Eliomir"
+                        message: _ "We have stumbled into a den of nagas!"
+                    }
+                    Message{
+                        speaker: "Queen Xeila"
+                        message: _ "Hss... We will kill them all, my brood. Hss..."
+                    }
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "We must clear this road for Deoran and Ethiliel! We must destroy the naga lair!"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Queen Xeila"
+                        message: _ "Hss... elves! Are they friends or enemies? Hss..."
+                    }
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "We are weary travelers, seeking our homes. If you but let us pass..."
+                    }
+                    Message{
+                        speaker: "Queen Xeila"
+                        message: _ "Hss... And humans! Humans drained our swamps and made them fields for farms, and now they have found my winter nest. The Land-Walkers must die! Hss..."
+                    }
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "She won’t listen. If we leave these nagas here, they will ambush Deoran and Ethiliel! We must destroy them!"
+                    }
+                
+            }
+
+            VARIABLE("naga_queen_sighted", true)
+
+            Show_Objectives{}
+    }
+
+    event: {
+        name: "sighted"
+        filter: {
+            type: {"Naga Fighter", "Naga Warrior", "Naga Myrmidon"}
+
+            not: {
+                id: "Queen Xeila"
+            }
+        }
+        do: ->
+            If{
+                variable: {
+                    name: "naga_queen_sighted"
+                    not_equals: true
+                }
+
+                then: ->
+                    Message{
+                        speaker: "second_unit"
+                        message: _ "There are a group of naga occupying this area... they don’t look very friendly."
+                    }
+
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "If they are hostile to us, they could endanger Deoran and Ethiliel as well. Perhaps their leader can be reasoned with."
+                    }
+                
+            }
+    }
+
+-- Queen Xeila dies...
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Queen Xeila"
+        }
+        do: ->
+            Message{
+                speaker: "Queen Xeila"
+                message: _ "Hss... Who will watch over my brood now? Hss..."
+            }
+    }
+
+-- Kramak, the wild ogre
+
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Kramak"
+        }
+        do: ->
+            Message{
+                speaker: "Kramak"
+--po: The ogre purposely has very bad grammar, because he is very stupid.
+                message: _ "Ho! Me see elves. Elves tasty? Me take elves to eat."
+            }
+            Message{
+                speaker: "second_unit"
+-- wmllint: local spelling Mr.
+                message: _ "Err, Mr. Ogre, we are not very tasty."
+            }
+            Message{
+                speaker: "Kramak"
+                message: _ "Oh. Me only want tasty food. Go away."
+            }
+            Message{
+                speaker: "Kramak"
+                message: _ "..."
+            }
+            Message{
+                speaker: "Kramak"
+                message: _ "Wait! Me not believe you. Me eat you!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Kramak"
+        }
+        do: ->
+            Message{
+                speaker: "Kramak"
+                message: _ "Bad food! It hurt me. Arrrrggghhhh!!"
+            }
+    }
+
+-- The Dark Adept's Story
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Abdur"
+        }
+        do: ->
+            Message{
+                speaker: "Abdur"
+                message: _ "Travelers in this desolate land! I seek that dark Sage who is rumored to dwell in these lands. Surely you have come from him?"
+            }
+            Message{
+                speaker: "Sir Gerrick"
+                message: _ "Indeed! I just left my comrades, who were preparing to kill the vile Necromancer."
+            }
+            Message{
+                speaker: "Abdur"
+                message: _ "Unworthy fools! I’ll kill you for this sacrilege!"
+            }
+    }
+
+-- Sir Gerrick moves to the head of the road
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            id: "Sir Gerrick"
+            x: 9, y: 1
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Queen Xeila"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "These naga are still in control of the road. We must clear the way for Deoran and Ethiliel!"
+                    }
+
+                    Allow_Undo{}
+                
+
+                else: ->
+                    Remove_Item{
+                        x: 9, y: 1
+                    }
+
+                    Message{
+                        speaker: "Sir Gerrick"
+                        message: _ "I will hasten back to Kerlath Province now and seek the advice of the Council of Westin..."
+                    }
+                    Message{
+                        speaker: "Eliomir"
+                        message: _ "We too will return to our councils. We have much to tell them... Much indeed."
+                    }
+                    Message{
+                        speaker: "narrator"
+                        message: _ "While the council debated the best course of action, Deoran and Ethiliel prepared to enter the caves under Mebrin’s fortress..."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(100)
+                        carryover_report: false
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "victory"
+
+-- The next scenario is again led by Deoran, so store away Gerrick and
+-- his troops, except those remaining on the recall list.
+        do: ->
+            Heal_Unit{
+                filter: {
+                    side: 1
+                }
+                amount: "full"
+                animate: false
+                moves: "full"
+                restore_attacks: true
+                restore_status: true
+            }
+
+            Store_Unit{
+                filter: {
+                    id: "Sir Gerrick"
+                }
+
+                kill: true
+                variable: "stored_Sir_Gerrick"
+            }
+
+            VARIABLE("stored_Sir_Gerrick.canrecruit", false)
+            VARIABLE("stored_Sir_Gerrick.ellipse", "misc/ellipse-hero")
+            VARIABLE("stored_Sir_Gerrick.overlays", "misc/hero-icon.png")
+
+            Store_Unit{
+                variable: "stored_Sir_Gerrick_army"
+                filter: {
+                    side: 1
+                    <NOT_ON_RECALL_LIST!
+                }
+                kill: true
+            }
+
+-- Reinstate Deoran as the leader and unstore Hylas, Ethiliel and
+-- troops so they're all again recallable in the next scenario.
+
+            Unstore_Unit{
+                variable: "stored_Deoran"
+                x: "recall", y: "recall"
+            }
+
+            Unstore_Unit{
+                variable: "stored_Ethiliel"
+            }
+
+            Unstore_Unit{
+                variable: "stored_Hylas"
+            }
+
+            Foreach{
+                array: "stored_elvish_bodyguards"
+                do: ->
+                    Unstore_Unit{
+                        variable: "this_item"
+                    }
+                
+            }
+
+            Modify_Side{
+                side: 1
+                gold: stored_Deoran_side.gold
+            }
+
+            CLEAR_VARIABLE("stored_Deoran_side")
+            CLEAR_VARIABLE("stored_Deoran")
+            CLEAR_VARIABLE("stored_Ethiliel")
+            CLEAR_VARIABLE("stored_Hylas")
+            CLEAR_VARIABLE("stored_elvish_bodyguards")
+            CLEAR_VARIABLE("has_mermen,naga_queen_sighted")
+    }
+}

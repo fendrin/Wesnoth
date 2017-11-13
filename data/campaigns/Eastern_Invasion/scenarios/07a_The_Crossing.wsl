@@ -1,0 +1,413 @@
+--textdomain wesnoth-ei
+Scenario{
+    id: "07a_The_Crossing"
+    name: _ "The Crossing"
+    map: "campaigns/Eastern_Invasion/maps/07a_The_Crossing.map"
+    turns: 24
+    next_scenario: "08_Training_the_Ogres"
+
+    <DEFAULT_SCHEDULE!
+
+    <INTRO_AND_SCENARIO_MUSIC("loyalists.ogg", "revelation.ogg"), <LET_INTRO_MUSIC_FINISH!
+
+    <EI_TRACK(JOURNEY_07A_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <GOLD(180, 170, 160)
+        team_name: "good"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+-- wmllint: recognize Gweddry
+        <CHARACTER_STATS_GWEDDRY!
+    }
+-- wmllint: validate-on
+
+    side: {
+        type: "Bone Knight"
+        id: "Garnad"
+        name: _ "Garnad"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        recruit: {"Skeleton Rider", "Vampire Bat", "Skeleton", "Skeleton Archer"}
+        ai: {
+            recruitment_pattern: {"fighter", "fighter", "scout", "scout", "archer"}
+            aggression: 1.0
+            grouping: false
+            <NO_SCOUTS!
+        }
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <GOLD(100, 150, 200)
+        <FLAG_VARIANT("undead")
+    }
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Vampire Bat", 3)
+
+    side: {
+        type: "Orcish Ruler"
+        id: "Draka-Kura"
+        name: _ "Draka-Kura"
+        side: 3
+        canrecruit: true
+        controller: "ai"
+        recruit: {"Wolf Rider", "Orcish Grunt", "Orcish Archer", "Orcish Crossbowman", "Goblin Pillager"}
+        team_name: "evil"
+        user_team_name: _ "Evil"
+        <GOLD(150, 200, 250)
+        <FLAG_VARIANT6("ragged")
+
+        <LOYAL_UNIT({}, "Orcish Grunt", 19, 9), <GUARDIAN!
+        <LOYAL_UNIT({}, "Orcish Archer", 25, 8), <GUARDIAN!
+        <LOYAL_UNIT({}, "Orcish Grunt", 32, 8), <GUARDIAN!
+    }
+
+    <LIMIT_RECRUITS(3, "Orcish Crossbowman", 1)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Goblin Pillager", 1)
+
+    side: {
+        type: "Ogre"
+        id: "Grug"
+        name: _ "Grug"
+        unrenamable: true
+        side: 4
+        canrecruit: true
+        facing: "sw"
+        controller: "ai"
+        recruit: "Young Ogre"
+        team_name: "monster"
+        user_team_name: _ "Monsters"
+        <GOLD(150, 130, 100)
+        ai: {
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 3
+                }
+                value: 100
+            }
+            recruitment_pattern: "fighter"
+            <NO_SCOUTS!
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Gweddry and Owaec across the river"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Owaec"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 70
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Recall{
+                id: "Dacyn"
+            }
+            Recall{
+                id: "Owaec"
+            }
+
+            Hide_Unit{
+                id: "Garnad"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "We have come to the Great River. Should we cross here, or try to find a ford?"
+            }
+            Message{
+                speaker: "Dacyn"
+                message: _ "We must cross here. The undead are chasing us, and their hordes are much too great for us to defeat. We've haven't faced even a small part of their force yet. We need to cross the river before the bulk of their army arrives!"
+            }
+            Message{
+                speaker: "Owaec"
+                message: _ "Across this river lies the Northlands. If we can get there, we may be able to get some ogres to help us — but the orcs will definitely attack us before that happens."
+            }
+            Message{
+                speaker: "Grug"
+                message: _ "Grug say we no help you! We finish must battle orc with!"
+            }
+            Message{
+                speaker: "Draka-Kura"
+                message: _ "Was that comprehensible to anyone? Silence, foolish ogre. I will deal with you later. Right now there are men trying to cross this river."
+            }
+            Message{
+                speaker: "Grug"
+                message: _ "Orc foolish! Die you now!"
+            }
+            Message{
+                speaker: "Dacyn"
+                message: _ "If we show ourselves as enemies of the orcs, they may aid us. But first we need to cross the river."
+            }
+    }
+
+    event: {
+        name: "side 2 turn 1"
+        do: ->
+            Move_Unit_Fake{
+                x: {37, 37, 36}
+                y: {31, 30, 29}
+                side: 2
+                type: "Bone Knight"
+            }
+
+            Unhide_Unit{
+                id: "Garnad"
+            }
+
+            Terrain{
+                x: 36, y: 29
+                terrain: "Ke"
+            }
+
+            Terrain{
+                x: {35, 35, 36, 36, 37}
+                y: {29, 30, 28, 30, 30}
+                terrain: "Ce"
+            }
+
+            REPLACE_SCENARIO_MUSIC("legends_of_the_north.ogg")
+            APPEND_MUSIC("casualties_of_war.ogg")
+            APPEND_MUSIC("siege_of_laurelmor.ogg")
+
+            Message{
+                speaker: "Garnad"
+                message: _ "We have you now, mortals!"
+            }
+            Message{
+                speaker: "Dacyn"
+                message: _ "They're closing in on us! We must get moving quickly."
+            }
+    }
+
+    event: {
+        name: "side 2 turn 7"
+        do: ->
+            GENERIC_UNIT(2, "Revenant", 32, 30)
+            GENERIC_UNIT(2, "Revenant", 34, 30)
+            GENERIC_UNIT(2, "Bone Shooter", 32, 31)
+            if HARD
+                GENERIC_UNIT(2, "Bone Shooter", 34, 31)
+            
+            Unit{
+                type: "Lich"
+                id: "Mal-Hakralan"
+                name: _ "Mal-Hakralan"
+                side: 2
+                canrecruit: true
+                x: 33
+                y: 31
+            }
+
+            Modify_Unit{
+                filter: {
+                    id: "Garnad"
+                }
+
+                canrecruit: false
+                <IS_EXPENDABLE_LEADER!
+            }
+
+            Message{
+                speaker: "Mal-Hakralan"
+                message: _ "I see, this is where the scared dogs ran to. Don't think you can get away <b>this</b> easily."
+            }
+            Message{
+                speaker: "Dacyn"
+                message: _ "The undead reinforcements have arrived! We must cross the river immediately!"
+            }
+
+            if EASY
+                Gold{
+                    side: 2
+                    amount: 500
+                }
+            } else {
+                if NORMAL
+                    Gold{
+                        side: 2
+                        amount: 600
+                    }
+
+                } else {
+                    Gold{
+                        side: 2
+                        amount: 750
+                    }
+
+                
+            
+            Allow_Recruit{
+                side: 2
+                type: {"Deathblade", "Revenant", "Bone Shooter", "Blood Bat"}
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            y: "1-12"
+            not: {
+                terrain: "W*"
+            }
+            and: {
+                id: "Gweddry"
+                or: {
+                    id: "Owaec"
+                }
+            }
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Hurry up. We must get across before these undead slaughter us!"
+            }
+
+            Allow_Undo{
+            }
+    }
+
+--event where you win if you get to the other side
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            filter_location: {
+                y: "1-12"
+                not: {
+                    terrain: "W*"
+                }
+            }
+            and: {
+                id: "Gweddry"
+                or: {
+                    id: "Owaec"
+                }
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Gweddry"
+                    filter_location: {
+                        y: "1-12"
+                        not: {
+                            terrain: "W*"
+                        }
+                    }
+                }
+                have_unit: {
+                    id: "Owaec"
+                    filter_location: {
+                        y: "1-12"
+                        not: {
+                            terrain: "W*"
+                        }
+                    }
+                }
+                then: ->
+                    Message{
+                        speaker: "Dacyn"
+                        message: _ "Good! We have crossed. Now let’s see if we can get the ogres to join us. They have been convinced to work for the Crown in the past; maybe it can be done again."
+                    }
+                    If{
+                        have_unit: {
+                            id: "Grug"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Grug"
+                                message: _ "Grug say join you will he."
+                            }
+
+                            Modify_Unit{
+                                filter: {
+                                    id: "Grug"
+                                }
+
+                                side: 1
+                                canrecruit: false
+                                <IS_LOYAL!
+
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TEAM_COLOR_OVERRIDE({}, "purple")
+                                }
+                            }
+
+                            Unit{
+                                name: _ "Gork"
+                                side: 1
+                                type: "Ogre"
+                                x: "recall", y: "recall"
+                                random_traits: true
+                            }
+                            Unit{
+                                name: _ "Drog"
+                                side: 1
+                                type: "Ogre"
+                                x: "recall", y: "recall"
+                                random_traits: true
+                            }
+
+                            Endlevel{
+                                result: "victory"
+                                next_scenario: "09_Xenophobia"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(70)
+                            }
+                        
+
+                        else: ->
+                            Endlevel{
+                                result: "victory"
+                                bonus: false
+                                <NEW_GOLD_CARRYOVER(70)
+                            }
+                        
+                    }
+                
+                else: ->
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    <WESNOTH_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+    <HERODEATH_OWAEC!
+    <HERODEATH_GRUG!
+}

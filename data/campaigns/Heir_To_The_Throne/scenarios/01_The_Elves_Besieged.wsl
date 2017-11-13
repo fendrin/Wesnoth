@@ -1,0 +1,606 @@
+--textdomain wesnoth-httt
+Scenario{
+    id: "01_The_Elves_Besieged"
+    name: _ "The Elves Besieged"
+    next_scenario: "02_Blackwater_Port"
+    victory_when_enemies_defeated: false
+    map: "campaigns/Heir_To_The_Throne/maps/01_The_Elves_Besieged.map"
+    <TURNS(16, 14, 12)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("battle.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+    <EXTRA_SCENARIO_MUSIC("suspense.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+-- Chantal can't be killed for storyline reasons.
+-- Prevent AIs from getting too close.
+    AVOID_CHANTAL: () -> {
+        avoid: {
+            x: "2-4", y: "22-24"
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            VARIABLE("besieged_enemies_killed", 0)
+            NEED_DELFADOR({x: 19, y: 23})
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Konrad to the signpost in the northwest"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Konrad"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    INCLUDE("campaigns/Heir_To_The_Throne/utils/intro.cfg")
+    <HTTT_TRACK(JOURNEY_01_NEW!)
+
+    <STARTING_VILLAGES(5, 10)
+    <STARTING_VILLAGES(6, 10)
+    <STARTING_VILLAGES(1, 3)
+    <STARTING_VILLAGES_AREA(6, 7, 10, 6)
+    <STARTING_VILLAGES_AREA(5, 17, 3, 1)
+    <STARTING_VILLAGES_AREA(6, 9, 40, 10)
+    <STARTING_VILLAGES_AREA(5, 26, 31, 5)
+    <STARTING_VILLAGES_AREA(5, 29, 46, 1)
+
+-- wmllint: recognize Kalenz
+
+    side: {
+        type: "Fighter"
+        id: "Konrad"
+        name: _ "Konrad"
+        unrenamable: true
+        profile: "portraits/konrad-elvish.png"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Elvish Scout", "Elvish Fighter", "Elvish Archer", "Elvish Shaman"}
+        gold: 100
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        ai: {
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Delfador"
+                }
+                value: 3.0
+            }
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Delfador"
+                }
+                protect_radius: 6
+                value: 20.0
+            }
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Konrad"
+                }
+                protect_radius: 10
+                value: 20.0
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Kalenz"
+                }
+                value: 3.0
+            }
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    id: "Kalenz"
+                }
+                protect_radius: 4
+                value: 20.0
+            }
+
+            avoid: {
+                x: "20-31"
+                y: "1-12"
+            }
+
+            leader_goal: {
+                x: 1, y: 1
+            }
+        }
+        <FLAG_VARIANT("long")
+    }
+
+    <if HARD then {
+        HIGH_PRIORITY_TARGETS: () -> {
+
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Delfador"
+                }
+                value: 100
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Konrad"
+                }
+                value: 100
+            }
+        }
+    }
+
+--macro which tells the AI not to start thinking about
+--whether it's a bad idea to send trolls into the forest
+--against elves, and just do it
+    EBESIEGED_RECRUITMENT: () -> {
+        ai: {
+            simple_targeting: true
+        }
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Urug-Telfar"
+        name: _ "Urug-Telfar"
+        side: 2
+        canrecruit: true
+        image: "portraits/orcs/grunt-2.png"
+        recruit: {"Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Crossbowman", "Orcish Assassin", "Troll"}
+        gold: 400
+        ai: {
+            recruitment_pattern: {"scout", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(1, 3, 5)
+            <AVOID_CHANTAL!
+            <if HARD then {
+                <HIGH_PRIORITY_TARGETS!
+            }
+        }
+        <EBESIEGED_RECRUITMENT!
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Knafa-Tan"
+        name: _ "Knafa-Tan"
+        side: 3
+        canrecruit: true
+        recruit: {"Orcish Warrior", "Wolf Rider", "Orcish Crossbowman", "Orcish Assassin", "Troll"}
+        <EBESIEGED_RECRUITMENT!
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <GOLD(200, 300, 500)
+        ai: {
+            <ATTACK_DEPTH(1, 3, 5)
+            <AVOID_CHANTAL!
+            <if HARD then {
+                <HIGH_PRIORITY_TARGETS!
+            }
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Maga-Knafa"
+        name: _ "Maga-Knafa"
+        side: 4
+        canrecruit: true
+        recruit: {"Orcish Warrior", "Wolf Rider", "Orcish Crossbowman", "Troll Warrior", "Orcish Slayer"}
+        <EBESIEGED_RECRUITMENT!
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <GOLD(200, 300, 500)
+        ai: {
+            <ATTACK_DEPTH(1, 3, 5)
+            <AVOID_CHANTAL!
+            <if HARD then {
+                <HIGH_PRIORITY_TARGETS!
+            }
+        }
+        <FLAG_VARIANT6("ragged")
+    }
+
+--allies of Konrad
+    side: {
+        type: "Elvish Champion"
+        id: "Galdrad"
+        name: _ "Galdrad"
+        side: 5
+        canrecruit: true
+        recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Ranger"}
+        ai: {
+            recruitment_pattern: {"fighter", "archer", "mixed fighter"}
+        }
+        gold: 170
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    side: {
+        type: "Elvish Shyde"
+        id: "Chantal"
+        name: _ "Chantal"
+        profile: "portraits/chantal-shyde.png"
+        side: 6
+        canrecruit: true
+        recruit: {"Elvish Shaman", "Elvish Archer", "Elvish Fighter"}
+        ai: {
+            passive_leader: "yes"
+            passive_leader_shares_keep: "yes"
+            recruitment_pattern: {"archer", "archer", "fighter", "fighter", "healer"}
+        }
+        gold: 170
+        team_name: "elves"
+        user_team_name: _ "Rebels"
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Sixteen years into her rule, Asheviere turned her attention to the wood elves living in the great forest southwest of Wesnoth, whom she despised. Orcish mercenaries were hired and dispatched to bring about their ruin."
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Master Delfador! Look, there are orcs coming from all directions! What shall we do?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "There are too many to fight, far too many. We must escape!"
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("concerned")
+                message: _ "But to where? This is the only home we have! What about the elves?"
+            }
+            Message{
+                speaker: "Galdrad"
+                message: _ "We will fight them, but you must escape, Konrad. It is imperative that you escape!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "We will go north. Perhaps we can reach the Isle of Alduin. If we can make it there, surely we will be safe. Konrad, we must recruit some elves to help us, and then you must make it to the sign post in the northwest. I will protect you!"
+            }
+            Message{
+                speaker: "Konrad"
+                message: _ "Very well, let us hurry!"
+            }
+            Message{
+                speaker: "Urug-Telfar"
+                message: _ "Attack the elves, my grunts, and take their villages. Let us claim this land for the Queen!"
+            }
+
+--on hard level, the enemies will specifically target Delfador and Konrad
+            if HARD
+                Message{
+                    speaker: "Knafa-Tan"
+                    message: _ "Remember, it is rumored that the filthy mage and one that he protects are in these parts. They are the ones we want!"
+                }
+            } else {
+                Message{
+                    speaker: "Knafa-Tan"
+                    message: _ "Ha ha! We will rip the filthy elves to pieces!"
+                }
+            
+            Message{
+                speaker: "Galdrad"
+                message: _ "Let them come. We will fight them with all we have!"
+            }
+            Message{
+                speaker: "Chantal"
+                message: _ "Be careful, Konrad! Guard him well, Delfador!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Do not spend your life here, Chantal. Someone must warn the Northern Elves that the war we so long feared has begun."
+            }
+
+            HIGHLIGHT_IMAGE(1, 1, "scenery/signpost.png", {})
+
+            Scroll_To_Unit{
+                id: "Konrad"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            x: 1
+            y: 1
+            id: "Konrad"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Very well, we have made it this far! But where do we go next?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "We must travel north, and try to make it to the Isle of Alduin. Hopefully we will find refuge there."
+            }
+            Message{
+                speaker: "unit"
+                message: _ "Of course you are right, Delfador. But what will become of the elves here?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "The elves will fight. They may even prevail. But I fear things do not bode well for them. Let us not speak of it now. Onward!"
+            }
+            Message{
+                speaker: "Chantal"
+                message: _ "Good luck, Konrad! Don’t worry about us, we will fight as best we can!"
+            }
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Konrad"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                <KONRAD_VARIATION_ELF("concerned")
+                message: _ "I... I don’t think I can make it anymore."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Prince... you must keep fighting! Nooooooo!"
+            }
+            Message{
+                speaker: "unit"
+                <KONRAD_VARIATION_ELF("concerned")
+                message: _ "It is over. I am doomed..."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Delfador"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I have... have failed in my duty to protect the prince! I am defeated."
+            }
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("concerned")
+                message: _ "Don’t die, Delfador! Please, you have to stay alive!"
+            }
+            Message{
+                speaker: "unit"
+                message: _ "Ugh!"
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "Oh, no! We have run out of time, they have arrived with reinforcements..."
+            }
+    }
+
+    event: {
+        name: "die"
+        filter_second: {
+            id: "Konrad"
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Die, villain, die!"
+                <KONRAD_VARIATION_ELF("mad")
+            }
+    }
+
+    event: {
+        name: "die"
+        filter_second: {
+            id: "Delfador"
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Only the foolish oppose me!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter_second: {
+            id: "Galdrad"
+        }
+        do: ->
+            Message{
+                speaker: "Galdrad"
+                message: _ "I am Galdrad. You will have to fight me to get any further!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter_second: {
+            id: "Delfador"
+        }
+        do: ->
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_VARIATION_ELF("mad")
+                message: _ "Only a fool would dare to attack me!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Delfador"
+        }
+        do: ->
+            Message{
+                speaker: "Delfador"
+                <DELFADOR_VARIATION_ELF("mad")
+                message: _ "I am Delfador the Great. Prepare to die!"
+            }
+    }
+
+    event: {
+        name: "attack"
+        filter: {
+            id: "Konrad"
+        }
+        do: ->
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("mad")
+                message: _ "Let me through, you rogue!"
+            }
+    }
+
+--when a Goblin Knight moves onto one of the villages
+--that Delfador and Konrad start near
+    event: {
+        name: "moveto"
+        filter: {
+            side: {2, 3, 4}
+            x: 20, y: 25
+        }
+        scroll_to: {
+            x: 20, y: 25
+        }
+        do: ->
+            Terrain{
+                x: 20, y: 25
+                radius: 1
+                terrain: "Rb"
+            }
+            Terrain{
+                x: 20, y: 24
+                terrain: "Rb^Dr"
+            }
+            Item{
+                x: 20, y: 25
+                image: "scenery/village-human-burned2.png"
+            }
+            Sound{
+                name: "torch.ogg"
+            }
+            Delay{
+                time: 500
+            }
+            Fire_Event{
+                name: "home destroyed"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: {2, 3, 4}
+            x: 17, y: 23
+        }
+        scroll_to: {
+            x: 17, y: 23
+        }
+        do: ->
+            Terrain{
+                x: 17, y: 23
+                radius: 1
+                terrain: "Rb"
+            }
+            Terrain{
+                x: {18, 18}
+                y: {22, 23}
+                terrain: "Rb^Dr"
+            }
+            Item{
+                x: 17, y: 23
+                image: "scenery/village-human-burned4.png"
+            }
+            Sound{
+                name: "torch.ogg"
+            }
+            Delay{
+                time: 500
+            }
+            Fire_Event{
+                name: "home destroyed"
+            }
+    }
+
+    event: {
+        name: "home destroyed"
+        do: ->
+            Message{
+                speaker: "Konrad"
+                <KONRAD_VARIATION_ELF("concerned")
+                message: _ "Oh no! They are destroying our home!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "There can be no looking back. We must go quickly!"
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+
+        filter: {
+            side: {2, 3, 4}
+            canrecruit: true
+        }
+        do: ->
+            Set_Variable{
+                name: "besieged_enemies_killed"
+                add: 1
+            }
+    }
+}
+
+AVOID_CHANTAL = nil
+HIGH_PRIORITY_TARGETS = nil
+EBESIEGED_RECRUITMENT = nil

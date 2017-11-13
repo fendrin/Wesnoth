@@ -1,0 +1,683 @@
+--textdomain wesnoth-low
+
+--TODO Add the ogre cage idea.
+--TODO give a reward for saving some of the Kalian gold.
+--TODO add the water sound effects.
+--TODO try to tune the troll ai to not start a suicide run against the wood border.
+
+Scenario{
+    random_start_time: false
+    allow_new_game: false
+    force_lock_settings: true
+
+    id: "07_Elves_Last_Stand"
+
+    experience_modifier: 100
+    next_scenario: "08_Council_of_Hard_Choices"
+    name: _ "Elves’ Last Stand"
+
+---- Story ---
+    story: {
+        part: {
+            story: _ "The journey back to Wesmere was surprisingly uneventful, the orcs having apparently withdrawn to regroup after their defeats. Kalenz and his band returned just in time..."
+            delay: 4000
+        }
+    }
+    <LOW_TRACK(FLIGHT_COMPLETE!, TREASURY_STAGE4!)
+---- /Story ---
+
+---- Music playlist ---
+    <INTRO_AND_SCENARIO_MUSIC("elf-land.ogg", "elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("silvan_sanctuary.ogg")
+    <EXTRA_SCENARIO_MUSIC("wanderer.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+    <EXTRA_SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+---- /Music playlist ---
+
+---- Map setup ---
+    <TURNS(30, 25, 20)
+
+    <DEFAULT_SCHEDULE_AFTERNOON!
+
+    <LOW_MAP("Kalian.map")
+    <LOW_MASK("07_Elves_Last_Stand.mask", 1, 1)
+    INCLUDE("campaigns/Legend_of_Wesmere/maps/Kalian_map.cfg")
+
+---- /Map Setup ---
+
+    PLAYER_GOLD: () -> {
+        <GOLD(600, 500, 400)
+        income: -2
+    }
+    MULTIPLAYER_GOLD: () -> {
+        <GOLD(200, 166, 133)
+        income: -2
+    }
+
+----- Kalenz ---
+    side: {
+        side: 1
+        <PLAYABLE!
+        save_id: "Kalenz"
+
+        <KALENZ!
+        x: 46
+        y: 21
+
+        <unless MULTIPLAYER! then {
+            <PLAYER_GOLD!
+            unit: {
+                <LANDAR!
+                x: 45
+                y: 35
+            }
+            unit: {
+                <CLEODIL!
+                x: 47
+                y: 28
+            }
+        } else {
+            <MULTIPLAYER_GOLD!
+        }
+    }
+
+--TODO enable the extended recruit list and give a hint to the player about it
+--        [event]
+--            name=prestart
+--            [allow_recruit]
+--                side=1
+--                type={ELVES}
+--            [/allow_recruit]
+--        [/event]
+
+    event: {
+        name: "prestart"
+-- the usual suspects
+        do: ->
+            RECALL_LOYALS!
+    }
+
+-- wmllint: skip-side
+    <MP_SIDE(2, {
+            no_leader: true
+            <PLAYABLE!
+            save_id: "Landar"
+            <MULTIPLAYER_GOLD!
+
+            unit: {
+                <LANDAR!
+                x: 45
+                y: 35
+            }
+    })
+
+-- wmllint: skip-side
+    <MP_SIDE(3, {
+            no_leader: true
+            <PLAYABLE!
+            save_id: "Cleodil"
+            <MULTIPLAYER_GOLD!
+
+            unit: {
+                <CLEODIL!
+                x: 47
+                y: 28
+            }
+    })
+
+---- Allies ----
+    side: {
+        side: 4
+        <PLAYABLE!
+        no_leader: true
+        save_id: "Galtrid"
+        <unless MULTIPLAYER! then {
+            <GOLD(400, 300, 200)
+        } else {
+            <GOLD(133, 100, 65)
+            previous_save_id: "Kalenz"
+        }
+
+        unit: {
+-- wmllint: recognize Galtrid
+            <GALTRID!
+            x: 33
+            y: 32
+        }
+
+        <unless MULTIPLAYER! then {
+            unit: {
+-- wmllint: recognize El_Isomithir
+                <EL_ISOMITHIR!
+                x: 29
+                y: 32
+            }
+            unit: {
+-- wmllint: recognize Eradion
+                <ERADION!
+                x: 7
+                y: 36
+            }
+        }
+    }
+
+-- wmllint: skip-side
+    <MP_SIDE(5, {
+            <PLAYABLE!
+            <EL_ISOMITHIR!
+            save_id: "El_Isomithir"
+            previous_save_id: "Landar"
+            x: 29
+            y: 32
+            <GOLD(133, 100, 65)
+    })
+
+-- wmllint: skip-side
+    <MP_SIDE(6, {
+            <PLAYABLE!
+            <ERADION!
+            save_id: "Eradion"
+            previous_save_id: "Cleodil"
+            x: 7
+            y: 36
+            <GOLD(133, 100, 65)
+    })
+
+    <unless MULTIPLAYER! then {
+        <STARTING_VILLAGES_ALL(4)
+    }
+---- /ALLIES ---
+
+---- ENEMIES ---
+    side: {
+        side: 7
+        no_leader: true
+
+        allow_player: false
+        controller: "ai"
+        team_name: "orcs"
+        user_team_name: _ "Enemies"
+        <ORC_SETUP!
+
+        <GOLD(1200, 1720, 2260)
+        <INCOME(50, 80, 120)
+
+        unit: {
+            type: "Naga Myrmidon"
+            id: "Mordrum"
+            name: _ "Mordrum"
+            canrecruit: true
+            x: 6
+            y: 4
+            <if HARD then {
+                extra_recruit: {"Naga Fighter", "Naga Warrior", "Naga Myrmidon", "Water Serpent"}
+            }
+            <if NORMAL then {
+                extra_recruit: {"Naga Fighter", "Naga Warrior", "Naga Myrmidon", "Water Serpent"}
+            }
+            <if EASY then {
+                extra_recruit: {"Naga Fighter", "Naga Warrior"}
+            }
+        }
+
+        unit: {
+            type: "Orcish Warlord"
+            id: "Urug-Pir"
+            name: _ "Urug-Pir"
+            profile: "portraits/orcs/grunt-2.png"
+            canrecruit: true
+            x: 6
+            y: 23
+            <if HARD then {
+                extra_recruit: {"Orcish Archer", "Orcish Crossbowman", "Orcish Slurbow", "Orcish Assassin", "Orcish Slayer", "Orcish Grunt", "Orcish Warrior", "Orcish Warlord", "Goblin Spearman", "Goblin Impaler", "Goblin Rouser", "Wolf Rider", "Goblin Knight", "Goblin Pillager", "Direwolf Rider"}
+            }
+            <if NORMAL then {
+                extra_recruit: {"Orcish Archer", "Orcish Crossbowman", "Orcish Assassin", "Orcish Slayer", "Orcish Grunt", "Orcish Warrior", "Goblin Spearman", "Goblin Impaler", "Goblin Rouser", "Wolf Rider", "Goblin Knight", "Goblin Pillager", "Direwolf Rider"}
+            }
+            <if EASY then {
+                extra_recruit: {"Orcish Archer", "Orcish Crossbowman", "Orcish Assassin", "Orcish Grunt", "Orcish Warrior", "Goblin Spearman", "Wolf Rider", "Goblin Knight", "Goblin Pillager"}
+            }
+
+            INCLUDE("ai/aliases/stable_singleplayer.cfg")
+            ai: {
+                <AI_NO_SCOUTS!
+                <AI_SIMPLE_ALWAYS_ASPECT("recruitment_pattern", "scout,fighter,fighter,archer,mixed fighter")
+                <AI_SIMPLE_NIGHT_ASPECT("aggression", 0.75)
+                <AI_SIMPLE_NIGHT_ASPECT("caution", 0.0)
+                <AI_SIMPLE_NIGHT_ASPECT("grouping", false)
+                <AI_SIMPLE_NIGHT_ASPECT("attack_depth", 5)
+            }
+        }
+
+        unit: {
+            type: "Great Troll"
+            id: "Truugl"
+            name: _ "Truugl"
+            canrecruit: true
+            x: 26
+            y: 7
+            <if EASY then {
+                extra_recruit: "Troll Whelp"
+            }
+            <if NORMAL then {
+                extra_recruit: {"Troll Whelp", "Troll", "Troll Rocklobber", "Troll Shaman"}
+            }
+            <if HARD then {
+                extra_recruit: {"Troll Whelp", "Troll", "Troll Rocklobber", "Troll Shaman", "Troll Warrior", "Troll Hero"}
+            }
+
+            INCLUDE("ai/aliases/stable_singleplayer.cfg")
+            ai: {
+                <AI_NO_SCOUTS!
+                <if EASY then {
+                    <AI_SIMPLE_ALWAYS_ASPECT("recruitment_pattern", "fighter")
+                } else {
+                    <AI_SIMPLE_ALWAYS_ASPECT("recruitment_pattern", "fighter, mixed fighter, fighter, mixed fighter, fighter")
+                }
+                <AI_SIMPLE_NIGHT_ASPECT("aggression", 0.75)
+                <AI_SIMPLE_NIGHT_ASPECT("caution", 0.0)
+                <AI_SIMPLE_NIGHT_ASPECT("attack_depth", 5)
+                <AI_SIMPLE_NIGHT_ASPECT("grouping", "offensive")
+            }
+        }
+    }
+
+---- /ENEMIES ----
+
+----- Objectives and corresponding events ----
+    OBJECTIVES: () -> {
+        side: 0
+        objective: {
+--TODO reconsider the formulation
+--TODO format?
+            description: _ "You must own the field and be capable of overwhelming your opponents. (Player(s) own more than 25 units while the foes’ numbers fall below 15.)"
+            condition: "win"
+        }
+        objective: {
+            description: _ "Defeat all enemy leaders."
+            condition: "win"
+        }
+        objective: {
+            description: _ "Death of Kalenz"
+            condition: "lose"
+        }
+        objective: {
+            description: _ "Death of Landar"
+            condition: "lose"
+        }
+        objective: {
+            description: _ "Death of Cleodil"
+            condition: "lose"
+        }
+        objective: {
+            description: _ "Death of Galtrid"
+            condition: "lose"
+        }
+
+        <TURNS_RUN_OUT!
+
+        gold_carryover: {
+            carryover_percentage: 0
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                <OBJECTIVES!
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                save: false
+                result: "victory"
+                bonus: false
+                carryover_percentage: 0
+            }
+    }
+
+--Let the orcs flee if their numbers go low and the elves go high
+    event: {
+        name: "side 7 turn"
+        first_time_only: false
+
+        filter_condition: {
+            variable: {
+                name: "turn_number"
+                greater_than: 1
+            }
+        }
+        do: ->
+            If{
+                have_unit: {
+                    side: 7
+                    count: "1-15"
+                }
+                have_unit: {
+                    side: {1, 2, 3, 4}
+                    count: "25-999"
+                }
+                then: ->
+                    Message{
+                        canrecruit: true
+                        and: {
+                            race: "orc"
+                            or: {
+                                race: "troll"
+                            }
+                        }
+                        message: _ "Flee! They have broken us!"
+                    }
+                    Message{
+                        id: "Landar"
+                        message: _ "Hunt them down and kill every single one of them!"
+                    }
+                    Message{
+                        id: "Cleodil"
+                        message: _ "It is not wise to put a wounded foe in a desperate situation; they will but fight harder for it. Break their will and let them flee, so they will spread fear of us among their kind."
+                    }
+                    Message{
+                        id: "Galtrid"
+                        message: _ "She is right. Don’t let them lure you away from the Ka’lian, preparations for when more of them arrive must be made."
+                    }
+                    Fire_Event{
+                        name: "enemies defeated"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "The orcs are not defeated, and our troops and supplies are exhausted. This is the end!"
+            }
+    }
+----- /Objectives and corresponding events ----
+
+----- INTRO ----
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "The orcs have pushed us back to the Ka’lian. There is no way out. We must win here!"
+            }
+            Message{
+                id: "Galtrid"
+                message: _ "This is our final stand. If they take the Ka’lian, all is lost!"
+            }
+            Message{
+                id: "Landar"
+-- wmllint: local spelling Elvenkind
+                message: _ "Galtrid, speak not of defeat. Elvenkind shall rise! Our enemies shall perish in blood and fire!"
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "It is a dark day indeed when elves must steel themselves with dreams of slaughter."
+            }
+            Message{
+                id: "Urug-Pir"
+-- wmllint: local spelling da
+                message: _ "We’ll crush those weak elves and I’ll get da stone!"
+            }
+            Message{
+                id: "El_Isomithir"
+                message: _ "These are hardened orc and troll veterans. Men, prepare for a long, difficult fight..."
+            }
+    }
+---- /INTRO ----
+
+---- OLURF ---
+    event: {
+        name: "olurf"
+        do: ->
+            Unit{
+                <unless MULTIPLAYER! then {
+                    side: 1
+                } else {
+                    side: 8
+                }
+                <OLURF!
+                canrecruit: true
+                x: olurf_entry.x
+                y: olurf_entry.y
+            }
+
+            unless MULTIPLAYER!
+                OLURF_PARTY(1)
+            } else {
+                OLURF_PARTY(8)
+            
+
+-----ifndef MULTIPLAYER
+-----        {MODIFY_UNIT (side=8) side 1}
+-----        {TRANSFER_VILLAGE_OWNERSHIP 8 1}
+-------endif
+
+--TODO the next message doesn't fit if turns are over
+            Message{
+                id: "Olurf"
+--name=_ "Olurf"
+                message: _ "Did ye think we’d let you have all the fun wi’ the orcs by yerselves?"
+            }
+
+            Message{
+                id: "Landar"
+                message: _ "It’s not much of an army he is bringing with him, though."
+            }
+            Message{
+                id: "Olurf"
+                message: _ "Not much of an army? These are dwarves with mighty axes, each worth three of you and your silly plinking bows!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Olurf, is that all the dwarves you could find? Was the gold not enough?"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "They are no’ fighting for gold, they’re here for the fun. I’d ha’ brought a lot more if my men ha’ all kept quiet about helping elves! But the rest o’ my clan should join us in a few days."
+            }
+            Message{
+                id: "Landar"
+                message: _ "In a few days? That’s too late! We want our gold back!"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "Sure, minus expenses."
+            }
+            Message{
+                id: "Landar"
+                message: _ "What expenses?"
+            }
+            Message{
+                id: "Olurf"
+                message: _ "It’s an ancient dwarvish custom to buy the warriors a few drinks before the battle... So minus expenses that’s about even."
+            }
+            Message{
+                id: "Landar"
+                message: _ "That explains why they are so reckless in battle..."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "... Enough, gentlemen, we have a battle to fight!"
+            }
+    }
+
+    event: {
+        name: "scenario_end"
+        filter_condition: {
+            proceed_to_next_scenario: {
+            }
+        }
+        do: ->
+            VARIABLE("olurf_entry.x", 40)
+            VARIABLE("olurf_entry.y", 5)
+            Fire_Event{
+                name: "olurf"
+            }
+    }
+---- /OLURF ---
+
+    event: {
+        name: "scenario_end"
+        filter_condition: {
+            proceed_to_next_scenario: {
+            }
+        }
+        do: ->
+            Message{
+                id: "Galtrid"
+                message: _ "At last! The orcs are defeated."
+            }
+
+            Unit{
+                type: "Orcish Warrior"
+                id: "Pirorr"
+                name: _ "Pirorr"
+                side: 7
+                x: 1
+                y: 43
+                facing: "ne"
+                profile: "portraits/orcs/grunt-2.png"
+            }
+            MOVE_UNIT({id: "Pirorr"}, 1, 41)
+
+            Message{
+                id: "Pirorr"
+                message: _ "The elves have beaten us and they did not use da stone. Maybe they don’t have it? Great Chief will not like bad news!"
+            }
+            Kill{
+                id: "Pirorr"
+                animate: false
+            }
+
+            Message{
+                id: "Galtrid"
+                message: _ "Kalenz, we are again in your debt. You returned just in time."
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "And we have what’s left of the elvish treasury with us!"
+            }
+            Message{
+                id: "Landar"
+                message: _ "Perhaps the gold will give our words more weight with the council."
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                side_for: 1
+                message: _ "Kalenz" .. _ " has returned any remaining gold into the elvish treasury. You will start the next scenario with a preset amount."
+            }
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                side_for: 2
+                message: _ "Landar" .. _ " has returned any remaining gold into the elvish treasury. You will start the next scenario with a preset amount."
+            }
+    }
+
+----DEATH EVENTS---
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Truugl"
+        }
+        do: ->
+            Message{
+                id: "Truugl"
+                message: _ "Aargh! I should have stayed in the mountains instead of joining the orcs!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mordrum"
+        }
+        do: ->
+            Message{
+                id: "Kalenz"
+                message: _ "Orcs, death is all you will find in this forest!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Urug-Pir"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "I die without getting da stone?"
+            }
+    }
+
+--Eradion death is split in two events.
+--The first part is spoken after deadly wounded but still speaking
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Eradion"
+        }
+        do: ->
+            INCIDENTAL_MUSIC("sad.ogg")
+            Message{
+                speaker: "second_unit"
+                message: _ "Be grateful, tree-shagger, for I have spared you the pain of seeing your precious citadel burned and razed."
+            }
+            Message{
+                speaker: "unit"
+                message: _ "Galtrid, my friend. Do not let my death be in vain. Destroy these foul orcs, and sing for me in the green woods when we have won."
+            }
+            Message{
+                id: "Galtrid"
+                message: _ "We shall avenge you tenfold!"
+            }
+            Scroll_To_Unit{
+                id: "Eradion"
+            }
+    }
+    event: {
+        name: "die"
+        filter: {
+            id: "Eradion"
+        }
+        do: ->
+            Message{
+                speaker: "second_unit"
+                message: _ "Dead he is. Too quick. His screams were sweet."
+            }
+            Message{
+                side: {4, 5, 6}
+                not: {
+                    id: "Galtrid"
+                }
+                not: {
+                    id: "Eradion"
+                }
+                message: _ "Let us pursue the orc who murdered #{unit.name}!"
+            }
+            Message{
+                id: "Galtrid"
+                message: _ "No, don’t leave your formation. An elf was slain by beast. What does it matter which beast it was? We must kill them all."
+            }
+    }
+
+    <DEFAULT_VICTORY(0.4)
+    INCLUDE("campaigns/Legend_of_Wesmere/utils/deaths.cfg")
+----/DEATH EVENTS---
+}
+
+PLAYER_GOLD = nil
+MULTIPLAYER_GOLD = nil

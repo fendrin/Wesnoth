@@ -1,0 +1,778 @@
+--textdomain wesnoth-did
+
+Scenario{
+    id: "11_Descent_into_Darkness"
+    name: _ "Descent into Darkness"
+    map: "campaigns/Descent_Into_Darkness/maps/11_Descent_into_Darkness.map"
+    turns: -1
+    next_scenario: "12_Endless_Night"
+    victory_when_enemies_defeated: false
+
+    <UNDERGROUND!
+
+    <SCENARIO_MUSIC("the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("revelation.ogg")
+
+    story: {
+        part: {
+            music: "the_city_falls.ogg"
+            story: _ "<i>“To become a lich, one must first die.”</i>"
+            <STORYTXT_BACKGROUND("book.jpg")
+        }
+        part: {
+            story: _ "So reads the book that Malin has reclaimed. <i>“The spells of necromancy bind the spirit, but only once it has been unbound from the body. To become a lich, the mage must make the necessary incantations with his dying breaths. He thus binds his own spirit in much the same way necromancers bind the spirits of others. Because he retains his own will, however, the lich can call upon the awesome powers of the spirit world.”</i>"
+            <STORYTXT_BACKGROUND("book.jpg")
+        }
+        part: {
+            story: _ "The words, and the idea, stick in the back of his mind. With all of Wesnoth forbidden to him, Malin finds refuge in a nameless frontier village where few questions are asked. When word filters to the town that Parthyn has been overrun by orcs, it rekindles hatred within him. With renewed purpose, he raises his undead minions and travels northward."
+            <STORYTXT_BACKGROUND("travel.jpg")
+        }
+        part: {
+            story: _ "Malin soon finds the track of an enormous orc army, and follows them until he reaches their camp. As he sees the number of orcs, the enormity of his quest begins to dawn on him. He attacks the camp anyway but is quickly driven back, and badly injured by a thrown orcish dagger as he retreats. He finds refuge in a small cave."
+            <STORYTXT_BACKGROUND("end.jpg")
+        }
+    }
+
+    <DID_TRACK(JOURNEY_11_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Walking Corpse", "Vampire Bat", "Ghost", "Ghoul", "Skeleton Archer", "Skeleton", "Dark Adept DiD"}
+        gold: 100
+        team_name: "good"
+        user_team_name: _ "Mal Keshar"
+        <FLAG_VARIANT("undead")
+
+        income: -2
+
+-- wmllint: recognize Malin Keshar
+        <CHARACTER_STATS_MALIN_KESHAR!
+
+        facing: "ne"
+        fog: true
+        shroud: true
+    }
+
+    TROLL_GUARD: (TYPE, X, Y) -> {
+        unit: {
+            type: TYPE
+            x: X, y: Y
+
+            random_traits: true
+            generate_name: true
+
+            ai_special: "guardian"
+
+            upkeep: "loyal"
+            overlays: "misc/loyal-icon.png"
+        }
+    }
+-- wmllint: validate-on
+
+-- Troll leader
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Troll Whelp", "Troll", "Troll Rocklobber", "Troll Warrior", "Troll Shaman"}
+        gold: 60
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        income: -2
+
+-- place leader later
+        no_leader: true
+        fog: true
+
+-- Castle trolls
+        <unless EASY! then {
+            <TROLL_GUARD("Troll", 7, 7)
+        }
+        <TROLL_GUARD("Troll", 14, 7)
+        <TROLL_GUARD("Troll", 8, 7)
+        <TROLL_GUARD("Troll", 16, 3)
+        <TROLL_GUARD("Troll Rocklobber", 12, 1)
+        <TROLL_GUARD("Troll Shaman", 7, 4)
+
+        ai: {
+            caution: 0.5
+            grouping: "defensive"
+            recruitment_pattern: {"fighter", "fighter", "mixed fighter"}
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 2
+                    canrecruit: true
+                }
+                value: 10
+            }
+
+-- Avoid the spiders, the wose, and the beginning area
+            avoid: {
+                x: {"2-9", "2-27", "5-9"}
+                y: {"11-15", "30-35", "19-23"}
+            }
+        }
+    }
+
+-- Eastern village trolls
+    side: {
+        side: 3
+        controller: "ai"
+        gold: 0
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+
+        income: -2
+
+        no_leader: true
+        fog: true
+
+-- Eastern village trolls
+        <TROLL_GUARD("Troll", 30, 19)
+        <TROLL_GUARD("Troll", 31, 12)
+        <TROLL_GUARD("Troll Shaman", 33, 14)
+        <if NORMAL then {
+            <TROLL_GUARD("Troll Whelp", 31, 16)
+        }
+        <if HARD then {
+            <TROLL_GUARD("Troll Rocklobber", 27, 16)
+        }
+
+        ai: {
+-- Avoid the spiders, the wose, and the beginning area
+            avoid: {
+                x: {"2-9", "2-27", "5-9"}
+                y: {"11-15", "30-35", "19-23"}
+            }
+        }
+    }
+
+-- Western village trolls
+    side: {
+        side: 4
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+        controller: "ai"
+        no_leader: true
+        income: -2
+        gold: 0
+        fog: true
+
+-- Western village trolls
+        <TROLL_GUARD("Troll", 10, 16)
+        <TROLL_GUARD("Troll", 10, 26)
+        <TROLL_GUARD("Troll Shaman", 4, 21)
+        <TROLL_GUARD("Troll Whelp", 2, 25)
+        <if NORMAL then {
+            <TROLL_GUARD("Troll Whelp", 4, 19)
+        }
+        <if HARD then {
+            <TROLL_GUARD("Troll Rocklobber", 8, 18)
+        }
+
+        ai: {
+-- Avoid the spiders, the wose, and the beginning area
+            avoid: {
+                x: {"2-9", "2-27", "5-9"}
+                y: {"11-15", "30-35", "19-23"}
+            }
+        }
+    }
+
+-- Monsters
+    side: {
+        side: 5
+        gold: 0
+        controller: "ai"
+        no_leader: true
+        hidden: true
+        income: -2
+
+        fog: true
+        shroud: true
+
+-- The wose
+        unit: {
+            type: "Ancient Wose"
+            x: 7, y: 21
+            id: "Dumdumbadoom"
+            name: _ "Dumdumbadoom"
+            ai_special: "guardian"
+        }
+
+-- Generic Monsters
+        <GENERIC_UNIT({}, "Giant Rat", 14, 29), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Rat", 21, 28), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Rat", 24, 34), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Rat", 18, 18), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Rat", 22, 5), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 29, 26), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 26, 31), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 19, 32), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 19, 23), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 18, 13), <GUARDIAN!
+        <GENERIC_UNIT({}, "Vampire Bat", 18, 34), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Spider", 7, 12), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Spider", 8, 13), <GUARDIAN!
+        <GENERIC_UNIT({}, "Giant Spider", 6, 15), <GUARDIAN!
+
+        ai: {
+-- This is mostly for the Wose -- the others are guardians
+            goal: {
+                name: "target"
+                criteria: {
+                    side: 1
+                }
+                value: 5
+            }
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Kill{
+                id: "Malin Keshar"
+            }
+
+            Unit{
+                id: "Malin Keshar"
+                name: _ "Malin Keshar"
+                type: "Dark Mage"
+                side: 1
+                x: 3, y: 34
+                profile: "portraits/malin_old-decay.png"
+                canrecruit: true
+                unrenamable: true
+
+                hitpoints: 9
+                facing: "ne"
+
+                status: {
+                    poisoned: true
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            MOVE_UNIT({id: "Malin Keshar"}, 5, 32)
+
+            Redraw{
+                side: 1
+            }
+
+            CREATE_ADVISOR!
+
+            Message{
+                role: "advisor"
+                message: _ "Master, you are gravely injured!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "I won’t go down like this, felled by an orc’s blade. I won’t see them defeat me!"
+            }
+
+            Message{
+                role: "advisor"
+                message: _ "There is another way, master. Remember the book..."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Yes... yes. The orcs are too strong for me now, but once I have undergone the transformation they’ll begin to fall before me. And I will continue to hound them until the last one falls!"
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Leave me now while I prepare."
+            }
+
+            Message{
+                role: "advisor"
+                message: _ "Yes, master."
+            }
+
+            PUT_TO_RECALL_LIST({role: "advisor"})
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "With his last bits of strength, Malin assembles an altar as the book instructs."
+            }
+
+            Item{
+                x: 6, y: 31
+                image: "misc/makeshift-altar.png"
+            }
+
+            Recall{
+                role: "advisor"
+                x: 7, y: 31
+            }
+
+            MODIFY_UNIT({role: "advisor"}, "facing", "sw")
+
+            Delay{
+                time: 500
+            }
+
+            MOVE_UNIT({id: "Malin Keshar"}, 6, 31)
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "I pray that I am strong enough to complete the spell."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "I’m ready. Do it."
+            }
+
+            Animate_Unit{
+                flag: "attack"
+                hits: true
+
+                filter: {
+                    role: "advisor"
+                }
+
+                primary_attack: {
+                    range: "melee"
+                }
+
+                facing: {
+                    filter: {
+                        id: "Malin Keshar"
+                    }
+                }
+
+                animate: {
+                    flag: "defend"
+
+                    filter: {
+                        id: "Malin Keshar"
+                    }
+
+                    hits: false
+
+                    facing: {
+                        filter: {
+                            role: "advisor"
+                        }
+                    }
+                }
+            }
+
+            Kill{
+                id: "Malin Keshar"
+                fire_event: false
+                animate: true
+            }
+
+            PUT_TO_RECALL_LIST({role: "advisor"})
+
+            FADE_TO_BLACK!
+
+            Redraw{}
+
+            Delay{
+                time: 1000
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "There is darkness..."
+            }
+
+            Delay{
+                time: 1000
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "and peace..."
+            }
+
+            Delay{
+                time: 1000
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "for a moment."
+            }
+
+            Delay{
+                time: 1000
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Then they are replaced by a pulling, a pain too strong to resist, and then..."
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "by emptiness."
+            }
+
+            FADE_IN!
+
+-- And is reborn as a lich
+            Unit{
+                side: 1
+                x: 6, y: 31
+                hitpoints: 9
+                facing: "se"
+                animate: true
+
+-- wmllint: recognize Mal Keshar
+                <CHARACTER_STATS_MAL_KESHAR!
+            }
+
+            Redraw{}
+
+            INCIDENTAL_MUSIC("the_dangerous_symphony.ogg")
+            Music{
+                name: "knalgan_theme.ogg"
+                append: true
+            }
+            Music{
+                name: "heroes_rite.ogg"
+                append: true
+            }
+
+-- He's not necessarilly totally happy about this
+            Message{
+                speaker: "Mal Keshar"
+                sound: "lich-die.ogg"
+                message: _ "<big>AAAaaiiigghh!!</big>" -- wmllint: no spellcheck
+            }
+
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "The cold, it burns!"
+            }
+
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "I need warmth... life... I sense some here!"
+            }
+
+            Animate_Unit{
+                flag: "attack"
+                hits: true
+
+                filter: {
+                    id: "Mal Keshar"
+                }
+
+                primary_attack: {
+                    name: "shadow wave"
+                }
+            }
+
+            QUAKE("cave-in.ogg")
+
+            Item{
+                x: 9, y: 32
+                image: "misc/blank-hex.png"
+-- HACK: An item can't be removed after only one cycle, so set the blank hex at the end
+                halo: "halo/undead/dark-magic-[1~6].png,misc/blank-hex.png:100000"
+            }
+
+            Delay{
+                time: 1000
+            }
+
+            Terrain{
+                x: 10, y: 31
+                terrain: "Uh"
+            }
+
+            Remove_Item{
+                x: 10, y: 31
+            }
+
+-- Previously recruited and new adepts can now also become liches
+            MODIFY_UNIT({type: "Dark Adept DiD"}, "advances_to", "Dark Sorcerer")
+            MODIFY_UNIT({type: "Dark Sorcerer DiD"}, "advances_to", {"Lich", "Necromancer"})
+
+            Disallow_Recruit{
+                side: 1
+                type: "Dark Adept DiD"
+            }
+
+            Allow_Recruit{
+                side: 1
+                type: "Dark Adept"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Regain your strength"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Destruction of Mal Keshar"
+                }
+            }
+    }
+
+-- Ensure that you can't lose to the first couple of bats and rats simply by
+-- getting unlucky.
+    <FORCE_CHANCE_TO_HIT({id: "Mal Keshar"}, {side: 5}, 100, {
+            variable: {
+                name: "turn_number"
+                less_than: 5
+            }
+    })
+
+    event: {
+        name: "attacker_hits"
+        first_time_only: true
+        filter: {
+            id: "Mal Keshar"
+        }
+        filter_attack: {
+            name: "touch"
+        }
+        do: ->
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "Yes! I can draw energy even from these insignificant creatures."
+            }
+    }
+
+    event: {
+-- See your goal
+        name: "moveto"
+        filter: {
+            id: "Mal Keshar"
+            x: "20-25"
+            y: "27-29"
+        }
+
+-- See the road to the castle and the castle itself
+        do: ->
+            Remove_Shroud{
+                side: 1
+                x: {"3-13", "20-22", "18-20", "17-19", "13-16", "11-15"}
+                y: {"2-8", "18-28", "15-17", "14-16", "12-13", "9-11"}
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Scroll_To{
+                x: 8, y: 5
+            }
+
+            Delay{
+                time: 2000
+            }
+
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "There, in along this old road, I sense a place worthy of being my home. From there I will build my armies. But I am still too weak to clear the vermin from it. I must finish regaining my strength."
+            }
+
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "I will need a castle from which to call upon my soldiers. I sense one nearby."
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: "27-32"
+                y: "23-27"
+            }
+
+            Redraw{
+                side: 1
+            }
+
+            Scroll_To{
+                x: 34, y: 24
+            }
+
+            Delay{
+                time: 1500
+            }
+
+            Message{
+                speaker: "Mal Keshar"
+                message: _ "Yes, this will do until I can take my new home."
+            }
+
+-- Turns are measured from here
+            Modify_Turns{
+                value: "#{(#{turn_number + 50)"
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Clear your new home of trolls"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Destruction of Mal Keshar"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+-- Set the troll enemy and return income to normal when you reach your keep
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Mal Keshar"
+            x: 30, y: 25
+        }
+
+-- Troll leader
+        do: ->
+            Unit{
+                type: "Troll Hero"
+                side: 2
+                id: "Grnknrr"
+                x: 10, y: 6
+                canrecruit: true
+                facing: "se"
+            }
+
+            Modify_Side{
+                side: 2
+                income: 0
+            }
+
+            MODIFY_UNIT({side: 2}, "upkeep", "full")
+
+            Capture_Village{
+                side: 2
+                x: "1-13"
+                y: "1-10"
+            }
+
+            Modify_Side{
+                side: 1
+                income: 0
+            }
+    }
+
+    event: {
+        name: "turn refresh"
+        first_time_only: false
+        filter_condition: {
+            variable: {
+                name: "side_number"
+                equals: 5
+            }
+            variable: {
+                name: "wose_awakened"
+                not_equals: true
+            }
+        }
+        do: ->
+            MODIFY_UNIT({id: "Dumdumbadoom"}, "moves", 0)
+    }
+
+-- Fun with the wose
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            filter_adjacent: {
+                id: "Dumdumbadoom"
+            }
+        }
+        do: ->
+            Terrain{
+                x: 7, y: 21
+                terrain: "Gg"
+            }
+
+            Message{
+                speaker: "Dumdumbadoom"
+                message: _ "Who has awoken me from my slumber? Undead? I shall not suffer the existence of such foul creatures!"
+            }
+
+            VARIABLE("wose_awakened", true)
+    }
+
+    <if __UNUSED__ then {
+-- Have a nice trip, see you in the fall. . .
+        event: {
+            name: "moveto"
+            first_time_only: false
+            filter: {
+                x: 24, y: 13
+                not: {
+                    type: {"Vampire Bat", "Blood Bat", "Dread Bat", "Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt"}
+                }
+            }
+            do: ->
+                Message{
+                    x: 24, y: 13
+                    message: _ "<big>AAAaaaggghhhh!! ...</big>" -- wmllint: no spellcheck
+                }
+
+                MOVE_UNIT({x: 24, y: 13}, 25, 13)
+
+                Kill{
+                    x: 25, y: 13
+                    animate: false
+                    fire_event: true
+                }
+        }
+    }
+
+-- Victory Condition
+    event: {
+-- Kill the troll leader
+        name: "die"
+        filter: {
+            side: 2
+            canrecruit: true
+        }
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            VARIABLE("timesForever", 1)
+    }
+
+    <HERODEATH_MALIN_LICH!
+}
+
+TROLL_GUARD = nil

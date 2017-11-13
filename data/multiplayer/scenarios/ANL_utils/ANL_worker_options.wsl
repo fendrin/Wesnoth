@@ -1,0 +1,598 @@
+--textdomain wesnoth-anl
+
+WORKER_OPTIONS = (TYPES) -> {
+    set_menu_item: {
+        id: "anl_get_to_work"
+        description: _ "Get to Work!"
+        show_if: {
+            have_unit: {
+                side: side_number
+                x: x1, y: y1
+                type: TYPES
+                not: {
+                    status: "worked_this_turn"
+                }
+            }
+        }
+        command: ->
+            Store_Side{
+                side: side_number
+                variable: "worker"
+            }
+
+            Store_Unit{
+                filter: {
+                    x: x1
+                    y: y1
+                }
+                variable: "unit"
+            }
+
+            Set_Variable{
+                name: "finished"
+                value: false
+            }
+            While{
+                variable: {
+                    name: "finished"
+                    equals: false
+                }
+
+                do: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "What shall I do my liege?"
+
+                        option: {
+                            label: _ "Nothing"
+                            command: ->
+                                Set_Variable{
+                                    name: "finished"
+                                    value: true
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- FARMLAND
+
+-- Convert to grassland
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Plant Farm" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 0g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Re")
+                            command: ->
+                                COMPLETE_ACTION(0)
+                                MODIFY_TERRAIN("Gg", x1, y1)
+                                Sound{
+                                    name: "dagger-swish.wav"
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- GRASSLAND
+
+-- Plant Farm
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Plant Farm" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 0g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg,Gs")
+                            command: ->
+                                COMPLETE_ACTION(0)
+                                MODIFY_TERRAIN("Re", x1, y1)
+                                Sound{
+                                    name: "entangle.wav"
+                                }
+                            
+                        }
+
+-- Build Village
+
+                        option: {
+                            image: "terrain/village/human-tile.png"
+                            label: "<span color='green'>" .. _ "Build Village" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 15g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg,Gs")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 15
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-15)
+                                        MODIFY_TERRAIN("Gg^Vh", x1, y1)
+                                        ANL_CAPTURE_VILLAGE!
+                                        BUILD_SOUND_1!
+                                    
+                                }
+                            
+                        }
+
+-- Build Castle
+
+                        option: {
+                            image: "terrain/castle/castle-tile.png"
+                            label: "<span color='green'>" .. _ "Build Castle" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 6g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg,Gs")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 6
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-6)
+                                        MODIFY_TERRAIN("Ch", x1, y1)
+                                        BUILD_SOUND_2!
+                                    
+                                }
+                            
+                        }
+
+-- Flood
+
+                        option: {
+                            image: "terrain/water/coast-tile.png"
+                            label: "<span color='green'>" .. _ "Flood the Field" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 4g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg,Gs")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 4
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-4)
+                                        MODIFY_TERRAIN("Ww", x1, y1)
+                                        Sound{
+                                            name: "water-blast.wav"
+                                        }
+                                    
+                                }
+                            
+                        }
+
+-- Plant Saplings
+
+                        option: {
+                            image: "terrain/forest/pine-tile.png"
+                            label: "<span color='green'>" .. _ "Plant Saplings" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 1g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg,Gs")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 1
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-1)
+                                        MODIFY_TERRAIN("Gs^Fp", x1, y1)
+                                        Sound{
+                                            name: "entangle.wav"
+                                        }
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- FOREST
+
+-- Chop Down Forest
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Chop Down Forest" .. "</span>"
+                            description: "<span size='small'>" .. _ "Earns: 1g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gs^Fp,Gs^Ft,Aa^Fpa,Gg^Fet")
+                            command: ->
+                                Set_Variable{
+                                    name: "finished"
+                                    value: true
+                                }
+
+                                Set_Variable{
+                                    name: "unit.status.worked_this_turn"
+                                    value: true
+                                }
+                                Set_Variable{
+                                    name: "unit.moves"
+                                    value: 0
+                                }
+
+                                Gold{
+                                    side: side_number
+                                    amount: 1
+                                }
+
+                                Sound{
+                                    name: "dagger-swish.wav"
+                                }
+                                Delay{
+                                    time: 250
+                                }
+                                Sound{
+                                    name: "axe.ogg"
+                                }
+                                Delay{
+                                    time: 150
+                                }
+                                Sound{
+                                    name: "wose-die.ogg"
+                                }
+
+                                MODIFY_TERRAIN("Gg", x1, y1)
+
+                                Unstore_Unit{
+                                    variable: "unit"
+                                    text: 1 -- wmllint: ignore
+                                    red: 204, green: 204, blue: 51
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- HILLS
+
+-- Build Gold Mine
+
+                        option: {
+                            image: "terrain/village/human-hills-tile.png"
+                            label: "<span color='green'>" .. _ "Build Mine" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 25g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Hh")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 25
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-25)
+                                        MODIFY_TERRAIN("Hh^Vhh", x1, y1)
+                                        ANL_CAPTURE_VILLAGE!
+                                        BUILD_SOUND_1!
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- MOUNTAINS
+
+-- Build Gold Mine
+
+                        option: {
+                            image: "terrain/village/human-mountain-tile.png"
+                            label: "<span color='green'>" .. _ "Build Mine" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 25g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Mm")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 25
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-25)
+                                        MODIFY_TERRAIN("Mm^Vhh", x1, y1)
+                                        ANL_CAPTURE_VILLAGE!
+                                        BUILD_SOUND_1!
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- WATER
+
+-- Make a Ford
+
+                        option: {
+                            image: "terrain/water/ford.png"
+                            label: "<span color='green'>" .. _ "Make a Ford" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 3g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Ww")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 3
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-3)
+                                        Delay{
+                                            time: 200
+                                        }
+                                        Sound{
+                                            name: "dagger-swish.wav"
+                                        }
+                                        MODIFY_TERRAIN("Wwf", x1, y1)
+                                    
+                                }
+                            
+                        }
+
+-- Landfill
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Landfill" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 5g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Ww")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 5
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-5)
+                                        Delay{
+                                            time: 200
+                                        }
+                                        Sound{
+                                            name: "claws.ogg"
+                                        }
+                                        MODIFY_TERRAIN("Gg", x1, y1)
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- FORD
+
+-- Destroy the Ford
+
+                        option: {
+                            image: "terrain/water/coast-tile.png"
+                            label: "<span color='green'>" .. _ "Destroy the Ford" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 0g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Wwf")
+                            command: ->
+                                COMPLETE_ACTION(0)
+                                Delay{
+                                    time: 200
+                                }
+                                MODIFY_TERRAIN("Ww", x1, y1)
+                                Sound{
+                                    name: "pincers.ogg"
+                                }
+                                Delay{
+                                    time: 200
+                                }
+                                Sound{
+                                    name: "water-blast.wav"
+                                }
+                            
+                        }
+
+-- Landfill
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Landfill" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 1g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Wwf")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 1
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-1)
+                                        Delay{
+                                            time: 200
+                                        }
+                                        Sound{
+                                            name: "claws.ogg"
+                                        }
+                                        MODIFY_TERRAIN("Gg", x1, y1)
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- CAVE
+
+-- Break Up Cave
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Smash Cave Floor" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 2g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Uu,Uu^Ii")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 2
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-2)
+                                        Sound{
+                                            name: "claws.ogg"
+                                        }
+                                        MODIFY_TERRAIN("Gg", x1, y1)
+                                    
+                                }
+                            
+                        }
+
+-- Convert Cave To Hills
+
+                        option: {
+                            image: "terrain/hills/regular2.png"
+                            label: "<span color='green'>" .. _ "Smash Cave Floor" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 3g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Uh,Uh^Ii")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 3
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-3)
+                                        Sound{
+                                            name: "claws.ogg"
+                                        }
+                                        MODIFY_TERRAIN("Hh", x1, y1)
+                                    
+                                }
+                            
+                        }
+
+-- Harvest Cave Mushrooms
+
+                        option: {
+                            image: "terrain/cave/floor.png"
+                            label: "<span color='green'>" .. _ "Harvest Mushrooms" .. "</span>"
+                            description: "<span size='small'>" .. _ "Earns: 3g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Uu^Uf")
+                            command: ->
+                                Set_Variable{
+                                    name: "finished"
+                                    value: true
+                                }
+
+                                Set_Variable{
+                                    name: "unit.status.worked_this_turn"
+                                    value: true
+                                }
+                                Set_Variable{
+                                    name: "unit.moves"
+                                    value: 0
+                                }
+
+                                Gold{
+                                    side: side_number
+                                    amount: 3
+                                }
+
+                                Sound{
+                                    name: "dagger-swish.wav"
+                                }
+                                Delay{
+                                    time: 250
+                                }
+                                Sound{
+                                    name: "axe.ogg"
+                                }
+
+                                MODIFY_TERRAIN("Uu", x1, y1)
+
+                                Unstore_Unit{
+                                    variable: "unit"
+                                    text: 3 -- wmllint: ignore
+                                    red: 204, green: 204, blue: 51
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- CASTLE
+
+-- Build Keep
+
+                        option: {
+                            image: "terrain/castle/keep-tile.png"
+                            label: "<span color='green'>" .. _ "Build a Keep" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 6g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Ch,Ce,Cv,Cud,Chr,Chw,Chs")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 6
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-6)
+                                        MODIFY_TERRAIN("Kh", x1, y1)
+                                        BUILD_SOUND_2!
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- VILLAGE
+
+-- Establish University
+
+                        option: {
+                            image: "terrain/village/elven-tile.png"
+                            label: "<span color='green'>" .. _ "Establish University" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 7g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Gg^Vh,Aa^Vha")
+                            command: ->
+                                If{
+                                    variable: {
+                                        name: "worker.gold"
+                                        greater_than_equal_to: 7
+                                    }
+
+                                    then: ->
+                                        COMPLETE_ACTION(-7)
+                                        MODIFY_TERRAIN("Gg^Ve", x1, y1)
+                                        ANL_CAPTURE_VILLAGE!
+                                        BUILD_SOUND_2!
+                                    
+                                }
+                            
+                        }
+
+-- ----------------------------------------------
+-- RUBBLE
+
+-- Clear Rubble
+
+                        option: {
+                            image: "terrain/grass/green6.png"
+                            label: "<span color='green'>" .. _ "Clear the Ground" .. "</span>"
+                            description: "<span size='small'>" .. _ "Cost: 0g" .. "</span>"
+                            <ANL_SHOW_IF("Peasant", "Rd")
+                            command: ->
+                                COMPLETE_ACTION(-0)
+                                Delay{
+                                    time: 200
+                                }
+                                Sound{
+                                    name: "claws.ogg"
+                                }
+                                MODIFY_TERRAIN("Gg", x1, y1)
+                                Remove_Item{
+                                    x: x1, y: y1
+                                }
+                            
+                        }
+                    }
+                
+            }
+        
+    }
+}

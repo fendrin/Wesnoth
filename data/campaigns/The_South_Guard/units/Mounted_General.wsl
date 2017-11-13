@@ -1,0 +1,90 @@
+--textdomain wesnoth-tsg
+Unit_Type{
+    id: "Mounted General"
+    name: _ "Mounted General"
+    race: "human"
+    image: "deoran/mounted-general.png"
+    leading_anim: {
+        start_time: -150
+        frame: {
+            image: "deoran/mounted-general-defend.png:300"
+        }
+    }
+    hitpoints: 68
+    alignment: "lawful"
+    cost: 70
+    movement_type: "mounted"
+    movement: 8
+    level: 3
+    advances_to: "null"
+    <AMLA_DEFAULT!
+    experience: 150
+    usage: "fighter"
+    abilities: {
+        <ABILITY_LEADERSHIP!
+    }
+    description: _ "Being the most able leaders of the border guards, Mounted Generals are trained not only to ride and fight, but to lead. They command the garrisons that keep peace in the provinces of Wesnoth." .. SPECIAL_NOTES! .. SPECIAL_NOTES_LEADERSHIP! .. SPECIAL_NOTES_CHARGE!
+    die_sound: "horse-die.ogg"
+    attack: {
+        name: "lance"
+--textdomain wesnoth-units
+        description: _ "lance"
+        type: "pierce"
+        specials: {
+            <WEAPON_SPECIAL_CHARGE!
+        }
+        range: "melee"
+        damage: 11
+        number: 3
+    }
+    attack: {
+        name: "mace"
+        description: _ "mace"
+--textdomain wesnoth-tsg
+        type: "impact"
+        range: "melee"
+        damage: 19
+        number: 2
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "lance"
+        }
+        start_time: -225
+        frame: {
+            image: "deoran/mounted-general-lance.png:25"
+            sound: "horse-canter.wav"
+        }
+        frame: {
+            image: {"deoran/mounted-general-lance-[1~2", "1].png:[100", 200, "75]"}
+        }
+        <SOUND.HIT_AND_MISS("spear.ogg", "spear-miss.ogg", -100)
+        frame: {
+            image: "deoran/mounted-general-lance.png:25"
+        }
+    }
+    attack_anim: {
+        filter_attack: {
+            name: "mace"
+        }
+        start_time: -225
+        frame: {
+            image: "deoran/mounted-general-moving.png:25"
+            sound: "horse-canter.wav"
+        }
+        frame: {
+            image: {"deoran/mounted-general-moving.png:[100", 200, "75]"}    --placeholder graphic
+        }
+        <SOUND.HIT_AND_MISS("mace.ogg", "mace-miss.ogg", -100)
+        frame: {
+            image: "deoran/mounted-general.png:25"
+        }
+    }
+    movement_anim: {
+        start_time: 0
+        frame: {
+            image: "deoran/mounted-general-moving.png:150"
+        }
+    }
+    <DEFENSE_ANIM("deoran/mounted-general-defend.png", "deoran/mounted-general.png", SOUND_LIST.HORSE_HIT!)
+}

@@ -1,0 +1,314 @@
+--textdomain wesnoth-anl
+
+TARGET_RESEARCH_COMMAND = (TARGET_ID, TARGET_NAME) -> {
+    set_variable: {
+        name: "player_#{side_number}.research.current_target"
+        value: TARGET_ID
+    }
+    set_variable: {
+        name: "player_#{side_number}.research.target_language_name"
+        value: TARGET_NAME
+    }
+
+    set_variable: {
+        name: "finished_options"
+        value: true
+    }
+
+    set_variable: {
+        name: "unit.status.worked_this_turn"
+        value: true
+    }
+    set_variable: {
+        name: "unit.moves"
+        value: 0
+    }
+}
+
+RESEARCH_OPTIONS = (TYPES) -> {
+
+-- Picking new recruit
+
+    set_menu_item: {
+        id: "anl_choose_new_recruit"
+        description: _ "Choose New Recruit"
+        show_if: {
+            variable: {
+                name: "player_#{side_number}.warfare.troop_available"
+                greater_than_equal_to: 1
+            }
+
+            have_unit: {
+                side: side_number
+                x: x1, y: y1
+                type: TYPES
+                canrecruit: false
+                not: {
+                    status: "worked_this_turn"
+                }
+            }
+        }
+        filter_location: {
+            terrain: "Gg^Ve,Gg^Vea"
+        }
+
+        command: ->
+            Message{
+                speaker: "unit"
+                caption: _ "Study Complete"
+                message: _ "Which type of unit would you like to be able to recruit?"
+--textdomain wesnoth-units
+                <PICK_RECRUIT_OPTION("units/human-loyalists/spearman.png~TC(#{side_number},magenta)", "Spearman", _ "Spearman", "troop_1")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/bowman.png~TC(#{side_number},magenta)", "Bowman", _ "Bowman", "troop_2")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/fencer.png~TC(#{side_number},magenta)", "Fencer", _ "Fencer", "troop_3")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/heavyinfantry.png~TC(#{side_number},magenta)", "Heavy Infantryman", _ "Heavy Infantryman", "troop_4")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/sergeant.png~TC(#{side_number},magenta)", "Sergeant", _ "Sergeant", "troop_5")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/cavalryman/cavalryman.png~TC(#{side_number},magenta)", "Cavalryman", _ "Cavalryman", "troop_6")
+                <PICK_RECRUIT_OPTION("units/human-loyalists/horseman/horseman.png~TC(#{side_number},magenta)", "Horseman", _ "Horseman", "troop_7")
+--textdomain wesnoth-anl
+            }
+
+            Set_Variable{
+                name: "player_#{side_number}.warfare.troop_available"
+                sub: 1
+            }
+        
+    }
+
+-- Changing Research Target
+
+    set_menu_item: {
+        id: "anl_oversee_research"
+        description: _ "Oversee Research"
+        show_if: {
+            have_unit: {
+                side: side_number
+                x: x1, y: y1
+                type: TYPES
+                canrecruit: false
+                not: {
+                    status: "worked_this_turn"
+                }
+            }
+        }
+        filter_location: {
+            terrain: "Gg^Ve,Gg^Vea"
+        }
+
+        command: ->
+            Store_Unit{
+                filter: {
+                    x: x1
+                    y: y1
+                }
+                kill: false
+                variable: "unit"
+            }
+
+            Set_Variable{
+                name: "finished_options"
+                value: false
+            }
+            Set_Variable{
+                name: "cancelled"
+                value: false
+            }
+
+            While{
+                variable: {
+                    name: "finished_options"
+                    equals: false
+                }
+
+                do: ->
+                    Message{
+                        speaker: "unit"
+                        caption: _ "Research"
+-- wmllint: display on
+                        message: _ "We are currently studying #{player_#{side_number}.research.target_language_name}. To which end would you have our scholars devote their minds?
+
+Our farms produce $player_$side_number|.farming.gold|g
+Our mines produce $player_$side_number|.mining.gold|g
+"
+-- wmllint: display off
+
+                        option: {
+                            label: _ "Continue as before"
+                            command: ->
+                                Set_Variable{
+                                    name: "finished_options"
+                                    value: true
+                                }
+
+                                Set_Variable{
+                                    name: "cancelled"
+                                    value: true
+                                }
+                            
+                        }
+
+-- Farming
+
+                        option: {
+                            image: "items/flower4.png"
+                            label: _ "<span color='green'>Agriculture</span>
+Farmers produce +1 gold
+Study Progress: $player_$side_number|.farming.progress|/$player_$side_number|.farming.target"
+                            command: ->
+                                TARGET_RESEARCH_COMMAND("agriculture", _ "agriculture")
+                            
+                        }
+
+-- Mining
+
+                        option: {
+                            image: "items/gold-coins-small.png"
+                            label: _ "<span color='green'>Mining</span>
+Miners produce +1 gold
+Study Progress: $player_$side_number|.mining.progress|/$player_$side_number|.mining.target"
+                            command: ->
+                                TARGET_RESEARCH_COMMAND("mining", _ "mining")
+                            
+                        }
+
+--Warfare
+
+                        option: {
+                            image: "wesnoth-icon.png"
+                            label: _ "<span color='green'>Warfare</span>
+Allows you to recruit a new type of unit
+Study Progress: $player_$side_number|.warfare.progress|/$player_$side_number|.warfare.target"
+                            show_if: {
+                                variable: {
+                                    name: "player_#{side_number}.troops"
+                                    less_than: 7
+                                }
+                            }
+
+                            command: ->
+                                TARGET_RESEARCH_COMMAND("warfare", _ "warfare")
+                            
+                        }
+                    }
+                
+            }
+
+            If{
+                variable: {
+                    name: "cancelled"
+                    not_equals: true
+                }
+
+                then: ->
+                    Unstore_Unit{
+                        variable: "unit"
+                        find_vacant: false
+                    }
+                
+
+                else: ->
+--[allow_undo]
+--[/allow_undo]
+                
+            }
+        
+    }
+}
+
+-- Research Complete Messages
+-- (These are shown at the start of a player's turn - they are triggered by an event included in the auto-studying macro)
+
+FARMING_RESEARCH_COMPLETE = () -> {
+    if: {
+        variable: {
+            name: "player_#{side_number}.farming.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 225:             greater_than_equal_to=$player_$side_number|.farming.target
+        }
+
+        then: ->
+            Set_Variable{
+                name: "player_#{side_number}.farming.gold"
+                add: 1
+            }
+
+            Message{
+                speaker: "narrator"
+                caption: _ "Study Complete"
+                image: "items/flower4.png"
+                message: _ "#{player_#{side_number}.name}’s farms now produce #{player_#{side_number}.farming.gold gold."
+            }
+
+            Set_Variable{
+                name: "player_#{side_number}.farming.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 243:                 sub=$player_$side_number|.farming.target
+            }
+            Set_Variable{
+                name: "player_#{side_number}.farming.target"
+                add: 1
+            }
+        
+    }
+}
+
+MINING_RESEARCH_COMPLETE = () -> {
+    if: {
+        variable: {
+            name: "player_#{side_number}.mining.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 257:             greater_than_equal_to=$player_$side_number|.mining.target
+        }
+
+        then: ->
+            Set_Variable{
+                name: "player_#{side_number}.mining.gold"
+                add: 1
+            }
+
+            Message{
+                speaker: "narrator"
+                caption: _ "Study Complete"
+                image: "items/gold-coins-small.png"
+                message: _ "#{player_#{side_number}.name}’s mines now produce #{player_#{side_number}.mining.gold gold."
+            }
+
+            Set_Variable{
+                name: "player_#{side_number}.mining.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 275:                 sub=$player_$side_number|.mining.target
+            }
+            Set_Variable{
+                name: "player_#{side_number}.mining.target"
+                add: 1
+            }
+        
+    }
+}
+
+WARFARE_RESEARCH_COMPLETE = () -> {
+    if: {
+        variable: {
+            name: "player_#{side_number}.warfare.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 289:             greater_than_equal_to=$player_$side_number|.warfare.target
+        }
+
+        then: ->
+            Message{
+                speaker: "narrator"
+                caption: _ "Study Complete"
+                image: "wesnoth-icon.png"
+                message: _ "#{player_#{side_number}.name}, we have finished researching warfare. Right-click on a mage in a university to select a unit to recruit."
+            }
+
+            Set_Variable{
+                name: "player_#{side_number}.warfare.troop_available"
+                add: 1
+            }
+            Set_Variable{
+                name: "player_#{side_number}.warfare.progress"
+err: ../attic/data/multiplayer/scenarios/ANL_utils/ANL_research_options.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 306:                 sub=$player_$side_number|.warfare.target
+            }
+            Set_Variable{
+                name: "player_#{side_number}.warfare.target"
+                add: 1
+            }
+        
+    }
+}

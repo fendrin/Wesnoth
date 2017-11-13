@@ -1,0 +1,150 @@
+--textdomain wesnoth-low
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Kalenz"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I am defeated. Now the orcs will destroy us!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Landar"
+    }
+    <if LANDAR_SPOILED then {
+        message: {
+            speaker: "unit"
+            message: _ "It is finished! I can finally rest!"
+        }
+    } else {
+        message: {
+            speaker: "unit"
+            message: _ "Farewell, Kalenz!"
+        }
+    }
+    do: ->
+        Message{
+            id: "Kalenz"
+            message: _ "Nooo! We cannot continue without Landar!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Cleodil"
+    }
+    do: ->
+        Message{
+-- There’s an argument that Cleodil shouldn’t refer to Kalenz as
+-- "beloved", in the early scenarios, but I (ESR) think it is
+-- poignant and appropriate that she reveal her feelings
+-- as she dies.
+            speaker: "unit"
+            message: _ "I’m sorry I failed you, Kalenz... my beloved..."
+        }
+        Message{
+-- Ditto.  In the early scenarios, this is Kalenz reralizing
+-- how much she meant to him just as he loses all hope.
+            id: "Kalenz"
+            message: _ "Nooo! Cleodil! Without you I cannot go on!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Olurf"
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I go to join my sires in the Halls of Death"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Uradredia"
+    }
+    do: ->
+        Message{
+            id: "Kalenz"
+            message: _ "Our cause is lost. With Uradredia gone, the North Elves will no longer fight!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    filter: {
+        id: "Galtrid"
+    }
+    do: ->
+        Message{
+            id: "Kalenz"
+            message: _ "I cannot fight the orcs alone! It’s all over!"
+        }
+        Endlevel{
+            result: "defeat"
+        }
+}
+
+Event{
+    name: "last breath"
+    first_time_only: false
+    filter: {
+        filter_wml: {
+            upkeep: "loyal"
+        }
+        filter_side: {
+            allied_with: {
+                has_unit: {
+                    id: "Kalenz"
+                }
+            }
+        }
+    }
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "I grieve that I have failed you, my lord Kalenz..."
+        }
+        Message{
+            id: "Kalenz"
+            message: _ "Farewell #{unit.name. Your loyal service won’t be forgotten."
+        }
+        Scroll_To_Unit{
+            id: unit.id
+        }
+}
+
+Event{
+    name: "time over"
+    do: ->
+        Message{
+            speaker: "unit"
+            message: _ "Oh, no! We are too late..."
+        }
+}

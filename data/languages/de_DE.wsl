@@ -1,0 +1,5 @@
+Locale{
+    name: "Deutsch"
+    locale: "de_DE"
+    alternates: {"de_LI", "de_LU", "de_CH", "de_AT"}
+}

@@ -1,0 +1,708 @@
+--textdomain wesnoth
+-- This file contains general utility macros for WML authors.
+--
+-- Later macros in this file are built using earlier ones, which
+-- is why they live here rather than being broken out into topic-specific files.
+
+-- ! in comments is used in generating HTML documentation, ignore it otherwise.
+QUANTITY = (NAME, EASY_VALUE, NORMAL_VALUE, HARD_VALUE) -> {
+-- Macro to define a 'quantity' differently based on difficulty levels.
+    <if EASY then {
+        [NAME]: EASY_VALUE
+    }
+    <if NORMAL then {
+        [NAME]: NORMAL_VALUE
+    }
+    <if HARD then {
+        [NAME]: HARD_VALUE
+    }
+}
+
+QUANTITY4 = (NAME, EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+-- Four-difficulty version of QUANTITY
+    <if EASY then {
+        [NAME]: EASY_VALUE
+    }
+
+    <if NORMAL then {
+        [NAME]: NORMAL_VALUE
+    }
+
+    <if HARD then {
+        [NAME]: HARD_VALUE
+    }
+
+    <if NIGHTMARE then {
+        [NAME]: NIGHTMARE_VALUE
+    }
+}
+
+-- No tab or space-based indentation for these macros to avoid trouble when these macros are used
+-- in the middle of a quoted string literal
+--
+-- wmlindent: start ignoring
+-- wmlscope: start conditionals
+if EASY
+    ON_DIFFICULTY: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE) -> {
+        <EASY_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 48
+    if NORMAL
+        ON_DIFFICULTY: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE) -> {
+            <NORMAL_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 52
+        if HARD
+            ON_DIFFICULTY: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE) -> {
+                <HARD_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 56
+-- wmlscope: stop conditionals
+-- wmlindent: stop ignoring
+-- wmlscope: prune ON_DIFFICULTY
+
+-- No tab or space-based indentation for these macros to avoid trouble when these macros are used
+-- in the middle of a quoted string literal
+--
+-- wmlindent: start ignoring
+-- wmlscope: start conditionals
+            if EASY
+                ON_DIFFICULTY4: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+                    <EASY_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 69
+                if NORMAL
+                    ON_DIFFICULTY4: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+                        <NORMAL_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 73
+                    if HARD
+                        ON_DIFFICULTY4: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+                            <HARD_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 77
+                        if NIGHTMARE
+                            ON_DIFFICULTY4: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+                                <NIGHTMARE_VALUE--enddef
+err: ../attic/data/core/macros/utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! define closed by ifDef at line 81
+-- wmlscope: stop conditionals
+-- wmlindent: stop ignoring
+-- wmlscope: prune ON_DIFFICULTY4
+
+                            TURNS: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT) -> {
+-- Macro to define number of turns for different difficulty levels.
+                                <QUANTITY("turns", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT)
+                            }
+
+                            TURNS4: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT) -> {
+-- Four-difficulty version of TURNS
+                                <QUANTITY4("turns", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT)
+                            }
+
+                            GOLD: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT) -> {
+-- Macro which will let you say {GOLD x y z} to set
+-- starting gold depending on easy/medium/hard - x/y/z
+                                <QUANTITY("gold", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT)
+                            }
+
+                            GOLD4: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT) -> {
+-- Four-difficulty version of GOLD
+                                <QUANTITY4("gold", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT)
+                            }
+
+                            INCOME: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT) -> {
+-- Macro which will let you say {INCOME x y z} to set
+-- per-turn income depending on easy/medium/hard - x/y/z
+                                <QUANTITY("income", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT)
+                            }
+
+                            INCOME4: (EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT) -> {
+-- Four-difficulty version of INCOME
+                                <QUANTITY4("income", EASY_AMOUNT, NORMAL_AMOUNT, HARD_AMOUNT, NIGHTMARE_AMOUNT)
+                            }
+
+                            NO_INCOME: () -> {
+-- Used to specify when a side should not have any income
+-- every turn.
+                                income: -2
+                            }
+
+                            ATTACK_DEPTH: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE) -> {
+-- Macro to define AI attack depth for different difficulty levels
+-- (set it to 1-6)
+                                <QUANTITY("attack_depth", EASY_VALUE, NORMAL_VALUE, HARD_VALUE)
+                            }
+
+                            ATTACK_DEPTH4: (EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE) -> {
+-- Four-difficulty version of ATTACK_DEPTH
+                                <QUANTITY4("attack_depth", EASY_VALUE, NORMAL_VALUE, HARD_VALUE, NIGHTMARE_VALUE)
+                            }
+
+                            NO_SCOUTS: () -> {
+-- Macro to make an AI team not recruit scouts.
+                                villages_per_scout: 0
+                            }
+
+                            RANDOM: (THING_VALUE) ->
+-- Macro to quickly pick a random value (in the $random variable, to avoid
+-- cluttering up savegames with such temporary variables).
+                                Set_Variable{
+                                    name: "random"
+                                    rand: THING_VALUE
+                                }
+                            
+
+                            VARIABLE: (VAR, VALUE) ->
+-- Macro to initialize a variable.  Strictly a syntatic shortcut.
+                                Set_Variable{
+                                    name: VAR
+                                    value: VALUE
+                                }
+                            
+
+                            GLOBAL_VARIABLE: (NAMESPACE, LOCAL_VAR_NAME, GLOBAL_VAR_NAME, SIDE) -> {
+--Assigns a persistent variable with the contents of a standard variable.
+                                set_global_variable: {
+                                    namespace: NAMESPACE
+                                    from_local: LOCAL_VAR_NAME
+                                    to_global: GLOBAL_VAR_NAME
+                                    side: SIDE
+                                }
+                            }
+
+                            VARIABLE_FROM_GLOBAL: (NAMESPACE, GLOBAL_VAR_NAME, LOCAL_VAR_NAME, SIDE) -> {
+--Retrieves the contents of a persistent variable and stores them in a standard variable.
+                                get_global_variable: {
+                                    namespace: NAMESPACE
+                                    from_global: GLOBAL_VAR_NAME
+                                    to_local: LOCAL_VAR_NAME
+                                    side: SIDE
+--immediate=no
+                                }
+                            }
+
+                            VARIABLE_OP: (VAR, OP_NAME, VALUE) -> {
+-- Macro to do mathematical operations on variables.
+                                set_variable: {
+                                    name: VAR
+                                    [OP_NAME]: VALUE
+                                }
+                            }
+
+                            VARIABLE_CONDITIONAL: (VAR, OP_NAME, VALUE) -> {
+-- Macro to do conditional operations on variables.
+                                variable: {
+                                    name: VAR
+                                    [OP_NAME]: VALUE
+                                }
+                            }
+
+                            CLEAR_VARIABLE: (VAR_NAME) -> {
+-- Macro to clear a variable previously set.
+                                clear_variable: {
+                                    name: VAR_NAME
+                                }
+                            }
+
+                            CLEAR_GLOBAL_VARIABLE: (NAMESPACE, MY_VARIABLE_NAME, SIDE) -> {
+-- Clears a persistent variable entirely.
+                                clear_global_variable: {
+                                    namespace: NAMESPACE
+                                    global: MY_VARIABLE_NAME
+                                    side: SIDE
+                                    immediate: false
+                                }
+                            }
+
+                            REPEAT: (NUMBER, BODY_WML) ->
+-- Macro to execute some WML a defined number of times.
+--
+-- Example that causes screen to quake 5 times:
+--! {REPEAT 5 (
+--!     {QUAKE "rumble.ogg"}
+--! )}
+                                VARIABLE("REPEAT_i", 0)
+
+                                While{
+                                    variable: {
+                                        name: "REPEAT_i"
+                                        less_than: NUMBER
+                                    }
+
+                                    do: ->
+                                        BODY_WML
+
+                                        VARIABLE_OP("REPEAT_i", "add", 1)
+                                    
+                                }
+
+                                CLEAR_VARIABLE("REPEAT_i")
+                            
+
+                            LOOKUP_INDEX: (FROM_ARRAY_NAME, WHERE_KEY_NAME, WHERE_VALUE, SAVE_AS_NAME) -> {
+-- Call this to lookup an array element that has a particular key-value pair
+-- then it saves the index of that element, or
+-- if the key-value pair is not found it saves the array's length
+                                <VARIABLE(SAVE_AS_NAME, 0)
+                                while: {
+                                    variable: {
+                                        name: SAVE_AS_NAME
+                                        less_than: Var(FROM_ARRAY_NAME).length
+                                    }
+                                    variable: {
+                                        name: "#{FROM_ARRAY_NAME}[#{#{SAVE_AS_NAME}].#{WHERE_KEY_NAME}"
+                                        not_equals: WHERE_VALUE
+                                    }
+                                    do: ->
+                                        VARIABLE_OP(SAVE_AS_NAME, "add", 1)
+                                    
+                                }
+                            }
+
+                            LOOKUP_VALUE: (FROM_ARRAY_NAME, WHERE_KEY_NAME, WHERE_VALUE, SAVE_KEY_NAME, DEFAULT_VALUE, SAVE_AS_NAME) -> {
+-- Call this to look up an array element that has a particular key-value pair
+-- then it saves another key from that same element.
+                                <LOOKUP_INDEX(FROM_ARRAY_NAME, WHERE_KEY_NAME, WHERE_VALUE, SAVE_AS_NAME)
+                                if: {
+                                    variable: {
+                                        name: SAVE_AS_NAME
+                                        numerical_equals: Var(FROM_ARRAY_NAME).length
+                                    }
+                                    then: ->
+                                        VARIABLE(SAVE_AS_NAME, DEFAULT_VALUE)
+                                    
+                                    else: ->
+                                        VARIABLE(SAVE_AS_NAME, Var(FROM_ARRAY_NAME)[Var(SAVE_AS_NAME)][SAVE_KEY_NAME])
+                                    
+                                }
+                            }
+
+                            MODIFY_UNIT: (FILTER, VAR, VALUE) -> {
+-- Alters a unit variable (such as unit.x, unit.type,
+-- unit.side), handling all the storing and unstoring.
+--
+-- Example that flips all spearmen to side 2:
+--! {MODIFY_UNIT type=Spearman side 2}
+                                store_unit: {
+                                    filter: {
+                                        <FILTER
+                                    }
+
+                                    variable: "MODIFY_UNIT_store"
+                                    kill: true
+                                }
+
+                                foreach: {
+                                    array: "MODIFY_UNIT_store"
+                                    do: ->
+                                        Set_Variable{
+                                            name: "this_item.#{VAR}"
+                                            value: VALUE
+                                        }
+
+                                        Unstore_Unit{
+                                            variable: "this_item"
+                                            find_vacant: false
+                                        }
+                                    
+                                }
+
+                                <CLEAR_VARIABLE("MODIFY_UNIT_store,MODIFY_UNIT_i")
+                            }
+
+                            MOVE_UNIT_BY: (FILTER, OFFSET_X, OFFSET_Y) -> {
+--TODO COMMENT
+                                store_unit: {
+                                    filter: {
+                                        <FILTER
+                                    }
+
+                                    variable: "MOVE_UNIT_store"
+                                    kill: true
+                                }
+
+                                for: {
+                                    array: "MOVE_UNIT_store"
+                                    variable: "MOVE_UNIT_BY_i"
+                                    do: ->
+                                        VARIABLE_OP("MOVE_UNIT_store[#{MOVE_UNIT_BY_i].x", "add", OFFSET_X)
+                                        VARIABLE_OP("MOVE_UNIT_store[#{MOVE_UNIT_BY_i].y", "add", OFFSET_Y)
+                                        Unstore_Unit{
+                                            variable: "MOVE_UNIT_store[#{MOVE_UNIT_BY_i]"
+                                            find_vacant: false
+                                        }
+                                    
+                                }
+                                <CLEAR_VARIABLE("MOVE_UNIT_store")
+                            }
+
+                            MOVE_UNIT: (FILTER, TO_X, TO_Y) -> {
+-- Moves a unit from its current location to the given location, displaying
+-- movement normally.
+--
+-- Note that setting the destination on an existing unit does not kill either
+-- one, but causes the unit to move to the nearest vacant hex instead.
+                                move_unit: {
+                                    <FILTER
+                                    to_x: TO_X
+                                    to_y: TO_Y
+                                    fire_event: false
+                                }
+                            }
+
+                            FULL_HEAL: (FILTER) -> {
+                                heal_unit: {
+                                    filter: {
+                                        <FILTER
+                                    }
+
+                                    amount: "full"
+                                    restore_statuses: true
+                                }
+                            }
+
+                            PUT_TO_RECALL_LIST: (FILTER) -> {
+-- This places a given unit back to the recall list of the side it is on.
+-- Note however, that the unit is not healed to full health, so when
+-- recalled (even if not until the next scenario) the unit may have less
+-- than his maximum hp left.
+--
+-- An example that returns all units stepping on (20,38) back to the recall
+-- list:
+--
+--! [event]
+--!     name=moveto
+--!
+--!     [filter]
+--!         x,y=20,38
+--!     [/filter]
+--!
+--!     {PUT_TO_RECALL_LIST x,y=20,38}
+--! [/event]
+                                put_to_recall_list: {
+                                    <FILTER
+                                }
+                            }
+
+                            RECRUIT_UNIT_VARIATIONS: (SIDE, TYPE, VARIATIONS_VALUE) -> {
+-- Allows a side to seemingly recruit variations of a given unit, such as the
+-- the Walking Corpse.
+--
+-- An example which makes side 2 have a 50% chance of getting a normal WC
+-- and a 50% chance of getting either a drake or dwarf variation:
+--! {RECRUIT_UNIT_VARIATIONS 2 "Walking Corpse" none,none,drake,dwarf}
+                                event: {
+                                    name: "prerecruit"
+                                    first_time_only: false
+
+                                    filter: {
+                                        side: SIDE
+                                        type: TYPE
+                                    }
+                                    do: ->
+                                        VARIABLE_OP("recruited_unit_random_variation", "rand", VARIATIONS_VALUE)
+
+                                        If{
+                                            variable: {
+                                                name: "recruited_unit_random_variation"
+                                                not_equals: "none"
+                                            }
+
+                                            then: ->
+                                                Object{
+                                                    duration: "forever"
+                                                    silent: true
+
+                                                    filter: {
+                                                        x: x1, y: y1
+                                                    }
+
+                                                    effect: {
+                                                        apply_to: "variation"
+                                                        name: recruited_unit_random_variation
+                                                    }
+
+                                                    effect: {
+                                                        apply_to: "hitpoints"
+                                                        heal_full: true
+                                                    }
+                                                }
+                                            
+                                        }
+
+                                        CLEAR_VARIABLE("recruited_unit_random_variation")
+                                }
+                            }
+
+                            SCATTER_UNITS: (NUMBER, TYPES, PADDING_RADIUS, FILTER, UNIT_WML) ->
+-- Scatters the given kind of units randomly on a given area on the map.
+--
+-- An example which scatters some loyal elves on forest hexes in
+-- x,y=10-30,20-40, at a minimum of three hexes apart from each other and
+-- never on top of or adjacent to any already existing units:
+--! {SCATTER_UNITS 20 "Elvish Fighter,Elvish Archer,Elvish Shaman" 3 (
+--!     terrain=Gs^Fp
+--!     x=10-30
+--!     y=20-40
+--!
+--!     [not]
+--!         [filter]
+--!         [/filter]
+--!     [/not]
+--!
+--!     [not]
+--!         [filter_adjacent_location]
+--!             [filter]
+--!             [/filter]
+--!         [/filter_adjacent_location]
+--!     [/not]
+--! ) (
+--!     side=2
+--!     generate_name=yes
+--!     random_traits=yes
+--!
+--!     [modifications]
+--!         {TRAIT_LOYAL}
+--!     [/modifications]
+--! )}
+                                Set_Variables{
+                                    name: "unit_type_table"
+
+                                    split: {
+                                        list: TYPES
+                                        key: "type"
+                                        separator: ','
+                                    }
+                                }
+
+                                VARIABLE("unit_type_table_i", 0)
+
+                                Random_Placement{
+                                    num_items: NUMBER
+                                    variable: "random_placement_location"
+                                    allow_less: true
+                                    min_distance: PADDING_RADIUS
+                                    filter_location: {
+                                        <FILTER
+                                        include_borders: false
+                                    }
+                                    command: ->
+                                        Unit{
+                                            type: unit_type_table[unit_type_table_i].type
+                                            x: random_placement_location.x, y: random_placement_location.y
+                                            <UNIT_WML
+                                        }
+                                        VARIABLE("unit_type_table_i", "#{((#{unit_type_table_i + 1) % #{unit_type_table.length)")
+                                    
+                                }
+
+                                CLEAR_VARIABLE("unit_type_table,unit_type_table_i,random_placement_location")
+                            
+
+                            FORCE_CHANCE_TO_HIT: (FILTER, SECOND_FILTER, CTH_NUMBER, EXTRA_CONDITIONS_WML) -> {
+-- Invisibly forces certain units to always have a specific chance to hit
+-- when fighting against certain other units.
+--
+-- Note that the player still only sees the regular damage calculations, so
+-- this is useful if you need to give an invisible helping hand to the player
+-- or AI. For example, if the player is forced to attack with only a couple
+-- of units at the beginning of a scenario, you can use this to ensure that
+-- simply having bad luck cannot ruin their attempt so easily. Also you might
+-- have enemy leaders which the player is not supposed to fight or be able to
+-- defeat due to storyline reasons, but could theoretically still kill with
+-- some clever trick, AI mistake or sheer exceptional luck.
+--
+-- An example which forces Konrad's attacks to always hit Li'sar, but only
+-- after turn 10:
+--! {FORCE_CHANCE_TO_HIT id=Konrad id="Li'sar" 100 (
+--!     [variable]
+--!         name=turn_number
+--!         greater_than=10
+--!     [/variable]
+--! )}
+                                event: {
+                                    name: "attack"
+                                    first_time_only: false
+
+                                    filter: {
+                                        <FILTER
+                                    }
+
+                                    filter_second: {
+                                        <SECOND_FILTER
+                                    }
+
+                                    filter_condition: {
+                                        and: {
+                                            <EXTRA_CONDITIONS_WML
+                                        }
+                                    }
+
+                                    foreach: {
+                                        array: "unit.attack"
+                                        do: ->
+                                            If{
+--This is to mute a warning message about retrieving a member of non-existant wml container.
+                                                variable: {
+                                                    name: "this_item.specials.length"
+                                                    greater_than: 0
+                                                }
+
+                                                variable: {
+                                                    name: "this_item.specials.chance_to_hit.length"
+                                                    greater_than: 0
+                                                }
+
+                                                then: ->
+                                                    Set_Variables{
+                                                        name: "this_item.specials.original_chance_to_hit"
+                                                        to_variable: "this_item.specials.chance_to_hit"
+                                                    }
+
+                                                    CLEAR_VARIABLE("this_item.specials.chance_to_hit")
+                                                
+                                            }
+
+                                            Set_Variables{
+                                                name: "this_item.specials.chance_to_hit"
+
+                                                value: {
+                                                    id: "forced_cth"
+                                                    value: CTH_NUMBER
+                                                    cumulative: false
+                                                }
+                                            }
+                                        
+                                    }
+                                    do: ->
+                                        Unstore_Unit{
+                                            variable: "unit"
+                                            find_vacant: false
+                                        }
+
+                                        Event{
+                                            name: "attack end"
+                                            delayed_variable_substitution: true
+
+                                            foreach: {
+                                                array: "unit.attack"
+                                                do: ->
+                                                    CLEAR_VARIABLE("this_item.specials.chance_to_hit")
+
+                                                    Set_Variables{
+                                                        name: "this_item.specials.chance_to_hit"
+                                                        to_variable: "this_item.specials.original_chance_to_hit"
+                                                    }
+
+                                                    CLEAR_VARIABLE("this_item.specials.original_chance_to_hit")
+                                                
+                                            }
+                                            do: ->
+                                                Unstore_Unit{
+                                                    variable: "unit"
+                                                    find_vacant: false
+                                                }
+                                        }
+                                }
+
+-- The following event is a simple duplicates of the above ones, with the
+-- primary and secondary units reversed so that the effect is applied also on
+-- defense.
+                                event: {
+                                    name: "attack"
+                                    first_time_only: false
+
+                                    filter: {
+                                        <SECOND_FILTER
+                                    }
+
+                                    filter_second: {
+                                        <FILTER
+                                    }
+
+                                    filter_condition: {
+                                        and: {
+                                            <EXTRA_CONDITIONS_WML
+                                        }
+                                    }
+
+                                    foreach: {
+                                        array: "second_unit.attack"
+                                        do: ->
+                                            If{
+                                                variable: {
+                                                    name: "this_item.specials.length"
+                                                    greater_than: 0
+                                                }
+
+                                                variable: {
+                                                    name: "this_item.specials.chance_to_hit.length"
+                                                    greater_than: 0
+                                                }
+
+                                                then: ->
+                                                    Set_Variables{
+                                                        name: "this_item.specials.original_chance_to_hit"
+                                                        to_variable: "this_item.specials.chance_to_hit"
+                                                    }
+
+                                                    CLEAR_VARIABLE("this_item.specials.chance_to_hit")
+                                                
+                                            }
+
+                                            Set_Variables{
+                                                name: "this_item.specials.chance_to_hit"
+
+                                                value: {
+                                                    id: "forced_cth"
+                                                    value: CTH_NUMBER
+                                                    cumulative: false
+                                                }
+                                            }
+                                        
+                                    }
+                                    do: ->
+                                        Unstore_Unit{
+                                            variable: "second_unit"
+                                            find_vacant: false
+                                        }
+
+                                        Event{
+                                            name: "attack end"
+                                            delayed_variable_substitution: true
+
+                                            foreach: {
+                                                array: "second_unit.attack"
+                                                do: ->
+                                                    CLEAR_VARIABLE("this_item.specials.chance_to_hit")
+
+                                                    Set_Variables{
+                                                        name: "this_item.specials.chance_to_hit"
+                                                        to_variable: "this_item.specials.original_chance_to_hit"
+                                                    }
+
+                                                    CLEAR_VARIABLE("this_item.specials.original_chance_to_hit")
+                                                
+                                            }
+                                            do: ->
+                                                Unstore_Unit{
+                                                    variable: "second_unit"
+                                                    find_vacant: false
+                                                }
+                                        }
+                                }
+                            }
+
+                            LOOT: (AMOUNT, SIDE) -> {
+                                <VARIABLE("amount_gold", AMOUNT)
+
+--TODO add message for the other players!
+                                message: {
+                                    side_for: SIDE
+                                    speaker: "narrator"
+                                    message: _ "You retrieve #{amount_gold pieces of gold."
+                                    image: "wesnoth-icon.png"
+                                    sound: "gold.ogg"
+                                }
+
+                                <CLEAR_VARIABLE("amount_gold")
+
+                                gold: {
+                                    side: SIDE
+                                    amount: AMOUNT
+                                }
+                            }

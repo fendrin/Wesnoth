@@ -1,0 +1,272 @@
+
+-- Note: All these loops must be set up to run either 0 or 1 times.
+FOR_LOOP_TEST_STEP = (NAME, START, END, STEP, CONTENT) ->
+    GENERIC_UNIT_TEST(NAME, {
+            event: {
+                name: "start"
+                do: ->
+                    VARIABLE("n", 0)
+                    For{
+                        start: START, end: END, step: STEP
+                        do: ->
+                            VARIABLE_OP("n", "add", 1)
+                            ASSERT({
+                                    <VARIABLE_CONDITIONAL("i", "equals", START)
+                                    or: {
+                                        <VARIABLE_CONDITIONAL("i", "equals", END)
+                                    }
+                            })
+                        
+                    }
+                    Fire_Event{
+                        name: "no_error"
+                    }
+            }
+            <CONTENT
+    })
+
+
+FOR_LOOP_TEST_STEP("forloop_all_zero", 0, 0, 0, {
+        event: {
+            name: "no_error"
+            do: ->
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_step_zero", 0, 1, 0, {
+        event: {
+            name: "no_error"
+            do: ->
+                FAIL!
+        }
+        event: {
+            name: "start"
+            do: ->
+                SUCCEED!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_once_positive", 0, 0, 1, {
+        event: {
+            name: "no_error"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("n", "equals", 1))
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_once_negative", 0, 0, -1, {
+        event: {
+            name: "no_error"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("n", "equals", 1))
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_twice_matched", 0, 1, 1, {
+        event: {
+            name: "no_error"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("n", "equals", 2))
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_twice_unmatched", 0, 1, -1, {
+        event: {
+            name: "no_error"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("n", "equals", 0))
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_step_large_positive", 0, 10, 10, {
+        event: {
+            name: "no_error"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP("forloop_step_large_negative", 10, 0, -10, {
+        event: {
+            name: "no_error"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP = nil
+
+GENERIC_UNIT_TEST("forloop_empty_array", {
+        event: {
+            name: "start"
+            do: ->
+                VARIABLE("n", 0)
+                For{
+                    array: "nothing"
+                    do: ->
+                        VARIABLE_OP("n", "add", 1)
+                    
+                }
+                Fire_Event{
+                    name: "no_error"
+                }
+        }
+        event: {
+            name: "no_error"
+            do: ->
+                SUCCEED!
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_ARRAY_TEST = (NAME, FINAL_VALUE, REVERSE) ->
+    GENERIC_UNIT_TEST(NAME, {
+            event: {
+                name: "start"
+                do: ->
+                    Set_Variables{
+                        name: "array"
+                        value: {
+                            value: 10
+                        }
+                        value: {
+                            value: 7
+                        }
+                        value: {
+                            value: 2
+                        }
+                    }
+                    VARIABLE("n", 0)
+                    For{
+                        array: "array"
+                        reverse: REVERSE
+                        do: ->
+                            VARIABLE("n", array[i].value)
+                        
+                    }
+                    Fire_Event{
+                        name: "no_error"
+                    }
+            }
+            event: {
+                name: "no_error"
+                do: ->
+                    RETURN(VARIABLE_CONDITIONAL("n", "equals", FINAL_VALUE))
+            }
+            event: {
+                name: "start"
+                do: ->
+                    FAIL!
+            }
+    })
+
+
+FOR_LOOP_ARRAY_TEST("forloop_array", 2, false)
+
+FOR_LOOP_ARRAY_TEST("forloop_array_reverse", 10, true)
+
+FOR_LOOP_ARRAY_TEST = nil
+
+GENERIC_UNIT_TEST("forloop_array_mutate", {
+        event: {
+            name: "start"
+            do: ->
+                Set_Variables{
+                    name: "array"
+                    value: {
+                        value: 10
+                    }
+                    value: {
+                        value: 7
+                    }
+                    value: {
+                        value: 2
+                    }
+                    value: {
+                        value: 37
+                    }
+                }
+                VARIABLE("n", 0)
+                For{
+                    array: "array"
+                    do: ->
+                        VARIABLE("n", array[i].value)
+                        CLEAR_VARIABLE("array[#{(#{array.length - 1)]")
+                    
+                }
+                Fire_Event{
+                    name: "no_error"
+                }
+        }
+        event: {
+            name: "no_error"
+            do: ->
+                RETURN(VARIABLE_CONDITIONAL("n", "equals", 7))
+        }
+        event: {
+            name: "start"
+            do: ->
+                FAIL!
+        }
+})
+
+FOR_LOOP_TEST_STEP = (NAME, START, END, EXTRA, CONTENT) ->
+    GENERIC_UNIT_TEST("NAME", {
+            event: {
+                name: "start"
+                do: ->
+                    VARIABLE("n", 0)
+                    For{
+                        start: START, end: END
+                        <EXTRA
+                        do: ->
+                            VARIABLE_OP("n", "add", 1)
+                        
+                    }
+                    Fire_Event{
+                        name: "no_error"
+                    }
+            }
+            <CONTENT
+    })
+

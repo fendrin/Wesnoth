@@ -1,0 +1,12 @@
+--textdomain wesnoth-did
+
+-- Dark Sorcerer here is identical to normal except can't advance to lich
+Unit_Type{
+    base_unit: {
+        id: "Dark Sorcerer"
+    }
+    id: "Dark Sorcerer DiD"
+    advances_to: "Necromancer"
+    hide_help: true
+    do_not_list: true
+}

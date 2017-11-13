@@ -1,0 +1,695 @@
+--textdomain wesnoth-sof
+Scenario{
+    name: _ "Towards the Caves"
+    id: "6_Towards_the_Caves"
+    turns: 12
+    map: "campaigns/Sceptre_of_Fire/maps/6_Towards_the_Caves.map"
+    next_scenario: "7_Outriding_the_Outriders"
+
+    <SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("battle.ogg")
+
+    <DEFAULT_SCHEDULE!
+
+    side: {
+        type: "Dwarvish Fighter"
+        id: "Rugnur"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        recruit: {"Dwarvish Fighter", "Dwarvish Thunderer", "Dwarvish Guardsman", "Dwarvish Scout", "Gryphon Rider"}
+        gold: 200
+        team_name: "dwarves"
+        user_team_name: _ "Dwarves"
+        <FLAG_VARIANT("knalgan")
+    }
+
+-- Rugnur starts with all villages within the captured Shorbear keep.
+-- Elves will start munching on them fairly soon.
+    <STARTING_VILLAGES(1, 6)
+
+    side: {
+        type: "Elvish Marshal"
+        id: "Gaenlar"
+        name: _ "Gaenlar"
+        side: 2
+        canrecruit: true
+        recruit: {"Elvish Rider", "Elvish Hero", "Elvish Marksman", "Elvish Ranger", "Elvish Druid"}
+        <GOLD(300, 350, 400)
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        ai: {
+            goal: {
+                name: "protect_location"
+                criteria: {
+                    x: 36, y: 3
+                }
+                value: 100
+                protect_radius: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    type: {"Gryphon", "Gryphon Rider", "Gryphon Master"}
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Alanin"
+                }
+                value: 2
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    race: "dwarf"
+                }
+                value: 1
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    <STARTING_VILLAGES(2, 12)
+
+    side: {
+        type: "Elvish Marshal"
+        id: "Glinan"
+        name: _ "Glinan"
+        side: 3
+        canrecruit: true
+        recruit: {"Elvish Rider", "Elvish Hero", "Elvish Marksman", "Elvish Ranger", "Elvish Druid"}
+
+        <GOLD(250, 300, 350)
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        ai: {
+            goal: {
+                name: "protect_location"
+                criteria: {
+                    x: 36, y: 3
+                }
+                value: 100
+                protect_radius: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    race: "dwarf"
+                }
+                value: 10
+            }
+            avoid: {
+                x: "1-18"
+                y: "1-38"
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    <STARTING_VILLAGES(3, 8)
+    <STARTING_VILLAGES_AREA(3, 34, 10, 8)
+
+    side: {
+        type: "Elvish Captain"
+        id: "Kalnar"
+        name: _ "Kalnar"
+        side: 4
+        canrecruit: true
+        recruit: {"Elvish Scout", "Elvish Fighter", "Elvish Archer", "Elvish Shaman"}
+        <GOLD(150, 200, 250)
+        team_name: "elves"
+        user_team_name: _ "Elves"
+        ai: {
+            goal: {
+                name: "target"
+                criteria: {
+                    id: "Alanin"
+                }
+                value: 10
+            }
+            goal: {
+                name: "target"
+                criteria: {
+                    race: "dwarf"
+                }
+                value: 1
+            }
+        }
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+    <STARTING_VILLAGES(4, 11)
+
+    story: {
+        part: {
+            story: _ "Durstorn’s rash action led to many problems. Not the least of which was being surrounded by elves."
+        }
+        part: {
+            story: _ "The dwarves spent several years trapped in those caves, the elves besieging them. The dwarves could not leave, for there were far too many elves, and there was no way out of the caverns other than above ground. But the elves could not enter, for the magical dwarven gates were closed."
+        }
+        part: {
+            story: _ "During this time, Thursagan crafted the Sceptre of Fire, first cutting the jewel, then putting it, the gold and the cold steel into the heat of the flame. The sceptre was crafted, but something was not right. No matter what enchantment of runes he put on the Sceptre, it did not fulfill its original purpose."
+        }
+    }
+
+    <SOF_TRACK(JOURNEY_06_NEW!)
+
+    <SOF_DEATHS!
+
+    event: {
+        name: "prestart"
+
+-- TODO: manually add snow detritus
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Rugnur to the northeast cave entrance"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Move Alanin to the southern border east of the river"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Rugnur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Alanin"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Krawg"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Thursagan"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+--alanin, baglur, krawg and thursagan
+        do: ->
+            Recall{
+                id: "Thursagan"
+                x: 18, y: 16
+            }
+            Recall{
+                id: "Durstorn"
+                x: 19, y: 16
+            }
+            Recall{
+                id: "Alanin"
+            }
+            Recall{
+                id: "Baglur"
+            }
+            Recall{
+                id: "Krawg"
+            }
+
+            MODIFY_UNIT({id: "Alanin"}, "profile", "portraits/alanin-older.png~BLIT(portraits/alanin-winter-overlay.png,0,0)")
+
+--dialogue starts
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, Thursagan has reached a conclusion. He can’t make the sceptre with the materials he has here, but he has the final plans for it, and all the jewels and gold he needs. Shouldn’t we leave now?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "All this time and he couldn’t make it? Fine, we should try to leave... but it’s not like we could leave if we wanted to. We’re surrounded!"
+            }
+            If{
+                have_unit: {
+                    id: "Baglur"
+                }
+                then: ->
+                    Message{
+                        speaker: "Baglur"
+                        message: _ "If ye’ll permit me to say so, sir, ye’re wrong. We could—"
+                    }
+                    Message{
+                        speaker: "Durstorn"
+                        message: _ "Shut up, Baglur! You don’t know what you’re talking about. I’ve analyzed the situation, and we’re doomed. Our best hope is to surrender. Perhaps if we give the elves the plans for the Sceptre of Fire they will let us survive."
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Rugnur"
+                        message: _ "If you’ll permit me to say so, sir, you’re wrong. We could —"
+                    }
+                    Message{
+                        speaker: "Durstorn"
+                        message: _ "Shut up, Rugnur! You don’t know what you’re talking about. I’ve analyzed the situation, and we’re doomed. Our best hope is to surrender. Perhaps if we give the elves the plans for the Sceptre of Fire they will let us survive."
+                    }
+                
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Yes, of course, let’s just all be cowards! What happened to your honor, Durstorn?!"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "You little fool, honor is less important than life! So, I’m ordering Thursagan to give the plans and the ruby to the elves, as a peace offering. Then maybe we’ll walk out of here alive."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "You don’t have authority over me, Durstorn. And I wouldn’t give the Sceptre to them even if you did. It’s not yours to give, it’s mine, and Rugnur’s, and Baglur’s. Krawg’s done more for its existence than you have! And yet, you still get the profits from selling it to Haldric."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "So what, all of you want to die? Fine by me, but I won’t die with you! And if you won’t give the Sceptre to the elves, I’ll take it from you!"
+            }
+            Animate_Unit{
+                flag: "attack"
+
+                filter: {
+                    id: "Durstorn"
+                }
+
+                primary_attack: {
+                    name: "battle axe"
+                }
+
+                hits: false
+                text: _ "<i>Swoosh!</i>"
+                red: 255
+                green: 0
+                blue: 0
+
+                facing: {
+                    filter: {
+                        id: "Thursagan"
+                    }
+                }
+
+                animate: {
+                    flag: "defend"
+
+                    filter: {
+                        id: "Thursagan"
+                    }
+
+                    hits: false
+
+                    facing: {
+                        filter: {
+                            id: "Durstorn"
+                        }
+                    }
+                }
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Nice try, Durstorn, but you missed. Now, I’d say that attacking an ally constitutes treason, wouldn’t you?"
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "You’re not my ally. You’re more against me than the elves are; all they want is the ruby, but you want us dead!"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "If that’s what you’re thinking, you’re not fit to be ruler over us! So step down, or we’ll force you."
+            }
+            Message{
+                speaker: "Durstorn"
+                message: _ "Never!"
+            }
+            Animate_Unit{
+                flag: "attack"
+
+                filter: {
+                    id: "Thursagan"
+                }
+
+                primary_attack: {
+                    name: "hammer"
+                }
+
+                hits: true
+
+                facing: {
+                    filter: {
+                        id: "Durstorn"
+                    }
+                }
+
+                animate: {
+                    flag: "defend"
+
+                    filter: {
+                        id: "Durstorn"
+                    }
+
+                    hits: true
+                    text: _ "<i>Thud!</i>"
+                    red: 255
+                    green: 0
+                    blue: 0
+
+                    facing: {
+                        filter: {
+                            id: "Thursagan"
+                        }
+                    }
+                }
+            }
+            Kill{
+                id: "Durstorn"
+                animate: true
+            }
+--change music?
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, I suppose we were right to silence him, but I don’t like this. In any case, now we should try to get out of here."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "Yes. So, see the area to the northeast of us?"
+            }
+            Scroll_To{
+                x: 36, y: 3
+            }
+            Delay{
+                time: 1000
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "That’s where there are the least elvish guards, so we have the greatest chance of success there. I think we should try to get to it."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "This plan, it isn’t worse than staying here to be killed, but it isn’t likely to succeed either. Even if it does, what will it accomplish? We will be cornered there."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "I don’t know if we will be cornered. That cave looks like it goes deep, and we can lose the elves in the caves, they move so slow there. Once we get out, we’ll make our way back to Knalga."
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "The country between here and Knalga will be swarming with elves. We had better head back to the abandoned mines north of the Arkan-thoria, where we gathered our gold and coal. At least there Alanin will have some hope of finding us."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "That’s fine for you, you can run fast in caves, but I can’t! What am I supposed to do?"
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "Well, you are a member of the Wesnothian army. Why don’t you rejoin it? See if you can run past those elves to our southeast..."
+            }
+            Scroll_To{
+                x: 31, y: 37
+            }
+            Delay{
+                time: 1000
+            }
+            Message{
+                speaker: "Rugnur"
+                message: _ "... and then ride south until you reach one of your outposts."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "I’m not going to do that, it’s suicide! And in any case, I’ve been with you for ten years, almost as long as I was in the Wesnothian army; I’d prefer to fight with you."
+            }
+            Message{
+                speaker: "Thursagan"
+                message: _ "You going south has more of a chance of success for you than staying here or going back to the mines! And getting news to Haldric of what has happened is also the best way to get help to us."
+            }
+            Message{
+                speaker: "Alanin"
+                message: _ "I suppose..."
+            }
+            Message{
+                speaker: "Gaenlar"
+                message: _ "Come out, dwarves, and surrender! Or die in that cave, your choice."
+            }
+    }
+
+    event: {
+        name: "turn 4"
+        do: ->
+            Gold{
+                side: 2
+                amount: 200
+            }
+            Gold{
+                side: 3
+                amount: 200
+            }
+            Gold{
+                side: 4
+                amount: 200
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Alanin"
+            x: "22-40"
+            y: 38
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Rugnur"
+                }
+                then: ->
+                    Message{
+                        speaker: "Rugnur"
+                        message: _ "Alanin, ride south as fast as you can. Tell Haldric we are heading northeast, towards the old eastern mines, and if he wants his precious sceptre he should send forces to meet us there as soon as he can!"
+                    }
+                    Store_Unit{
+                        filter: {
+                            id: "Alanin"
+                        }
+                        variable: "alanin"
+                        kill: true
+                    }
+                    VARIABLE("alanin.canrecruit", true)
+                    CLEAR_VARIABLE("alanin.ellipse")
+                    CLEAR_VARIABLE("alanin.overlays")
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Move Rugnur to the northeast cave entrance"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Rugnur"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Krawg"
+                            condition: "lose"
+                        }
+                        objective: {
+                            description: _ "Death of Thursagan"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        gold_carryover: {
+                            bonus: false
+                            carryover_percentage: 40
+                        }
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Alanin"
+                        message: _ "I have made it past those elves, but they will chase me, and elvish horses are faster than mine."
+                    }
+                    Store_Unit{
+                        filter: {
+                            id: "Alanin"
+                        }
+                        variable: "alanin"
+                        kill: true
+                    }
+                    VARIABLE("alanin.canrecruit", true)
+                    CLEAR_VARIABLE("alanin.ellipse")
+                    CLEAR_VARIABLE("alanin.overlays")
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Rugnur"
+            x: 36, y: 3
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Alanin"
+                }
+                then: ->
+                    Message{
+                        speaker: "Alanin"
+                        message: _ "Rugnur, I am going south. What should I tell Haldric?"
+                    }
+                    Message{
+                        speaker: "Thursagan"
+                        message: _ "Tell him to send forces north to aid us and fight the elves, but that we are probably going to die. We will run northeast towards the old eastern mines, and if he wants his sceptre intact he’d best send troops to meet us there."
+                    }
+                    MODIFY_UNIT({id: "Alanin"}, "canrecruit", true)
+                    MODIFY_UNIT({id: "Alanin"}, "ellipse", "")
+                    MODIFY_UNIT({id: "Alanin"}, "overlays", "")
+                    Store_Unit{
+                        filter: {
+                            side: 1
+
+                            not: {
+                                id: "Alanin"
+                            }
+                        }
+                        variable: "dwarves"
+                        kill: true
+                    }
+                    Set_Recruit{
+                        side: 1
+                        recruit: 
+                    }
+                    Objectives{
+                        side: 1
+                        objective: {
+                            description: _ "Move Alanin to the southern border east of the river"
+                            condition: "win"
+                        }
+                        objective: {
+                            description: _ "Death of Alanin"
+                            condition: "lose"
+                        }
+
+                        <TURNS_RUN_OUT!
+
+                        gold_carryover: {
+                            bonus: false
+                            carryover_percentage: 40
+                        }
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Rugnur"
+                        message: _ "I don’t know what is in these caves, but whatever it is can’t be worse than staying here to die."
+                    }
+                    Store_Unit{
+                        filter: {
+                            side: 1
+
+                            not: {
+                                id: "Alanin"
+                            }
+                        }
+                        variable: "dwarves"
+                        kill: true
+                    }
+                    Endlevel{
+                        result: "victory"
+                        bonus: false
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+
+-- This [if] is used only in the case the player happened to defeat all
+-- the enemy leaders and didn't move Alanin to the signpost
+        do: ->
+            If{
+                have_unit: {
+                    id: "Alanin"
+                }
+
+                then: ->
+                    Store_Unit{
+                        filter: {
+                            id: "Alanin"
+                        }
+                        variable: "alanin"
+                        kill: true
+                    }
+                    VARIABLE("alanin.canrecruit", true)
+                    CLEAR_VARIABLE("alanin.ellipse")
+                    CLEAR_VARIABLE("alanin.overlays")
+                
+            }
+
+-- This [if] is used only in the case the player happened to defeat all
+-- the enemy leaders and didn't move Rugnur to the caves
+            If{
+                have_unit: {
+                    id: "Rugnur"
+                }
+
+                then: ->
+                    Store_Unit{
+                        filter: {
+                            side: 1
+
+                            not: {
+                                id: "Alanin"
+                            }
+                        }
+                        variable: "dwarves"
+                        kill: true
+                    }
+                
+            }
+
+            Unstore_Unit{
+                variable: "alanin"
+            }
+
+-- Let's make Alanin invisible in linger mode, will be unhidden at the
+-- start of the next scenario
+
+            Hide_Unit{
+                x: alanin.x, y: alanin.y
+            }
+
+            CLEAR_VARIABLE("alanin")
+
+            Store_Side{
+                side: 1
+                variable: "stored_Rugnur_side"
+            }
+    }
+}

@@ -1,0 +1,14 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a size lock
+----
+
+Size_Lock_Definition{
+    id: "default"
+    description: "a size lock"
+
+    resolution: {
+        grid: {
+        }
+    }
+}

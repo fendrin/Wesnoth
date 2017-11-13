@@ -1,0 +1,277 @@
+--textdomain wesnoth-ei
+
+Scenario{
+    id: "04b_The_Undead_Border_Patrol"
+    name: _ "The Undead Border Patrol"
+    map: "campaigns/Eastern_Invasion/maps/04b_The_Undead_Border_Patrol.map"
+    turns: 20
+    next_scenario: "05_Northern_Outpost"
+
+    <DEFAULT_SCHEDULE!
+
+    <SETUP_CAMPFIRES!
+
+    <INTRO_AND_SCENARIO_MUSIC("legends_of_the_north.ogg", "the_dangerous_symphony.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+    <EXTRA_SCENARIO_MUSIC("vengeful.ogg")
+
+    <EI_TRACK(JOURNEY_04B_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <GOLD(175, 130, 100)
+        team_name: "wesnothians"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+-- wmllint: recognize Gweddry
+        <CHARACTER_STATS_GWEDDRY!
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Skeleton", "Skeleton Archer", "Skeleton Rider", "Soulless"}
+        <GOLD(80, 120, 150)
+        <INCOME(2, 3, 3)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Dark Sorcerer"
+        id: "Mal-Skraat"
+        name: _ "Mal-Skraat"
+        gender: "male"
+        canrecruit: true
+
+        facing: "se"
+        modifications: {
+            <TEAM_COLOR_OVERRIDE({}, "darkred")
+        }
+
+        ai: {
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer"}
+            scout_village_targeting: 0.8
+            aggression: 0.8
+        }
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        <if HARD then {
+            recruit: {"Blood Bat", "Vampire Bat", "Skeleton Archer", "Skeleton", "Dark Adept", "Ghost"}
+        } else {
+            recruit: {"Vampire Bat", "Skeleton Archer", "Skeleton", "Dark Adept"}
+        }
+        <GOLD(100, 140, 170)
+
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Lich"
+        id: "Mal-Telnarad"
+        name: _ "Mal-Telnarad"
+        canrecruit: true
+
+        facing: "nw"
+
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "archer", "fighter", "archer"}
+            aggression: 0.4
+        }
+    }
+
+    <if HARD then {
+        <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Blood Bat", 2)
+    }
+
+-- Start with all the villages in the swamp.
+    <STARTING_VILLAGES_AREA(3, "30-45", "1-25", 1)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat either enemy leader"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Recall{
+                id: "Dacyn"
+                x: 20, y: 12
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Dacyn"
+                message: _ "Now that we are free of the mountain range the path northwards is clear. Let us go north and try to reach Owaec at the outpost."
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Wait. I am not sure that is the best option. If we go east now, we may be able to find the lich who attacked us and destroy him. He must be nearby."
+            }
+
+-- wmllint: local spelling teleporting
+            Message{
+                speaker: "Dacyn"
+                message: _ "This is no ordinary Lich you hunt. Even if you manage to find him, how will you prevent him from simply teleporting away? We should head north; there is much I must learn before we confront this menace."
+            }
+
+            Message{
+                speaker: "Mal-Skraat"
+                message: _ "They run from me! Still, it will not help them, the border patrol will destroy them. I may even be promoted!"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mal-Skraat"
+        }
+        do: ->
+            Message{
+                speaker: "Mal-Skraat"
+                message: _ "Now I will never get promoted!"
+            }
+
+            Kill{
+                id: "Mal-Skraat"
+                animate: true
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Come, let us return to Wesnoth and head for the Northern Outpost."
+            }
+
+            VARIABLE("east_trek", false)
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                next_scenario: "05_Northern_Outpost"
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal-Telnarad"
+        }
+        do: ->
+            Message{
+                speaker: "Dacyn"
+                message: _ "We have defeated this patrol, but we can still turn back! Do you insist on traveling east, or shall we defeat this dark sorcerer?"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Hmm..."
+                option: {
+                    label: _ "I wish to destroy the evil before it can spread. East we go!"
+                    command: ->
+                        Message{
+                            speaker: "Dacyn"
+                            message: _ "I cannot say this is a good decision, but I will follow you."
+                        }
+
+                        Message{
+                            speaker: "Mal-Skraat"
+                            message: _ "Noo!! I can’t be promoted if they run away!"
+                        }
+
+                        VARIABLE("east_trek", true)
+
+                        Endlevel{
+                            result: "victory"
+                            bonus: true
+                            next_scenario: "04c_Mal-Ravanals_Capital"
+                            <NEW_GOLD_CARRYOVER(40)
+                        }
+                    
+                }
+                option: {
+                    label: _ "You are right. It is foolish to go onward — we will turn back."
+                    command: ->
+                        Message{
+                            speaker: "Mal-Skraat"
+                            message: _ "Good! If I defeat them, I can become a lich!"
+                        }
+                    
+                }
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            If{
+                have_unit: {
+                    id: "Mal-Telnarad"
+                }
+                then: ->
+                    Message{
+                        speaker: "Dacyn"
+                        message: _ "We failed to defeat either enemy! Now more undead will come and we will be overwhelmed!"
+                    }
+
+                    Endlevel{
+                        result: "defeat"
+                    }
+                
+                else: ->
+                    Message{
+                        speaker: "Gweddry"
+                        message: _ "We cannot spend any more time attempting to defeat Mal-Skraat. Like it or not, we must go further into these undead lands."
+                    }
+
+                    Message{
+                        speaker: "Mal-Skraat"
+                        message: _ "Noo!! He will reach Mal-Ravanal’s capital, and I shall be punished for letting him escape!"
+                    }
+
+                    VARIABLE("east_trek", true)
+
+                    Endlevel{
+                        result: "victory"
+                        next_scenario: "04c_Mal-Ravanals_Capital"
+                        <NEW_GOLD_CARRYOVER(40)
+                    }
+                
+            }
+    }
+
+    <FOREIGN_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+}

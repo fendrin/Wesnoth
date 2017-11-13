@@ -1,0 +1,649 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "09_Fallen_Lich_Point"
+    name: _ "Fallen Lich Point"
+    next_scenario: "10_Sewer_of_Southbay"
+    victory_when_enemies_defeated: false
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/09_Fallen_Lich_Point.map"
+    <TURNS(39, 36, 33)
+    <DEFAULT_SCHEDULE!
+
+    <SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("knolls.ogg")
+
+-- No story part
+    <TROW_GI_TRACK(JOURNEY_09_NEW!)
+
+    <TROW_DEATHS!
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        side: 1
+        canrecruit: true
+        gold: 200
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Ut'Tan-Grilg"
+        name: _ "Ut’Tan-Grilg"
+        profile: "portraits/orcs/grunt-3.png"
+        side: 2
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Knight", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Knight", "Orcish Slayer", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler"}
+        }
+        <GOLD(210, 250, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+    }
+
+    <STARTING_VILLAGES(2, 8)
+
+    side: {
+        type: "Orcish Warlord"
+        id: "Tan-Pulk"
+        name: _ "Tan-Pulk"
+        side: 3
+        profile: "portraits/orcs/grunt.png"
+        canrecruit: true
+        <if EASY then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Pillager", "Goblin Spearman"}
+        }
+
+        <if HARD then {
+            recruit: {"Orcish Archer", "Orcish Assassin", "Orcish Grunt", "Wolf Rider", "Orcish Crossbowman", "Orcish Warrior", "Goblin Knight", "Goblin Pillager", "Orcish Slayer", "Goblin Spearman", "Goblin Impaler"}
+        }
+
+        <GOLD(210, 250, 290)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "fighter", "mixed fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+        }
+        ai: {
+            time_of_day: {"first_watch", "second_watch"}
+            aggression: 0.75
+            caution: 0.0
+            grouping: false
+        }
+    }
+
+    <STARTING_VILLAGES(3, 6)
+
+    PETRIFIED: () -> {
+        status: {
+            petrified: true
+        }
+    }
+
+    side: {
+        side: 4
+        type: "Lich"
+        id: "Lich-Lord Caror"
+        name: _ "Lich-Lord Caror"
+        canrecruit: true
+        recruit: {"Skeleton", "Skeleton Archer", "Ghost", "Ghoul", "Walking Corpse"}
+        <GOLD(0, 150, 190)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        scroll_to_leader: false
+        ai: {
+            aggression: 1.0
+            recruitment_pattern: {"scout", "fighter", "fighter", "archer"}
+            <ATTACK_DEPTH(4, 5, 5)
+            <NO_SCOUTS!
+        }
+        <PETRIFIED!
+        <FLAG_VARIANT("undead")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("scenery/signpost.png", 25, 1)
+            PLACE_IMAGE("scenery/signpost.png", 14, 8)
+            PLACE_IMAGE("scenery/monolith4.png", 14, 30)
+            PLACE_IMAGE("scenery/mine-abandoned.png", 15, 9)
+
+            PETRIFIED_UNIT = (TYPE, X, Y) -> {
+                unit: {
+                    side: 4
+                    type: TYPE
+                    x: X
+                    y: Y
+                    <PETRIFIED!
+-- upkeep cost removed so the gold doesn't change before the unpetrifying
+                    upkeep: "loyal"
+                }
+            }
+
+            PETRIFIED_UNIT("Bone Shooter", 12, 35)
+            PETRIFIED_UNIT("Bone Shooter", 13, 37)
+            PETRIFIED_UNIT("Bone Shooter", 11, 37)
+            PETRIFIED_UNIT("Revenant", 13, 36)
+            PETRIFIED_UNIT("Revenant", 12, 37)
+            PETRIFIED_UNIT("Revenant", 11, 36)
+
+            Set_Variable{
+                name: "lich_free"
+                value: 0
+            }
+            Set_Variable{
+                name: "have_book"
+                value: 0
+            }
+
+            Hide_Unit{
+                x: 33
+                y: 24
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Kill the lich to get his book"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Haldric enters Southbay’s sewer"
+                    condition: "win"
+                }
+                <ALTERNATIVE_OBJECTIVE_BONUS(_ "Defeat all enemy leaders")
+                objective: {
+                    description: _ "Death of Prince Haldric"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Lady Jessene"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    carryover_percentage: 40
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Tan-Pulk"
+-- wmllint: local spelling da tinkin
+                message: _ "Da big bosses said we’d be in da city by winter. Bosses wrong, human-worms still there, and I’m a tinkin—"
+            }
+            Message{
+                speaker: "Ut'Tan-Grilg"
+                message: _ "Wait! I see a ship! Humans is coming! Smash ’em good!"
+            }
+
+            Sound{
+                name: "ambient/ship.ogg"
+            }
+
+            Move_Unit_Fake{
+                type: "Transport Galleon"
+                side: 1
+                x: {35, 34, 33, 33, 34, 34}
+                y: {30, 29, 29, 28, 27, 26}
+            }
+
+            PLACE_IMAGE("units/transport/transport-galleon.png~RC(magenta>red)", 34, 26)
+
+            Unhide_Unit{
+                x: 33
+                y: 24
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Prince Haldric has arrived at Fallen Lich Point, to retrieve the Lich-Lord Caror’s Book of Fire and Darkness, and flee into the sewers of Southbay."
+                image: "wesnoth-icon.png"
+            }
+
+            Recall{
+                id: "Lady Jessene"
+            }
+            Recall{
+                id: "Burin the Lost"
+            }
+            Recall{
+                id: "Sir Ruddry"
+            }
+
+            Recall{
+                id: "Sir Ladoc"
+            }
+
+            Recall{
+                id: "Minister Edren"
+            }
+
+            Message{
+                speaker: "Prince Haldric"
+-- wmllint: local spelling un-petrify
+                message: _ "Well, let’s un-petrify that lich and take his book, then get into the sewers. Umm, what language would that book be in?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Some pep talk. The book will probably be in the Old Wesfolk tongue."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Ohh." -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Just get the book, I think I should be able to translate it."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Then, into Southbay’s sewer."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Right."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: true
+
+        filter: {
+            side: 1
+            x: "13-18"
+            y: "29-34"
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Prince Haldric"
+                    x: "13-18"
+                    y: "29-34"
+                }
+
+                then: ->
+                    Message{
+                        speaker: "Prince Haldric"
+                        message: _ "There’s an odd monolith standing near here. Maybe it has something to do with the Lich-Lord... I should investigate more closely."
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "unit"
+                        message: _ "There’s an odd monolith standing near here."
+                    }
+
+                    Message{
+                        speaker: "Lady Jessene"
+                        message: _ "Haldric, this looks like a job for you, probably something to do with the lich. Maybe you should get yourself over here."
+                    }
+                
+            }
+
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 14
+            y: 30
+        }
+        do: ->
+            Message{
+                speaker: "narrator"
+                message: _ "This monolith was erected by me, ― (<i>chipped away</i>), first Mage of the good people of the Green Isle. By its power the Lich-Lord is bound in stone. To end the spell a noble of the line of Kings should utter the following...."
+                image: "wesnoth-icon.png"
+            }
+
+            If{
+                variable: {
+                    name: "lich_free"
+                    numerical_equals: 0
+                }
+
+                then: ->
+                    If{
+                        have_unit: {
+                            id: "Prince Haldric"
+                            x: 14
+                            y: 30
+                        }
+
+                        then: ->
+                            Message{
+                                speaker: "Prince Haldric"
+                                message: _ "Hmm... after some thought..."
+                                image: "portraits/haldric-annoyed.png"
+
+                                option: {
+                                    label: _ "I think I’ll say that magic phrase."
+
+                                    command: ->
+                                        Set_Variable{
+                                            name: "lich_free"
+                                            value: 1
+                                        }
+                                        Unpetrify{
+                                        }
+
+                                        MODIFY_UNIT({side: 4, canrecruit: false}, "upkeep", "full")
+
+                                        Modify_Side{
+                                            side: 4
+                                            income: 0
+                                        }
+
+                                        Message{
+                                            speaker: "Prince Haldric"
+                                            message: _ "The lich is free! Let’s bash him and grab that book. That sounds like a job for you, Lady Jessene!"
+                                        }
+                                        Message{
+                                            speaker: "Lady Jessene"
+                                            message: _ "Hmph! You’re just happy because that monolith proves your paternity!"
+                                        }
+                                        Message{
+                                            speaker: "Lich-Lord Caror"
+                                            message: _ "Free, I’m free, and I feel the Ruby of Fire! It will be mine."
+                                        }
+                                        Message{
+                                            speaker: "Minister Edren"
+                                            message: _ "No you won’t, you soldier of darkness!"
+                                        }
+                                    
+                                }
+
+                                option: {
+                                    label: _ "I think I’ll wait a while before uttering any magic phrases."
+
+                                    command: ->
+                                        Message{
+                                            speaker: "Prince Haldric"
+                                            message: _ "We have more pressing matters to deal with before we free that lich."
+                                        }
+
+                                        Message{
+                                            speaker: "Lady Jessene"
+                                            message: _ "Afraid you’ll find out you’re not of the line of Kings?"
+                                        }
+                                    
+                                }
+                            }
+                        
+
+                        else: ->
+                            Message{
+                                speaker: "narrator"
+                                message: _ "This sounds like a job for Prince Haldric, hopefully."
+                                image: "wesnoth-icon.png"
+                            }
+
+                            Allow_Undo{
+                            }
+                        
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "The Lich-Lord is already free."
+                        image: "wesnoth-icon.png"
+                    }
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 25
+            y: 1
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+-- wmllint: local spelling NW
+                message: _ "NW — Southbay."
+                image: "wesnoth-icon.png"
+            }
+            Message{
+                speaker: "unit"
+                message: _ "More like ‘NW — Every orc on the Isle’. Hmph!"
+            }
+            Allow_Undo{
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 1
+            x: 15
+            y: 9
+        }
+        do: ->
+            If{
+                have_unit: {
+                    id: "Prince Haldric"
+                    x: 15
+                    y: 9
+                }
+
+                then: ->
+                    If{
+                        variable: {
+                            name: "have_book"
+                            numerical_equals: 1
+                        }
+                        then: ->
+                            Message{
+                                speaker: "Prince Haldric"
+                                message: _ "We have the book! Let’s get out of here!"
+                            }
+
+                            Message{
+                                speaker: "Lady Jessene"
+                                message: _ "Sounds good to me."
+                            }
+
+                            Endlevel{
+                                bonus: false
+                                result: "victory"
+                                <NEW_GOLD_CARRYOVER(40)
+                            }
+                        
+
+                        else: ->
+                            Message{
+                                speaker: "Prince Haldric"
+                                message: _ "I feel like I’m forgetting something. Ohh, the book!"
+                                image: "portraits/haldric-surprised.png"
+                            }
+                        
+                    }
+                
+
+                else: ->
+                    Message{
+                        speaker: "narrator"
+                        message: _ "Prince Haldric must be the first into the sewers of Southbay."
+                        image: "wesnoth-icon.png"
+                    }
+
+                    Allow_Undo{
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "moveto"
+
+        filter: {
+            x: "15-27"
+            y: "16-25"
+        }
+        do: ->
+            Move_Unit_Fake{
+                type: "Yeti"
+                side: 4
+                x: {13, 13, 13, 12, 11, 10, 9, 9, 9, 10, 11, 11, 11, 12, 12}
+                y: {1, 2, 3, 3, 4, 4, 5, 6, 7, 7, 8, 9, 10, 10, 11}
+            }
+
+            NAMED_LOYAL_UNIT(4, "Yeti", 12, 11, "Rarlg", _ "Rarlg")
+
+            Message{
+                speaker: "Rarlg"
+                message: _ "Rarlg — argh, a raul-rarlg!"  -- wmllint: no spellcheck
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Oh my!"
+                image: "portraits/haldric-surprised.png"
+            }
+            Message{
+                speaker: "Ut'Tan-Grilg"
+                message: _ "Oh my!"
+            }
+            Message{
+                speaker: "Tan-Pulk"
+                message: _ "Oh my!"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "And he brought a friend."
+            }
+
+            Scroll_To_Unit{
+                id: "Rarlg"
+            }
+
+            NAMED_LOYAL_UNIT(4, "Yeti", 15, 11, "Raul-Rarlg", _ "Raul-Rarlg")
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Lich-Lord Caror"
+        }
+        do: ->
+            Message{
+                speaker: "Lich-Lord Caror"
+                message: _ "So close. So close."
+            }
+
+            Message{
+                speaker: "second_unit"
+                message: _ "I found the book in what was left of his robes! Let’s get out of here!"
+            }
+
+            Set_Variable{
+                name: "have_book"
+                value: 1
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We have the book and the orcs are out of our way. Let’s get out of here!"
+            }
+
+            Endlevel{
+                bonus: true
+                result: "victory"
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "scenario_end"
+        do: ->
+            CLEAR_VARIABLE("have_book")
+            CLEAR_VARIABLE("lich_free")
+            CLEAR_VARIABLE("Killed_an_Orc")
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I can hear their reinforcements coming! We’re trapped! All is lost!"
+                image: "portraits/haldric-surprised.png"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+            x: 14
+            y: 8
+        }
+        do: ->
+            Redraw{
+            }
+
+            Message{
+                speaker: "narrator"
+                message: _ "Sewer — Danger Keep Out!"
+                image: "scenery/signpost.png"
+            }
+
+            Allow_Undo{
+            }
+    }
+}

@@ -1,0 +1,16 @@
+--textdomain wesnoth-units
+Unit_Type{
+    id: "Blood Bat SotA"
+    base_unit: {
+        id: "Blood Bat"
+    }
+    advances_to: "Dread Bat SotA"
+    hide_help: true
+    do_not_list: true
+    standing_anim: {
+        layer: 0
+    }
+    standing_anim: {
+        layer: 0
+    }
+}

@@ -1,0 +1,1681 @@
+{   sort: true
+
+    about: {
+        title: _ "Afrikaans Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "András Salamon (ott)"
+        }
+        entry: {
+            name: "Erhard Eiselen"
+        }
+        entry: {
+            name: "Len van Dalsen (Numbers13)"
+            comment: "current maintainer"
+        }
+        entry: {
+            name: "Nico Oliver (nicoza)"
+        }
+        entry: {
+            name: "Renier Maritz"
+        }
+    }
+
+    about: {
+        title: _ "Arabic Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Amnay Mokhtari"
+        }
+    }
+
+    about: {
+        title: _ "Asturian Translation" -- wmllint: no spellcheck
+--    [entry]
+--    [/entry]
+    }
+
+    about: {
+        title: _ "Basque Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alfredo Beaumont (ziberpunk)"
+        }
+        entry: {
+            name: "Julen Landa (genars)"
+        }
+        entry: {
+            name: "Mikel Olasagasti (Hey_neken)"
+        }
+    }
+
+    about: {
+        title: _ "Bulgarian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Anton Tsigularov (Atilla)"
+        }
+        entry: {
+            name: "Bono Nonchev"
+        }
+        entry: {
+            name: "Denica Mincheva (Deni)"
+        }
+        entry: {
+            name: "Georgi Dimitrov (oblak)"
+        }
+        entry: {
+            name: "Nikolay Vladimirov (Turki)"
+        }
+    }
+
+    about: {
+        title: _ "Catalan Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Carles Company (brrr)"
+        }
+        entry: {
+            name: "Dan Rosàs Garcia (focks)"
+        }
+        entry: {
+            name: "Daniel López (Azazelo)"
+        }
+        entry: {
+            name: "Joan Queralt"
+        }
+        entry: {
+            name: "Jonatan Alamà (tin)"
+        }
+        entry: {
+            name: "Jordà Polo (ettin)"
+            email: "jorda_AT_ettin.org"
+        }
+        entry: {
+            name: "Jose Gordillo (kilder)"
+        }
+        entry: {
+            name: "J.R. Dolcet Castro (Malin Keshar)"
+        }
+        entry: {
+            name: "Marc Orcau"
+        }
+        entry: {
+            name: "Mark Recasens"
+        }
+        entry: {
+            name: "Pau Rul·lan Ferragut"
+        }
+        entry: {
+            name: "Roberto Garcia (Motxales)"
+        }
+    }
+
+    about: {
+        title: _ "Chinese Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "AxalaraFlameheart (AxalaraFlame)"
+        }
+        entry: {
+            name: "CloudiDust"
+            comment: "current maintainer"
+            email: "cloudidust_AT_gmail.com"
+            wikiuser: "CloudiDust"
+        }
+        entry: {
+            name: "cryaciccl"
+        }
+        entry: {
+            name: "Dionysus"
+        }
+        entry: {
+            name: "Huang Hongye (Dugucloud)"
+            comment: "translation and image localization"
+        }
+        entry: {
+            name: "Huang Huan"
+        }
+        entry: {
+            name: "Huang Lechuan"
+        }
+        entry: {
+            name: "leaf"
+        }
+        entry: {
+            name: "Luojie-dune"
+        }
+        entry: {
+            name: "MrKing"
+            comment: "active"
+        }
+        entry: {
+            name: "网上佳公子"
+        }
+        entry: {
+            name: "Owlet"
+        }
+        entry: {
+            name: "pianton"
+        }
+        entry: {
+            name: "SealMe"
+        }
+        entry: {
+            name: "spider5"
+        }
+        entry: {
+            name: "sylecn"
+            email: "sylecn_AT_gmail.com"
+        }
+        entry: {
+            name: "Teamzhangmeng"
+        }
+        entry: {
+            name: "wind"
+            comment: "active"
+        }
+        entry: {
+            name: "Yifan"
+        }
+        entry: {
+            name: "yym514"
+        }
+        entry: {
+            name: "zen"
+        }
+    }
+
+    about: {
+        title: _ "Chinese (Taiwan) Translation"	-- wmllint: no spellcheck
+        entry: {
+            name: "楊綮銘"
+        }
+        entry: {
+            name: "李昆融"
+        }
+        entry: {
+            name: "李信融"
+        }
+    }
+
+    about: {
+        title: _ "Croatian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Ivica Đurenec (charlieh65)"
+        }
+        entry: {
+            name: "Nino Gunjača"
+        }
+    }
+
+    about: {
+        title: _ "Czech Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alexander Slávik (Olin)"
+        }
+        entry: {
+            name: "Anežka Bubeníčková (Bubu)"
+        }
+        entry: {
+            name: "Čestmír Houska"
+        }
+        entry: {
+            name: "David Nečas (Yeti)"
+        }
+        entry: {
+            name: "David Novotný (Draqen)"
+        }
+        entry: {
+            name: "Jaromír Dědič"
+            email: "jan.dedic_AT_gmail.com"
+        }
+        entry: {
+            name: "Karel Doleček"
+        }
+        entry: {
+            name: "Lukáš Faltýnek"
+        }
+        entry: {
+            name: "Martin Hrubý (hrubymar10)"
+            email: "hrubymar10_AT_gmail.com"
+            wikiuser: "MMMHHH"
+        }
+        entry: {
+            name: "Martin Šín"
+        }
+        entry: {
+            name: "Mintaka"
+        }
+        entry: {
+            name: "Oto Buchta (tapik)"
+            email: "tapik_AT_buchtovi.cz"
+            wikiuser: "Tapik"
+        }
+        entry: {
+            name: "Petr Kopač (Ferda)"
+        }
+        entry: {
+            name: "Petr Kovár (Juans)"
+        }
+        entry: {
+            name: "Rudolf Orság"
+        }
+        entry: {
+            name: "Septim"
+        }
+        entry: {
+            name: "Sofronius"
+        }
+        entry: {
+            name: "Vít Komárek"
+        }
+        entry: {
+            name: "Vít Krčál"
+        }
+        entry: {
+            name: "Vladimír Slávik"
+        }
+    }
+
+    about: {
+        title: _ "Danish Translation"
+        entry: {
+            name: "Anders K. Madsen (madsen)"
+        }
+        entry: {
+            name: "Ask Hjorth Larsen"
+        }
+        entry: {
+            name: "Bjarke Sørensen (basher)"
+        }
+        entry: {
+            name: "Jesper Fuglsang Wolff (ulven)"
+        }
+        entry: {
+            name: "Joe Hansen"
+        }
+        entry: {
+            name: "Kenneth Nielsen"
+        }
+        entry: {
+            name: "Mark Michelsen (skovbaer)"
+        }
+        entry: {
+            name: "Mathias Bundgaard Svensson (freaken)"
+        }
+        entry: {
+            name: "Ole Laursen"
+        }
+    }
+
+    about: {
+        title: _ "Dutch Translation"
+        entry: {
+            name: "Alexander van Gessel (AI/AI0867)"
+            comment: "Maintainer of the Dutch translation."
+            email: "AI0867_AT_gmail.com"
+        }
+        entry: {
+            name: "Arne Deprez"
+        }
+        entry: {
+            name: "Bär Halberkamp (bumbadadabum)"
+        }
+        entry: {
+            name: "Floris Kint (Grimling)"
+        }
+        entry: {
+            name: "Foppe Benedictus"
+        }
+        entry: {
+            name: "IJsbrand Oudshoorn"
+            email: "oudshoorn_AT_eitri_DOT_nl"
+        }
+        entry: {
+            name: "Joeri Melis"
+        }
+        entry: {
+            name: "Jon Jacobs"
+        }
+        entry: {
+            name: "Koen Douterloigne"
+        }
+        entry: {
+            name: "Koen Vervloesem (koan)"
+        }
+        entry: {
+            name: "Lala"
+        }
+        entry: {
+            name: "Maarten Albrecht"
+        }
+        entry: {
+            name: "Pieter Vermeylen (Onne)"
+        }
+        entry: {
+            name: "Rico van Coevorden"
+        }
+        entry: {
+            name: "Rob van der Vleugel"
+        }
+        entry: {
+            name: "Roel Thijs (Roel)"
+        }
+        entry: {
+            name: "Roger Koot"
+        }
+        entry: {
+            name: "Thomas Hugo de Groot"
+        }
+        entry: {
+            name: "Tobe Deprez"
+        }
+    }
+
+    about: {
+        title: _ "English (GB) Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "András Salamon (ott)"
+        }
+        entry: {
+            name: "Eric S. Raymond (ESR)"
+        }
+        entry: {
+            name: "pjr"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+            email: "Majora700_AT_gmail_DOT_com"
+            wikiuser: "Espreon"
+        }
+        entry: {
+            name: "Thomas Hockings (Deusite)"
+            wikiuser: "Deusite"
+        }
+        entry: {
+            name: "Wedge009"
+        }
+    }
+
+    about: {
+        title: _ "English (Shaw) Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Arc Riley"
+            email: "arcriley_AT_ubuntu.com"
+            comment: "translation maintainer"
+            wikiuser: "ArcRiley"
+        }
+        entry: {
+            name: "Jon Neal (reportingsjr)"
+            email: "reportingsjr_AT_gmail.com"
+        }
+        entry: {
+            name: "Thomas Thurman (marnanel)"
+            email: "thomas_AT_thurman.org.uk"
+        }
+    }
+
+    about: {
+        title: _ "Esperanto Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Aleksej Korgenkov (Grimpanto)"
+        }
+        entry: {
+            name: "Francesco Lorenzon (Likso)"
+        }
+        entry: {
+            name: "Ľubo Fajth"
+        }
+        entry: {
+            name: "Maarten Albrecht"
+        }
+        entry: {
+            name: "Rastislav Šarišský (Asto)"
+        }
+    }
+
+    about: {
+        title: _ "Estonian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Kaido Kikkas (UncleOwl)"
+        }
+        entry: {
+            name: "Mart Tõnso"
+        }
+    }
+
+    about: {
+        title: _ "Filipino Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Joset Anthony Zamora (eradicus)"
+        }
+        entry: {
+            name: "Karen Eve Eso (keeve)"
+        }
+    }
+
+    about: {
+        title: _ "Finnish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Ankka"
+        }
+        entry: {
+            name: "Jarkko Patteri (Jarkko)"
+        }
+        entry: {
+            name: "Jussi Rautio (jgrr)"
+        }
+        entry: {
+            name: "kko"
+        }
+        entry: {
+            name: "Matias Parmala"
+        }
+        entry: {
+            name: "Matias Pigg"
+        }
+        entry: {
+            name: "Mikko Nikkilä (Miccoh)"
+        }
+        entry: {
+            name: "Mikko Kraft (deserter)"
+        }
+        entry: {
+            name: "Miriam Green"
+        }
+        entry: {
+            name: "Niklas Laxström (Nikerabbit)"
+        }
+        entry: {
+            name: "paxed"
+        }
+        entry: {
+            name: "Samu Voutilainen (Smar)"
+        }
+        entry: {
+            name: "Santtu Pajukanta (Japsu)"
+        }
+        entry: {
+            name: "Simo Sutela"
+        }
+        entry: {
+            name: "Veikko Pukkila (swege)"
+        }
+    }
+
+    about: {
+        title: _ "French Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Antoine Garnier"
+        }
+        entry: {
+            name: "Antoine Imboden"
+        }
+        entry: {
+            name: "Aurélien Brevers (Breversa)"
+        }
+        entry: {
+            name: "Aurélien Paulus"
+        }
+        entry: {
+            name: "Arnaud Garoux (La vie en wose)"
+        }
+        entry: {
+            name: "Benoit Astruc"
+        }
+        entry: {
+            name: "Benoît Timbert (Noyga)"
+            email: "benoit.timbert_AT_free.fr"
+            comment: "translation maintainer"
+            wikiuser: "Noyga"
+        }
+        entry: {
+            name: "Bruno Fève (PP)"
+        }
+        entry: {
+            name: "Cédric Duval"
+        }
+        entry: {
+            name: "Damian Gryski (dmg)"
+        }
+        entry: {
+            name: "Damien Jacquot"
+            wikiuser: "Damien"
+            comment: "lead translator"
+        }
+        entry: {
+            name: "DaringTremayne"
+        }
+        entry: {
+            name: "David Pradier"
+        }
+        entry: {
+            name: "Éric Pierre (Gari)"
+        }
+        entry: {
+            name: "Fabrice Boulakia"
+        }
+        entry: {
+            name: "Florence Guettaa (inflow)"
+        }
+        entry: {
+            name: "François Mariage (Paquito)"
+        }
+        entry: {
+            name: "François Orieux"
+        }
+        entry: {
+            name: "Geoffroy Douillié (gdou)"
+            wikiuser: "Gdou"
+        }
+        entry: {
+            name: "Gérard Bodin (Gnork)"
+        }
+        entry: {
+            name: "Guillaume Delacourt"
+        }
+        entry: {
+            name: "Guillaume Duwelz-Rebert"
+        }
+        entry: {
+            name: "Guillaume Guigou"
+        }
+        entry: {
+            name: "Guillaume Massart (Piou2fois)"
+            email: "massart.guillaume_AT_wanadoo.fr"
+        }
+        entry: {
+            name: "Guillaume Melquiond (silene)"
+        }
+        entry: {
+            name: "Guillaume Pascal"
+        }
+        entry: {
+            name: "Jean Privat (Tout)"
+        }
+        entry: {
+            name: "Jean-Louis Passerin (Zoltic)"
+        }
+        entry: {
+            name: "Jean-Luc Menut"
+        }
+        entry: {
+            name: "Jean-Luc Richard (Le Gnome)"
+        }
+        entry: {
+            name: "Jean-Joseph Paget"
+        }
+        entry: {
+            name: "Jehan Hysseo (Jey)"
+        }
+        entry: {
+            name: "Jérémy Rosen (Boucman)"
+        }
+        entry: {
+            name: "Julien Moncel"
+        }
+        entry: {
+            name: "Julien Tailleur"
+        }
+        entry: {
+            name: "Marc Scheffer"
+        }
+        entry: {
+            name: "Mathieu Guilbaud"
+        }
+        entry: {
+            name: "Mendes Oulamara"
+        }
+        entry: {
+            name: "Michel Poléni (Thanatloc)"
+        }
+        entry: {
+            name: "Nicolas Boudin (Blurgk)"
+        }
+        entry: {
+            name: "Philippe Plantier (Ayin)"
+            email: "philippe.plantier_AT_naema.org"
+            wikiuser: "Ayin"
+        }
+        entry: {
+            name: "Philippe Rasquinet"
+        }
+        entry: {
+            name: "Pierre Rudloff"
+        }
+        entry: {
+            name: "Sébastien Raynaud (Galactic turkey)"
+        }
+        entry: {
+            name: "Sylvain Jeanne"
+        }
+        entry: {
+            name: "Thierry Bothorel"
+        }
+        entry: {
+            name: "Solena Le Moigne"
+        }
+        entry: {
+            name: "William Dupré"
+        }
+        entry: {
+            name: "Yann Dirson"
+            email: "ydirson_AT_altern.org"
+        }
+    }
+
+-- no strings commited so far
+    about: {
+        title: _ "Friulian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: ""
+        }
+    }
+
+    about: {
+        title: _ "Galician Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Adrián Chaves Fernández (Gallaecio)"
+            email: "adriyetichaves_AT_gmail.com"
+        }
+        entry: {
+            name: "Fran Diéguez"
+        }
+        entry: {
+            name: "Jacobo Abel Fernández García"
+            comment: "inactive"
+        }
+        entry: {
+            name: "Javier Pico"
+        }
+        entry: {
+            name: "Manuel Meixide"
+        }
+        entry: {
+            name: "Marce Villarino"
+        }
+        entry: {
+            name: "Leandro Regueiro (unho)"
+            email: "leandro.regueiro_AT_gmail.com"
+            comment: "translation maintainer"
+        }
+        entry: {
+            name: "Victor Portela"
+        }
+        entry: {
+            name: "Proxecto Trasno"
+            comment: "translation project (http://trasno.net)"
+        }
+    }
+
+    about: {
+        title: _ "German Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alexander Laux"
+        }
+        entry: {
+            name: "Andre Schmidt (schmidta)"
+        }
+        entry: {
+            name: "Boris Stumm (quijote_)"
+        }
+        entry: {
+            name: "Christoph Berg (chrber)"
+            comment: "translation maintainer"
+        }
+        entry: {
+            name: "Christoph Lange (madelgijs)"
+        }
+        entry: {
+            name: "Drakefriend"
+        }
+        entry: {
+            name: "Elias Pschernig (allefant)"
+        }
+        entry: {
+            name: "Rhonda D'Vine (Rhonda)"
+        }
+        entry: {
+            name: "Jan Greve (Jan)"
+        }
+        entry: {
+            name: "Jan Heiner Laberenz (jan-heiner)"
+        }
+        entry: {
+            name: "Kai Ensenbach"
+        }
+        entry: {
+            name: "Marcel Miebach (retr0virus)"
+            email: "marcel_miebach_AT_gmx.de"
+        }
+        entry: {
+            name: "Mark de Wever (Mordante/SkeletonCrew)"
+            wikiuser: "SkeletonCrew"
+        }
+        entry: {
+            name: "Matthias Gianfelice (MatthiasG)"
+        }
+        entry: {
+            name: "Nils Kneuper (Ivanovic)"
+            email: "Crazy-Ivanovic_AT_gmx.net"
+        }
+        entry: {
+            name: "Oliver Lange (Crommy)"
+        }
+        entry: {
+            name: "Ronny Standtke"
+        }
+        entry: {
+            name: "Ruben Philipp Wickenhäuser (The Very Uhu)"
+        }
+        entry: {
+            name: "Stephan Grochtmann (Schattenstephan)"
+        }
+        entry: {
+            name: "Tobias Schönau (SonIcco)"
+        }
+        entry: {
+            name: "Uz-Valentin Friedrich"
+        }
+        entry: {
+            name: "vonHalenbach"
+        }
+    }
+
+    about: {
+        title: _ "Greek Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alexander Alexiou (Santi/fnaek)"
+        }
+        entry: {
+            name: "Evangelos Papakirikou"
+        }
+        entry: {
+            name: "Harry Kaimenas"
+        }
+        entry: {
+            name: "Katerina Sykioti"
+        }
+        entry: {
+            name: "Konstantinos Egarhos"
+        }
+        entry: {
+            name: "Konstantinos Karasavvas"
+        }
+        entry: {
+            name: "Mik2303"
+        }
+        entry: {
+            name: "Nikos Astroylakis (Greek Dubbings Maker)"
+        }
+        entry: {
+            name: "Nikos Papadopoulos (galicae)"
+        }
+        entry: {
+            name: "Nikos the Great"
+        }
+        entry: {
+            name: "Panagiotis Famelis (Kesnar)"
+        }
+        entry: {
+            name: "Papadopoulos Themistoklis"
+        }
+        entry: {
+            name: "Spiros, Giorgis"
+        }
+    }
+
+    about: {
+        title: _ "Hebrew Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Ariel Ben-Yehuda"
+        }
+        entry: {
+            name: "Oron Peled"
+        }
+        entry: {
+            name: "Ely Levy (Nakee)"
+        }
+    }
+
+    about: {
+        title: _ "Hungarian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Barthalos Márton (Aldebaran Ghrelin)"
+        }
+        entry: {
+            name: "Czakó Csaba (Horus)"
+        }
+        entry: {
+            name: "Erdélyi Kristóf"
+        }
+        entry: {
+            name: "Fábián Balázs (nermal93)"
+        }
+        entry: {
+            name: "Hamar Krisztián"
+        }
+        entry: {
+            name: "Kádár-Németh Krisztián (Rudanar Firmus)"
+        }
+        entry: {
+            name: "Kékkői László (BlackEvil)"
+        }
+        entry: {
+            name: "Kelemen Zoltán (kele)"
+        }
+        entry: {
+            name: "Kovács Dániel (Consalamander)"
+        }
+        entry: {
+            name: "Majsa Norbert (wias)"
+        }
+        entry: {
+            name: "Máthé Katalin (katkadu)"
+        }
+        entry: {
+            name: "Németh Tamás (nTOMasz)"
+        }
+        entry: {
+            name: "Pintér Csaba (piere)"
+        }
+        entry: {
+            name: "Salamon András (ott)"
+        }
+        entry: {
+            name: "Soltész Adrián (majominia)"
+        }
+        entry: {
+            name: "Széll Tamás (TomJoad)"
+        }
+        entry: {
+            name: "Udvari Gábor (Udi)"
+        }
+        entry: {
+            name: "Udvari Zsolt"
+        }
+        entry: {
+            name: "Vasvári Péter (honorshark)"
+        }
+    }
+
+    about: {
+        title: _ "Icelandic Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Arngrímur Stefánsson"
+        }
+        entry: {
+            name: "Gabríel A. Pétursson"
+        }
+    }
+
+    about: {
+        title: _ "Indonesian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Ardhi (earthboy)"
+        }
+        entry: {
+            name: "Benny Lin"
+        }
+        entry: {
+            name: "Iwan"
+        }
+        entry: {
+            name: "Nicky Inkrais Witras"
+            comment: "previous translation maintainer"
+            email: "inkraiswitras_AT_yahoo.com"
+        }
+        entry: {
+            name: "Yuristyawan Pambudi Wicaksana"
+            comment: "translation maintainer"
+            email: "yuris_wicaksana_AT_yahoo.com"
+        }
+    }
+
+    about: {
+        title: _ "Irish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Mountain_King"
+            comment: "translation maintainer"
+        }
+    }
+    about: {
+        title: _ "Italian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alessandro Barbazza"
+        }
+        entry: {
+            name: "Alessio D'Ascanio (otaku)"
+        }
+        entry: {
+            name: "Americo Iacovizzi (DarkAmex)"
+        }
+        entry: {
+            name: "Antonio Rosella"
+            email: "arosella_AT_yahoo.com"
+        }
+        entry: {
+            name: "crys0000"
+        }
+        entry: {
+            name: "Elvish_Hunter"
+        }
+        entry: {
+            name: "Eugenio Favalli (ElvenProgrammer)"
+        }
+        entry: {
+            name: "Federico Tomassetti"
+        }
+        entry: {
+            name: "Filippo Abbruzzo (Gwain)"
+        }
+        entry: {
+            name: "isazi"
+        }
+        entry: {
+            name: "Luciano Montanaro (Luciano)"
+        }
+        entry: {
+            name: "Michele Maresi (mich)"
+        }
+        entry: {
+            name: "RokStar"
+        }
+        entry: {
+            name: "Stefano Coccato (BioHazardX)"
+        }
+    }
+
+    about: {
+        title: _ "Japanese Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "BlueStar"
+        }
+        entry: {
+            name: "clearpotion"
+        }
+        entry: {
+            name: "Hironori Fujimoto(RatArmy)"
+            email: "broadbarredfirefish_AT_gmail.com"
+            comment: "translation maintainer"
+        }
+        entry: {
+            name: "IWAI, Masaharu (iwaim)"
+            email: "iwaim.sub_AT_gmail.com"
+            wikiuser: "Iwaim"
+        }
+        entry: {
+            name: "kudoh"
+        }
+        entry: {
+            name: "いいむらなおき (amatubu) - Naoki Iimura"
+        }
+        entry: {
+            name: "岡田信人 - Nobuhito Okada"
+            email: "okyada_AT_gmail.com"
+        }
+        entry: {
+            name: "np"
+        }
+        entry: {
+            name: "mishan"
+            email: "mishanhideaki88_AT_gmail.com"
+        }
+        entry: {
+            name: "Shoot MORII (pastak)"
+            email: "pasta0915[at]gmail.com"
+        }
+        entry: {
+            name: "OOTA, Masato(oo)"
+        }
+        entry: {
+            name: "Q"
+        }
+        entry: {
+            name: "R.N"
+        }
+        entry: {
+            name: "rouiza"
+        }
+        entry: {
+            name: "sahara"
+            email: "le.sahara_AT_gmail.com"
+        }
+        entry: {
+            name: "Shigerello"
+        }
+        entry: {
+            name: "瀟湘夜雨"
+        }
+        entry: {
+            name: "Taigaku Okuiso"
+        }
+        entry: {
+            name: "Takanobu Hirai"
+        }
+        entry: {
+            name: "tamanegi"
+        }
+        entry: {
+            name: "yma"
+            email: "yma9yma_AT_gmail.com"
+        }
+        entry: {
+            name: "Yuji Matsumoto"
+        }
+    }
+
+    about: {
+        title: _ "Korean Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "mistzone"
+            comment: "current maintainer"
+        }
+    }
+
+    about: {
+        title: _ "Latin Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Eric S. Raymond (ESR)"
+            comment: "general semantician"
+        }
+        entry: {
+            name: "Mark Polo (mpolo)"
+            comment: "original maintainer"
+        }
+        entry: {
+            name: "Michael Babich (Aethaeryn)"
+            comment: "current maintainer"
+            wikiuser: "Aethaeryn"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+            email: "Majora700_AT_gmail_DOT_com"
+            wikiuser: "Espreon"
+        }
+        entry: {
+            name: "Thomas Hockings (Deusite)"
+            wikiuser: "Deusite"
+        }
+    }
+
+    about: {
+        title: _ "Latvian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Artis Rozentāls"
+        }
+        entry: {
+            name: "Gvido Bruveris"
+            comment: "Maintainer"
+        }
+        entry: {
+            name: "Reinis Danne"
+            email: "rei4dan_AT_gmail.com"
+        }
+    }
+
+    about: {
+        title: _ "Lithuanian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Andrius Štikonas"
+        }
+        entry: {
+            name: "Deimantė Tankus (Diamond)"
+        }
+        entry: {
+            name: "Jurgis Sūdžius (Dievas)"
+        }
+        entry: {
+            name: "Lukas Gasiūnas (LucasLT)"
+        }
+        entry: {
+            name: "Marius Tauba (morlock)"
+        }
+        entry: {
+            name: "Raimundas Zabarauskas"
+        }
+        entry: {
+            name: "Vytautas Šaltenis (rtfb)"
+        }
+    }
+
+    about: {
+        title: _ "Macedonian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Dimitar Ilccov (Mythological)"
+        }
+    }
+
+    about: {
+        title: _ "Marathi Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "सुजित जाधव (Sujit R Jadhav)"
+            email: "sujitrjadhav@gmail.com"
+            wikiuser: "sujitrjadhav"
+        }
+    }
+
+    about: {
+        title: _ "Norwegian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Asgeir Aakre (YbeRn00b)"
+        }
+        entry: {
+            name: "Erik J. Mesoy (Circon)"
+        }
+        entry: {
+            name: "Gaute Jao (Gauteamus)"
+        }
+        entry: {
+            name: "Hallvard Norheim Bø (Lysander)"
+        }
+        entry: {
+            name: "Håvard Korsvoll"
+        }
+        entry: {
+            name: "Pål Inge Larsen (PsyBird)"
+        }
+        entry: {
+            name: "Susanne Mesoy (Rarlgland)"
+        }
+    }
+
+    about: {
+        title: _ "Old English Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Eirik Westcoat"
+            email: "eirikvw_AT_aim_DOT_com"
+        }
+        entry: {
+            name: "Gottweiß"
+            email: "axonfifty_AT_gmail_DOT_com"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+            email: "Majora700_AT_gmail_DOT_com"
+            wikiuser: "Espreon"
+            comment: "Maintainer"
+        }
+    }
+
+    about: {
+        title: _ "Polish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Agata Chmiel"
+        }
+        entry: {
+            name: "Arkadiusz Danilecki (szopen)"
+        }
+        entry: {
+            name: "Bartek Waresiak (Dragonking)"
+        }
+        entry: {
+            name: "Kamil Matuszewski (LiamTailor)"
+            comment: "Current coordinator"
+        }
+        entry: {
+            name: "Karol Nowak (grzywacz)"
+        }
+        entry: {
+            name: "Magdalena Chmiel (Ryouko)"
+        }
+        entry: {
+            name: "Marek Kalnik (wdev)"
+        }
+        entry: {
+            name: "Michał Hartliński"
+        }
+        entry: {
+            name: "Michał Jedynak (Artanis)"
+        }
+        entry: {
+            name: "Michał Ligowski (misiorysio)"
+        }
+        entry: {
+            name: "Paweł Albecki (gidgnulur)"
+        }
+        entry: {
+            name: "Paweł Jackowski (fatality)"
+            comment: "Current maintainer"
+        }
+        entry: {
+            name: "Roman Polesek (rimskij)"
+        }
+        entry: {
+            name: "Zbigniew Banach (vonBureck)"
+        }
+    }
+
+    about: {
+        title: _ "Portuguese Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Carlos Sousa"
+        }
+        entry: {
+            name: "Luis Passos"
+        }
+        entry: {
+            name: "trewe"
+            comment: "Current maintainer"
+        }
+    }
+
+    about: {
+        title: _ "Portuguese (Brazil) Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Ambra Viviani Loos"
+        }
+        entry: {
+            name: "Antonio Vildes Barbosa"
+        }
+        entry: {
+            name: "Bruno Macabeus"
+        }
+        entry: {
+            name: "Celso Goya"
+        }
+        entry: {
+            name: "Claudio Terra"
+            email: "cbterra_AT_gmail.com"
+        }
+        entry: {
+            name: "Claus Aranha"
+        }
+        entry: {
+            name: "Di Teixeira (Moroder)"
+        }
+        entry: {
+            name: "Diego Inácio Goergen"
+        }
+        entry: {
+            name: "Fred Maranhão"
+            email: "fred.maranhao_AT_gmail.com"
+        }
+        entry: {
+            name: "Hugo Neiva de Melo"
+        }
+        entry: {
+            name: "Michel Loos"
+        }
+        entry: {
+            name: "Renato Cunha"
+        }
+        entry: {
+            name: "Ricardo Sodré Andrade"
+        }
+        entry: {
+            name: "Romero Gonçalves"
+        }
+        entry: {
+            name: "Sérgio de Miranda Costa"
+        }
+        entry: {
+            name: "Tiago Souza (Salvador)"
+        }
+    }
+
+    about: {
+        title: _ "Romanian Translation" -- wmllint: no spellcheck
+        entry: {
+-- no name known for translator!
+            name: "Unknown"
+        }
+    }
+
+    about: {
+        title: _ "Russian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Aldarisvet"
+        }
+        entry: {
+            name: "Aleksandr Aleks"
+            email: "allryn_AT_pisem_DOT_net"
+        }
+        entry: {
+            name: "Alexandr Gridnev"
+        }
+        entry: {
+            name: "Alexandr Menovchicov"
+        }
+        entry: {
+            name: "Alexey Remizov"
+        }
+        entry: {
+            name: "Alexey Zakharchenko"
+        }
+        entry: {
+            name: "Andrey Tikhonov (tiandrey)"
+            wikiuser: "tiandrey"
+        }
+        entry: {
+            name: "Anthony Kolesov"
+        }
+        entry: {
+            name: "Azamat Hackimov (winterheart)"
+            wikiuser: "Winterheart"
+        }
+        entry: {
+            name: "Danila Evstifeyev (MyOtheHedgeFox)"
+        }
+        entry: {
+            name: "Denis Revin (Dut_Norshi)"
+        }
+        entry: {
+            name: "Dmitry Brilev (dobryl)"
+        }
+        entry: {
+            name: "Fardeil"
+        }
+        entry: {
+            name: "Fedor Gavrilov (gallowzbird)"
+        }
+        entry: {
+            name: "Fedor Khod'kov (teddy/fkhodkov)"
+        }
+        entry: {
+            name: "Ilya Kaznacheev"
+        }
+        entry: {
+            name: "Ilya Kotov"
+        }
+        entry: {
+            name: "Ishayahu Lastov (Ishayahu)"
+        }
+        entry: {
+            name: "Kirill Baranov"
+        }
+        entry: {
+            name: "Mikhail Melnik (ZumZoom)"
+        }
+        entry: {
+            name: "Nikita Ushkin"
+        }
+        entry: {
+            name: "Roman Tuchin (Sankt)"
+        }
+        entry: {
+            name: "Sergey Popov (loonycyborg)"
+        }
+        entry: {
+            name: "Valentina Mukhamedzhanova (umirra)"
+        }
+        entry: {
+            name: "Victor Sergienko (singalen)"
+        }
+        entry: {
+            name: "Victor Zabavin"
+            email: "vicza_AT_zmail_DOT_ru"
+        }
+        entry: {
+            name: "Vlad Glagolev"
+        }
+        entry: {
+            name: "Yellow Horror"
+        }
+    }
+
+    about: {
+        title: _ "Scottish Gaelic Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "GunChleoc"
+            comment: "Current maintainer"
+            email: "fios_AT_foramnagaidhlig_DOT_net"
+        }
+    }
+
+    about: {
+        title: _ "Serbian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Branko Kokanovic (kokan)"
+        }
+        entry: {
+            name: "Caslav Ilic"
+            email: "caslav_DOT_ilic_AT_gmx_DOT_net"
+        }
+        entry: {
+            name: "Dalibor Djuric"
+            email: "daliborddjuric_AT_gmail_DOT_com"
+        }
+        entry: {
+            name: "Srecko Toroman (FreeCraft)"
+            email: "sreckotoroman_AT_gmail_DOT_com"
+        }
+    }
+
+    about: {
+        title: _ "Slovak Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Aceman"
+        }
+        entry: {
+            name: "Ivan Kovacs"
+        }
+        entry: {
+            name: "Ján Sučan (Bhujanga)"
+        }
+        entry: {
+            name: "Marian Kluvanec"
+        }
+        entry: {
+            name: "Martin Dzbor"
+        }
+        entry: {
+            name: "Martin Plávala (Empy)"
+        }
+        entry: {
+            name: "Stano Hoferek (Elven)"
+        }
+        entry: {
+            name: "Viliam Bur"
+            wikiuser: "Viliam"
+        }
+    }
+
+    about: {
+        title: _ "Slovenian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Gregor Petrin"
+        }
+        entry: {
+            name: "Jaka Kranjc (lynx)"
+        }
+        entry: {
+            name: "Klemen Košir (nNa)"
+        }
+        entry: {
+            name: "Matej Repinc"
+        }
+    }
+
+    about: {
+        title: _ "Spanish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alvin Eloy Luna Castro"
+        }
+        entry: {
+            name: "Chucho Pulgoso"
+        }
+        entry: {
+            name: "David Martínez Moreno"
+        }
+        entry: {
+            name: "Diego Grande Rodríguez (Buhako)"
+        }
+        entry: {
+            name: "Diego J."
+        }
+        entry: {
+            name: "Fernando Cerezal"
+        }
+        entry: {
+            name: "Flamma"
+        }
+        entry: {
+            name: "Francisco Muñoz (fmunoz)"
+        }
+        entry: {
+            name: "Gabriel Rodríguez (Chewie)"
+        }
+        entry: {
+            name: "Gustavo Gingins (gins)"
+            email: "gusgins_AT_gmail.com"
+        }
+        entry: {
+            name: "Ignacio R. Morelle (shadowm)"
+            email: "shadowm2006_AT_gmail.com"
+            wikiuser: "Shadowmaster"
+        }
+        entry: {
+            name: "Iván Herrero (navitux)"
+        }
+        entry: {
+            name: "Javier C.H. (perseo)"
+        }
+        entry: {
+            name: "Jose Gordillo (kilder)"
+        }
+        entry: {
+            name: "Jose Manuel Gomez (joseg)"
+        }
+        entry: {
+            name: "Josu Díaz de Arcaya"
+        }
+        entry: {
+            name: "Masacroso"
+        }
+        entry: {
+            name: "Martín R. Dapás"
+        }
+        entry: {
+            name: "Pedro Llorens (PeterPorty)"
+        }
+        entry: {
+            name: "Roberto Romero (sildur)"
+        }
+        entry: {
+            name: "Sergi March (sergi34)"
+        }
+        entry: {
+            name: "Steven Panek (Espreon)"
+            email: "Majora700_AT_gmail_DOT_com"
+            wikiuser: "Espreon"
+        }
+        entry: {
+            name: "Víctor M. Estrada (Aelonin/Darkmage)"
+            email: "quianaaelonin_AT_gmail_DOT_com"
+        }
+        entry: {
+            name: "Xavier Novella Sinde (XavierNovella)"
+        }
+    }
+
+    about: {
+        title: _ "Swedish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Alexander Kjäll (capitol)"
+        }
+        entry: {
+            name: "Andreas Tyrberg"
+        }
+        entry: {
+            name: "Åse Petersson (tintin)"
+        }
+        entry: {
+            name: "Elias Sevelin (aXidal)"
+        }
+        entry: {
+            name: "Gustav Tiger"
+        }
+        entry: {
+            name: "Hugo Gerlach (Entrimo)"
+        }
+        entry: {
+            name: "Leo Danielson (Lugo Moll)"
+        }
+        entry: {
+            name: "Niklas Bolmdahl"
+        }
+        entry: {
+            name: "Stefan Bergström (tephlon)"
+        }
+        entry: {
+            name: "Susanna Björverud (sanna)"
+            email: "susanna.bjorverud_AT_telia.com"
+        }
+        entry: {
+            name: "Ulrika Uddeborg"
+        }
+        entry: {
+            name: "wint3r"
+        }
+    }
+
+    about: {
+        title: _ "Turkish Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Enes Akın (yekialem)"
+        }
+        entry: {
+            name: "İhsan Akın"
+        }
+        entry: {
+            name: "Kosif"
+        }
+        entry: {
+            name: "Nilgün Belma Bugüner"
+        }
+        entry: {
+            name: "Pınar Yanardağ (moonquelle)"
+        }
+        entry: {
+            name: "Selim Farsakoğlu"
+        }
+    }
+
+    about: {
+        title: _ "Ukrainian Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Igor Paliychuk"
+            email: "mansonigor_AT_gmail_DOT_com"
+        }
+        entry: {
+            name: "robson"
+            email: "arobson_AT_yandex_DOT_ru"
+            wikiuser: "Robson"
+        }
+    }
+
+    about: {
+        title: _ "Valencian (southern Catalan) Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Bernardo Arlandis"
+        }
+        entry: {
+            name: "Robert Millan"
+        }
+        entry: {
+            name: "Tomás Roig"
+        }
+    }
+
+    about: {
+        title: _ "Vietnamese Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Huynh Yen Loc"
+        }
+        entry: {
+            name: "Le Ngoc Nguyen Chinh"
+        }
+        entry: {
+            name: "Pham Hoang Duy"
+        }
+        entry: {
+            name: "Pham Thanh Nam"
+        }
+        entry: {
+            name: "Pham Thi Yen"
+        }
+    }
+
+    about: {
+        title: _ "RACV’s Translation" -- wmllint: no spellcheck
+        entry: {
+            name: "Mario Rodríguez (Mavorte)"
+        }
+    }
+}

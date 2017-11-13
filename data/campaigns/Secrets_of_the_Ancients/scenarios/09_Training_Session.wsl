@@ -1,0 +1,437 @@
+--textdomain wesnoth-sota
+
+-- Ras-Tahban starts in the keep, and the DAs are in castle tiles. It looks better with
+-- the keep not actually attached to the castle. So, to make the castle tiles function,
+-- there is an invisible castle overlay on one of the grass tiles in between the two (3,10)
+-- making the castle continuous. Nothing is supposed to be recruited on the grass tile
+-- with the overlay, so the loyal kids are both set to start on it to block it. But, the
+-- kids may be dead. In that case, a dummy unit is used. Its image is an empty .png,
+-- and has no movement points. It is petrified so it can't be attacked, and It is deleted
+-- after the first turn (when no more recruits are possible.)
+
+Scenario{
+    name: _ "Training Session"
+    map: "campaigns/Secrets_of_the_Ancients/maps/09_Training_Session.map"
+
+    id: "09_Training_Session"
+    next_scenario: "10_Merfolk_Revenge"
+    victory_when_enemies_defeated: false
+
+    story: {
+        part: {
+            background_layer: {
+                image: "portraits/humans/dark-adept.png"
+                scale: false
+            }
+            story: _ "Ras-Tabahn’s offer enticed a large group of youngsters all eager to train as magi. The fact that it was illicit training in the dark arts was unimportant. More important was the escape from the drudgery of a fixed future, planned in advance by their parents. Ras-Tabahn spent a number of days in the forest outside of Carcyn instructing them on how to call on the spirit world and channel a small amount of its power. Soon after they moved on, they came across three farmsteads on the riverbank that had clearly been raided."
+        }
+        <JOURNEY_PART(9)
+    }
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+    turns: -1
+
+    side: {
+        <SIDE_1_RAS-TABAHN!
+        gold: 0
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        no_leader: true
+        gold: 0
+        color: "black"
+        hidden: true
+        ai: {
+            aggression: 0.6
+        }
+    }
+
+-- *************************** MACROS ***************************
+
+-- This macro is the same for all difficulty levels.
+    PLACE_CORPSE_1: (X, Y) -> {
+        unit: {
+            x: X, y: Y
+            type: "Soulless"
+            side: 2
+        }
+    }
+
+-- This macro uses a different unit type for EASY difficulty level.
+    <if EASY then {
+        PLACE_CORPSE_2: (X, Y) -> {
+            unit: {
+                x: X, y: Y
+                type: "Walking Corpse"
+                side: 2
+            }
+        }
+    } else {
+        PLACE_CORPSE_2: (X, Y) -> {
+            unit: {
+                x: X, y: Y
+                type: "Soulless"
+                side: 2
+            }
+        }
+    }
+
+-- This uses a different unit type for HARD difficulty level.
+    <if HARD then {
+        PLACE_CORPSE_3: (X, Y) -> {
+            unit: {
+                x: X, y: Y
+                type: "Soulless"
+                side: 2
+            }
+        }
+    } else {
+        PLACE_CORPSE_3: (X, Y) -> {
+            unit: {
+                x: X, y: Y
+                type: "Walking Corpse"
+                side: 2
+            }
+        }
+    }
+
+    PLACE_DARK_ADEPT: (X, Y, TRAIT1, TRAIT2, GENDER) -> {
+        unit: {
+            x: X
+            y: Y
+            type: "Dark Adept SotA"
+            side: 1
+            moves: 0
+            gender: GENDER  -- Otherwise, they're all male, and there's no reason for that.
+            modifications: {
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/09_Training_Session.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 110:             {TRAIT_{TRAIT1}}
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/09_Training_Session.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 111:             {TRAIT_{TRAIT2}}
+            }
+            facing: "sw"
+        }
+    }
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+
+-- Gold is removed now, and will be returned later.
+        do: ->
+            Store_Gold{
+                side: 1
+                variable: "rastabahn_gold"
+            }
+
+-- This is exactly enough to recall five units.
+            Modify_Side{
+                side: 1
+                gold: 100
+            }
+
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Destroy all the undead units" .. OBJECTIVE_FOOTNOTE(_ "(there will be three waves)")
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of all five dark adepts"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Ras-Tabahn"
+                    condition: "lose"
+                }
+
+                gold_carryover: {
+                    bonus: false
+                }
+
+                <HAS_NO_TURN_LIMIT!
+                note: {
+                    description: _ "You will not earn gold this scenario, but your gold from the previous scenario will be available in the next."
+                }
+            }
+
+            Item{
+                x: 22, y: 3
+                image: "scenery/village-human-burned4.png"
+            }
+            Item{
+                x: 24, y: 7
+                image: "scenery/village-human-burned1.png"
+            }
+            Item{
+                x: 21, y: 11
+                image: "scenery/village-human-burned2.png"
+            }
+
+            PLACE_DARK_ADEPT(4, 7, "QUICK", "INTELLIGENT", "male")
+            PLACE_DARK_ADEPT(4, 8, "STRONG", "RESILIENT", "female")
+            PLACE_DARK_ADEPT(4, 9, "QUICK", "RESILIENT", "female")
+            PLACE_DARK_ADEPT(4, 10, "RESILIENT", "INTELLIGENT", "male")
+            PLACE_DARK_ADEPT(4, 11, "STRONG", "QUICK", "female")
+
+-- Only one Shynal will be recalled.
+            Recall{
+                id: "Shynal"
+                x: 3, y: 10
+            }
+            Recall{
+                id: "Corpse Shynal"
+                x: 3, y: 10
+            }
+            Recall{
+                id: "Carcyn"
+                x: 3, y: 10
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Shynal"
+                    or: {
+                        id: "Corpse Shynal"
+                    }
+                }
+                facing: "sw"
+                moves: 0
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Carcyn"
+                }
+                facing: "nw"
+                moves: 0
+            }
+
+            Modify_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+                facing: "ne"
+            }
+
+            If{
+                not: {
+                    have_unit: {
+                        x: 3, y: 10
+                    }
+                }
+                then: ->
+                    Unit{
+                        name: ""
+                        x: 3, y: 10
+                        side: 2  -- By default, side 1 gets an orb and 2 doesn't.
+                        type: "Dummy"
+                        id: "dummy"
+                    }
+                    Petrify{
+                        id: "dummy"
+                    }
+                
+            }
+
+            FREEZE_UNIT("Ras-Tabahn")
+    }
+
+-- *************************** PLAY ***************************
+    event: {
+        name: "turn 1 end"
+        do: ->
+            Terrain{
+                x: 3, y: 10
+                terrain: "^"
+                layer: "overlay"
+            }
+            Modify_Side{
+                side: 1
+                gold: 0
+            }
+            Kill{
+                id: "dummy"
+            }
+
+            Event{
+                name: "turn_refresh"
+                first_time_only: false
+                do: ->
+                    Modify_Side{
+                        side: 1
+                        gold: 0
+                    }
+            }
+    }
+
+    event: {
+        name: "turn 3"
+        do: ->
+            REPEAT(4, PLACE_CORPSE_2(24, 7))
+            REPEAT(2, PLACE_CORPSE_3(24, 7))
+    }
+
+    event: {
+        name: "turn 5"
+        do: ->
+            REPEAT(4, PLACE_CORPSE_1(22, 3))
+            REPEAT(3, PLACE_CORPSE_3(22, 3))
+
+-- The player isn't allowed to win before turn 5, but now they can.
+            Event{
+                name: "die"
+                first_time_only: false
+                filter: {
+                    side: 2
+                }
+
+-- Check for a win.
+                do: ->
+                    If{
+-- If there are no corpses or soulless left...
+                        not: {
+                            have_unit: {
+                                side: 2
+                            }
+                        }
+                        then: ->
+-- This allow_recruit didn't happen at the end of the previous
+-- scenario so that DAs couldn't recruit each other in this one.
+                            Allow_Recruit{
+                                side: 1
+-- This type of Dark Adept cannot advance to a lich.
+                                type: "Dark Adept SotA"
+                            }
+-- Gold was removed at the beginning, and is returned now.
+                            Gold{
+                                side: 1
+                                amount: rastabahn_gold
+                            }
+                            Clear_Variable{
+                                name: "rastabahn_gold"
+                            }
+
+                            Endlevel{
+                                result: "victory"
+                                bonus: true
+                                <NEW_GOLD_CARRYOVER(100)
+                            }
+                        
+                    }
+            }
+    }
+
+-- *************************** ENDING / OPENING ***************************
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            side: 1
+        }
+
+-- Check for a loss.
+        do: ->
+            If{
+-- If there are none of the *original* DA's left (the kids don't count)...
+                not: {
+                    have_unit: {
+                        type: {"Dark Adept SotA", "Dark Sorcerer SotA", "Necromancer SotA"}
+                        and: {
+                            filter_wml: {
+                                upkeep: "full"
+                            }
+                        }
+                    }
+                }
+                then: ->
+                    Endlevel{
+                        result: "defeat"
+                    }
+                
+            }
+    }
+
+    event: {
+        name: "start"
+        scroll_to: {
+            x: 23, y: 10
+        }
+        do: ->
+            Delay{
+                time: 1000
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "What happened here, I wonder. Well, no matter. What was bad for these families is good for us. I will animate them, and you will attack. Practice both freezing and life force attacks. You may each choose one soldier from our army for protection, and I will call it up for you. After that, I will not help. I intend most of you to survive this battle, so try not to die."
+            }
+
+            If{
+                <BOTH_KIDS_LIVE!
+                then: ->
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "You kids may watch."
+                    }
+                    Message{
+                        speaker: "Shynal"
+                        message: _ "Can we help?"
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "As you wish. (<i>Cough, cough</i>)"
+                    }
+                
+            }
+
+            If{
+                <ONE_KID_LIVES!
+                then: ->
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "You may watch."
+                    }
+-- Only one of the two following messages will be read.
+                    Message{
+                        speaker: "Carcyn"
+                        message: _ "Can I help?"
+                    }
+                    Message{
+                        speaker: "Shynal"
+                        message: _ "Can I help?"
+                    }
+                    Message{
+                        speaker: "Ras-Tabahn"
+                        message: _ "As you wish. (<i>Cough, cough</i>)"
+                    }
+                
+            }
+
+            Message{
+                speaker: "narrator"
+                image: "logo.png"
+                message: _ "You can recruit from in front of each dark adept during the first turn only."
+            }
+
+            REPEAT(3, PLACE_CORPSE_1(21, 11))
+            REPEAT(4, PLACE_CORPSE_3(21, 11))
+
+            Modify_Unit{
+                filter: {
+                    side: 1
+                }
+                facing: "se"
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "This has taken too long. We will surely miss our meeting with Ardonna now."
+            }
+    }
+
+    <HERO_DEATHS!
+    <KIDS_ADVANCE!
+}

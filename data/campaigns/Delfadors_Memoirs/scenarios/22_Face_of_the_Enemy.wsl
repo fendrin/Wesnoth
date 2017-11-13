@@ -1,0 +1,234 @@
+--textdomain wesnoth-dm
+Scenario{
+    id: "22_Face_of_the_Enemy"
+    name: _ "Face of the Enemy"
+    next_scenario: "23_Epilogue"
+    <MEMOIRS_MAP("22_Face_of_the_Enemy.map")
+    <TURNS(20, 22, 24)
+
+    <UNDERGROUND!
+
+    <INTRO_AND_SCENARIO_MUSIC("nunc_dimittis.ogg", "elvish-theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_king_is_dead.ogg")
+    <EXTRA_SCENARIO_MUSIC("frantic.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_city_falls.ogg")
+
+    story: {
+        part: {
+            show_title: true
+        }
+        part: {
+            story: _ "Delfador and the elves went through the secret door and ended in the dungeon, a veritable maze of narrow corridors."
+            delay: 4000
+        }
+    }
+
+--wmllint: validate-off
+    side: {
+        <OLD_DELFADOR!
+        side: 1
+        save_id: "Player"
+        persistent: true
+        controller: "human"
+-- wmllint: unwho all
+        recruit: ELVES!
+        team_name: "allies"
+        user_team_name: _ "Rebels"
+        fog: true
+        shroud: true
+        <GOLD(130, 100, 100)
+        <FLAG_VARIANT("long")
+    }
+--wmllint: validate-on
+
+    side: {
+        type: "Lich"
+        id: "Sagus"
+        name: _ "Sagus"
+        facing: "nw"
+        profile: "portraits/undead/brown-lich.png"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        team_name: "enemies"
+        user_team_name: _ "Undead"
+        <if EASY then {
+            recruit: {"Skeleton", "Skeleton Archer", "Vampire Bat", "Ghost"}
+        }
+
+        <if NORMAL then {
+            recruit: {"Skeleton", "Revenant", "Skeleton Archer", "Bone Shooter", "Ghost", "Vampire Bat", "Blood Bat", "Chocobone", "Dark Adept"}
+        }
+
+        <if HARD then {
+            recruit: {"Skeleton", "Skeleton Archer", "Revenant", "Draug", "Banebow", "Bone Shooter", "Deathblade", "Ghost", "Wraith", "Shadow", "Chocobone", "Dark Adept", "Spectre", "Nightgaunt"}
+        }
+        <GOLD(130, 180, 230)
+        <INCOME(2, 4, 6)
+        ai: {
+            recruitment_pattern: {"fighter", "archer", "scout"}
+            aggression: 1.0
+            caution: 0.0
+            goal: {
+                name: "protect_unit"
+                criteria: {
+                    side: 2
+                    canrecruit: true
+                }
+                value: 3.0
+            }
+        }
+        <FLAG_VARIANT("undead")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Find the Book"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Chantal"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+                <IS_LAST_SCENARIO!
+            }
+            OBJ_POTION_HOLY(23, 3, "object7_holywater")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            MODIFY_UNIT({side: 1}, "facing", "sw")
+            Recall{
+                id: "Kalenz"
+            }
+            Recall{
+                id: "Chantal"
+            }
+            Message{
+                speaker: "Chantal"
+                message: _ "There is no doubt the book is here; I can feel its presence."
+            }
+            Message{
+                speaker: "Kalenz"
+                message: _ "This place stinks of evil and death. Chantal, do we have any holy water with us? I fear we may have need of it ere long."
+            }
+            Message{
+                speaker: "Chantal"
+                message: _ "Only one bottle, Kalenz. Choose carefully who will take it."
+            }
+    }
+    event: {
+        name: "sighted"
+        filter: {
+            id: "Sagus"
+        }
+        do: ->
+            Message{
+                speaker: "Sagus"
+                message: _ "So, we meet again, Delfador! This time you will not steal what is mine!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Who are you, and what did I ever steal from you?"
+            }
+
+            Message{
+                speaker: "Sagus"
+                message: _ "I am the one whose place you took in the court of Wesnoth. But my daughter brought me what you seek, and I have seized the power of it."
+            }
+            Message{
+                speaker: "Chantal"
+                message: _ "Asheviere is this thing’s daughter?"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I fear so. This was the Arch-Mage Sagus. He was a good man when I knew him."
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "Sagus... old friend... The book you have taken is no good for you, your daughter or the Kingdom. It will destroy you both!"
+            }
+            Message{
+                speaker: "Sagus"
+                message: _ "Same old Delfador, the arrogant, the overweening, always placing yourself above others. But I have become as great as you; I have mastered the Book! You always underestimated me, as Leollyn did before you. Now you will meet the same fate as he. Rise, my loyal soldiers!"
+            }
+            Message{
+                speaker: "Delfador"
+                message: _ "I see that the Book has mastered you, and destroyed you. Farewell, Sagus. You were a good man, once."
+            }
+            Message{
+                speaker: "Kalenz"
+-- wmllint: local spelling chokepoints
+                message: _ "Prepare to fight! Block the chokepoints and hold them there!"
+            }
+            Gold{
+                side: 2
+                amount: 200
+            }
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat Sagus"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Delfador"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Kalenz"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Chantal"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+                <IS_LAST_SCENARIO!
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Sagus"
+        }
+        do: ->
+            Message{
+                speaker: "Delfador"
+                message: _ "The book is recovered, but the damage is done. Friends, thank you. Now let’s get out of here!"
+            }
+
+            Endlevel{
+                result: "victory"
+                carryover_report: false
+--bonus=yes -?
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Kalenz"
+                message: _ "We are too late! Royal troops are coming! We are trapped!"
+            }
+    }
+    <MEMOIRS_DEATHS!
+}

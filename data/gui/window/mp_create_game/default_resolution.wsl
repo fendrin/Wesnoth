@@ -1,0 +1,476 @@
+--textdomain wesnoth-lib
+
+Resolution{
+    definition: "mp_create"
+err: ../attic/data/gui/window/mp_create_game/default_resolution.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 6: 	window_width, window_height = 1200, 700
+
+
+    <GUI_WINDOW_FULLSCREEN!
+
+    linked_group: {
+        id: "tabs"
+        fixed_width: true
+    }
+
+    linked_group: {
+        id: "game_icons"
+        fixed_width: true
+    }
+
+    <_GUI_CUSTOM_OPTIONS_TREE_LINKED_GROUPS!
+
+    tooltip: {
+        id: "tooltip"
+    }
+
+    helptip: {
+        id: "tooltip"
+    }
+
+    grid: {
+
+-- Title
+        row: {
+            grow_factor: 0
+
+            column: {
+                grow_factor: 1
+
+                border: "all"
+                border_size: 5
+                horizontal_alignment: "left"
+                label: {
+                    definition: "title"
+
+                    label: _ "Create Game"
+                }
+
+            }
+
+        }
+
+-- Main area
+        row: {
+            grow_factor: 1
+
+            column: {
+                grow_factor: 0
+                horizontal_grow: true
+                vertical_grow: true
+
+                grid: {
+
+                    row: {
+                        grow_factor: 1
+
+-- minimap
+                        column: {
+                            grow_factor: 1
+                            horizontal_grow: true
+                            vertical_grow: true
+
+                            grid: {
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_grow: true
+
+                                        label: {
+                                            definition: "default_large"
+                                            id: "game_title"
+                                        }
+
+                                    }
+
+                                }
+
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        grow_factor: 1
+                                        horizontal_grow: true
+
+                                        grid: {
+
+                                            row: {
+                                                grow_factor: 1
+
+                                                <_GUI_MP_CREATE_MINIMAP_STACK!
+
+                                                <_GUI_MP_CREATE_MAP_OPTIONS!
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        horizontal_grow: true
+
+                                        grid: {
+
+                                            row: {
+
+                                                column: {
+                                                    grow_factor: 0
+
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_alignment: "left"
+                                                    label: {
+                                                        definition: "default"
+
+                                                        label: _ "Players:"
+                                                    }
+
+                                                }
+
+                                                column: {
+                                                    grow_factor: 1
+
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_grow: true
+                                                    label: {
+                                                        id: "map_num_players"
+                                                        definition: "default"
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        horizontal_grow: true
+
+                                        grid: {
+
+                                            row: {
+
+                                                column: {
+                                                    grow_factor: 0
+
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_alignment: "left"
+                                                    label: {
+                                                        definition: "default"
+
+                                                        label: _ "Map size:"
+                                                    }
+
+                                                }
+
+                                                column: {
+                                                    grow_factor: 1
+
+                                                    border: "all"
+                                                    border_size: 5
+                                                    horizontal_grow: true
+                                                    label: {
+                                                        id: "map_size"
+                                                        definition: "default"
+                                                    }
+
+                                                }
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+-- last item needs to grow and align at top so the things won't get centered.
+                                    grow_factor: 1
+
+                                    column: {
+                                        grow_factor: 1
+                                        vertical_grow: true
+                                        horizontal_grow: true
+                                        border: "all"
+                                        border_size: 5
+
+                                        scroll_label: {
+                                            id: "description"
+                                            definition: "default"
+
+                                            horizontal_scrollbar_mode: "never"
+                                            vertical_scrollbar_mode: "auto"
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+-- map listbox
+                        column: {
+                            grow_factor: 0
+                            horizontal_grow: true
+                            vertical_grow: true
+
+                            <_GUI_MP_CREATE_GAME_LIST!
+                        }
+
+                        column: {
+                            grow_factor: 0
+
+                            spacer: {
+                                width: 5
+                            }
+                        }
+
+-- settings
+                        column: {
+                            grow_factor: 0
+                            vertical_alignment: "top"
+                            horizontal_grow: true
+
+                            grid: {
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        grow_factor: 1
+                                        border: "all"
+                                        border_size: 5
+                                        horizontal_alignment: "center"
+
+                                        <_GUI_MP_CREATE_TAB_BAR!
+
+                                    }
+
+                                }
+
+                                row: {
+                                    grow_factor: 1
+
+                                    column: {
+                                        spacer: {
+                                            height: 10
+                                        }
+                                    }
+                                }
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        horizontal_grow: true
+                                        vertical_grow: true
+                                        border: "all"
+                                        border_size: 5
+
+                                        panel: {
+                                            definition: "box_display_no_blur"
+
+                                            grid: {
+                                                row: {
+                                                    grow_factor: 0
+
+                                                    column: {
+                                                        grow_factor: 1
+                                                        horizontal_alignment: "left"
+
+                                                        grid: {
+                                                            <_GUI_MP_CREATE_MAIN_OPTIONS!
+                                                        }
+                                                    }
+
+                                                    column: {
+                                                        grow_factor: 1
+                                                        horizontal_grow: true
+
+                                                        grid: {
+
+                                                            row: {
+                                                                <_GUI_MP_CREATE_SHUFFLE_TOGGLE!
+                                                            }
+
+                                                            row: {
+                                                                <_GUI_MP_CREATE_OBSERVER_TOGGLE!
+                                                            }
+
+                                                            row: {
+                                                                <_GUI_MP_CREATE_REGISTERED_TOGGLE!
+                                                            }
+
+                                                            row: {
+                                                                <_GUI_MP_CREATE_SYNC_TOGGLE!
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                                row: {
+                                    grow_factor: 0
+
+                                    column: {
+                                        spacer: {
+                                            height: 10
+                                        }
+                                    }
+                                }
+
+                                row: {
+                                    grow_factor: 1
+
+                                    column: {
+                                        grow_factor: 1
+                                        horizontal_grow: true
+                                        vertical_grow: true
+
+                                        stacked_widget: {
+                                            id: "pager"
+                                            definition: "default"
+
+                                            layer: {
+                                                <_GUI_MP_CREATE_GENERAL_PANEL!
+                                            }
+
+                                            layer: {
+                                                <_GUI_CUSTOM_OPTIONS_TREE!
+                                            }
+
+                                            layer: {
+
+                                                row: {
+
+                                                    column: {
+                                                        horizontal_grow: true
+                                                        vertical_grow: true
+                                                        border: "all"
+                                                        border_size: 5
+
+                                                        scrollbar_panel: {
+
+                                                            definition: {
+                                                                <_GUI_MP_CREATE_MAP_SETTINGS!
+
+                                                                row: {
+                                                                    grow_factor: 1
+
+                                                                    column: {
+                                                                        spacer: {
+                                                                            height: 20
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                <_GUI_MP_CREATE_TIME_LIMIT!
+                                                            }
+
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+-- button bar
+        row: {
+            grow_factor: 0
+
+            column: {
+                grow_factor: 1
+                horizontal_alignment: "right"
+
+                grid: {
+
+                    row: {
+                        grow_factor: 0
+
+                        column: {
+                            grow_factor: 1
+
+                            border: "left,right"
+                            border_size: 5
+                            horizontal_alignment: "right"
+                            button: {
+                                id: "ok"
+                                definition: "really_large"
+
+                                label: _ "Create Game"
+                            }
+
+                        }
+
+                        column: {
+                            grow_factor: 0
+
+                            border: "all"
+                            border_size: 5
+                            horizontal_alignment: "left"
+                            button: {
+                                id: "cancel"
+                                definition: "default"
+
+                                label: _ "Cancel"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

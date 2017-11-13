@@ -1,0 +1,338 @@
+--textdomain wesnoth-did
+
+Scenario{
+    id: "04_Beginning_of_the_Revenge"
+    name: _ "Beginning of the Revenge"
+    map: "campaigns/Descent_Into_Darkness/maps/04_Beginning_of_the_Revenge.map"
+    turns: 36
+    next_scenario: "05_Orc_War"
+    victory_when_enemies_defeated: true
+
+    <DEFAULT_SCHEDULE_DUSK!
+
+    <SCENARIO_MUSIC("vengeful.ogg")
+    <EXTRA_SCENARIO_MUSIC("nunc_dimittis.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+    <EXTRA_SCENARIO_MUSIC("northerners.ogg")
+
+    story: {
+        part: {
+            music: "revelation.ogg"
+            story: _ "Burning inside with a desire to take his revenge against the orcs and push them further north, Malin spends the winter learning as much from Darken Volk as he can. His years of study with the mages serve him well, and his power grows quickly."
+            <STORYTXT_BACKGROUND("travel.jpg")
+        }
+        part: {
+            story: _ "When spring comes, the two head north to a mountain pass known to Darken Volk. In the higher reaches the snow is just beginning to melt, making the passage treacherous. The elder necromancer insists that they press on. He says that he hopes to catch the orc fighters unprepared by arriving early in the year, thereby inflicting as much damage as possible."
+            <STORYTXT_BACKGROUND("travel.jpg")
+        }
+    }
+
+    <DID_TRACK(JOURNEY_04_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: {"Walking Corpse", "Vampire Bat", "Ghost", "Ghoul", "Skeleton Archer", "Skeleton"}
+        gold: 140
+        team_name: "good"
+        user_team_name: _ "Malin Keshar"
+        <FLAG_VARIANT("undead")
+
+-- wmllint: recognize Malin Keshar
+        <CHARACTER_STATS_MALIN_KESHAR!
+
+        facing: "nw"
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Orcish Archer", "Orcish Crossbowman", "Wolf Rider", "Orcish Grunt"}
+        <GOLD(120, 150, 180)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+
+        type: "Orcish Warlord"
+        id: "Gron'r Hronk"
+        name: _ "Gron’r Hronk"
+        canrecruit: true
+
+        facing: "nw"
+
+        ai: {
+            aggression: 0.5
+            caution: 0.1
+            villages_per_scout: 8
+            village_value: 0.5
+            recruitment_pattern: {"scout", "archer", "archer", "fighter"}
+        }
+    }
+
+    <STARTING_VILLAGES(2, 8)
+
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Orcish Crossbowman", "Wolf Rider", "Goblin Pillager", "Orcish Grunt"}
+        <GOLD(130, 170, 210)
+        team_name: "orcs"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+
+        type: "Orcish Warlord"
+        id: "K'rrlar Oban"
+        name: _ "K’rrlar Oban"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            aggression: 0.5
+            caution: 0.2
+            villages_per_scout: 6
+            recruitment_pattern: {"archer", "scout", "fighter"}
+        }
+    }
+
+    <STARTING_VILLAGES(3, 8)
+
+-- Signpost at the end of the pass
+    <PLACE_IMAGE("scenery/signpost.png", 18, 1)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Move Malin to the end of the mountain pass"
+                }
+                objective: {
+                    <ALTERNATIVE_OBJECTIVE_CAPTION!
+                    condition: "win"
+                    description: _ "Kill the orc leaders"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Malin Keshar"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Darken Volk"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+-- TODO: manually add snow detritus
+
+            Recall{
+                id: "Darken Volk"
+            }
+
+            MODIFY_UNIT({id: "Malin Keshar"}, "profile", "portraits/malin_old.png")
+            MODIFY_UNIT({side: 1}, "facing", "nw")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Darken Volk"
+                message: _ "Orcs block the way out of the mountain pass. Destroy them, and we will move on to bigger targets."
+            }
+
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "With the might of the undead at my command, many orcs will die this day. They shall pay for getting me banished from Parthyn."
+            }
+    }
+
+-- In-scenario events
+    event: {
+        name: "die"
+        first_time_only: true
+        filter: {
+            race: "orc"
+        }
+
+        filter_second: {
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "Feel my wrath, vile creature!"
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            side: 1
+
+            not: {
+                type: {"Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt", "Vampire Bat", "Blood Bat", "Dread Bat"}
+            }
+
+            filter_location: {
+                terrain: "Ai"
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Malin Keshar"
+                message: _ "The ice doesn’t look very thick..."
+            }
+
+            Message{
+                speaker: "Darken Volk"
+                message: _ "..."
+            }
+
+            Allow_Undo{}
+    }
+
+    event: {
+        name: "new turn"
+        first_time_only: false
+        do: ->
+            Store_Locations{
+                filter: {
+                    not: {
+                        type: {"Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt", "Vampire Bat", "Blood Bat", "Dread Bat"}
+                    }
+                }
+
+                find_in: "weakened_ice"
+
+                variable: "breaking_ice"
+            }
+
+            Foreach{
+                array: "breaking_ice"
+                do: ->
+                    Scroll_To{
+                        x: this_item.x, y: this_item.y
+                    }
+
+                    Terrain{
+                        x: this_item.x, y: this_item.y
+                        terrain: "Wo"
+                    }
+
+                    Remove_Item{
+                        x: this_item.x, y: this_item.y
+                        image: "misc/weakened-ice.png"
+                    }
+
+                    Redraw{}
+
+                    If{
+                        have_unit: {
+                            x: this_item.x, y: this_item.y
+                            race: "undead"
+                        }
+                        then: ->
+                            Message{
+                                speaker: "narrator"
+                                image: "wesnoth-icon.png"
+                                message: _ "The weak ice gives way beneath the undead creature, who becomes mired in the thick mud at the lake’s bottom."
+                            }
+                        
+                        else: ->
+                            Message{
+                                speaker: "narrator"
+                                image: "wesnoth-icon.png"
+                                message: _ "The weak ice gives way beneath the heavy warrior, who drowns in the frigid mountain waters."
+                            }
+                        
+                    }
+
+                    Sound{
+                        name: "water-blast.wav"
+                    }
+
+                    Kill{
+                        x: this_item.x, y: this_item.y
+                        animate: true
+                        fire_event: true
+                    }
+                
+            }
+
+            Store_Locations{
+                terrain: "Ai"
+                filter: {
+                    not: {
+                        type: {"Ghost", "Wraith", "Spectre", "Shadow", "Nightgaunt", "Vampire Bat", "Blood Bat", "Dread Bat"}
+                    }
+                }
+
+                or: {
+                    terrain: "Ai"
+
+                    find_in: "weakened_ice"
+                }
+
+                variable: "weakened_ice"
+            }
+
+            Foreach{
+                array: "weakened_ice"
+                do: ->
+                    Item{
+                        x: this_item.x, y: this_item.y
+                        image: "misc/weakened-ice.png"
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("breaking_ice")
+    }
+
+-- Victory Condition
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Malin Keshar"
+            x: 18, y: 1
+        }
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            CLEAR_VARIABLE("weakened_ice")
+    }
+
+    <HERODEATH_MALIN!
+    <HERODEATH_VOLK!
+
+    <TIME_OVER_DEFEAT!
+}

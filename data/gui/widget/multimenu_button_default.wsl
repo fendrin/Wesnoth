@@ -1,0 +1,161 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the default button.
+----
+
+_GUI_DRAW_BORDER = (_COLOR) -> {
+    rectangle: {
+        x: 0
+        y: 0
+        w: "(width)"
+        h: "(height)"
+
+        border_thickness: 1
+        border_color: _COLOR
+
+    }
+}
+
+_GUI_TEXT = (FONT_SIZE, FONT_COLOR) -> {
+    text: {
+        x: 5
+        y: GUI__TEXT_VERTICALLY_CENTRED!
+        w: "(text_width)"
+        h: "(text_height)"
+-- 25 offset to accomadate the arrow
+        maximum_width: "(width - 25)"
+        font_size: FONT_SIZE
+        color: FONT_COLOR
+        text: "(text)"
+        text_markup: "(text_markup)"
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, MIN_WIDTH, DEFAULT_WIDTH, HEIGHT, EXTRA_WIDTH, EXTRA_HEIGHT, FONT_SIZE, BASE_NAME, IPF) -> {
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: MIN_WIDTH
+        min_height: HEIGHT
+
+        default_width: DEFAULT_WIDTH
+        default_height: HEIGHT
+
+        max_width: 0
+        max_height: HEIGHT
+
+        text_extra_width: EXTRA_WIDTH
+        text_extra_height: EXTRA_HEIGHT
+        text_font_size: FONT_SIZE
+
+        state_enabled: {
+
+            draw: {
+
+                image: {
+                    w: "(width)"
+                    h: "(height)"
+                    name: "buttons/#{BASE_NAME}.png#{IPF}"
+                }
+
+                <_GUI_DRAW_BORDER(GUI__BORDER_COLOR_DARK!)
+
+                <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                image: {
+                    x: "(width - 25)"
+                    y: 2
+                    name: "icons/arrows/short_arrow_left_25.png~ROTATE(-90)"
+                }
+            }
+
+        }
+
+        state_disabled: {
+
+            draw: {
+
+                image: {
+                    w: "(width)"
+                    h: "(height)"
+                    name: "buttons/#{BASE_NAME}.png~GS()#{IPF}"
+                }
+
+                <_GUI_DRAW_BORDER(GUI__FONT_COLOR_DISABLED__DEFAULT!)
+
+                <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_DISABLED__TITLE!)
+
+                image: {
+                    x: "(width - 25)"
+                    y: 2
+                    name: "icons/arrows/short_arrow_left_25.png~ROTATE(-90)~GS()"
+                }
+            }
+
+        }
+
+        state_pressed: {
+
+            draw: {
+
+                image: {
+                    w: "(width)"
+                    h: "(height)"
+                    name: "buttons/#{BASE_NAME}-pressed.png#{IPF}"
+                }
+
+                <_GUI_DRAW_BORDER(GUI__BORDER_COLOR_DARK!)
+
+                <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                image: {
+                    x: "(width - 25)"
+                    y: 2
+                    name: "icons/arrows/short_arrow_left_25-active.png~ROTATE(-90)"
+                }
+            }
+
+        }
+
+        state_focused: {
+
+            draw: {
+
+                image: {
+                    w: "(width)"
+                    h: "(height)"
+-- Doesn't have its own 'active' variation image
+                    name: "buttons/#{BASE_NAME}-pressed.png#{IPF}"
+                }
+
+                <_GUI_DRAW_BORDER(GUI__BORDER_COLOR_DARK!)
+
+                <_GUI_TEXT(FONT_SIZE, GUI__FONT_COLOR_ENABLED__TITLE!)
+
+                image: {
+                    x: "(width - 25)"
+                    y: 2
+                    name: "icons/arrows/short_arrow_left_25-active.png~ROTATE(-90)"
+                }
+            }
+
+        }
+
+    }
+}
+
+Multimenu_Button_Definition{
+
+    id: "default"
+    description: "Default button"
+
+    <_GUI_RESOLUTION({window_width: 800, window_height: 600}, 40, 80, 30, 13, 4, GUI_FONT_SIZE_SMALL!, "button_dropdown/button_dropdown", {})
+    <_GUI_RESOLUTION({window_width: 801, window_height: 601}, 40, 120, 30, 13, 4, GUI_FONT_SIZE_SMALL!, "button_dropdown/button_dropdown", {})
+    <_GUI_RESOLUTION({window_width: 1025, window_height: 769}, 40, 180, 30, 13, 4, GUI_FONT_SIZE_SMALL!, "button_dropdown/button_dropdown", {})
+
+}
+
+_GUI_RESOLUTION = nil
+_GUI_DRAW_BORDER = nil
+_GUI_TEXT = nil

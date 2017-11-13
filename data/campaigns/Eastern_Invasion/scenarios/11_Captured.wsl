@@ -1,0 +1,1307 @@
+--textdomain wesnoth-ei
+Scenario{
+    id: "11_Captured"
+    name: _ "Captured"
+    next_scenario: "12_Evacuation"
+    map: "campaigns/Eastern_Invasion/maps/11_Captured.map"
+    victory_when_enemies_defeated: false
+    turns: -1
+    <UNDERGROUND!
+
+    <INTRO_AND_SCENARIO_MUSIC("northerners.ogg", "the_deep_path.ogg")
+    <EXTRA_SCENARIO_MUSIC("breaking_the_chains.ogg")
+    <EXTRA_SCENARIO_MUSIC("underground.ogg")
+
+-- wmllint: local spelling Dra-Nak
+    story: {
+        part: {
+            story: _ "After reaching what they believed was safety, Gweddry and his men had been captured by northern orcs."
+        }
+        part: {
+            story: _ "Gweddry, Dacyn and Owaec were promptly taken before the orcish king, Dra-Nak, while the rest were thrown into the orcish prisons to await their turn..."
+        }
+    }
+
+    side: {
+        type: "Lieutenant"
+        id: "Gweddry"
+        name: _ "Gweddry"
+        side: 1
+        canrecruit: true
+        controller: "human"
+        team_name: "good"
+        user_team_name: _ "Wesnothians"
+        shroud: true
+        gold: 0
+        <FLAG_VARIANT("loyalist")
+    }
+
+    side: {
+        type: "Orcish Warlord"
+        id: "King Dra-Nak"
+        name: _ "King Dra-Nak"
+        profile: "portraits/orcs/grunt-5.png"
+        facing: "sw"
+        side: 2
+        canrecruit: true
+        controller: "ai"
+        recruit: 
+        gold: 0
+        ai: {
+            passive_leader: true
+            grouping: false
+            aggression: 0.4
+            aspect: {
+                id: "attacks"
+                facet: {
+                    invalidate_on_gamestate_change: true
+                    filter_enemy: {
+                        not: {
+                            filter_wml: {
+                                variables: {
+                                    undercover: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        team_name: "bad"
+        user_team_name: _ "Orcs"
+        <FLAG_VARIANT6("ragged")
+    }
+
+    side: {
+        side: 3
+        no_leader: true
+        controller: "ai"
+        team_name: {"good", "bad"}
+        user_team_name: _ "Prisoners"
+        share_vision: false
+        share_maps: false
+        ai: {
+            ai_algorithm: "idle_ai"
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            PLACE_IMAGE("terrain/castle/dwarven-keep.png", 30, 15)
+            PLACE_IMAGE("items/burial.png", 22, 13)
+            PLACE_IMAGE("items/burial.png", 26, 11)
+
+            PLACE_IMAGE("scenery/gate-rusty-se.png", 26, 5)
+            PLACE_IMAGE("scenery/gate-rusty-se.png", 21, 8)
+            PLACE_IMAGE("scenery/gate-rusty-se.png", 17, 10)
+            PLACE_IMAGE("scenery/gate-rusty-sw.png", 29, 9)
+
+            PLACE_IMAGE("scenery/trash.png", 22, 2)
+
+            PLACE_IMAGE("items/bones.png", 10, 2)
+            PLACE_IMAGE("items/bones.png", 10, 4)
+
+            PLACE_IMAGE("items/barrel.png", 14, 15)
+            PLACE_IMAGE("items/box.png", 15, 15)
+            PLACE_IMAGE("items/armor.png", 16, 15)
+            PLACE_IMAGE("scenery/trash.png", 16, 16)
+
+            PLACE_IMAGE("scenery/trash.png", 30, 24)
+
+            Recall{
+                id: "Dacyn"
+                x: 28, y: 13
+            }
+
+            Recall{
+                id: "Owaec"
+                x: 26, y: 14
+            }
+
+            Role{
+                side: 1
+                type: {"Royal Guard", "Halberdier", "Great Mage", "Master Bowman", "Arch Mage", "Silver Mage", "Mage of Light", "Javelineer", "Swordsman", "Pikeman", "Longbowman", "Red Mage", "White Mage", "Mage", "Spearman", "Bowman", "Iron Mauler", "Shock Trooper", "Heavy Infantryman", "Cavalryman", "Horseman"}
+                role: "escapee leader"
+                not: {
+                    id: "Dacyn"
+                }
+            }
+            If{
+                have_unit: {
+                    role: "escapee leader"
+                    search_recall_list: true
+                }
+                else: ->
+                    GENERIC_UNIT(1, "Mage", "recall", "recall")
+                    Unit{
+                        amend: true
+                        role: "escapee leader"
+                    }
+                
+            }
+            Recall{
+                role: "escapee leader"
+                x: 25, y: 3
+            }
+
+            Role{
+                side: 1
+                type: {"White Mage", "Red Mage", "Longbowman", "Pikeman", "Swordsman", "Javelineer", "Mage", "Spearman", "Bowman", "Mage of Light", "Arch Mage", "Silver Mage", "Master Bowman", "Halberdier", "Royal Guard", "Great Mage", "Iron Mauler", "Shock Trooper", "Heavy Infantryman", "Cavalryman", "Horseman"}
+                role: "escapee sidekick 1"
+                not: {
+                    id: "Dacyn"
+                }
+                not: {
+                    role: "escapee leader"
+                }
+            }
+            If{
+                have_unit: {
+                    role: "escapee sidekick 1"
+                    search_recall_list: true
+                }
+                else: ->
+                    GENERIC_UNIT(1, "Spearman", "recall", "recall")
+                    Unit{
+                        amend: true
+                        role: "escapee sidekick 1"
+                    }
+                
+            }
+            Recall{
+                role: "escapee sidekick 1"
+                x: 24, y: 3
+            }
+
+            Role{
+                side: 1
+                type: {"Spearman", "Mage", "Bowman", "Mage", "Red Mage", "Longbowman", "Pikeman", "Swordsman", "Javelineer", "Mage of Light", "Arch Mage", "Silver Mage", "Master Bowman", "Halberdier", "Royal Guard", "Great Mage", "Iron Mauler", "Shock Trooper", "Heavy Infantryman", "Cavalryman", "Horseman"}
+                role: "escapee sidekick 2"
+                not: {
+                    id: "Dacyn"
+                }
+                not: {
+                    role: "escapee leader"
+                }
+                not: {
+                    role: "escapee sidekick 1"
+                }
+            }
+            If{
+                have_unit: {
+                    role: "escapee sidekick 2"
+                    search_recall_list: true
+                }
+                else: ->
+                    GENERIC_UNIT(1, "Bowman", "recall", "recall")
+                    Unit{
+                        amend: true
+                        role: "escapee sidekick 2"
+                    }
+                
+            }
+            Recall{
+                role: "escapee sidekick 2"
+                x: 25, y: 4
+            }
+
+            Store_Gold{
+                side: 1
+                variable: "stored_player_gold"
+            }
+
+            If{
+                variable: {
+                    name: "stored_player_gold"
+                    greater_than_equal_to: 1
+                }
+
+                then: ->
+                    PLACE_IMAGE("items/chest-plain-closed.png", 33, 11)
+                
+            }
+
+            Modify_Side{
+                side: 1
+                gold: 0
+                income: -2
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: 26, y: 5
+            }
+
+-- lvl4 units are stored first, then lvl3, then lvl2 and lastly lvl1:
+-- this makes it easy to just keep recalling the first unit of the
+-- array in order to ensure the prisoners are always the highest lvl
+-- units possible
+
+            Store_Unit{
+                filter: {
+                    side: 1
+                    not: {
+                        x: "1-999", y: "1-999"
+                    }
+                    level: 4
+                }
+
+                kill: false
+                variable: "possible_prisoners"
+            }
+
+            Store_Unit{
+                filter: {
+                    side: 1
+                    not: {
+                        x: "1-999", y: "1-999"
+                    }
+                    level: 3
+                }
+
+                kill: false
+                variable: "possible_prisoners"
+                mode: "append"
+            }
+
+            Store_Unit{
+                filter: {
+                    side: 1
+                    not: {
+                        x: "1-999", y: "1-999"
+                    }
+                    level: 2
+                }
+
+                kill: false
+                variable: "possible_prisoners"
+                mode: "append"
+            }
+
+            Store_Unit{
+                filter: {
+                    side: 1
+                    not: {
+                        x: "1-999", y: "1-999"
+                    }
+                    level: 1
+                }
+
+                kill: false
+                variable: "possible_prisoners"
+                mode: "append"
+            }
+
+            Store_Locations{
+                x: {15, 20, 31}
+                y: {9, 6, 8}
+                radius: 3
+
+                filter_radius: {
+                    terrain: {"!", "X*", "*^X*"}
+                }
+
+                variable: "prisoner_locations"
+            }
+
+-- for each prisoner location, we either recall the first unit of the
+-- array (and then remove it from the array) or create a new unit if
+-- the array is empty (meaning that the recall list had less than 13
+-- units
+
+            Foreach{
+                array: "prisoner_locations"
+                do: ->
+                    If{
+                        variable: {
+                            name: "possible_prisoners.length"
+                            greater_than: 0
+                        }
+
+                        then: ->
+                            Unstore_Unit{
+                                variable: "possible_prisoners[0]"
+                                x: this_item.x, y: this_item.y
+                                find_vacant: true
+                            }
+
+                            CLEAR_VARIABLE("possible_prisoners[0]")
+                        
+
+                        else: ->
+--{DEBUG_MSG "ran out of recallable prisoners, creating a new one"}
+
+                            RANDOM("Spearman,Cavalryman,Mage,Horseman,Heavy Infantryman")
+
+                            Unit{
+                                side: 1
+                                type: random
+                                generate_name: true
+                                random_traits: true
+                                x: this_item.x, y: this_item.y
+                            }
+                        
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("possible_prisoners,prisoner_locations,new_prisoner")
+
+            LOYAL_UNIT(2, ON_DIFFICULTY("Troll", "Troll", "Troll Warrior"), 23, 10)
+            LOYAL_UNIT(2, ON_DIFFICULTY("Troll", "Troll", "Troll Warrior"), 23, 16)
+            Unit{
+                amend: true
+-- This one must not be quick, or it might see an escapee before the
+-- escapee sees it... it still can, if the escapee is a non-quick HI
+-- line unit, but it's unlikely the player will scout ahead with one
+                random_traits: false
+                modifications: {
+                    amend: true
+                    <TRAIT_INTELLIGENT!
+                }
+            }
+
+            LOYAL_UNIT(2, ON_DIFFICULTY("Troll", "Troll Warrior", "Troll Warrior"), 28, 18)
+            LOYAL_UNIT(2, ON_DIFFICULTY("Troll", "Troll Warrior", "Troll Warrior"), 26, 7)
+            LOYAL_UNIT(2, ON_DIFFICULTY("Troll", "Troll Warrior", "Troll Warrior"), 19, 12)
+
+            LOYAL_UNIT(2, "Orcish Warrior", 24, 13)
+            LOYAL_UNIT(2, "Orcish Warrior", 26, 12)
+
+            LOYAL_UNIT(2, "Orcish Warrior", 29, 16)
+            LOYAL_UNIT(2, "Orcish Warrior", 31, 15)
+
+            LOYAL_UNIT(2, "Orcish Warrior", 34, 13)
+
+            GENERIC_UNIT(2, "Orcish Grunt", 11, 4)
+
+            MODIFY_UNIT({
+                    side: 1
+
+                    filter_wml: {
+                        upkeep: "full"
+                    }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 380:         ) variables.temporary_free_upkeep yes}
+
+                    <MODIFY_UNIT({
+                            side: 1
+
+                            filter_wml: {
+                                upkeep: "full"
+                            }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 388:         ) upkeep loyal}
+
+                            <MODIFY_UNIT({
+                                    side: 1
+                                    not: {
+                                        role: "escapee leader"
+
+                                        or: {
+                                            role: "escapee sidekick 1"
+                                        }
+
+                                        or: {
+                                            role: "escapee sidekick 2"
+                                        }
+                                    }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 403:         ) side 3}
+
+                                    <MODIFY_UNIT({side: 1}, "canrecruit", true)
+
+                                    <MODIFY_UNIT({side: 2}, "status.guardian", true)
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 405
+
+                                event: {
+                                    name: "start"
+                                    do: ->
+                                        Message{
+                                            speaker: "narrator"
+                                            message: _ "Several of Gweddry's men find themselves locked away in a crude orcish cell."
+                                            image: "wesnoth-icon.png"
+                                        }
+
+                                        Message{
+                                            role: "escapee sidekick 1"
+                                            message: _ "We've got to get out of here!"
+                                        }
+
+                                        Message{
+                                            role: "escapee sidekick 2"
+                                            message: _ "I'm sure the commander will come and save us!"
+                                        }
+
+                                        Message{
+                                            role: "escapee sidekick 1"
+                                            message: _ "What? Didn't you see those huge trolls drag them away? It's hopeless!"
+                                        }
+
+                                        Message{
+                                            role: "escapee leader"
+                                            message: _ "Be quiet, you two! There's something back here..."
+                                        }
+
+                                        MOVE_UNIT({role: "escapee leader"}, 22, 2)
+
+                                        Message{
+                                            role: "escapee leader"
+                                            message: _ "Look! There's a gap in the wall over here. I think I can slip through if I clear away some of these rocks..."
+                                        }
+
+                                        Animate_Unit{
+                                            flag: "attack"
+
+                                            filter: {
+                                                role: "escapee leader"
+                                            }
+
+                                            primary_attack: {
+                                                range: "melee"
+                                            }
+
+                                            facing: {
+                                                x: 21, y: 3
+                                            }
+
+                                            hits: true
+                                        }
+
+                                        Sound{
+                                            name: "cave-in.ogg"
+                                        }
+
+                                        Terrain{
+                                            x: 21, y: 3
+                                            terrain: "Uu^Dr"
+                                        }
+
+                                        Redraw{
+                                            side: 1
+                                        }
+
+                                        Message{
+                                            role: "escapee leader"
+                                            message: _ "Come on! This way!"
+                                        }
+
+                                        MOVE_UNIT({role: "escapee leader"}, 21, 3)
+
+                                        Objectives{
+                                            side: 1
+                                            objective: {
+                                                description: _ "Find Gweddry, Dacyn and Owaec"
+                                                condition: "win"
+                                            }
+                                            objective: {
+                                                description: _ "Release the other prisoners"
+                                                condition: "win"
+                                            }
+                                            objective: {
+                                                description: _ "Death of the escapees"
+                                                condition: "lose"
+                                            }
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+                                        x: {25, 26}
+                                        y: {5, 4}
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "The door won't open from this side."
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+
+                                        filter_location: {
+                                            x: 12, y: 4
+                                            radius: 2
+                                        }
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "There's strange noises coming from those pits. I don't like this."
+                                        }
+
+                                        Event{
+                                            name: "new turn"
+                                            do: ->
+                                                LOYAL_UNIT(2, "Vampire Bat", 8, 2)
+                                                LOYAL_UNIT(2, "Vampire Bat", 11, 2)
+
+                                                Message{
+                                                    side: 2, race: "bats"
+                                                    message: _ "Neep! Neep!" -- wmllint: no spellcheck
+                                                }
+
+                                                Event{
+                                                    name: "new turn"
+                                                    do: ->
+                                                        LOYAL_UNIT(2, "Vampire Bat", 8, 2)
+                                                        LOYAL_UNIT(2, "Vampire Bat", 11, 2)
+
+                                                        Event{
+                                                            name: "new turn"
+                                                            do: ->
+                                                                LOYAL_UNIT(2, "Vampire Bat", 8, 2)
+                                                        }
+                                                }
+                                        }
+                                }
+
+                                event: {
+                                    name: "attack"
+
+                                    filter: {
+                                        race: "bats"
+                                    }
+
+                                    filter_second: {
+                                        side: 1
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "second_unit"
+                                            message: _ "Ack! Get away from me!"
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+                                        x: "1-8"
+                                        y: "5-8"
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "This tunnel seems to go deeper into the caves. We can't go that way."
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+                                        x: "12-18"
+                                        y: "15-19"
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "There's a pile of orcish gear and trash here. The stench is wretched."
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+                                    }
+
+                                    filter_condition: {
+                                        have_unit: {
+                                            type: {"Troll", "Troll Warrior"}
+                                            filter_vision: {
+                                                side: 1
+                                            }
+                                        }
+                                    }
+                                    do: ->
+                                        Redraw{
+                                            side: 1
+                                        }
+
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "The other prison cells should be to the north of that chamber. If we can get past those trolls we could free our comrades."
+                                        }
+
+                                        Message{
+                                            side: 1
+                                            not: {
+                                                x: x1, y: y1
+                                            }
+                                            message: _ "But there's too many of them!"
+                                        }
+
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "Hmm... I have an idea."
+                                        }
+
+                                        VARIABLE("unit.variables.undercover", true)
+                                        VARIABLE("unit.profile", "portraits/disguise.png")
+
+                                        Unstore_Unit{
+                                            variable: "unit"
+                                            find_vacant: false
+                                        }
+
+                                        MOVE_UNIT({id: unit.id}, 15, 16)
+
+                                        Message{
+                                            speaker: "narrator"
+                                            message: _ "After a while..."
+                                            image: "wesnoth-icon.png"
+                                        }
+
+                                        Remove_Item{
+                                            x: 16, y: 15
+                                        }
+
+                                        Object{
+                                            id: "disguise"
+                                            silent: true
+
+                                            filter: {
+                                                id: unit.id
+                                            }
+
+                                            effect: {
+                                                apply_to: "image_mod"
+                                                add: "O(0)~CROP(0,0,72,72)~BLIT(units/orcs/xbowman.png~TC(1,magenta),0,0)"
+                                            }
+                                        }
+
+                                        If{
+                                            have_unit: {
+                                                side: 1
+                                                count: "2-99"
+                                            }
+
+                                            then: ->
+                                                Message{
+                                                    id: unit.id
+                                                    message: _ "So, how do I look?"
+                                                }
+
+                                                Message{
+                                                    id: unit.id
+                                                    message: _ "I'll try to slip past the trolls. You wait here."
+                                                }
+                                            
+                                        }
+                                }
+
+                                event: {
+                                    name: "moveto"
+
+                                    filter: {
+                                        side: 1
+
+                                        filter_location: {
+                                            x: {23, 30}
+                                            y: {11, 14}
+                                            radius: 6
+                                        }
+                                    }
+                                    do: ->
+                                        Remove_Shroud{
+                                            side: 1
+                                            x: {"17-36", "12-33"}
+                                            y: {"5-18", "7-19"}
+                                            and: {
+                                                radius: 20
+                                            }
+                                            not: {
+                                                terrain: "X*"
+                                                filter_adjacent_location: {
+                                                    terrain: "X*"
+                                                    count: 6
+                                                }
+                                            }
+                                        }
+
+                                        Message{
+                                            speaker: "King Dra-Nak"
+                                            message: _ "Ha-ha! These humans will make excellent slaves in my mines!"
+                                        }
+
+                                        Message{
+                                            speaker: "unit"
+                                            message: WHISPER(_ "Opening the cells should confuse the guards for a moment. But I better not get too close to them...")
+                                        }
+                                }
+
+                                event: {
+                                    name: "attack"
+
+                                    filter: {
+                                        side: 1
+
+                                        filter_wml: {
+                                            variables: {
+                                                undercover: true
+                                            }
+                                        }
+                                    }
+                                    do: ->
+                                        Fire_Event{
+                                            name: "exposed"
+
+                                            primary_unit: {
+                                                x: x1, y: y1
+                                            }
+                                        }
+                                }
+
+                                event: {
+                                    name: "new turn"
+
+                                    filter_condition: {
+                                        have_unit: {
+                                            side: 1
+
+                                            filter_wml: {
+                                                variables: {
+                                                    undercover: true
+                                                }
+                                            }
+
+                                            filter_adjacent: {
+                                                type: {"Troll Warrior", "Orcish Warrior", "Orcish Warlord"}
+                                            }
+                                        }
+                                    }
+                                    do: ->
+                                        Fire_Event{
+                                            name: "exposed"
+
+                                            primary_unit: {
+                                                side: 1
+
+                                                filter_wml: {
+                                                    variables: {
+                                                        undercover: true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                }
+
+                                event: {
+                                    name: "exposed"
+                                    do: ->
+                                        Message{
+                                            side: 2
+                                            filter_adjacent: {
+                                                x: x1, y: y1
+                                            }
+                                            message: _ "Eh?"
+                                        }
+
+                                        If{
+                                            variable: {
+                                                name: "unit.gender"
+                                                equals: "female"
+                                            }
+
+                                            then: ->
+                                                Message{
+                                                    speaker: "King Dra-Nak"
+                                                    message: _ "Hey! Who are you? Get her!"
+                                                }
+                                            
+
+                                            else: ->
+                                                Message{
+                                                    speaker: "King Dra-Nak"
+                                                    message: _ "Hey! Who are you? Get him!"
+                                                }
+                                            
+                                        }
+
+                                        Message{
+                                            x: x1, y: y1
+                                            message: _ "Uh oh!"
+                                        }
+
+                                        Fire_Event{
+                                            name: "remove disguise"
+
+                                            primary_unit: {
+                                                x: x1, y: y1
+                                            }
+                                        }
+
+                                        MODIFY_UNIT({side: 2}, "status.guardian", false)
+                                }
+
+                                event: {
+                                    name: "moveto"
+                                    first_time_only: false
+
+                                    filter: {
+                                        side: 1
+
+                                        filter_location: {
+                                            filter_adjacent_location: {
+                                                terrain: "Re^Xo"
+                                                adjacent: {"nw", "n", "ne"}
+                                            }
+                                        }
+                                    }
+                                    do: ->
+                                        Message{
+                                            speaker: "unit"
+                                            message: _ "Here's one of the prison cells! Let me open it..."
+                                        }
+
+                                        Sound{
+                                            name: "open-chest.wav"
+                                        }
+
+                                        Store_Locations{
+                                            terrain: "Re^Xo"
+
+                                            filter_adjacent_location: {
+                                                x: x1, y: y1
+                                            }
+
+                                            variable: "adjacent_gate_loc"
+                                        }
+
+                                        Terrain{
+                                            x: adjacent_gate_loc.x, y: adjacent_gate_loc.y
+                                            terrain: "Re"
+                                        }
+
+                                        Remove_Item{
+                                            x: adjacent_gate_loc.x, y: adjacent_gate_loc.y
+                                        }
+
+                                        Redraw{
+                                        }
+
+                                        MODIFY_UNIT({
+                                                side: 3
+
+                                                filter_location: {
+                                                    x: adjacent_gate_loc.x, y: adjacent_gate_loc.y
+                                                    radius: 5
+
+                                                    filter_radius: {
+                                                        terrain: {"!", "X*"}
+                                                    }
+                                                }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 899:         ) side 1}
+
+                                                <CLEAR_VARIABLE("adjacent_gate_loc")
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 898
+
+                                            event: {
+                                                name: "moveto"
+
+                                                filter: {
+                                                    side: 1
+                                                    x: {17, 18}
+                                                    y: {11, 10}
+                                                }
+                                                do: ->
+                                                    MODIFY_UNIT({side: 3, x: "13-16", y: "8-10"}, "side", 1)
+
+                                                    Message{
+                                                        x: "13-16"
+                                                        y: "8-10"
+                                                        message: _ "Finally, we're rescued!"
+                                                    }
+
+                                                    Fire_Event{
+                                                        name: "free heroes"
+                                                    }
+                                            }
+
+                                            event: {
+                                                name: "moveto"
+
+                                                filter: {
+                                                    side: 1
+                                                    x: {21, 22}
+                                                    y: {9, 8}
+                                                }
+                                                do: ->
+                                                    MODIFY_UNIT({side: 3, x: "18-22", y: "6-8"}, "side", 1)
+
+                                                    Message{
+                                                        x: "18-22"
+                                                        y: "6-8"
+                                                        message: _ "At last!"
+                                                    }
+
+                                                    Fire_Event{
+                                                        name: "free heroes"
+                                                    }
+                                            }
+
+                                            event: {
+                                                name: "moveto"
+
+                                                filter: {
+                                                    side: 1
+                                                    x: {28, 29}
+                                                    y: {9, 10}
+                                                }
+                                                do: ->
+                                                    MODIFY_UNIT({side: 3, x: "29-32", y: "7-9"}, "side", 1)
+
+                                                    Message{
+                                                        x: "29-32"
+                                                        y: "7-9"
+                                                        message: _ "Now let's get out of here!"
+                                                    }
+
+                                                    Fire_Event{
+                                                        name: "free heroes"
+                                                    }
+                                            }
+
+                                            event: {
+                                                name: "free heroes"
+                                                do: ->
+                                                    Message{
+                                                        speaker: "King Dra-Nak"
+                                                        message: _ "What? Who's there? Get them!"
+                                                    }
+
+                                                    Fire_Event{
+                                                        name: "remove disguise"
+
+                                                        primary_unit: {
+                                                            side: 1
+                                                            filter_wml: {
+                                                                variables: {
+                                                                    undercover: true
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    MODIFY_UNIT({side: 2}, "status.guardian", false)
+
+                                                    MODIFY_UNIT({canrecruit: true, side: 1}, "canrecruit", false)
+
+                                                    MODIFY_UNIT({
+                                                            id: "Gweddry"
+
+                                                            or: {
+                                                                id: "Dacyn"
+                                                            }
+
+                                                            or: {
+                                                                id: "Owaec"
+                                                            }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1005:         ) side 1}
+
+                                                            redraw: {
+                                                                side: 1
+                                                            }
+
+                                                            message: {
+                                                                speaker: "Dacyn"
+                                                                message: _ "The guards are distracted! Now is the time to escape!"
+                                                            }
+
+                                                            message: {
+                                                                speaker: "Owaec"
+                                                                message: _ "The eastern entrance is teeming with orcs. We have to find another way to exit to the west!"
+                                                            }
+
+                                                            if: {
+                                                                variable: {
+                                                                    name: "stored_player_gold"
+                                                                    greater_than_equal_to: 1
+                                                                }
+
+                                                                then: ->
+                                                                    Message{
+                                                                        speaker: "Gweddry"
+                                                                        message: _ "We have to get our gold back first! It must have been taken to their treasury."
+                                                                    }
+
+                                                                    HIGHLIGHT_IMAGE(33, 11, "items/chest-plain-closed.png", {})
+                                                                
+                                                            }
+
+                                                            modify_turns: {
+                                                                value: "#{(#{turn_number + 15)"
+                                                            }
+
+                                                            objectives: {
+                                                                side: 1
+                                                                objective: {
+                                                                    description: _ "Gweddry reaches the western exit"
+                                                                    condition: "win"
+                                                                }
+                                                                objective: {
+                                                                    description: _ "Retrieve the stolen gold"
+                                                                    condition: "win"
+                                                                    show_if: {
+                                                                        variable: {
+                                                                            name: "stored_player_gold"
+                                                                            greater_than_equal_to: 1
+                                                                        }
+                                                                    }
+                                                                }
+                                                                objective: {
+                                                                    description: _ "Release the remaining prisoners"
+                                                                    condition: "win"
+                                                                    show_if: {
+                                                                        have_unit: {
+                                                                            side: 3
+                                                                        }
+                                                                    }
+                                                                }
+                                                                objective: {
+                                                                    description: _ "Death of Gweddry"
+                                                                    condition: "lose"
+                                                                }
+                                                                objective: {
+                                                                    description: _ "Death of Dacyn"
+                                                                    condition: "lose"
+                                                                }
+                                                                objective: {
+                                                                    description: _ "Death of Owaec"
+                                                                    condition: "lose"
+                                                                }
+
+                                                                <TURNS_RUN_OUT!
+
+                                                                gold_carryover: {
+                                                                    carryover_percentage: 100
+                                                                }
+                                                            }
+
+                                                            modify_side: {
+                                                                side: 2
+                                                                recruit: {"Orcish Grunt", "Troll Whelp", "Orcish Archer", "Orcish Assassin"}
+                                                                <GOLD(40, 50, 60)
+                                                            }
+
+                                                            event: {
+                                                                name: "new turn"
+                                                                first_time_only: false
+                                                                do: ->
+                                                                    RANDOM("Orcish Warlord,Troll Warrior,Orcish Slurbow")
+
+                                                                    If{
+                                                                        variable: {
+                                                                            name: "turn_number"
+                                                                            less_than: "#{(#{turn_number + 2)"
+                                                                        }
+
+                                                                        then: ->
+                                                                            GENERIC_UNIT(2, random, 42, 14)
+                                                                        
+
+                                                                        else: ->
+                                                                            If{
+                                                                                variable: {
+                                                                                    name: "turn_number"
+                                                                                    less_than: "#{(#{turn_number + 4)"
+                                                                                }
+
+                                                                                then: ->
+                                                                                    GENERIC_UNIT(2, random, 41, 14)
+                                                                                    GENERIC_UNIT(2, random, 42, 14)
+                                                                                
+
+                                                                                else: ->
+                                                                                    GENERIC_UNIT(2, random, 41, 14)
+                                                                                    GENERIC_UNIT(2, random, 41, 15)
+                                                                                    GENERIC_UNIT(2, random, 42, 14)
+                                                                                
+                                                                            }
+                                                                        
+                                                                    }
+                                                            }
+
+                                                            event: {
+                                                                name: "new turn"
+                                                                do: ->
+                                                                    Remove_Shroud{
+                                                                        side: 1
+                                                                        x: 41, y: 15
+                                                                        radius: 2
+                                                                    }
+
+                                                                    Scroll_To{
+                                                                        x: 41, y: 15
+                                                                    }
+
+                                                                    Message{
+                                                                        speaker: "Gweddry"
+                                                                        message: _ "They have reinforcements pouring in from the eastern entrance! We have to get out of here quickly!"
+                                                                    }
+
+                                                                    Place_Shroud{
+                                                                        side: 1
+                                                                        x: 41, y: 15
+                                                                        radius: 2
+                                                                    }
+                                                            }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 1149
+
+                                                        event: {
+                                                            name: "remove disguise"
+                                                            do: ->
+                                                                VARIABLE("unit.variables.undercover", "was")
+                                                                CLEAR_VARIABLE("unit.profile")
+
+                                                                Foreach{
+                                                                    array: "unit.modifications.object"
+                                                                    do: ->
+                                                                        If{
+                                                                            variable: {
+                                                                                name: "this_item.id"
+                                                                                equals: "disguise"
+                                                                            }
+
+                                                                            then: ->
+                                                                                CLEAR_VARIABLE("this_item")
+                                                                            
+                                                                        }
+                                                                    
+                                                                }
+
+                                                                Unstore_Unit{
+                                                                    variable: "unit"
+                                                                    find_vacant: false
+                                                                }
+                                                        }
+
+                                                        event: {
+                                                            name: "moveto"
+
+                                                            filter: {
+                                                                side: 1
+                                                                x: 33, y: 11
+                                                            }
+
+                                                            filter_condition: {
+                                                                variable: {
+                                                                    name: "stored_player_gold"
+                                                                    greater_than_equal_to: 1
+                                                                }
+                                                            }
+                                                            do: ->
+                                                                Message{
+                                                                    speaker: "unit"
+                                                                    message: _ "All the gold the orcs took is in this chest!"
+                                                                    sound: "open-chest.wav"
+                                                                }
+
+                                                                Gold{
+                                                                    side: 1
+                                                                    amount: stored_player_gold
+                                                                }
+
+                                                                Message{
+                                                                    speaker: "narrator"
+                                                                    message: _ "You've regained #{stored_player_gold gold!"
+                                                                    image: "wesnoth-icon.png"
+                                                                    sound: "gold.ogg"
+                                                                }
+
+                                                                Remove_Item{
+                                                                    x: 33, y: 11
+                                                                    image: "items/chest-plain-closed.png"
+                                                                }
+
+                                                                PLACE_IMAGE("items/chest-plain-open.png", 33, 11)
+
+                                                                CLEAR_VARIABLE("stored_player_gold")
+                                                        }
+
+                                                        <HOLY_AMULET(31, 23)
+
+                                                        event: {
+                                                            name: "moveto"
+
+                                                            filter: {
+                                                                side: 1
+                                                                x: 1
+                                                                y: "19-24"
+                                                                filter_wml: {
+                                                                    variables: {
+                                                                        undercover: true
+                                                                    }
+                                                                }
+                                                            }
+                                                            do: ->
+                                                                Message{
+                                                                    speaker: "unit"
+                                                                    message: _ "Phew! I made it."
+                                                                }
+
+                                                                Message{
+                                                                    side: 1
+                                                                    not: {
+                                                                        x: x1, y: y1
+                                                                    }
+                                                                    message: _ "Where are you going?! Come back!"
+                                                                }
+
+                                                                FOREIGN_DEFEAT!
+
+                                                                Endlevel{
+                                                                    result: "defeat"
+                                                                }
+                                                        }
+
+                                                        event: {
+                                                            name: "moveto"
+                                                            filter: {
+                                                                id: "Gweddry"
+                                                                x: 1
+                                                                y: "19-24"
+                                                            }
+                                                            do: ->
+                                                                Message{
+                                                                    speaker: "Gweddry"
+                                                                    message: _ "Good! We have escaped these accursed caves!"
+                                                                }
+
+                                                                Endlevel{
+                                                                    result: "victory"
+                                                                    bonus: true
+                                                                    <NEW_GOLD_CARRYOVER(100)
+                                                                }
+                                                        }
+
+                                                        event: {
+                                                            name: "victory"
+                                                            do: ->
+                                                                MODIFY_UNIT({
+                                                                        side: 1
+
+                                                                        filter_wml: {
+                                                                            variables: {
+                                                                                temporary_free_upkeep: true
+                                                                            }
+                                                                        }
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 1293:         ) upkeep full}
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 1288
+
+                                                                    <FOREIGN_DEFEAT!
+
+                                                                    <HERODEATH_GWEDDRY!
+                                                                    <HERODEATH_DACYN!
+                                                                    <HERODEATH_OWAEC!
+err: ../attic/data/campaigns/Eastern_Invasion/scenarios/11_Captured.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by scenario at line 1295

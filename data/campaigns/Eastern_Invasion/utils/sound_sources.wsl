@@ -1,0 +1,40 @@
+--textdomain wesnoth-ei
+
+AMBIENT_BIRDS = (X, Y) -> {
+    sound_source: {
+        id: "birds#{X}#{Y}"
+        x: X, y: Y
+        sounds: {"ambient/birds1.ogg", "ambient/birds2.ogg", "ambient/birds3.ogg"}
+        delay: 6000
+        chance: 100
+        full_range: 1
+        fade_range: 10
+    }
+}
+
+SETUP_CAMPFIRES = () -> {
+    event: {
+        name: "prestart"
+        do: ->
+            Store_Locations{
+                terrain: "*^Ecf"
+                variable: "campfires"
+            }
+            For{
+                array: "campfires"
+                do: ->
+                    Sound_Source{
+                        id: "campfire[#{i]"
+                        x: campfires[i].x, y: campfires[i].y
+                        sounds: "ambient/campfire.ogg"
+                        delay: 0
+                        chance: 100
+                        full_range: 1
+                        fade_range: 6
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("campfires")
+    }
+}

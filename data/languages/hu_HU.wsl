@@ -1,0 +1,4 @@
+Locale{
+    name: "Magyar"
+    locale: "hu_HU"
+}

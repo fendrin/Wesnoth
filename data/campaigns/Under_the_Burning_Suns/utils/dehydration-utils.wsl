@@ -1,0 +1,347 @@
+--textdomain wesnoth-utbs
+
+HYDRATING_TILES = () -> {
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+    DEHYDRATING_TILES = () -> {
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:461: attempt to concatenate local 'node_type' (a nil value)
+
+        DEHYDRATABLE_UNITS_FILTER = () -> {
+            not: {
+                race: "undead"
+            }
+            not: {
+                type: "Giant Scorpion"
+            }
+            not: {
+                type: "Dust Devil"
+            }
+            not: {
+-- traveller's ring
+                role: "immune"
+            }
+            and: {
+-- Prevent unseen AI guardians from being depleted by dehydration
+                filter_vision: {
+                    side: 1
+                }
+                or: {
+                    not: {
+                        ai_special: "guardian"
+                    }
+                }
+            }
+        }
+
+-- This dehydrates the given units. However, if the unit is adjacent to a
+-- friendly healer, the dehydration will be delayed instead: the unit suffers no
+-- ill effects, but it cannot receive any healing on this turn either. Basically,
+-- dehydration works just like poison.
+--
+-- Each turn of dehydration lowers the unit’s attack damage by 1 point and
+-- decreases hitpoints by -$dehydration_loss.
+
+        APPLY_DEHYDRATION_EFFECT = (FILTER) -> {
+            store_unit: {
+                filter: {
+                    <FILTER
+                }
+
+                kill: false
+                variable: "dehydrating_units"
+            }
+
+            for: {
+                array: "dehydrating_units"
+                do: ->
+                    VARIABLE("dehydrating_units[#{i].resting", false)
+
+                    If{
+                        have_unit: {
+                            x: dehydrating_units[i].x, y: dehydrating_units[i].y
+
+                            filter_adjacent: {
+                                is_enemy: false
+                                and: {
+                                    ability: "healing"
+                                    or: {
+                                        ability: "curing"
+                                    }
+                                }
+                            }
+                        }
+
+                        then: ->
+                            VARIABLE("dehydrating_units[#{i].status.dehydration_slowed_by_healer", true)
+
+                            Unstore_Unit{
+                                variable: "dehydrating_units[#{i]"
+                                find_vacant: false
+                            }
+                        
+
+                        else: ->
+                            For{
+                                array: "dehydrating_units[i].attack"
+                                variable: "j"
+                                do: ->
+-- if dehydrating for the first time, store the original attack stats
+                                    If{
+                                        variable: {
+                                            name: "dehydrating_units[i].status.dehydrated"
+                                            not_equals: true
+                                        }
+
+                                        then: ->
+                                            VARIABLE("dehydrating_units[#{i].variables.original_attack[#{j].damage", dehydrating_units[i].attack[j].damage)
+                                        
+                                    }
+
+-- the attack's damage drops by 1 point, but cannot drop to zero
+                                    If{
+                                        variable: {
+                                            name: "dehydrating_units[i].attack[j].damage"
+                                            greater_than: 1
+                                        }
+
+                                        then: ->
+                                            VARIABLE_OP("dehydrating_units[#{i].attack[#{j].damage", "sub", 1)
+                                        
+                                    }
+                                
+                            }
+
+-- unit’s hitpoints drop by $dehydration_loss, but cannot kill it
+                            If{
+                                variable: {
+                                    name: "dehydrating_units[i].hitpoints"
+                                    greater_than: dehydration_loss
+                                }
+
+                                then: ->
+                                    VARIABLE_OP("dehydrating_units[#{i].hitpoints", "sub", dehydration_loss)
+                                
+
+                                else: ->
+                                    VARIABLE("dehydrating_units[#{i].hitpoints", 1)
+                                
+                            }
+
+                            VARIABLE("dehydrating_units[#{i].status.dehydrated", true)
+
+                            Unstore_Unit{
+                                variable: "dehydrating_units[#{i]"
+                                find_vacant: false
+                                text: _ "thirst"
+                                <COLOR_HARM!
+                            }
+
+                            Unit_Overlay{
+                                x: dehydrating_units[i].x, y: dehydrating_units[i].y
+                                image: "misc/dehydration-icon.png"
+                            }
+                        
+                    }
+                
+            }
+
+            <CLEAR_VARIABLE("dehydrating_units")
+        }
+
+-- This rehydrates the given units. The units gain back their full attack damage.
+        APPLY_HYDRATION_EFFECT = (FILTER) -> {
+            store_unit: {
+                filter: {
+                    <FILTER
+                }
+
+                kill: false
+                variable: "hydrating_units"
+            }
+
+            for: {
+                array: "hydrating_units"
+                do: ->
+                    If{
+                        variable: {
+                            name: "hydrating_units[i].status.dehydrated"
+                            equals: true
+                        }
+
+                        then: ->
+                            For{
+                                array: "hydrating_units[i].attack"
+                                variable: "j"
+                                do: ->
+                                    VARIABLE("hydrating_units[#{i].attack[#{j].damage", hydrating_units[i].variables.original_attack[j].damage)
+                                
+                            }
+                        
+                    }
+
+                    VARIABLE("hydrating_units[#{i].status.dehydrated", false)
+
+                    Unstore_Unit{
+                        variable: "hydrating_units[#{i]"
+                        find_vacant: false
+                        text: _ "refreshed"
+                        <COLOR_HEAL!
+                    }
+
+                    Remove_Unit_Overlay{
+                        x: hydrating_units[i].x, y: hydrating_units[i].y
+                        image: "misc/dehydration-icon.png"
+                    }
+                
+            }
+
+            <CLEAR_VARIABLE("hydrating_units")
+        }
+
+--
+-- Events
+--
+        DEHYDRATION_EVENTS = () -> {
+            event: {
+                name: "prestart"
+
+-- dehydration loss - a variable for the dialogue
+                do: ->
+                    VARIABLE("dehydration_loss", 4)
+            }
+
+            event: {
+                name: "side turn"
+                first_time_only: false
+
+-- dehydration:
+-- only at dawn, morning, mid-day, afternoon and dusk
+                do: ->
+                    APPLY_DEHYDRATION_EFFECT({
+                            side: side_number
+                            <DEHYDRATABLE_UNITS_FILTER!
+
+                            filter_location: {
+                                terrain: DEHYDRATING_TILES!
+                                not: {
+                                    time_of_day: "chaotic"
+                                }
+                            }
+                    })
+            }
+
+            event: {
+                name: "side turn"
+                first_time_only: false
+
+-- rehydration in water, villages or when next to healers
+                do: ->
+                    APPLY_HYDRATION_EFFECT({
+                            side: side_number
+                            status: "dehydrated"
+
+                            and: {
+                                filter_location: {
+                                    terrain: HYDRATING_TILES!
+                                }
+                            }
+                    })
+            }
+
+            event: {
+                name: "turn refresh"
+                first_time_only: false
+                do: ->
+                    If{
+                        variable: {
+                            name: "side_number"
+                            equals: 1
+                        }
+
+                        then: ->
+                            MODIFY_UNIT({
+                                    side: 1
+                                    status: "dehydration_slowed_by_healer"
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 262:                 ) status.dehydration_slowed_by_healer no}
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by then at line 262
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by if at line 263
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:31: Unbalanced WML! table closed by event at line 264
+
+                        event: {
+                            name: "advance"
+                            first_time_only: false
+
+                            filter: {
+                                status: "dehydrated"
+                            }
+                            do: ->
+                                VARIABLE("unit.status.dehydrated", false)
+
+                                Unstore_Unit{
+                                    variable: "unit"
+                                    find_vacant: false
+                                    text: _ "refreshed"
+                                    <COLOR_HEAL!
+                                    advance: false
+                                }
+
+                                Remove_Unit_Overlay{
+                                    x: unit.x, y: unit.y
+                                    image: "misc/dehydration-icon.png"
+                                }
+                        }
+
+                        event: {
+                            name: "victory"
+
+-- Rehydrate all units for the next scenario
+-- Do this more quietly than usual...
+                            do: ->
+                                Store_Unit{
+                                    filter: {
+                                        side: 1
+                                    }
+
+                                    kill: false
+                                    variable: "hydrating_units"
+                                }
+
+                                For{
+                                    array: "hydrating_units"
+                                    do: ->
+                                        If{
+                                            variable: {
+                                                name: "hydrating_units[i].status.dehydrated"
+                                                equals: true
+                                            }
+
+                                            then: ->
+                                                For{
+                                                    array: "hydrating_units[i].attack"
+                                                    variable: "j"
+                                                    do: ->
+                                                        VARIABLE("hydrating_units[#{i].attack[#{j].damage", hydrating_units[i].variables.original_attack[j].damage)
+                                                    
+                                                }
+                                            
+                                        }
+
+                                        VARIABLE("hydrating_units[#{i].status.dehydrated", false)
+
+                                        Unstore_Unit{
+                                            variable: "hydrating_units[#{i]"
+                                            find_vacant: false
+                                        }
+
+                                        Remove_Unit_Overlay{
+                                            id: hydrating_units[i].id
+                                            image: "misc/dehydration-icon.png"
+                                        }
+                                    
+                                }
+
+-- Clear related variables
+                                CLEAR_VARIABLE("hydrating_units")
+                                CLEAR_VARIABLE("dehydration_loss")
+                        }
+err: ../attic/data/campaigns/Under_the_Burning_Suns/utils/dehydration-utils.cfg - ./wml_to_wsl/compile.moon:28: Unbalanced WML! macro: MODIFY_UNIT closed by define at line 342

@@ -1,0 +1,60 @@
+--textdomain wesnoth-anl
+
+ANL_CAPTURE_VILLAGE = () -> {
+    capture_village: {
+        x: x1
+        y: y1
+        side: side_number
+    }
+}
+
+OPEN_CHEST = (X, Y, TREASURE_VALUE) -> {
+    sound: {
+        name: "open-chest.wav"
+    }
+
+    remove_item: {
+        x: X
+        y: Y
+        image: "items/chest-plain-closed.png"
+    }
+    item: {
+        x: X
+        y: Y
+        image: "items/chest-plain-open.png"
+    }
+
+    set_variable: {
+        name: "oc_treasure"
+        value: TREASURE_VALUE
+    }
+    message: {
+        speaker: "narrator"
+        image: "items/chest-plain-open.png"
+        message: _ "The chest contains #{oc_treasure gold."
+    }
+
+    clear_variable: {
+        name: "oc_treasure"
+    }
+
+    gold: {
+        side: side_number
+        amount: TREASURE_VALUE
+    }
+}
+
+MOVEMENT_RESTRICTION = (TERR1_NAME, TERR2_NAME) -> {
+    object: {
+        silent: true
+        duration: "forever"
+        effect: {
+            apply_to: "movement_costs"
+            replace: true
+            movement_costs: {
+                [TERR1_NAME]: UNREACHABLE!
+                [TERR2_NAME]: UNREACHABLE!
+            }
+        }
+    }
+}

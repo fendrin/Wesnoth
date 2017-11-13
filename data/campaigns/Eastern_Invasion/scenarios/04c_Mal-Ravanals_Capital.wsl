@@ -1,0 +1,608 @@
+--textdomain wesnoth-ei
+
+Scenario{
+    id: "04c_Mal-Ravanals_Capital"
+    name: _ "Mal-Ravanal’s Capital"
+    map: "campaigns/Eastern_Invasion/maps/04c_Mal-Ravanals_Capital.map"
+    turns: 26
+    next_scenario: "05_Northern_Outpost"
+
+    <DAWN!
+    <MORNING!
+    <AFTERNOON!
+    <DUSK!
+    <DUSK!
+    <FIRST_WATCH!
+    <FIRST_WATCH!
+    <SECOND_WATCH!
+    <SECOND_WATCH!
+
+    <INTRO_AND_SCENARIO_MUSIC("underground.ogg", "weight_of_revenge.ogg")
+    <EXTRA_SCENARIO_MUSIC("the_dangerous_symphony.ogg")
+    <EXTRA_SCENARIO_MUSIC("siege_of_laurelmor.ogg")
+    <EXTRA_SCENARIO_MUSIC("knalgan_theme.ogg")
+
+    <EI_TRACK(JOURNEY_04C_NEW!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        <GOLD(220, 170, 160)
+        team_name: "good"
+        user_team_name: _ "Wesnothians"
+        <FLAG_VARIANT("loyalist")
+
+-- wmllint: recognize Gweddry
+        <CHARACTER_STATS_GWEDDRY!
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        controller: "ai"
+        recruit: {"Ghoul", "Skeleton", "Skeleton Archer", "Walking Corpse"}
+        <GOLD(100, 100, 125)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Dark Sorcerer"
+        id: "Mal-Marak"
+        name: _ "Mal-Marak"
+        canrecruit: true
+
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"fighter", "archer", "fighter"}
+        }
+    }
+
+    side: {
+        side: 3
+        controller: "ai"
+        recruit: {"Walking Corpse", "Vampire Bat", "Skeleton", "Skeleton Archer"}
+        <GOLD(100, 100, 125)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Dark Sorcerer"
+        id: "Mal-Galkar"
+        name: _ "Mal-Galkar"
+        canrecruit: true
+
+        ai: {
+            <NO_SCOUTS!
+            recruitment_pattern: {"scout", "fighter", "archer", "fighter", "archer"}
+        }
+    }
+
+    side: {
+        side: 4
+        controller: "ai"
+        recruit: {"Skeleton", "Revenant", "Skeleton Archer", "Bone Shooter", "Ghoul", "Ghost"}
+        <GOLD(300, 400, 600)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+        type: "Death Knight"
+        id: "Ravanal-Guard"
+        name: _ "Rava-Krodaz"
+        canrecruit: true
+
+        facing: "sw"
+
+        ai: {
+            aggression: -0.2
+            grouping: "defensive"
+            recruitment_pattern: {"fighter", "fighter", "fighter", "archer", "scout"}
+        }
+    }
+
+-- wmllint: validate-off
+    side: {
+        side: 5
+        controller: "ai"
+        recruit: {"Dark Adept", "Bone Shooter", "Deathblade", "Wraith", "Shadow", "Necrophage"}
+        <GOLD(400, 500, 600)
+        team_name: "undead"
+        user_team_name: _ "Undead"
+        <FLAG_VARIANT("undead")
+
+-- wmllint: recognize Mal-Ravanal
+        <CHARACTER_STATS_RAVANAL!
+
+        facing: "sw"
+
+        ai: {
+            passive_leader: true
+        }
+    }
+-- wmllint: validate-on
+
+-- The prisoners' side
+    side: {
+        side: 6
+        no_leader: true
+        controller: "null"
+        team_name: {"good", "undead"}
+        user_team_name: _ "Wesnothians"
+        color: "white"
+    }
+
+    <LIMIT_RECRUITS_PER_TURN(4, 6)
+
+    <STARTING_VILLAGES_AREA(4, "22-45", "1-26", 1)
+    <STARTING_VILLAGES_AREA(5, "46-65", "1-26", 1)
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Skeleton Archer", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(2, "Ghoul", 2)
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Skeleton", 2)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(3, "Vampire Bat", 2)
+
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(5, "Shadow", 1)
+    <LIMIT_CONTEMPORANEOUS_RECRUITS(5, "Deathblade", 3)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Escape by defeating one of the dark sorcerers"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Gweddry"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Dacyn"
+                    condition: "lose"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+-- Initializing of the knight prisoners: per each ^Xo hex, create one
+-- imprisoned knight (one of them a paladin)
+            Store_Locations{
+                terrain: "*^Xo"
+                variable: "prison_locations"
+            }
+
+            VARIABLE_OP("paladin_i", "rand", "0..#{(#{prison_locations.length - 1)")
+
+            For{
+                array: "prison_locations"
+                do: ->
+                    Item{
+                        x: prison_locations[i].x, y: prison_locations[i].y
+                        halo: "items/horse-cage.png"
+                    }
+
+                    Store_Locations{
+                        not: {
+                            terrain: {"S*", "D*"}
+                        }
+
+                        filter_adjacent_location: {
+                            x: prison_locations[i].x, y: prison_locations[i].y
+                        }
+
+                        include_borders: false
+
+                        variable: "guard_location"
+                    }
+
+                    VARIABLE_OP("guard_i", "rand", "0..#{(#{guard_location.length - 1)")
+
+                    LOYAL_UNIT(4, "Revenant", guard_location[guard_i].x, guard_location[guard_i].y)
+                    Unit{
+                        amend: true
+                        max_moves: 0
+                        ai_special: "guardian"
+                        role: "prison guard"
+                        variables: {
+                            prison_x: prison_locations[i].x
+                            prison_y: prison_locations[i].y
+                        }
+                    }
+
+                    If{
+                        <VARIABLE_CONDITIONAL("i", "numerical_equals", paladin_i)
+
+                        then: ->
+                            Unit{
+                                side: 6
+                                type: "Paladin"
+                                id: "Terraent"
+                                name: _ "Terraent"
+                                unrenamable: true
+                                x: prison_locations[i].x, y: prison_locations[i].y
+                                random_traits: false
+                                facing: "sw"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TEAM_COLOR_OVERRIDE({}, "white")
+                                }
+                            }
+                        
+
+                        else: ->
+                            GENERIC_UNIT(6, "Knight", prison_locations[i].x, prison_locations[i].y)
+                            Unit{
+                                amend: true
+                                facing: "sw"
+                                modifications: {
+                                    <TEAM_COLOR_OVERRIDE({}, "white")
+                                }
+                            }
+                        
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("prison_locations,guard_location,paladin_i,guard_i")
+
+            Recall{
+                id: "Dacyn"
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Gweddry"
+                message: _ "The Bitter Swamp’s ill reputation is, it seems, well merited. Mal-Ravanal’s capital lies before us!"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Yes, but look! The undead forces are closing in behind us. As I said before we cannot kill Mal-Ravanal. It was foolish to come this far; we must turn back!"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Perhaps. To retreat, we must kill one of these dark sorcerers that follow us. But, perhaps we can kill this Mal-Ravanal. I might wish to try."
+            }
+
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "These humans have dared foolishly to come this far into my land. Crush them!"
+            }
+    }
+
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            role: "prison guard"
+        }
+        do: ->
+            Store_Unit{
+                filter: {
+                    x: unit.variables.prison_x, y: unit.variables.prison_y
+                }
+
+                kill: true
+                variable: "freed_prisoner"
+            }
+
+            VARIABLE("freed_prisoner.side", 1)
+            VARIABLE("freed_prisoner.moves", freed_prisoner.max_moves)
+            VARIABLE("freed_prisoner.attacks_left", 1)
+
+            Unstore_Unit{
+                variable: "freed_prisoner"
+                find_vacant: false
+            }
+
+            Terrain{
+                x: freed_prisoner.x, y: freed_prisoner.y
+                terrain: "^"
+                layer: "overlay"
+            }
+
+            Remove_Item{
+                x: freed_prisoner.x, y: freed_prisoner.y
+            }
+
+            If{
+                have_unit: {
+                    and: {
+                        role: "prison guard"
+
+                        or: {
+                            role: "former prison guard"
+                        }
+                    }
+
+                    count: 5
+                }
+
+                then: ->
+                    Message{
+                        speaker: freed_prisoner.id
+                        message: _ "Thank you for destroying that skeleton warrior! Every time you kill one of the Revenants, one of us knights is let free!"
+                    }
+
+                    Message{
+                        speaker: "Gweddry"
+                        message: _ "Why? Are you the undead’s prisoners?"
+                    }
+
+                    Message{
+                        speaker: freed_prisoner.id
+                        message: _ "Yes. My allies and I were questing when we were ambushed by undead. The guard is playing a sick game — whenever one of their warriors dies, one of us is let free, but whenever you lose a fighter, they kill one of us."
+                    }
+
+                    Message{
+                        speaker: "Dacyn"
+                        message: _ "This sounds dangerous. We will try to free as many of you as possible before we escape from here."
+                    }
+
+                    Message{
+                        speaker: freed_prisoner.id
+                        message: _ "Five of my comrades are still imprisoned. We will gladly enter your service in appreciation for our freedom."
+                    }
+                
+            }
+
+            CLEAR_VARIABLE("freed_prisoner")
+    }
+
+-- This makes a random guard kill their prisoner whenever one of the player’s
+-- units dies
+    event: {
+        name: "die"
+        first_time_only: false
+        filter: {
+            side: 1
+        }
+        filter_condition: {
+            have_unit: {
+                side: 6
+            }
+        }
+
+-- This makes sure that all the knights are killed before the paladin
+        do: ->
+            If{
+                have_unit: {
+                    type: "Knight"
+                    side: 6
+                }
+
+                then: ->
+                    Store_Unit{
+                        filter: {
+                            type: "Knight"
+                            side: 6
+                        }
+
+                        kill: false
+                        variable: "killable_prisoners"
+                    }
+                
+
+                else: ->
+                    Store_Unit{
+                        filter: {
+                            side: 6
+                        }
+
+                        kill: false
+                        variable: "killable_prisoners"
+                    }
+                
+            }
+
+            VARIABLE_OP("random_prisoner_i", "rand", "0..#{(#{killable_prisoners.length - 1)")
+
+            Store_Unit{
+                filter: {
+                    side: 4
+                    role: "prison guard"
+                    filter_adjacent: {
+                        x: killable_prisoners[random_prisoner_i].x, y: killable_prisoners[random_prisoner_i].y
+                    }
+                }
+
+                kill: true
+                variable: "stored_executioner"
+            }
+
+-- The guard of the killed prisoner is now free to act normally
+            CLEAR_VARIABLE("stored_executioner.ai_special,stored_executioner.status.guardian")
+
+            VARIABLE("stored_executioner.role", "former prison guard")
+
+            Unstore_Unit{
+                variable: "stored_executioner"
+            }
+
+            Animate_Unit{
+                flag: "attack"
+
+                filter: {
+                    x: stored_executioner.x, y: stored_executioner.y
+                }
+
+                primary_attack: {
+                    name: "axe"
+                }
+
+                hits: true
+
+                facing: {
+                    x: killable_prisoners[random_prisoner_i].x, y: killable_prisoners[random_prisoner_i].y
+                }
+            }
+
+            Kill{
+                x: killable_prisoners[random_prisoner_i].x, y: killable_prisoners[random_prisoner_i].y
+                animate: true
+                fire_event: false
+            }
+
+            Terrain{
+                x: killable_prisoners[random_prisoner_i].x, y: killable_prisoners[random_prisoner_i].y
+                terrain: "^"
+                layer: "overlay"
+            }
+
+            Remove_Item{
+                x: killable_prisoners[random_prisoner_i].x, y: killable_prisoners[random_prisoner_i].y
+            }
+
+            CLEAR_VARIABLE("killable_prisoners,random_prisoner_i,stored_executioner")
+    }
+
+-- Mal-Ravanal notices Dacyn
+    event: {
+        name: "attack end"
+        filter: {
+            id: "Dacyn"
+        }
+        filter_second: {
+            not: {
+                id: "Mal-Ravanal"
+            }
+        }
+        filter_attack: {
+            range: "ranged"
+        }
+        do: ->
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "Wait! I recognize that magic! Dacyn, have you come to surrender to me? Or perhaps you wish to finish the duel we started so long ago?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "If I have one regret, it is that mercy slowed my hand thirty three years ago. Stop this madness and I will release you from your torment."
+            }
+
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "Torment?! You have no idea... but you soon will. Kill them all and bring Dacyn to me!"
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "You know this lich?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Yes... We studied together many years ago. He was most powerful then, but the dark power I sense today is far greater. We must escape immediately!"
+            }
+    }
+
+-- If Dacyn attacks Mal-Ravanal
+    event: {
+        name: "attack"
+        filter: {
+            id: "Dacyn"
+        }
+        filter_second: {
+            id: "Mal-Ravanal"
+        }
+        do: ->
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "Ah, so you’ve decided to fight me."
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "I will atone for my failure thirty three years ago."
+            }
+    }
+
+-- Impossible to kill Mal-Ravanal; he teleports away
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Mal-Ravanal"
+        }
+        do: ->
+            Message{
+                speaker: "Mal-Ravanal"
+                message: _ "Enough! You cannot possibly defeat me!"
+            }
+
+            Animate_Unit{
+                flag: "pre_teleport"
+            }
+
+            Kill{
+                id: "Mal-Ravanal"
+                animate: false
+                fire_event: false
+            }
+
+            Message{
+                speaker: "Gweddry"
+                message: _ "Is he... dead?"
+            }
+
+            Message{
+                speaker: "Dacyn"
+                message: _ "Merely departed. He will return once he has recovered; we would best be away from here by then."
+            }
+    }
+
+-- When you kill one of the necros you win
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal-Marak"
+        }
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "die"
+        filter: {
+            id: "Mal-Galkar"
+        }
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    event: {
+        name: "victory"
+        do: ->
+            Message{
+                speaker: "narrator"
+                image: "wesnoth-icon.png"
+                message: _ "Gweddry’s men retreated swiftly from the Bitter Swamp, fleeing north and west as if their heels were winged. Finding a low pass through the northern Estmarks, they were greatly relieved to see the valley of the Weldyn open before them on the other side."
+            }
+    }
+
+    <FOREIGN_DEFEAT!
+
+    <HERODEATH_GWEDDRY!
+    <HERODEATH_DACYN!
+}

@@ -1,0 +1,383 @@
+--textdomain wesnoth-thot
+
+Scenario{
+    id: "06_High_Pass"
+    name: _ "High Pass"
+    map: "campaigns/The_Hammer_of_Thursagan/maps/06_High_Pass.map"
+    <TURNS(24, 18, 12)
+    next_scenario: "07_Mages_and_Drakes"
+    victory_when_enemies_defeated: false
+
+    <DEFAULT_SCHEDULE!
+
+-- The map should be a twisty, narrow path through rugged snow-capped
+-- mountains. The objective will be to get Aiglondur through to the
+-- other side. The opponents will be gryphons, wolves, and the elements.
+-- We should try to get creative with representing the effects of extreme
+-- cold, perhaps something like the dehydration effect in UtBS. And the
+-- time-limit should be tight.
+
+    <SCENARIO_MUSIC("heroes_rite.ogg")
+    <EXTRA_SCENARIO_MUSIC("northern_mountains.ogg")
+    <EXTRA_SCENARIO_MUSIC("casualties_of_war.ogg")
+
+    <THOT_TRACK(JOURNEY_STAGE6!)
+
+-- wmllint: validate-off
+    side: {
+        side: 1
+        controller: "human"
+        recruit: "Dwarvish Fighter, Dwarvish Thunderer,Dwarvish Guardsman, Dwarvish Scout"
+        <GOLD(100, 80, 60)
+        team_name: "northern_alliance"
+        user_team_name: _ "Alliance"
+        <FLAG_VARIANT("knalgan")
+
+-- wmllint: recognize Aiglondur
+        <CHARACTER_STATS_AIGLONDUR!
+
+        shroud: true
+        facing: "ne"
+    }
+-- wmllint: validate-on
+
+    side: {
+        side: 2
+        recruit: "Gryphon"
+        <GOLD(60, 80, 100)
+        team_name: "wildthings"
+        user_team_name: _ "Monsters"
+
+        type: "Gryphon"
+        id: "Kaara"
+        name: _ "Kaara"
+        canrecruit: true
+
+        facing: "s"
+
+        ai: {
+            <ATTACK_DEPTH(1, 3, 5)
+            passive_leader: true
+        }
+    }
+
+    side: {
+-- The wild things
+        side: 3
+        no_leader: true
+        hidden: true
+        team_name: "wildthings"
+        user_team_name: _ "Monsters"
+    }
+
+    WILDTHING: (X, Y) -> {
+        set_variable: {
+            name: "typeofenemy"
+            rand: {"Wolf", "Ogre", "Troll"}
+        }
+
+        unit: {
+            side: 3
+            x: X, y: Y
+            type: typeofenemy
+            generate_name: true
+            random_traits: true
+        }
+
+        fire_event: {
+            name: "spawn_extra_wolf"
+            primary_unit: {
+                x: X, y: Y
+            }
+        }
+
+        <CLEAR_VARIABLE("typeofenemy")
+    }
+
+    <PLACE_IMAGE("scenery/signpost.png", 30, 11)
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Aiglondur to the signpost at the east end of the pass"
+                    condition: "win"
+                }
+                objective: {
+                    description: _ "Death of Aiglondur"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Angarthing"
+                    condition: "lose"
+                }
+                objective: {
+                    description: _ "Death of Ratheln"
+                    condition: "lose"
+                    show_if: {
+                        have_unit: {
+                            id: "Ratheln"
+                        }
+                    }
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            Recall{
+                id: "Angarthing"
+            }
+
+            MODIFY_UNIT({side: 1}, "facing", "ne")
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Angarthing"
+                message: _ "Behold, the High Pass. By the old maps, we are halfway to Kal Kartha here."
+            }
+
+            Message{
+                speaker: "Aiglondur"
+                message: _ "We must push through quickly; there is a vicious storm coming in behind us. Being caught in a blizzard on those heights would be no laughing matter."
+            }
+
+            Remove_Shroud{
+                side: 1
+                x: {"29-31", 30}
+                y: {"11-12", 10}
+            }
+
+            HIGHLIGHT_IMAGE(30, 11, "scenery/signpost.png", {})
+
+            Place_Shroud{
+                side: 1
+                x: {"29-31", 30}
+                y: {"11-12", 10}
+            }
+
+            WILDTHING(8, 7)
+            WILDTHING(8, 12)
+    }
+
+    event: {
+        name: "turn 3"
+        do: ->
+            WILDTHING(8, 7)
+            WILDTHING(8, 12)
+    }
+
+    event: {
+        name: "turn 6"
+        do: ->
+            WILDTHING(12, 6)
+            WILDTHING(13, 11)
+    }
+
+    event: {
+        name: "turn 9"
+        do: ->
+            WILDTHING(17, 12)
+            WILDTHING(18, 9)
+    }
+
+    event: {
+        name: "turn 12"
+        do: ->
+            WILDTHING(25, 9)
+            WILDTHING(27, 14)
+    }
+
+    event: {
+        name: "spawn_extra_wolf"
+        first_time_only: false
+        filter_condition: {
+            variable: {
+                name: "typeofenemy"
+                equals: "Wolf"
+            }
+        }
+        do: ->
+            Unit{
+                x: x1, y: y1
+                type: "Wolf"
+                side: 3
+            }
+
+            unless EASY!
+                Unit{
+                    x: x1, y: y1
+                    type: "Wolf"
+                    side: 3
+                }
+            
+    }
+
+-- If user hasn't found Ratheln by a reasonable time, nudge a little.
+    event: {
+        name: "turn 8"
+        filter_condition: {
+            not: {
+                have_unit: {
+--wmllint: recognize Ratheln
+                    id: "Ratheln"
+                }
+            }
+        }
+        do: ->
+            Message{
+                speaker: "Angarthing"
+                message: _ "That hut near the top of the pass... Something is glowing inside it. We should investigate."
+            }
+    }
+
+    event: {
+        name: "enter_hex"
+        first_time_only: true
+        filter: {
+            side: 1
+            filter_location: {
+-- Should be triggered regardless of how the Dwarves move through.
+-- It will look a little odd if they've all decided to slog through
+-- the mountains to the extreme north or south, but that is quite
+-- unlikely.
+                x: "18-21"
+                y: "0-21"
+            }
+        }
+
+        cancel_action: {
+        }
+        do: ->
+            Unit{
+                side: 1
+                x: 19, y: 11
+
+-- wmllint: recognize Ratheln
+                <CHARACTER_STATS_RATHELN!
+            }
+
+            Message{
+                speaker: "Ratheln"
+                message: _ "Hail, I am Ratheln. If you’re traveling down the pass, please take me with you. I am near freezing and starving to death up here."
+            }
+
+            Message{
+                speaker: "Angarthing"
+                message: _ "Pardon my curiosity, but what is a fire-mage doing freezing to death?"
+            }
+
+            Message{
+                speaker: "Ratheln"
+                message: _ "In case you haven’t noticed, there is a serious shortage of both firewood and food in this gods-forsaken slot. And the damned gryphons descend on me whenever I stir out of this shack. I’ve had nothing to eat but flash-roasted gryphon for the last three weeks."
+            }
+
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Where were you bound when you got stuck here?"
+            }
+
+            Message{
+                speaker: "Ratheln"
+                message: _ "There is a school of mages near the east end of the pass. They’ve an opening for an instructor, and they’re expecting me."
+            }
+
+            Message{
+                speaker: "Angarthing"
+                message: _ "Let’s take him with us, Aiglondur. We know little about the country beyond to the east; we’ve had few reports on it since before the orcs took Knalga. Those mages should know at least rumors."
+            }
+
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Aye. And I’d not leave anyone who had done my kin no harm stranded to starve."
+            }
+
+            Show_Objectives{}
+    }
+
+-- In this scenario only, losing Ratheln is fatal.
+-- This avoids continuity problems in the next one.
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Ratheln"
+        }
+        do: ->
+            Message{
+                speaker: "Ratheln"
+                message: _ "This is no fit death for a mage of fire!"
+            }
+
+            Message{
+                speaker: "Angarthing"
+                message: _ "The snow has redoubled its fury, as if his presence had been holding it back. I do not see a way forward for us."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+
+    event: {
+        name: "turn 9"
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "It has begun to snow. Move, everyone! To be trapped here would be death."
+            }
+    }
+
+    event: {
+        name: "time over"
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "We’re snowed in. Our mission has failed, even if we live until the spring."
+            }
+    }
+
+    event: {
+        name: "moveto"
+        first_time_only: true
+        filter: {
+            id: "Aiglondur"
+            x: 30, y: 11
+        }
+        do: ->
+            Message{
+                speaker: "Aiglondur"
+                message: _ "We’re through the pass!"
+            }
+
+            Message{
+                speaker: "Angarthing"
+                message: _ "That may not be a blessing. Something frightened those orcs we fought among the bandit villages, enough to make them push west into Alliance territory. Don’t you wonder what it was?"
+            }
+
+            Message{
+                speaker: "Aiglondur"
+                message: _ "Aye. But I’ve a grim feeling we might be going to discover that in person."
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+-- No need for Ratheln's death event here since he has a custom one this scenario
+    <HERODEATH_AIGLONDUR!
+    <HERODEATH_ANGARTHING!
+}
+
+WILDTHING = nil

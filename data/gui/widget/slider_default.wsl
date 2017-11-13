@@ -1,0 +1,148 @@
+--textdomain wesnoth-lib
+----
+---- Definition of a slider.
+----
+
+_GUI_STATE = (IMAGE_SUFFIX, GROOVE_SELECTED_COLOR, GROOVE_UNSELECTED_COLOR, TEXT_COLOR, RIGHT_OFFSET, FONT_SIZE) -> {
+    draw: {
+
+--
+-- Groove
+--
+
+        line: {
+            x1: 0
+            y1: "(height / 2)"
+            x2: "(positioner_offset - 1)"
+            y2: "(height / 2)"
+
+            color: GROOVE_SELECTED_COLOR
+            thickness: 1
+        }
+
+        line: {
+            x1: "(positioner_offset)"
+            y1: "(height / 2)"
+            x2: "(width - right_offset + 1 where right_offset = #{RIGHT_OFFSET})"
+            y2: "(height / 2)"
+
+            color: GROOVE_UNSELECTED_COLOR
+            thickness: 1
+        }
+
+--
+-- Text
+--
+
+        text: {
+            x: "(width - right_offset + 7 where right_offset = #{RIGHT_OFFSET})"
+            y: GUI__TEXT_VERTICALLY_CENTRED!
+            w: "#{RIGHT_OFFSET}"
+            h: "(height)"
+
+            font_size: FONT_SIZE
+            color: TEXT_COLOR
+            text: "(text)"
+        }
+
+--
+-- Slider
+--
+
+        image: {
+            x: "(positioner_offset)"
+            y: "(if (image_height < height, (height - image_height) / 2, 0))"
+            name: "buttons/sliders/slider#{IMAGE_SUFFIX}"
+        }
+
+    }
+}
+
+_GUI_RESOLUTION = (RESOLUTION, MIN_WIDTH, DEFAULT_WIDTH, HEIGHT, POSITIONER_LENGTH, RIGHT_OFFSET, FONT_SIZE) -> {
+
+    resolution: {
+
+        <RESOLUTION
+
+        min_width: MIN_WIDTH
+        min_height: HEIGHT
+
+        default_width: DEFAULT_WIDTH
+        default_height: HEIGHT
+
+        max_width: 0
+        max_height: HEIGHT
+
+        minimum_positioner_length: POSITIONER_LENGTH
+        maximum_positioner_length: POSITIONER_LENGTH
+
+        left_offset: 0
+        right_offset: RIGHT_OFFSET
+
+        text_font_size: FONT_SIZE
+
+        state_enabled: {
+            <_GUI_STATE!
+                ".png"
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 87: 				({GUI__BORDER_COLOR})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 88: 				({GUI__BORDER_COLOR_DARK})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 89: 				({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 90: 				({RIGHT_OFFSET})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 91: 				({FONT_SIZE})
+            )
+        }
+
+        state_disabled: {
+            <_GUI_STATE!
+                ".png~GS()"
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 98: 				({GUI__FONT_COLOR_DISABLED__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 99: 				({GUI__FONT_COLOR_DISABLED_DARK__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 100: 				({GUI__FONT_COLOR_DISABLED__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 101: 				({RIGHT_OFFSET})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 102: 				({FONT_SIZE})
+            )
+        }
+
+        state_pressed: {
+            <_GUI_STATE!
+                "-pressed.png"
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 109: 				({GUI__BORDER_COLOR})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 110: 				({GUI__BORDER_COLOR_DARK})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 111: 				({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 112: 				({RIGHT_OFFSET})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 113: 				({FONT_SIZE})
+            )
+        }
+
+        state_focused: {
+            <_GUI_STATE!
+                "-active.png"
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 120: 				({GUI__BORDER_COLOR})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 121: 				({GUI__BORDER_COLOR_DARK})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 122: 				({GUI__FONT_COLOR_ENABLED__DEFAULT})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 123: 				({RIGHT_OFFSET})
+err: ../attic/data/gui/widget/slider_default.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 124: 				({FONT_SIZE})
+            )
+        }
+
+    }
+}
+
+Slider_Definition{
+    id: "default"
+    description: "A slider with it's value on the right hand side."
+
+    <_GUI_RESOLUTION({}, 150, 250, 22, 16, 50, GUI_FONT_SIZE_DEFAULT!)
+
+}
+
+Slider_Definition{
+    id: "short"
+    description: "A slider with it's value on the right hand side."
+
+    <_GUI_RESOLUTION({}, 50, 150, 22, 16, 50, GUI_FONT_SIZE_SMALL!)
+
+}
+
+_GUI_STATE = nil
+_GUI_RESOLUTION = nil

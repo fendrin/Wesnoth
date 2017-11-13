@@ -1,0 +1,823 @@
+--textdomain wesnoth-sota
+
+-- There is a lot of terrain dedicated to this map. There is a twinkling overlay, two
+-- versions of a stone gate, and a passable hex that looks very small to represent a
+-- narrow passage. The twinkling overlay is pretty generic, but for the others, no attempt
+-- has been made to make them work anywhere other than where they are drawn.
+
+Scenario{
+    name: _ "North Knalga"
+    map: "campaigns/Secrets_of_the_Ancients/maps/20_North_Knalga.map"
+
+    id: "20_North_Knalga"
+    next_scenario: "21_Against_the_World"
+
+    story: {
+        part: {
+            story: _ "27 VI, 23 YW
+
+We left the fires of the mountain behind and plunged once more into darkness. After a long trek, we were brought up short by a dead end in the tunnel... but the wall was not solid."
+        }
+        <JOURNEY_PART(20)
+    }
+
+    <UNDERGROUND!
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(32, 31, 30)
+
+    side: {
+        <SIDE_1_BOTH!
+-- The player should have a lot of gold after the last scenario, so:
+        <GOLD(100, 40, 20)
+        shroud: true
+    }
+
+    side: {
+        side: 2
+        controller: "ai"
+        user_team_name: _ "Dwarves"
+        team_name: "bad"
+        type: "Dwarvish Lord"
+        name: _ "Golbanduth"
+        id: "Golbanduth"
+        <GOLD(600, 800, 1000)
+        recruit: {"Dwarvish Fighter", "Dwarvish Steelclad", "Dwarvish Lord", "Dwarvish Thunderguard", "Dwarvish Pathfinder", "Dwarvish Runesmith"}
+-- The castle tiles are connected through two posts (stone walls), but that
+-- means the AI could recruit on the posts. These two units sit on those
+-- locations in order to prevent that. In prestart, they will be hidden and
+-- petrified so they don't affect the gameplay.
+        unit: {
+            x: 18, y: 26
+            type: "Dummy"
+        }
+        unit: {
+            x: 22, y: 26
+            type: "Dummy"
+        }
+        <FLAG_VARIANT("knalgan")
+        shroud: true  -- This is necessary for some sighted events.
+    }
+    <STARTING_VILLAGES(2, 10)
+
+    <ANIMATED_MAUSOLEUM(33, 4)
+    <ANIMATED_MAUSOLEUM(33, 6)
+    <ANIMATED_MAUSOLEUM(33, 8)
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Defeat the enemy leader"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_BOTH!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+
+                note: {
+                    description: _ "You can recruit from anywhere in the Hall of Heroes."
+                }
+            }
+
+            Hide_Unit{
+                id: "Ardonna"
+            }
+
+            Petrify{
+                type: "Dummy"
+            }
+            Hide_Unit{
+                type: "Dummy"
+            }
+
+-- Add a few miners to the Crystal Caves for flavor. They will run away as the
+-- player approaches, but could be used to level up a unit.
+            Store_Locations{
+                x: "3-25"
+                y: "1-11"
+                terrain: {"!", "X*"}
+                variable: "possible_dwarf_locations"
+            }
+
+            Repeat{
+                times: 4
+                do: ->
+-- Choose a location by selecting an array index:
+                    Set_Variable{
+                        name: "location_index"
+                        rand: "0..#{(#{possible_dwarf_locations.length-1)"
+                    }
+
+                    Unit{
+                        type: "Dwarvish Miner"
+                        x: possible_dwarf_locations[location_index].x
+                        y: possible_dwarf_locations[location_index].y
+                        side: 2
+                    }
+                
+            }
+
+            Clear_Variable{
+                name: {"possible_dwarf_locations", "location_index", "dwarf_index"}
+            }
+
+-- Add one more miner who will have some dialog:
+            Unit{
+                type: "Dwarvish Miner"
+                placement: "map_passable"
+                x: 25, y: 12
+                side: 2
+                id: "spotter"
+                max_moves: 4
+            }
+
+-- All miners run away from side 1 because they are not soldiers.
+            Micro_Ai{
+                side: 2
+                action: "add"
+                ai_type: "coward"
+                distance: 4
+                attack_if_trapped: true  -- In case running away doesn't work.
+                filter: {
+                    type: "Dwarvish Miner"
+                }
+            }
+
+-- Unit that will go get more gold for the leader.
+            Unit{
+                type: "Dwarvish Berserker"
+                x: 19, y: 27
+                id: "porter"
+                side: 2
+            }
+
+-- These two guys shouldn't move until the player has seen them.
+            FREEZE_UNIT("porter")
+            FREEZE_UNIT("Golbanduth")
+
+-- We want the dwarves to reach the caves ahead of the player's units, but
+-- player 1 gets a head start. To compensate for that, we will give side 2 an
+-- initial castle-full of recruits. In effect, side 2 goes first. The player
+-- doesn't see that because of the shroud, so it doesn't need to be explained.
+            Repeat{
+                times: 11
+                do: ->
+                    FIND_CASTLE_HEX(2, "location")
+                    Set_Variable{
+                        name: "dwarf_type"
+                        rand: {"Dwarvish Steelclad", "Dwarvish Lord", "Dwarvish Thunderguard", "Dwarvish Pathfinder", "Dwarvish Runesmith"}
+                    }
+                    Unit{
+                        type: dwarf_type
+                        side: 2
+                        x: location.x
+                        y: location.y
+                    }
+                
+            }
+            Clear_Variable{
+                name: {"dwarf_type", "location"}
+            }
+
+            Item{
+                image: "scenery/rune4.png"
+                x: 32, y: 15
+            }
+
+-- ----- Hall of Heroes -----
+            Item{
+                image: "items/coffin-dwarf.png~FL()"
+                x: 36, y: 2
+            }
+            Item{
+                image: "items/coffin-dwarf.png"
+                x: 30, y: 2
+            }
+            Item{
+                image: "items/coffin-dwarf.png~FL()"
+                x: 36, y: 4
+            }
+            Item{
+                image: "items/coffin-dwarf.png"
+                x: 30, y: 4
+            }
+            Item{
+                image: "items/coffin-dwarf.png~FL()"
+                x: 36, y: 6
+            }
+            Item{
+                image: "items/coffin-dwarf.png"
+                x: 30, y: 6
+            }
+            Item{
+                image: "items/coffin-dwarf.png~FL()"
+                x: 36, y: 8
+            }
+            Item{
+                image: "items/coffin-dwarf.png"
+                x: 30, y: 8
+            }
+-- These images are statues. They are scaled so they are larger than life.
+            Item{
+                image: "units/dwarves/dragonguard/dragonguard-se-blade-defend1.png~GS()"
+                x: 31, y: 3
+            }
+            Item{
+                image: "units/dwarves/explorer-ranged-1.png~FL()"
+                x: 35, y: 3
+            }
+            Item{
+                image: "units/dwarves/lord.png~GS()"
+                x: 31, y: 5
+            }
+            Item{
+                image: "units/dwarves/dragonguard/dragonguard-s-ranged6.png~FL()"
+                x: 35, y: 5
+            }
+            Item{
+                image: "units/dwarves/arcanister.png~GS()"
+                x: 31, y: 7
+            }
+            Item{
+                image: "units/dwarves/sentinel.png~FL()"
+                x: 35, y: 7
+            }
+            Item{
+                image: "units/dwarves/explorer-melee-3.png~FL()"
+                x: 35, y: 9
+            }
+            Item{
+                image: "units/dwarves/lord-se-axe2.png~GS()"
+                x: 31, y: 9
+            }
+
+-- The statues are not passable, but we want the player to be able to *see*
+-- behind them, so we'll remove the shroud in those hexes.
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 36, y: 2
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 30, y: 2
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 36, y: 4
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 30, y: 4
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 36, y: 6
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 30, y: 6
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 30, y: 8
+            }
+            Remove_Shroud{
+                side: 1
+                radius: 1
+                x: 36, y: 8
+            }
+
+-- ----- Water Barrels -----
+            Item{
+                image: "items/barrel.png"
+                x: 39, y: 23
+            }
+            Item{
+                image: "items/barrel.png"
+                x: 39, y: 24
+            }
+            Item{
+                image: "items/barrel.png"
+                x: 38, y: 23
+            }
+            Item{
+                image: "items/barrel.png"
+                x: 36, y: 23
+            }
+
+-- ----- Workshop -----
+            Item{
+                image: "items/anvil.png"
+                x: 4, y: 33
+            }
+            Item{
+                image: "items/anvil.png"
+                x: 7, y: 35
+            }
+
+            Item{
+                image: "items/axe.png"
+                x: 6, y: 34
+            }
+            Item{
+                image: "items/axe.png"
+                x: 7, y: 34
+            }
+            Item{
+                image: "items/gold.png"
+                x: 8, y: 32
+            }
+            Item{
+                image: "items/gold.png"
+                x: 9, y: 33
+            }
+            Item{
+                image: "items/coal.png"
+                x: 7, y: 32
+            }
+
+-- ----- Treasury -----
+            Item{
+                image: "items/chest-open.png"
+                x: 13, y: 34
+            }
+            Item{
+                image: "items/chest-open.png"
+                x: 14, y: 34
+            }
+            Item{
+                image: "items/chest-open.png"
+                x: 14, y: 35
+            }
+            Item{
+                image: "items/chest-open.png"
+                x: 16, y: 35
+            }
+            Item{
+                image: "items/chest.png"
+                x: 17, y: 36
+            }
+    }
+
+-- *************************** PLAY ***************************
+    event: {
+-- This event fires when the king sees a unit approaching the castle, and he
+-- is alerted that he needs more units. We want the player to be able to see
+-- the king while he talks about this, so that's what we're actually going to
+-- check: That a player's unit can see the side-2 leader. We can't use
+-- "sighted" for this because that only works when a unit is revealed for the
+-- first time, and the king may have already been revealed by a shadow or other
+-- hidden unit. (But, of course, the king wouldn't have been alerted in that
+-- case.) We fire a custom event to have the king open another chest of gold.
+        name: "moveto"
+        first_time_only: false
+        id: "king_alerted_1"
+
+        filter: {
+            side: 1
+        }
+        do: ->
+            Store_Reachable_Locations{
+                filter: {
+                    id: unit.id
+-- These three units are hidden, so they don't count:
+                    not: {
+                        type: {"Shadow", "Nightgaunt"}
+                    }
+                    and: {
+                        not: {
+                            type: "Fugitive"
+                            filter_location: {
+                                terrain: "*^V*"  -- Hidden only in villages
+                            }
+                        }
+                    }
+                }
+                range: "vision"
+                filter_location: {
+                    x: 20, y: 26
+                }
+                variable: "can_see_the_king"
+            }
+
+            If{
+                variable: {
+                    name: "can_see_the_king.length"
+                    greater_than: 0
+                }
+                then: ->
+                    Store_Unit{
+                        filter: {
+                            id: unit.id
+                        }
+                        variable: "alerting_unit"
+                    }
+                    Clear_Variable{
+                        name: "can_see_the_king"
+                    }
+                    Fire_Event{
+                        name: "get_more_gold"
+                    }
+                
+                else: ->
+-- If a unit can see the king, this else won't be reached, so undo
+-- won't work for that unit. To solve that, this whole event will
+-- be removed by the get_more_gold event, and undo will only be
+-- blocked on the one move that causes get_more_gold to fire.
+                    Allow_Undo{}
+                
+            }
+    }
+
+    event: {
+-- If a previously hidden unit becomes visible near the leader of side 2, we
+-- want that to have the same effect as moving a unit close to him. This event
+-- fires the same custom event as the event above.
+        name: "sighted"
+        id: "king_alerted_2"
+
+        filter: {
+            type: {"Shadow", "Nightgaunt", "Fugitive"}
+-- If the fugitive is not keeping to villages, the event above will
+-- fire first with the same effect.
+            filter_location: {
+                x: 20, y: 26
+-- This is the sight distance of all the units involved:
+                radius: 8
+            }
+        }
+        do: ->
+            Store_Unit{
+                filter: {
+                    id: unit.id
+                }
+                variable: "alerting_unit"
+            }
+
+            Fire_Event{
+                name: "get_more_gold"
+            }
+    }
+
+    event: {
+        name: "get_more_gold"
+        do: ->
+            Remove_Event{
+-- We have to remove the first event to preserve the undo ability. It
+-- shouldn't actually be necessary to remove the second event, but
+-- we might as well.
+                id: {"king_alerted_1", "king_alerted_2"}
+            }
+
+-- Removing the shroud is necessary here because otherwise, it won't be
+-- cleared until after the event is over, and the king may not be visible
+-- while he talks.
+            Store_Reachable_Locations{
+                filter: {
+                    id: alerting_unit.id
+                }
+                range: "vision"
+                variable: "clear_shroud"
+            }
+            Clear_Variable{
+                name: "alerting_unit"
+            }
+            Remove_Shroud{
+                side: 1
+                find_in: "clear_shroud"
+            }
+            Redraw{}
+            Clear_Variable{
+                name: "clear_shroud"
+            }
+
+            Message{
+                speaker: "Golbanduth"
+                message: _ "The invaders approach! Fetch the last chest o’ gold. We’re equippin’ more soldiers."
+            }
+
+            Message{
+                speaker: "porter"
+                message: _ "Yes, sire."
+            }
+
+            THAW_UNIT("porter")
+            THAW_UNIT("Golbanduth")
+
+            Move_Unit{
+                id: "porter"
+                to_x: 16
+                to_y: 33
+            }
+            Terrain{
+                terrain: "^Prgo"
+                x: 16, y: 34
+                layer: "overlay"
+            }
+
+-- Now that the gate to the dwarves' treasury is open, the player might be
+-- able to see into it. We will remove the shroud for all visible locations
+-- in case that's true.
+            Store_Reachable_Locations{
+                filter: {
+                    side: 1
+                }
+                range: "vision"
+                variable: "clear_shroud"
+            }
+            Remove_Shroud{
+                side: 1
+                find_in: "clear_shroud"
+            }
+            Redraw{}
+            Clear_Variable{
+                name: "clear_shroud"
+            }
+
+            Move_Unit{
+                id: "porter"
+                to_x: 17
+                to_y: 36
+            }
+            Remove_Item{
+                x: 17, y: 36
+            }
+            Move_Unit{
+                id: "porter"
+                to_x: 18
+                to_y: 27
+            }
+            Item{
+                image: "items/chest-open.png"
+                x: 19, y: 27
+            }
+
+            Gold{
+                side: 2
+                <if EASY then {
+                    amount: 300
+                }
+                <if NORMAL then {
+                    amount: 450
+                }
+                <if HARD then {
+                    amount: 600
+                }
+            }
+    }
+-- *************************** ENDING / OPENING ***************************
+
+    SHAKE: (X, Y) -> {
+        scroll: {
+            x: X, y: Y
+        }
+        delay: {
+            time: 150
+        }
+    }
+
+    BREAK_STATUE: () -> {
+        animate_unit: {
+            filter: {
+                id: "Ras-Tabahn"
+            }
+            flag: "attack"
+            primary_attack: {
+                range: "ranged"
+            }
+            hits: true
+            facing: {
+                x: 31, y: 9
+            }
+        }
+        remove_item: {
+            x: 31, y: 9
+        }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Teleport{
+                filter: {
+                    id: "Ardonna"
+                }
+                x: 33, y: 1
+                animate: false
+                clear_shroud: true
+                check_passability: false
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Actually, I don’t think this is the end. There is air coming through here. Help me shift these stones."
+            }
+            Sound{
+                name: "cave-in.ogg"
+            }
+            Delay{
+                time: 1000
+            }
+            Terrain{
+                x: 33, y: 1
+                terrain: "Uu"
+            }
+            Unhide_Unit{
+                id: "Ardonna"
+            }
+            Delay{
+                time: 1000
+            }
+            Move_Unit{
+                id: "Ardonna"
+                to_x: 33
+                to_y: 9
+            }
+
+            Recall{
+                id: "Ras-Tabahn"
+                x: 32, y: 8  -- We want him on a specific hex...
+                show: false
+            }
+            Modify_Unit{
+                filter: {
+                    id: "Ras-Tabahn"
+                }
+-- ...facing a specific way.
+                facing: "nw"
+            }
+            RECALL_LOYAL_UNITS!
+
+            Terrain{
+                x: 31, y: 9
+                terrain: "^Kov"
+                layer: "overlay"
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Now, where are we?"
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "We are in a Dwarvish burial chamber it seems. That is good. We could always use some more soldiers."
+            }
+            Move_Unit_Fake{
+                type: "Dwarvish Sentinel"
+                side: 2
+                x: {31, 33}
+                y: {17, 12}
+            }
+            Unit{
+                x: 33, y: 12
+                type: "Dwarvish Sentinel"
+                side: 2
+                name: _ "Aigondur"
+                id: "Aigondur"
+            }
+            Message{
+                speaker: "Aigondur"
+                message: _ "Human invaders be comin’ through the Hall o’ Heroes! I’m closin’ th’ Troll Gate!"
+            }
+            Move_Unit{
+                id: "Aigondur"
+                to_x: 32
+                to_y: 15
+            }
+
+            Remove_Item{
+                image: "scenery/rune4.png"
+                x: 32, y: 15
+            }
+            Item{
+                image: "scenery/rune4-glow.png"
+                x: 32, y: 15
+            }
+            Redraw{}
+            Delay{
+                time: 100
+            }
+            Terrain{
+                x: 33, y: 15
+                terrain: "^Gytc"
+                layer: "overlay"
+            }
+            Redraw{}
+            Sound{
+                name: "explosion.ogg"
+            }
+            SHAKE(2, 1)
+            SHAKE(-1, -3)
+            SHAKE(-3, 1)
+            SHAKE(1, 3)
+            SHAKE(1, -2)
+            Delay{
+                time: 500
+            }
+
+            Message{
+                speaker: "Ardonna"
+                message: _ "Well, we are not going that way."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "But look. There is a large crack in the wall to our left! I’m certain we could squeeze through."
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "We’ll just remove the statue..."
+            }
+
+            BREAK_STATUE!
+            Item{
+                image: "items/debris1.png"
+                x: 31, y: 9
+            }
+            Item{
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/20_North_Knalga.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 747:             image=misc/blank-hex.png~BLIT(units/dwarves/lord-se-axe2.png~GS()~SCALE(90,90)~CROP(0,30,60,40),0,20)
+                x: 31, y: 9
+            }
+
+            BREAK_STATUE!
+            Item{
+                image: "items/debris2.png"
+                x: 31, y: 9
+            }
+            Item{
+err: ../attic/data/campaigns/Secrets_of_the_Ancients/scenarios/20_North_Knalga.cfg - ./wml_to_wsl/parse.moon:224: Error parsing (wml) line 757:             image=misc/blank-hex.png~BLIT(units/dwarves/lord-se-axe2.png~GS()~SCALE(90,90)~CROP(0,45,60,25),0,35)
+                x: 31, y: 9
+            }
+
+            BREAK_STATUE!
+            Item{
+                image: "items/debris3.png"
+                x: 31, y: 9
+            }
+            Move_Unit{
+                id: "Ras-Tabahn"
+                to_x: 30
+                to_y: 8
+            }
+            Message{
+                speaker: "Ras-Tabahn"
+                message: _ "... and push the coffin out of the way."
+            }
+
+            Remove_Item{
+                x: 30, y: 8
+            }
+            Item{
+                image: "items/coffin-dwarf-back.png"
+                x: 30, y: 8
+            }
+            Terrain{
+                x: 29, y: 9
+                terrain: "''"
+                layer: "overlay"
+            }
+
+-- We want a "sighted" event for the first dwarf other than the guard who sees
+-- a unit from side 1. Now that the guard can't see them anymore, we can add
+-- this event. The next dwarf who sees a unit from side 1 will almost
+-- certainly be the closest miner, so he has the dialog.
+            Event{
+                name: "sighted"
+                filter: {
+                    side: 1
+                }
+-- The other side will always be 2, so we don't need to filter for it.
+                do: ->
+                    Message{
+                        speaker: "spotter"
+                        message: _ "Ach! Th’ invaders have made it inna the Crystal Caves!"
+                    }
+            }
+    }
+
+    event: {
+        name: "enemies defeated"
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <TURN_INTO_A_LICH!
+    <HERO_DEATHS!
+    <MANAGE_PROFILE!
+    <KIDS_ADVANCE!
+}

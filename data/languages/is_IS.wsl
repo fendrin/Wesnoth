@@ -1,0 +1,5 @@
+Locale{
+    name: "Íslenska"
+    sort_name: "Islenska"
+    locale: "is_IS"
+}

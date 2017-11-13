@@ -1,0 +1,392 @@
+--textdomain wesnoth-sota
+
+-- There is no leader for side 2, but the side starts with a canrecruit unit who leaves
+-- at the beginning. Woses spawn on many turns, but they are invisible on their forest
+-- hexes. So, in their first turn, they move one hex and tear up the dirt on their
+-- starting location. That way the player isn't totally surprised.
+
+Scenario{
+    name: _ "Walking Trees"
+    map: "campaigns/Secrets_of_the_Ancients/maps/12_Walking_Trees.map"
+
+    id: "12_Walking_Trees"
+    next_scenario: "13_Together_Again"
+
+    story: {
+        part: {
+            background_layer: {
+                image: "story/elf-road.jpg"
+                scale: false
+            }
+            story: _ "17 IV, 23 YW
+
+My primary objective was met, and I had been able to press a number of ghosts into service. Also, I had a new companion with a talent for healing. I doubted that Ras-Tabahn was already waiting at the appointed place, but I still wanted to hurry, so we followed the elf road north as quickly as we could. Fortunately, it was not in bad repair, though in many places it was overgrown, leaving only a few smooth cobbles to mark the way. The second day, we were still deep in the woods when we encountered an elf sorceress."
+        }
+        <JOURNEY_PART(12)
+    }
+
+    <DEFAULT_SCHEDULE!
+    <DEFAULT_MUSIC_PLAYLIST!
+    <TURNS(18, 18, 18)
+    victory_when_enemies_defeated: false
+
+    side: {
+        <SIDE_1_ARDONNA!
+        <GOLD(200, 190, 180)
+    }
+
+    side: {
+        side: 2
+        no_leader: true
+        controller: "ai"
+        user_team_name: _ "Forest"
+        team_name: "bad"
+        gold: 0
+        income: -2
+        color: "teal"
+        unit: {
+            type: "Elvish Enchantress"
+            x: 24, y: 2
+            name: _ "Isthiniel"
+            id: "Isthiniel"
+            canrecruit: true
+            facing: "sw"
+        }
+        hidden: true
+        <FLAG_VARIANT("wood-elvish")
+    }
+
+-- For each difficulty level, the first 16 woses are level-1, the rest are level-2.
+    <if EASY then {
+        MAX_NUMBER_OF_WOSES: () -> {
+            18
+        }
+        WOSES_PER_TURN: () -> {
+            4
+        }
+    }
+
+    <if NORMAL then {
+        MAX_NUMBER_OF_WOSES: () -> {
+            22
+        }
+        WOSES_PER_TURN: () -> {
+            4
+        }
+    }
+
+    <if HARD then {
+        MAX_NUMBER_OF_WOSES: () -> {
+            25
+        }
+        WOSES_PER_TURN: () -> {
+            5
+        }
+    }
+
+-- *************************** PRESTART ***************************
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    description: _ "Move Ardonna to the northeast corner of the map"
+                    condition: "win"
+                }
+
+                <HOW_TO_LOSE_WITH_ARDONNA!
+
+                gold_carryover: {
+                    bonus: true
+                    carryover_percentage: 40
+                }
+            }
+
+            RECALL_LOYAL_UNITS!
+
+            Set_Variable{
+                name: "wose_x"
+                value: 15
+            }
+            Set_Variable{
+                name: "wose_y"
+                value: 13
+            }
+            Set_Variable{
+                name: "number_of_woses"
+                value: 1
+            }
+    }
+
+-- *************************** PLAY ***************************
+    event: {
+        name: {"start", "side 2 turn 3 refresh", "side 2 turn 6 refresh", "side 2 turn 9 refresh", "side 2 turn 11 refresh"}
+        first_time_only: false
+        do: ->
+            Set_Variable{
+                name: "woses_this_turn"
+                value: 1
+            }
+            While{
+                and: {
+                    variable: {
+                        name: "number_of_woses"
+                        less_than_equal_to: MAX_NUMBER_OF_WOSES!
+                    }
+                    variable: {
+                        name: "woses_this_turn"
+                        less_than_equal_to: WOSES_PER_TURN!
+                    }
+                }
+
+-- Put a wose in a random location with some constraints:
+                do: ->
+-- [do] keep choosing a location [while] the location is no good.
+                    While{
+                        have_location: {
+                            x: wose_x
+                            y: wose_y
+                            terrain: {"!", "*^F*"}  -- No good. Not a forest hex.
+
+                            or: {
+                                terrain: "Ke"
+                                and: {
+                                    x: wose_x
+                                    y: wose_y
+                                    radius: 7  -- Too close to the player’s keep.
+                                }
+                            }
+
+                            or: {
+                                filter: {
+                                    side: 1
+                                }
+                                and: {
+                                    x: wose_x
+                                    y: wose_y
+                                    radius: 2
+-- The wose would be adjacent to one of the
+-- player's units after it moved one hex.
+                                }
+                            }
+
+                            or: {
+                                x: wose_x
+                                y: wose_y
+                                filter: {
+                                }-- Another unit is there already.
+                            }
+                        }
+
+                        do: ->
+-- Choose a random location, which gets closer to the
+-- top corner after turn 8.
+                            If{
+                                variable: {
+                                    name: "turn_number"
+                                    greater_than: 8
+                                }
+                                then: ->
+                                    Set_Variable{
+                                        name: "wose_x"
+                                        rand: "13..27"
+                                    }
+                                    Set_Variable{
+                                        name: "wose_y"
+                                        rand: "1..13"
+                                    }
+                                
+                                else: ->
+                                    Set_Variable{
+                                        name: "wose_x"
+                                        rand: "1..27"
+                                    }
+                                    Set_Variable{
+                                        name: "wose_y"
+                                        rand: "1..21"
+                                    }
+                                
+                            }
+                        
+                    }
+
+                    If{
+                        variable: {
+                            name: "number_of_woses"
+                            greater_than: 16
+                        }
+                        then: ->
+                            Set_Variable{
+                                name: "wose_type"
+                                value: "Elder Wose"
+                            }
+                        
+                        else: ->
+                            Set_Variable{
+                                name: "wose_type"
+                                value: "Wose"
+                            }
+                        
+                    }
+
+                    Unit{
+                        type: wose_type
+                        x: wose_x
+                        y: wose_y
+                        side: 2
+                    }
+
+                    Set_Variable{
+                        name: "number_of_woses"
+                        add: 1
+                    }
+                    Set_Variable{
+                        name: "woses_this_turn"
+                        add: 1
+                    }
+                
+            }
+
+            Store_Locations{
+                variable: "new_wose_locations"
+                terrain: "*^F*"
+                filter: {
+                    side: 2
+                }
+            }
+
+            If{
+                variable: {
+                    name: "turn_number"
+                    greater_than: 1
+                }
+                then: ->
+                    Modify_Unit{
+                        filter: {
+                            filter_location: {
+                                find_in: "new_wose_locations"
+                            }
+                        }
+                        moves: 1
+                    }
+                
+            }
+    }
+
+-- If a newly spawned wose is moving from its starting location, change the location
+-- to dark dirt. (The wose will probably be invisible in the forest, but the dirt
+-- will tell where it spawned.)
+    event: {
+        name: "moveto"
+        first_time_only: false
+        filter: {
+            side: 2
+        }
+        filter_condition: {
+            have_location: {
+                x: x2, y: y2
+                find_in: "new_wose_locations"
+            }
+        }
+        do: ->
+            Terrain{
+                terrain: "Rb"
+                x: x2, y: y2
+            }
+            Item{
+                x: x2, y: y2
+                image: "items/dirt1.png"
+            }
+    }
+
+-- *************************** ENDING / OPENING ***************************
+    event: {
+        name: "start"
+        do: ->
+            Message{
+                speaker: "Isthiniel"
+                message: _ "I felt our dead stirring and corruption descending on the forest. When I left to investigate, I expected to find grim, veiled forces at work. Instead I find a human mage boldly marching down our road! I will not allow you to continue to molest our peace, and you must release the dead you have enslaved."
+            }
+            Message{
+                speaker: "Ardonna"
+                message: _ "Well, that I won’t do. However, if you do not attack, you will be rid of me soon, as I only wish to leave these woods."
+            }
+            Message{
+                speaker: "Isthiniel"
+                message: _ "Attack? No, I cannot. Most of my people won’t come here; it is only duty that drives me. However, the woods themselves are disturbed, and they will cast you out on their own. I can feel them awaken."
+            }
+            Terrain{
+                terrain: "Rb"
+                x: 24, y: 4
+            }
+            Item{
+                x: 24, y: 4
+                image: "items/dirt1.png"
+            }
+            Move_Unit_Fake{
+                type: "Ancient Wose"
+                x: {24, 22}
+                y: {4, 3}
+            }
+            Unit{
+                type: "Ancient Wose"
+                name: _ "Dolmathengalin"
+                id: "Dolmathengalin"
+                x: 22, y: 3
+                side: 2
+            }
+            Message{
+                speaker: "Dolmathengalin"
+                message: _ "You are greeted daughter of elves. Why does the forest moan in despair?"
+            }
+            Message{
+                speaker: "Vendraxis"
+                message: _ "That tree can talk!"
+            }
+            Message{
+                speaker: "Isthiniel"
+                message: _ "That dark mage has woken our dead and stifles the air with her very presence. Please wake your people, Elder, and destroy her."
+            }
+            Message{
+                speaker: "Dolmathengalin"
+                message: _ "This shall be done."
+            }
+            Message{
+                speaker: "Isthiniel"
+                message: _ "I shall leave you. I have no wish to witness this violence."
+            }
+            Kill{
+                id: "Isthiniel"
+            }
+            Move_Unit_Fake{
+                type: "Elvish Enchantress"
+                x: {24, 27}
+                y: {2, 1}
+            }
+    }
+
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Ardonna"
+            x: 27, y: 1
+        }
+        do: ->
+            Clear_Variable{
+                name: {"wose_x", "wose_y", "wose_type", "random", "number_of_woses", "woses_this_turn", "new_wose_locations"}
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: true
+                <NEW_GOLD_CARRYOVER(40)
+            }
+    }
+
+    <HERO_DEATHS!
+    <MANAGE_PROFILE!
+
+    MAX_NUMBER_OF_WOSES = nil
+    WOSES_PER_TURN = nil
+}

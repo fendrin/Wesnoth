@@ -1,0 +1,206 @@
+--textdomain wesnoth-nr
+Scenario{
+    id: "05b_Compelled"
+    name: _ "Compelled"
+    <SCENARIO_MUSIC("underground.ogg")
+
+    story: {
+        part: {
+            story: _ "Note: The work on this branch of the campaign is in progress."
+        }
+
+        part: {
+            story: _ "Thus, compelled by some strange and irresistible force, Tallin — eyes glazed and mind unthinking — did the will of his new master."
+            music: "sad.ogg"
+        }
+
+        part: {
+-- wmllint: local spelling grimoires
+            story: _ "He was first stripped of his weapons and armor and then cast into solitary confinement. He remained there for months, never being allowed to see the light of day, being fed only enough food to keep him alive. During this time he was forced to study the most dark and forbidden arts, lashed with whips when he could not recite lessons drawn from grimoires no human should ever have opened. His body grew feeble and emaciated and his mind plunged ever deeper into night. And day by day the magical controls Malifor had fastened about Tallin’s will grew stronger."
+        }
+
+        part: {
+            story: _ "Tallin never knew exactly how much time passed, but eventually Malifor’s lich-servants declared him fit for service and he was summoned before their dread Master. Through a hideous blood ritual, Malifor gave him the power to animate corpses. He was then sent to a distant network of tunnels to clear out a group of trolls who had taken up residence there."
+        }
+    }
+
+    map: "campaigns/Northern_Rebirth/maps/05b_Compelled.map"
+
+    <TURNS(39, 35, 31)
+
+    <UNDERGROUND!
+
+    next_scenario: "06b_Slave_of_the_Undead"
+
+    side: {
+        type: "Peasant"
+        id: "Tallin"
+        canrecruit: true
+        side: 1
+        controller: "human"
+        gold: 100
+        recruit: "Walking Corpse"
+        team_name: "mob"
+        user_team_name: _ "Minions"
+        shroud: true
+    }
+
+    side: {
+        type: "Troll"
+        id: "Franik"
+        name: _ "Franik"
+        canrecruit: true
+        side: 2
+        <GOLD(30, 35, 40)
+        recruit: "Troll Whelp"
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+        ai: {
+            recruitment_pattern: "fighter"
+        }
+    }
+
+    side: {
+        type: "Troll"
+        id: "Henie"
+        name: _ "Henie"
+        canrecruit: true
+        side: 3
+        <GOLD(30, 35, 40)
+        recruit: "Troll Whelp"
+        team_name: "trolls"
+        user_team_name: _ "Trolls"
+        ai: {
+            recruitment_pattern: "fighter"
+        }
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Objectives{
+                side: 1
+                objective: {
+                    condition: "win"
+                    description: _ "Kill the Troll Leaders"
+                }
+                objective: {
+                    condition: "lose"
+                    description: _ "Death of Tallin"
+                }
+
+                <TURNS_RUN_OUT!
+
+                gold_carryover: {
+                    bonus: false
+                    carryover_percentage: 40
+                }
+            }
+
+            STORE_UNIT_VAR({id: "Tallin"}, "level", "old_tallin_level")
+
+            Switch{
+                variable: "old_tallin_level"
+
+                case: {
+                    value: {0, 1}
+                    do: ->
+                        VARIABLE("new_tallin_type", "Dark Adept")
+                        VARIABLE("new_tallin_moves", 5)
+                }
+
+                case: {
+                    value: 2
+                    do: ->
+                        VARIABLE("new_tallin_type", "Dark Sorcerer")
+                        VARIABLE("new_tallin_moves", 5)
+                }
+
+                else: ->
+                    VARIABLE("new_tallin_type", "Lich")
+                    VARIABLE("new_tallin_moves", 6)
+                
+            }
+
+            Modify_Unit{
+                filter: {
+                    id: "Tallin"
+                }
+
+                type: new_tallin_type
+                moves: new_tallin_moves
+            }
+
+-- Sadly, due to some limitation, we cannot change the ellipse in the [modify_unit] block above
+            Modify_Unit{
+                filter: {
+                    id: "Tallin"
+                }
+
+                ellipse: "misc/ellipse"
+            }
+
+            CLEAR_VARIABLE("old_tallin_level,new_tallin_type,new_tallin_moves")
+
+            Store_Gold{
+                side: 1
+                variable: "reset_gold"
+            }
+            VARIABLE_OP("reset_gold", "multiply", -1)
+            Gold{
+                side: 1
+                amount: reset_gold
+            }
+            Gold{
+                side: 1
+                amount: 200
+            }
+            CLEAR_VARIABLE("reset_gold")
+
+            Kill{
+                side: 1
+                not: {
+                    id: "Tallin"
+                }
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            MODIFY_UNIT({id: "Tallin"}, "alignment", "chaotic")
+
+            Unit{
+                type: "Giant Spider"
+                x: 19
+                y: 9
+                side: 2
+                ai_special: "guardian"
+            }
+
+            Unit{
+                type: "Giant Spider"
+                x: 3
+                y: 20
+                side: 3
+                ai_special: "guardian"
+            }
+    }
+
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Tallin"
+        }
+        do: ->
+            Message{
+                speaker: "Tallin"
+                image: "portraits/Tallin-Evil.png"
+                message: _ "Argh! I have failed my master."
+            }
+
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}

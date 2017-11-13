@@ -1,0 +1,597 @@
+--textdomain wesnoth-lib
+----
+---- Definition of the window to ask for the savegame filename
+----
+
+_GUI_LEADER_STAT_ROW = (_ID, _TEXT) -> {
+    row: {
+
+        column: {
+            horizontal_grow: true
+
+            grid: {
+
+                row: {
+
+                    column: {
+                        grow_factor: 0
+                        border: "bottom,left,right"
+                        border_size: 5
+                        horizontal_grow: true
+
+                        label: {
+                            definition: "gold_small"
+                            label: _TEXT
+                        }
+                    }
+
+                    column: {
+                        grow_factor: 1
+                        border: "bottom,right"
+                        border_size: 5
+                        horizontal_grow: true
+
+                        label: {
+                            id: _ID
+                            definition: "default_small"
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_LEADER_LIST = () -> {
+    listbox: {
+        id: "leader_list"
+        has_minimum: false
+        horizontal_scrollbar_mode: "never"
+
+        list_definition: {
+
+            row: {
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+
+                        grid: {
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 0
+
+                                    border: "all"
+                                    border_size: 5
+                                    horizontal_grow: true
+                                    vertical_grow: true
+
+                                    image: {
+                                        id: "imgLeader"
+                                        definition: "centered"
+                                        linked_group: "leader_image"
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    grid: {
+
+                                        row: {
+
+                                            column: {
+                                                border: "all"
+                                                border_size: 5
+                                                horizontal_grow: true
+
+                                                label: {
+                                                    id: "leader_name"
+                                                    definition: "default"
+                                                }
+
+                                            }
+
+                                        }
+
+                                        <_GUI_LEADER_STAT_ROW("leader_gold", _ "Gold Left:")
+
+-- po: Refers to units on the map
+                                        <_GUI_LEADER_STAT_ROW("leader_troops", _ "Active Troops:")
+
+--po: Refers to units on the recall list
+                                        <_GUI_LEADER_STAT_ROW("leader_reserves", _ "Reserve Troops:")
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+_GUI_GAME_LIST = () -> {
+    listbox: {
+        id: "savegame_list"
+        definition: "default"
+        horizontal_scrollbar_mode: "never"
+
+        header: {
+
+            row: {
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_0"
+                        definition: "listbox_header"
+                        linked_group: "filename"
+
+                        label: _ "Name"
+                    }
+                }
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+-- No border by design
+                    toggle_button: {
+                        id: "sort_1"
+                        definition: "listbox_header"
+                        linked_group: "date"
+
+                        label: _ "Date"
+                    }
+                }
+
+            }
+
+        }
+
+        list_definition: {
+
+            row: {
+
+                column: {
+                    horizontal_grow: true
+
+                    toggle_panel: {
+                        definition: "default"
+
+                        return_value_id: "ok"
+                        grid: {
+
+                            row: {
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    border: "all"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "filename"
+                                        definition: "default"
+                                        linked_group: "filename"
+                                    }
+
+                                }
+
+                                column: {
+                                    grow_factor: 1
+                                    horizontal_grow: true
+
+                                    border: "all"
+                                    border_size: 5
+
+                                    label: {
+                                        id: "date"
+                                        definition: "default"
+                                        linked_group: "date"
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+}
+
+Window{
+    id: "game_load"
+    description: "Load game dialog."
+
+    resolution: {
+        definition: "default"
+
+        <GUI_WINDOW_FIXED_SIZE_CENTERED(800, 800)
+
+        linked_group: {
+            id: "filename"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "date"
+            fixed_width: true
+        }
+
+        linked_group: {
+            id: "leader_image"
+            fixed_width: true
+        }
+
+        tooltip: {
+            id: "tooltip"
+        }
+
+        helptip: {
+            id: "tooltip"
+        }
+
+        grid: {
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+
+                    border: "all"
+                    border_size: 5
+                    horizontal_alignment: "left"
+                    label: {
+                        id: "lblTitle"
+                        definition: "title"
+
+                        label: _ "Load Game"
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 1
+
+                column: {
+                    grow_factor: 1
+
+                    horizontal_grow: true
+                    vertical_grow: true
+
+                    grid: {
+
+                        row: {
+                            grow_factor: 1
+
+                            column: {
+                                grow_factor: 0
+                                vertical_grow: true
+                                horizontal_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            grow_factor: 0
+
+                                            border: "all"
+                                            border_size: 5
+                                            vertical_grow: true
+                                            horizontal_grow: true
+
+                                            <GUI_FORCE_WIDGET_MINIMUM_SIZE(250, 200, {
+                                                    minimap: {
+                                                        id: "minimap"
+                                                        definition: "no_size"
+                                                    }
+                                            })
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+
+                                            grow_factor: 1
+
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+
+                                            label: {
+                                                id: "lblScenario"
+                                                definition: "default"
+                                                can_shrink: true
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+
+                                            grow_factor: 1
+
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_grow: true
+
+                                            label: {
+                                                id: "lblSummary"
+                                                definition: "default_small"
+                                                use_markup: true
+                                            }
+
+                                        }
+
+                                    }
+
+                                    <GUI_HORIZONTAL_SPACER_LINE!
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            border: "all"
+                                            border_size: 5
+
+                                            <_GUI_LEADER_LIST!
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                            column: {
+                                grow_factor: 1
+
+                                border: "all"
+                                border_size: 5
+                                horizontal_grow: true
+                                vertical_grow: true
+
+                                grid: {
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            border: "all"
+                                            border_size: 5
+                                            horizontal_alignment: "left"
+
+                                            text_box: {
+                                                id: "txtFilter"
+                                                definition: "filter"
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 1
+
+                                        column: {
+                                            grow_factor: 1
+                                            horizontal_grow: true
+                                            vertical_grow: true
+
+                                            border: "bottom"
+                                            border_size: 10
+
+                                            <_GUI_GAME_LIST!
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            horizontal_grow: true
+
+                                            grid: {
+
+                                                row: {
+
+                                                    column: {
+                                                        grow_factor: 1
+                                                        horizontal_alignment: "left"
+                                                        border: "bottom"
+                                                        border_size: 10
+
+                                                        toggle_button: {
+                                                            id: "change_difficulty"
+                                                            definition: "default"
+
+                                                            label: _ "Change difficulty"
+                                                            tooltip: _ "Change campaign difficulty before loading"
+                                                        }
+
+                                                    }
+
+                                                    column: {
+                                                        grow_factor: 0
+                                                        horizontal_alignment: "right"
+
+                                                        border: "bottom"
+                                                        border_size: 10
+
+                                                        button: {
+                                                            id: "delete"
+                                                            definition: "default"
+
+                                                            label: _ "Delete"
+                                                        }
+
+                                                    }
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            horizontal_alignment: "left"
+                                            border: "bottom"
+                                            border_size: 10
+
+                                            toggle_button: {
+                                                id: "show_replay"
+                                                definition: "default"
+
+                                                label: _ "Show replay"
+                                                tooltip: _ "Play the embedded replay from the saved game if applicable"
+                                            }
+
+                                        }
+
+                                    }
+
+                                    row: {
+                                        grow_factor: 0
+
+                                        column: {
+                                            horizontal_alignment: "left"
+                                            border: "bottom"
+                                            border_size: 10
+
+                                            toggle_button: {
+                                                id: "cancel_orders"
+                                                definition: "default"
+
+                                                label: _ "Cancel orders"
+                                                tooltip: _ "Cancel any pending unit movements in the saved game"
+                                            }
+
+                                        }
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            row: {
+                grow_factor: 0
+
+                column: {
+                    grow_factor: 1
+                    horizontal_grow: true
+
+                    grid: {
+
+                        row: {
+
+                            column: {
+                                grow_factor: 1
+                                border: "all"
+                                border_size: 5
+                                horizontal_alignment: "right"
+
+                                button: {
+                                    id: "ok"
+                                    definition: "default"
+
+                                    label: _ "OK"
+                                }
+
+                            }
+
+                            column: {
+                                border: "all"
+                                border_size: 5
+
+                                button: {
+                                    id: "cancel"
+                                    definition: "default"
+
+                                    label: _ "Cancel"
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+_GUI_LEADER_LIST = nil
+_GUI_GAME_LIST = nil
+_GUI_LEADER_STAT_ROW = nil

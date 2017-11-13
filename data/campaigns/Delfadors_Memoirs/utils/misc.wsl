@@ -1,0 +1,162 @@
+--textdomain wesnoth-dm
+MEMOIRS_VICTORY_POSITION = (X, Y, BONUS_VALUE) -> {
+    item: {
+        x: X
+        y: Y
+        image: "scenery/signpost.png"
+    }
+    event: {
+        name: "moveto"
+        filter: {
+            id: "Delfador"
+            x: X
+            y: Y
+        }
+        do: ->
+            Endlevel{
+                result: "victory"
+                bonus: BONUS_VALUE
+            }
+    }
+}
+
+MEMOIRS_SECRET_PASSAGE = (X, Y, TO_X, TO_Y) -> {
+    item: {
+        x: X
+        y: Y
+        image: "scenery/mine-abandoned.png"
+    }
+    event: {
+        name: "moveto"
+        filter: {
+            x: X
+            y: Y
+            side: 1
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "A secret passage... I wonder where it leads..."
+            }
+-- move the player automatically the first time they find the passage
+            Teleport{
+                filter: {
+                    x: X
+                    y: Y
+                }
+                x: TO_X
+                y: TO_Y
+            }
+            Capture_Village{
+                side: 1
+                x: TO_X
+                y: TO_Y
+            }
+            Scroll_To_Unit{
+                x: TO_X
+                y: TO_Y
+            }
+-- now make the secret passage for real
+            Tunnel{
+                filter: {
+                }
+                source: {
+                    x: X
+                    y: Y
+                }
+                target: {
+                    x: TO_X
+                    y: TO_Y
+                }
+            }
+    }
+}
+
+---- earthquake effect stolen from "The Lost General"
+MEMOIRS_TREMOR = () -> {
+    redraw: {}
+    scroll: {
+        x: 5
+        y: 0
+    }
+    delay: {
+        time: 25
+    }
+    scroll: {
+        x: -10
+        y: 0
+    }
+    delay: {
+        time: 25
+    }
+    scroll: {
+        x: 5
+        y: 5
+    }
+    delay: {
+        time: 25
+    }
+    scroll: {
+        x: 0
+        y: -10
+    }
+    delay: {
+        time: 25
+    }
+    scroll: {
+        x: 0
+        y: 5
+    }
+}
+
+DELFADOR_LIGHTNING = () -> {
+    sound: {
+        name: "lightning.ogg"
+    }
+
+    color_adjust: {
+        red: 100
+        green: 100
+        blue: 100
+    }
+
+    delay: {
+        time: 10
+    }
+
+    color_adjust: {
+        red: 0
+        green: 0
+        blue: 0
+    }
+}
+
+FREEZE_UNIT = (ID) -> {
+    object: {
+        silent: true
+        duration: "scenario"  -- So this object will not be in the save files forever.
+        filter: {
+            id: ID
+        }
+        effect: {
+            apply_to: "movement_costs"
+            replace: false  -- So this amount is added to the current number.
+            movement_costs: {
+                shallow_water: 100
+                reef: 100
+                swamp_water: 100
+                flat: 100
+                sand: 100
+                forest: 100
+                hills: 100
+                mountains: 100
+                village: 100
+                castle: 100
+                cave: 100
+                frozen: 100
+                unwalkable: 100
+                fungus: 100
+            }
+        }
+    }
+}

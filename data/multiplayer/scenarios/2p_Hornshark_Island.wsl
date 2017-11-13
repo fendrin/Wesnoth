@@ -1,0 +1,978 @@
+--textdomain wesnoth-multiplayer
+
+if MULTIPLAYER_HORNSHARK_ISLAND_LOAD
+    MODIFY_BOWMAN: (X, Y) -> {
+        object: {
+            silent: true
+            duration: "forever"
+            filter: {
+                x: X, y: Y
+                type: "Bowman"
+            }
+
+            effect: {
+                apply_to: "attack"
+                range: "ranged"
+                set_specials: {
+                    <WEAPON_SPECIAL_FIRSTSTRIKE!
+                }
+            }
+        }
+    }
+
+
+Multiplayer{
+    id: "multiplayer_Hornshark_Island"
+    name: _ "2p — Hornshark Island"
+-- wmllint: local spelling Paterson
+    description: _ "Players must forge strange alliances with the local inhabitants, in order to survive on this most unusual of islands. Designed by Doc Paterson."
+    map: "multiplayer/maps/2p_Hornshark_Island.map"
+    random_start_time: "no"
+    define: "MULTIPLAYER_HORNSHARK_ISLAND_LOAD"
+
+    <if MULTIPLAYER_HORNSHARK_ISLAND_LOAD then {
+        <DEFAULT_SCHEDULE_MORNING!
+
+        <DEFAULT_MUSIC_PLAYLIST!
+    }
+
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 1
+        gold: 75
+        canrecruit: true
+        controller: "human"
+        team_name: "north"
+        user_team_name: _ "teamname^North"
+        fog: true
+    }
+    side: {
+        ai: {
+            villages_per_scout: 8
+        }
+        side: 2
+        gold: 75
+        canrecruit: true
+        controller: "human"
+        team_name: "south"
+        user_team_name: _ "teamname^South"
+        fog: true
+    }
+
+    <if MULTIPLAYER_HORNSHARK_ISLAND_LOAD then {
+        event: {
+            name: "prestart"
+            do: ->
+                Lua{
+                    code: [[ wesnoth.dofile("multiplayer/scenarios/2p_Hornshark_Island.lua") ]]
+                }
+
+                Fire_Event{
+                    name: "place_units"
+                }
+                CLEAR_VARIABLE("factions")
+        }
+
+        event: {
+            name: "place_units"
+            do: ->
+                Switch{
+                    variable: "p1_faction"
+                    case: {
+                        value: "Drakes"
+                        do: ->
+                            Unit{
+                                side: 1
+                                type: "Young Ogre"
+                                name: _ "Big Baby Bo"
+                                x: 24, y: 4
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Drake Fighter"
+                                name: _ "Rawffus the Dim"
+                                x: 1, y: 1
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_SLOW!
+                                    <TRAIT_DIM!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Saurian Skirmisher"
+                                x: 1, y: 2
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_DEXTROUS!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Saurian Augur"
+                                x: 26, y: 3
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+                    }
+                    case: {
+                        value: "Knalgan Alliance"
+                        do: ->
+                            Unit{
+                                side: 1
+                                type: "Thug"
+                                x: 1, y: 1
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_DIM!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Dwarvish Scout"
+                                name: _ "Kolbur"
+                                x: 2, y: 2
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Young Ogre"
+                                name: _ "Big Baby Bo"
+                                x: 24, y: 4
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Dwarvish Scout"
+                                name: _ "Vilhelm Viskitynnyri"
+                                x: 26, y: 3
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Ruffian"
+                                x: 1, y: 2
+                                modifications: {
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_DIM!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Loyalists"
+                        do: ->
+                            Unit{
+                                side: 1
+                                type: "Young Ogre"
+                                name: _ "Big Baby Bo"
+                                x: 24, y: 4
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Peasant"
+                                x: 25, y: 3
+                                modifications: {
+                                    <TRAIT_INTELLIGENT!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Sergeant"
+                                x: 25, y: 5
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_SLOW!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Woodsman"
+                                name: _ "Clockwork Boy"
+                                x: 1, y: 2
+                                modifications: {
+                                    <TRAIT_MECHANICAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Woodsman"
+                                name: _ "Clockwork Boy"
+                                x: 2, y: 1
+                                modifications: {
+                                    <TRAIT_MECHANICAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Bowman"
+                                x: 1, y: 1
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Northerners"
+                        do: ->
+                            Unit{
+                                side: 1
+                                type: "Young Ogre"
+                                name: _ "Big Baby Bo"
+                                x: 24, y: 4
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Goblin Impaler"
+                                x: 25, y: 5
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Orcish Leader"
+                                id: "Neki the Brutal"
+                                name: _ "Neki the Brutal"
+                                x: 1, y: 5
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_INTELLIGENT!
+                                    <TRAIT_SLOW!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Naga Fighter"
+                                x: 1, y: 2
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Rebels"
+                        do: ->
+                            Unit{
+                                side: 1
+                                type: "Young Ogre"
+                                name: _ "Big Baby Bo"
+                                x: 24, y: 4
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Elvish Fighter"
+                                name: _ "Drowsk Calbeht"
+                                x: 25, y: 3
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_DEXTROUS!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Mermaid Initiate"
+                                x: 4, y: 1
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_INTELLIGENT!
+                                }
+                                abilities: {
+                                    <ABILITY_HEALS!
+                                }
+                            }
+
+                            Unit{
+                                side: 1
+                                type: "Elvish Archer"
+                                x: 1, y: 1
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+                    case: {
+                        value: "Undead"
+                        do: ->
+                            Unit{
+                                x: 23, y: 3
+                                side: 1
+                                type: "Ghoul"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                x: 26, y: 3
+                                side: 1
+                                type: "Walking Corpse"
+                                variation: "saurian"
+                                modifications: {
+                                    <TRAIT_STRONG!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                name: _ "Rzrrt the Dauntless"
+                                x: 25, y: 5
+                                side: 1
+                                type: "Soulless"
+                                variation: "saurian"
+                                <IS_LOYAL!
+                                abilities: {
+                                    <ABILITY_AMBUSH!
+                                }
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                x: 1, y: 3
+                                side: 1
+                                type: "Soulless"
+                                variation: "dwarf"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                x: 2, y: 2
+                                side: 1
+                                type: "Walking Corpse"
+                                variation: "dwarf"
+                                modifications: {
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                name: _ "Sorrek, Chosen of Death"
+                                x: 2, y: 1
+                                side: 1
+                                type: "Skeleton"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_FEARLESS!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+
+                    else: ->
+                        Unit{
+                            side: 1
+                            type: "Young Ogre"
+                            name: _ "Big Baby Bo"
+                            x: 24, y: 4
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_RESILIENT!
+                                <TRAIT_DIM!
+                            }
+                        }
+                        Unit{
+                            side: 1
+                            type: "Giant Rat"
+                            x: 25, y: 3
+                            modifications: {
+                                <TRAIT_STRONG!
+                                <TRAIT_RESILIENT!
+                                <TRAIT_QUICK!
+                            }
+                        }
+                        Unit{
+                            side: 1
+                            type: "Troll Whelp"
+                            x: 25, y: 5
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_INTELLIGENT!
+                                <TRAIT_QUICK!
+                            }
+                        }
+                        Unit{
+                            side: 1
+                            type: "Mudcrawler"
+                            x: 1, y: 2
+                            modifications: {
+                                <TRAIT_QUICK!
+                                <TRAIT_RESILIENT!
+                            }
+                        }
+                        Unit{
+                            side: 1
+                            type: "Fire Guardian"
+                            x: 2, y: 1
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_FEARLESS!
+                                <TRAIT_SLOW!
+                            }
+                        }
+                        Unit{
+                            side: 1
+                            type: "Giant Scorpion"
+                            x: 1, y: 1
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_MECHANICAL!
+                                <TRAIT_LOYAL!
+                                <TRAIT_SLOW!
+                            }
+                        }
+                    
+                }
+
+                Switch{
+                    variable: "p2_faction"
+                    case: {
+                        value: "Drakes"
+                        do: ->
+                            Unit{
+                                side: 2
+                                type: "Young Ogre"
+                                name: _ "Big Baby Dro"
+                                x: 7, y: 21
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Drake Fighter"
+                                name: _ "Gawffus the Dim"
+                                x: 29, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_SLOW!
+                                    <TRAIT_DIM!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Saurian Skirmisher"
+                                x: 30, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_DEXTROUS!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Saurian Augur"
+                                x: 7, y: 22
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+                    }
+                    case: {
+                        value: "Knalgan Alliance"
+                        do: ->
+                            Unit{
+                                side: 2
+                                type: "Thug"
+                                x: 30, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_DIM!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Dwarvish Scout"
+                                name: _ "Rublok"
+                                x: 7, y: 21
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Young Ogre"
+                                name: _ "Big Baby Dro"
+                                x: 6, y: 20
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Dwarvish Scout"
+                                name: _ "Ulysses Mantyjuuri"
+                                x: 29, y: 26
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_HEALTHY!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Ruffian"
+                                x: 30, y: 26
+                                modifications: {
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_DIM!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Loyalists"
+                        do: ->
+                            Unit{
+                                side: 2
+                                type: "Young Ogre"
+                                name: _ "Big Baby Dro"
+                                x: 6, y: 20
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Peasant"
+                                x: 10, y: 23
+                                modifications: {
+                                    <TRAIT_INTELLIGENT!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Sergeant"
+                                x: 7, y: 21
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_SLOW!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Woodsman"
+                                name: _ "Clockwork Boy"
+                                x: 30, y: 27
+                                modifications: {
+                                    <TRAIT_MECHANICAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Woodsman"
+                                name: _ "Clockwork Boy"
+                                x: 29, y: 27
+                                modifications: {
+                                    <TRAIT_MECHANICAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Bowman"
+                                x: 28, y: 24
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Northerners"
+                        do: ->
+                            Unit{
+                                side: 2
+                                type: "Young Ogre"
+                                name: _ "Big Baby Dro"
+                                x: 6, y: 20
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Goblin Impaler"
+                                x: 7, y: 21
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Orcish Leader"
+                                name: _ "Neki the Brute"
+                                x: 30, y: 24
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_INTELLIGENT!
+                                    <TRAIT_SLOW!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Naga Fighter"
+                                x: 28, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+                    }
+
+                    case: {
+                        value: "Rebels"
+                        do: ->
+                            Unit{
+                                side: 2
+                                type: "Young Ogre"
+                                name: _ "Big Baby Dro"
+                                x: 6, y: 20
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Elvish Fighter"
+                                name: _ "Claiomh Dubh"
+                                x: 7, y: 21
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_DEXTROUS!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Mermaid Initiate"
+                                x: 27, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_INTELLIGENT!
+                                }
+                                abilities: {
+                                    <ABILITY_HEALS!
+                                }
+                            }
+
+                            Unit{
+                                side: 2
+                                type: "Elvish Archer"
+                                x: 30, y: 27
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+                    case: {
+                        value: "Undead"
+                        do: ->
+                            Unit{
+                                x: 6, y: 20
+                                side: 2
+                                type: "Ghoul"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+
+                            Unit{
+                                x: 10, y: 23
+                                side: 2
+                                type: "Walking Corpse"
+                                variation: "saurian"
+                                modifications: {
+                                    <TRAIT_STRONG!
+                                    <TRAIT_RESILIENT!
+                                }
+                            }
+
+                            Unit{
+                                name: _ "Tyxrrn the Dauntless"
+                                x: 7, y: 21
+                                side: 2
+                                type: "Soulless"
+                                variation: "saurian"
+                                <IS_LOYAL!
+                                abilities: {
+                                    <ABILITY_AMBUSH!
+                                }
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_STRONG!
+                                    <TRAIT_RESILIENT!
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                x: 30, y: 26
+                                side: 2
+                                type: "Soulless"
+                                variation: "dwarf"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                x: 28, y: 25
+                                side: 2
+                                type: "Walking Corpse"
+                                variation: "dwarf"
+                                modifications: {
+                                    <TRAIT_QUICK!
+                                }
+                            }
+
+                            Unit{
+                                name: _ "Rukhos, Chosen of Death"
+                                x: 27, y: 27
+                                side: 2
+                                type: "Skeleton"
+                                <IS_LOYAL!
+                                modifications: {
+                                    <TRAIT_LOYAL!
+                                    <TRAIT_FEARLESS!
+                                    <TRAIT_STRONG!
+                                }
+                            }
+                    }
+
+                    else: ->
+                        Unit{
+                            side: 2
+                            type: "Young Ogre"
+                            name: _ "Big Baby Dro"
+                            x: 7, y: 20
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_RESILIENT!
+                                <TRAIT_DIM!
+                            }
+                        }
+                        Unit{
+                            side: 2
+                            type: "Giant Rat"
+                            x: 10, y: 23
+                            modifications: {
+                                <TRAIT_STRONG!
+                                <TRAIT_RESILIENT!
+                                <TRAIT_QUICK!
+                            }
+                        }
+                        Unit{
+                            side: 2
+                            type: "Troll Whelp"
+                            x: 9, y: 23
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_INTELLIGENT!
+                                <TRAIT_QUICK!
+                            }
+                        }
+                        Unit{
+                            side: 2
+                            type: "Fire Guardian"
+                            x: 30, y: 27
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_LOYAL!
+                                <TRAIT_FEARLESS!
+                                <TRAIT_SLOW!
+                            }
+                        }
+                        Unit{
+                            side: 2
+                            type: "Mudcrawler"
+                            x: 29, y: 27
+                            modifications: {
+                                <TRAIT_QUICK!
+                                <TRAIT_RESILIENT!
+                            }
+                        }
+                        Unit{
+                            side: 2
+                            type: "Giant Scorpion"
+                            x: 28, y: 24
+                            <IS_LOYAL!
+                            modifications: {
+                                <TRAIT_MECHANICAL!
+                                <TRAIT_LOYAL!
+                                <TRAIT_SLOW!
+                            }
+                        }
+                    
+                }
+        }
+
+        event: {
+            name: "prestart"
+            do: ->
+                MODIFY_BOWMAN(1, 1)
+                MODIFY_BOWMAN(28, 24)
+        }
+    }
+}

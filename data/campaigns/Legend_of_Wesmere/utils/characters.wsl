@@ -1,0 +1,401 @@
+--textdomain wesnoth-low
+PLAYER_TEAM = () -> {
+    team_name: "player"
+    user_team_name: _ "Player"
+}
+
+PLAYABLE = () -> {
+    unrenamable: true
+    controller: "human"
+    canrecruit: true
+    <PLAYER_TEAM!
+    village_gold: 1
+    persistent: true
+    allow_player: true
+    <if MULTIPLAYER then {
+        team_lock: true
+        gold_lock: true
+        income_lock: true
+        faction: "Custom"
+        share_view: true
+    }
+}
+
+---- Main Characters ---
+
+KALENZ = () -> {
+    id: "Kalenz"
+    unrenamable: true
+    name: _ "Kalenz"
+    profile: "portraits/kalenz_young.png"
+    type: "Elvish Captain"
+    canrecruit: true
+    extra_recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Scout"}
+    placement: {"map", "leader"}
+    filter_recall: {
+        type: ELVES_STEEL!
+    }
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+}
+
+KALENZ_YOUNG = () -> {
+    <KALENZ!
+    type: "Elvish Fighter"
+    extra_recruit: {"Elvish Fighter", "Elvish Archer"}
+}
+
+---- Kalenz's pals ---
+
+HURALDUR = () -> {
+    id: "Huraldur"
+    name: _ "Huraldur"
+    type: "Elvish Scout"
+    unrenamable: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+SCOUT = () -> {
+    id: "scout"
+--    name= _ "Huraldur"
+    type: "Elvish Scout"
+    unrenamable: true
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+LANDAR = () -> {
+    id: "Landar"
+    name: _ "Landar"
+    unrenamable: true
+    profile: "portraits/landar.png"
+    type: "Elvish Ranger"
+    gender: "male"
+    canrecruit: true
+    extra_recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Scout"}
+    placement: {"map", "leader"}
+    filter_recall: {
+        type: ELVES_STEEL!
+    }
+    modifications: {
+        <TRAIT_DEXTROUS!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+}
+
+LANDAR_YOUNG = () -> {
+    <LANDAR!
+    type: "Elvish Archer"
+    extra_recruit: {"Elvish Fighter", "Elvish Archer"}
+}
+
+---- Cleodil and her pals
+
+CLEODIL = () -> {
+    id: "Cleodil"
+    name: _ "Cleodil"
+    profile: "portraits/cleodil.png"
+    type: "Elvish Shyde"
+    canrecruit: true
+    extra_recruit: {"Elvish Scout", "Elvish Shaman", "Wose"}
+    unrenamable: true
+    placement: {"map", "leader"}
+    filter_recall: {
+        type: ELVES_NON_STEEL!
+    }
+    abilities: {
+        <unless MULTIPLAYER! then {
+            <ABILITY_ELATES_KALENZ!
+            <ABILITY_HEALS_KALENZ!
+        }
+--TODO test the whole extra traits things.
+--        {ABILITY_EXTRA_HEAL}
+        <ABILITY_CURES!
+    }
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+}
+
+LARIL = () -> {
+    id: "Laril"
+    name: _ "Laril"
+    type: "Elvish Druid"
+    unrenamable: true
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_INTELLIGENT!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+TAMERIL_ISIMERIL = () -> {
+    id: "Tameril-Isimeril"
+    name: _ "Tameril-Isimeril"
+    type: "Elvish Sorceress"
+    unrenamable: true
+    modifications: {
+        <TRAIT_DEXTROUS!
+        <TRAIT_RESILIENT!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+OLURF = () -> {
+    id: "Olurf"
+    name: _ "Olurf"
+    profile: "portraits/olurf.png"
+    unrenamable: true
+    type: "Dwarvish Steelclad"
+    canrecruit: true
+    extra_recruit: {"Dwarvish Fighter", "Dwarvish Scout", "Dwarvish Thunderer", "Dwarvish Ulfserker", "Dwarvish Guardsman"}
+    placement: {"map", "leader"}
+    filter_recall: {
+        race: "dwarf"
+    }
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_RESILIENT!
+    }
+}
+
+OLURF_PARTY = (SIDE) -> {
+    unit: {
+        id: "Bulrod"
+        name: _ "Bulrod"
+        type: "Dwarvish Steelclad"
+        side: SIDE
+--placement=leader
+        unrenamable: true
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+        }
+    }
+    unit: {
+        id: "Simclon"
+        name: _ "Simclon"
+        unrenamable: true
+        type: "Dwarvish Thunderer"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+            <TRAIT_LOYAL!
+        }
+    }
+
+    unit: {
+        id: "Harald"
+        name: _ "Harald"
+        unrenamable: true
+        type: "Dwarvish Berserker"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+            <TRAIT_LOYAL!
+        }
+    }
+
+    unit: {
+        id: "Budrin"
+        name: _ "Budrin"
+        unrenamable: true
+        type: "Dwarvish Berserker"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+        }
+    }
+
+    unit: {
+        id: "Dudan"
+        name: _ "Dudan"
+        unrenamable: true
+        type: "Dwarvish Fighter"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+        }
+    }
+
+    unit: {
+        id: "Korbun"
+        name: _ "Korbun"
+        unrenamable: true
+        type: "Dwarvish Scout"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_QUICK!
+            <TRAIT_HEALTHY!
+            <TRAIT_LOYAL!
+        }
+    }
+
+    unit: {
+        id: "Merhun"
+        name: _ "Merhun"
+        unrenamable: true
+        type: "Dwarvish Berserker"
+        side: SIDE
+        x: olurf_entry.x
+        y: olurf_entry.y
+        modifications: {
+            <TRAIT_STRONG!
+            <TRAIT_RESILIENT!
+        }
+    }
+}
+
+GALTRID = () -> {
+    id: "Galtrid"
+    name: _ "Galtrid"
+    unrenamable: true
+    profile: "portraits/galtrid.png"
+    type: "Elvish Captain"
+    canrecruit: true
+    extra_recruit: {"Elvish Fighter", "Elvish Archer"}
+    placement: {"map", "leader"}
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_RESILIENT!
+    }
+}
+
+ERADION = () -> {
+    id: "Eradion"
+    name: _ "Eradion"
+    unrenamable: true
+    type: "Elvish Marshal"
+    canrecruit: true
+    extra_recruit: {"Elvish Fighter", "Elvish Archer", "Elvish Scout"}
+    placement: {"map", "leader"}
+}
+
+EL_ISOMITHIR = () -> {
+    id: "El_Isomithir"
+    name: _ "El’Isomithir"
+    unrenamable: true
+    type: "Elvish Hero"
+    canrecruit: true
+    extra_recruit: {"Elvish Fighter", "Elvish Archer"}
+    placement: {"map", "leader"}
+    modifications: {
+--TODO define some different traits for him
+        <TRAIT_STRONG!
+        <TRAIT_RESILIENT!
+    }
+}
+
+URADREDIA = () -> {
+    <ELF_SETUP!
+    id: "Uradredia"
+    name: _ "Uradredia"
+    unrenamable: true
+    profile: "portraits/uradredia.png"
+    type: "Elvish Marshal"
+    modifications: {
+        <TRAIT_STRONG!
+        <TRAIT_RESILIENT!
+    }
+    color: "white"
+    canrecruit: true
+    placement: {"map", "leader"}
+}
+
+ANDUILAS = () -> {
+    id: "Anduilas"
+    name: _ "Anduilas"
+    unrenamable: true
+    type: "Elvish Archer"
+    gender: "male"
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_DEXTROUS!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+ARKILDUR = () -> {
+    id: "Arkildur"
+    name: _ "Arkildur"
+    unrenamable: true
+    type: "Elvish Fighter"
+    modifications: {
+        <TRAIT_QUICK!
+        <TRAIT_STRONG!
+        <TRAIT_LOYAL!
+    }
+    <IS_LOYAL!
+}
+
+--TODO bring the macro to use.
+SPEECH_CLEODIL = () -> {
+    event: {
+        name: "attacks"
+        filter_second: {
+            id: "Cleodil"
+        }
+        do: ->
+            Message{
+                speaker: "unit"
+                message: _ "Prepare to die, elven witch!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "I will slay any who harms her without mercy."
+            }
+            Message{
+                id: "Cleodil"
+                message: _ "Nor will you find me an easy foe!"
+            }
+    }
+    event: {
+        name: "attacker hits"
+        filter_second: {
+            id: "Cleodil"
+        }
+        do: ->
+            Message{
+                id: "Cleodil"
+                message: _ "I am wounded!"
+            }
+            Message{
+                id: "Kalenz"
+                message: _ "Cleodil! No! I will aid you."
+            }
+    }
+}

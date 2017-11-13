@@ -1,0 +1,249 @@
+--textdomain wesnoth-trow
+Scenario{
+    id: "21_The_Plan"
+    name: _ "The Plan"
+    next_scenario: "22_The_Rise_of_Wesnoth"
+    map: "campaigns/The_Rise_Of_Wesnoth/maps/21_The_Plan.map"
+    turns: 1
+    theme: "Cutscene_Minimal"
+
+    <AFTERNOON!
+
+    <SCENARIO_MUSIC("revelation.ogg")
+
+-- No story
+    <TROW_GC_TRACK(JOURNEY_21_NEW!)
+
+    side: {
+        type: "Noble Commander"
+        id: "Prince Haldric"
+        name: _ "Prince Haldric"
+        unrenamable: true
+        canrecruit: true
+        gold: 0
+        controller: "human"
+        team_name: "Haldric"
+        user_team_name: _ "Refugees"
+        <FLAG_VARIANT("loyalist")
+    }
+
+    event: {
+        name: "prestart"
+        do: ->
+            Recall{
+                id: "Lady Jessene"
+            }
+
+            If{
+                have_unit: {
+                    id: "Lady Jessene"
+                }
+                then: ->
+--This is a safety thing, in case you managed to beat the prior scenario before Jessene got back (impossible).
+                
+                else: ->
+                    Set_Variable{
+                        name: "jessica_store.x"
+                        value: 8
+                    }
+                    Set_Variable{
+                        name: "jessica_store.y"
+                        value: 5
+                    }
+
+                    Unstore_Unit{
+                        variable: "jessica_store"
+                        find_vacant: true
+                    }
+
+                    CLEAR_VARIABLE("jessica_store")
+                
+            }
+
+            Recall{
+                id: "Commander Aethyr"
+            }
+
+            Teleport{
+                filter: {
+                    id: "Prince Haldric"
+                }
+                x: 11
+                y: 7
+            }
+
+            Teleport{
+                filter: {
+                    id: "Lady Jessene"
+                }
+                x: 8
+                y: 5
+            }
+
+            Teleport{
+                filter: {
+                    id: "Commander Aethyr"
+                }
+                x: 14
+                y: 10
+            }
+
+            Hide_Unit{
+                x: 14
+                y: 10
+            }
+    }
+
+    event: {
+        name: "start"
+        do: ->
+            Scroll_To_Unit{
+                id: "Prince Haldric"
+                x: 11
+                y: 7
+            }
+
+            Delay{
+                time: 1250
+            }
+
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "So what is your plan?"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’re going to convince Jevyan that we gave the elves the Ruby of Fire to secure our place in this new land. Then if the orcs return, hopefully they’ll go looking for our not-so-loyal elven allies first."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Haldric, that’s devious. I kind of like this plan. But you spoke a pact with the elves. You’ll be expected to come to their aid."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Yes, and we may come to their aid. We’ll have to weigh our options when and if the time comes. If the orcs return in great numbers, the brunt of their assault must fall on somebody else or we will not survive it. Who knows, maybe I won’t even come to their aid at all—"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Many people would call you a coward if you did not. They would say that you turned your back on your pact with the elves. It’s not like you can tell people what I overheard."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Recent events have taught me one thing: that survival trumps honor. Besides, they won’t be screaming at me — I’ll be dead."
+                image: "portraits/haldric-annoyed.png"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "<i>What?!</i>"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’ll be dead. I mean we can’t just say that we gave away the Ruby of Fire, or send Jevyan a letter. Well, we are going to say it — but that’s not the point. Jessene, you’re going to forge a very official looking treaty, in which we give the elves the Ruby of Fire, in return for our place here."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "I’m going to face Jevyan, and if rumors of his power are true he’s going to pick that treaty off my mangled corpse. Then, you’re going to destroy Jevyan after word of the treaty has spread to the orcs, but before he has a chance to read my undead mind..."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Haldric! I won’t do it... I won’t help. What is it with your kind, always rushing to a fool’s death? Who’ll lead these people? I... <i>we</i> need you alive."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "You will. I wouldn’t have made it this far without you, Jessene. But everything turns on convincing Jevyan, it’s the only way we can possibly keep the orc hordes off our necks."
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Haldric, this is ridiculous! I—"
+            }
+
+            Store_Unit{
+                variable: "aethyr_store"
+                filter: {
+                    id: "Commander Aethyr"
+                }
+            }
+
+            Move_Unit_Fake{
+                type: aethyr_store.type
+                side: 1
+                x: {14, 14, 14, 13}
+                y: {10, 9, 8, 8}
+            }
+
+            CLEAR_VARIABLE("aethyr_store")
+
+            Teleport{
+                filter: {
+                    id: "Commander Aethyr"
+                }
+                x: 13
+                y: 8
+            }
+
+            Unhide_Unit{
+                id: "Commander Aethyr"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "There is no way I’m letting you go through with this, sir! Over our dead bodies, right Jessene?"
+            }
+            Message{
+                speaker: "Lady Jessene"
+                message: _ "Right!"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "I’ll do it, sir. I’ll sacrifice myself to plant the false treaty."
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "No. I can’t ask you to do this."
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "You’ve denied me honorable death twice already. Once when you arrived at Clearwater Port, and once again when your ships rescued me. I’ll not be denied in this a third time!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "No, this is my sacrifice to make!"
+                image: "portraits/haldric-mad.png"
+            }
+
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Sir, my family has been slaughtered, and my home lost. All I long for is to join them. Give me this honorable death... Please, Sir! I beg you!"
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "After this conflict is over I’ll have to suffer through the long years alone, with no honorable way of joining them. I want to look that monster Jevyan in the eye before I go! I won’t be denied!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "Very well, if you can’t be deterred. Remember, you <i>must</i> be slain by the hand of Jevyan himself. We can’t have an illiterate orc or mindless skeleton getting the treaty. We will honor your sacrifice."
+            }
+            Message{
+                speaker: "Commander Aethyr"
+                message: _ "Honor me by destroying Jevyan! Preferably before he can do unnatural things to me. I want to rest in the ground, not be some mindless undead slave for all eternity!"
+            }
+            Message{
+                speaker: "Prince Haldric"
+                message: _ "We’ll make sure. I promise."
+            }
+            Message{
+                speaker: "Lady Jessene"
+-- wmllint: local spelling Sheesh
+                message: _ "We’ll have to be careful to let one of the orcish leaders escape back to the Green Isle with the knowledge that the elves ‘have’ the Ruby of Fire. Sheesh... What is your kind’s infatuation with rushing to an ‘honorable death’?"
+            }
+
+            Endlevel{
+                result: "victory"
+                bonus: false
+                <NEW_GOLD_CARRYOVER(100)
+                next_scenario: "22_The_Rise_of_Wesnoth"
+                carryover_report: false
+                linger_mode: false
+            }
+    }
+}

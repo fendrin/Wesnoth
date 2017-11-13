@@ -1,0 +1,13 @@
+GENERIC_UNIT_TEST("lua_get_sides", {
+        event: {
+            name: "prestart"
+            do: ->
+                Lua{
+                    code: [[ local s = wesnoth.get_sides({})
+		local result = (s[1].side == 1) and (s[2].side == 2)
+                wesnoth.set_variable("result", result) ]]
+                }
+
+                RETURN(VARIABLE_CONDITIONAL("result", "boolean_equals", true))
+        }
+})

@@ -1,0 +1,96 @@
+--textdomain wesnoth-sof
+RECRUIT = (EASY_VALUE, NORMAL_VALUE, HARD_VALUE) ->
+    if EASY
+        recruit: EASY_VALUE
+    
+    if NORMAL
+        recruit: NORMAL_VALUE
+    
+    if HARD
+        recruit: HARD_VALUE
+    
+
+
+SOF_DEATHS = () -> {
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Rugnur"
+        }
+        do: ->
+            Message{
+                speaker: "Rugnur"
+                message: _ "Gahahh..." -- wmllint: no spellcheck
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Haldric II"
+        }
+        do: ->
+            Message{
+                speaker: "Haldric II"
+                message: _ "Maghah..." -- wmllint: no spellcheck
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Alanin"
+        }
+        do: ->
+            Message{
+                speaker: "Alanin"
+                message: _ "Ahhgg..."
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Baglur"
+        }
+        do: ->
+            Message{
+                speaker: "Baglur"
+                message: _ "Gaanngh..." -- wmllint: no spellcheck
+            }
+    }
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Krawg"
+        }
+        do: ->
+            Message{
+                speaker: "Krawg"
+                message: _ "Kraa..." -- wmllint: no spellcheck
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+    event: {
+        name: "last breath"
+        filter: {
+            id: "Thursagan"
+        }
+        do: ->
+            Message{
+                speaker: "Thursagan"
+                message: _ "Ayahahh..." -- wmllint: no spellcheck
+            }
+            Endlevel{
+                result: "defeat"
+            }
+    }
+}
