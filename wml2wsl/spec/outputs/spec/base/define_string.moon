@@ -1,0 +1,2 @@
+STR_FEEDING = () ->
+    "foo"

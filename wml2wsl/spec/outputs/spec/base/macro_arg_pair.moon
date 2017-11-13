@@ -1,0 +1,1 @@
+TREASURE_CHEST({x1, y1})

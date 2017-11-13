@@ -1,0 +1,2 @@
+MINIMUM = () ->
+    true

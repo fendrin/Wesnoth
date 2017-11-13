@@ -1,0 +1,1 @@
+EXEC(MACRO_NAME!, "arg1", "arg2")

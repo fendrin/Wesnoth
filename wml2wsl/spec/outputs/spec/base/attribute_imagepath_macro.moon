@@ -1,0 +1,2 @@
+{   name: "#{IMAGE_NAME}.png~O(0.5)"
+}

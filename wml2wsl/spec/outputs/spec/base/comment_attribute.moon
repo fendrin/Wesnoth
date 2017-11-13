@@ -1,0 +1,2 @@
+{   key: "something"-- commented attribute
+}

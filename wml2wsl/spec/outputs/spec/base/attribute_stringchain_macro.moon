@@ -1,0 +1,2 @@
+{   key: "my string " .. MACRO!
+}

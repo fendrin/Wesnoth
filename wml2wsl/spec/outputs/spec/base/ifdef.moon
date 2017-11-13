@@ -1,0 +1,2 @@
+if SYMBOL
+    key: "value"

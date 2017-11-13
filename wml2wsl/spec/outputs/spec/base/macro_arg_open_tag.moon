@@ -1,0 +1,5 @@
+MACRO({
+        foo: {
+            key: "value"
+        }
+})

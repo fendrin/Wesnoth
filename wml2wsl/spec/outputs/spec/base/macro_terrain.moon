@@ -1,0 +1,1 @@
+BRIDGE.NEXUS( {"#{B_TERRAIN_NAME!}^#{NW_SE_OVERLAY!}","#{B_TERRAIN_NAME}^#{N_S_OVERLAY}","#{B_TERRAIN_NAME}^#{NE_SW_OVERLAY}"}, "*", "*^#{N_S_OVERLAY}", "*", "*^{NE_SW_OVERLAY}", "#{S_TERRAIN_NAME}", "*^#{NW_SE_OVERLAY}", "({NAME}-[n,se,sw,ne,s,nw])", {}, "#{NAME}-s", {}, "#{NAME}-ne", {}, "#{NAME}-nw", LAYER, "#{IMAGE_GROUP_NAME}-n-se-sw" )
