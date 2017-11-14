@@ -609,8 +609,7 @@ build_compiler = ->
 
                 if comment = ast.comment
                     comment = trim(comment) if #line == 0
-                    line ..= comment\gsub("#", "--")
-
+                    line ..= ast.space .. "--" .. comment\gsub('#', '-')
 
                 isSymbol = false unless ast.value.type == "define"
 

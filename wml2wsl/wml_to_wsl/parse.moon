@@ -57,7 +57,7 @@ build_parser = ->
 
         MapFileInclude: sym"map_data" * sym"=" * sym'"' * sym'{' * Value(V"Path") * sym'}' * sym'"' * Type"mapFileInclude"
 
-        Comment: sym"#" * (1 - S"\r\n")^0
+        Comment: sym"#" * C((1 - S"\r\n")^0)
         Number: Ct(Space * (Value(S"+-"^-1 * Num^1) * Type"number" ) * ( #(SomeSpace + S",})") + L(Stop) ))
         Boolean: Ct( (Value(C(sym"yes") + C(sym"true") + C(sym"no") + C(sym"false")) * (#(SomeSpace + S",})") + L(Stop)) ) * Type"bool" )
         StrangeNumber: Ct(Space * (Value( sym"=" * S"+-"^-1 * Num^0) * Type"strangeNumber" ) * ( #(SomeSpace + S",})") + L(Stop) ))
@@ -102,7 +102,7 @@ build_parser = ->
         CodeLine:    ( ( Ct(V"MapFileInclude") + Ct(V"Attribute") + Ct(V"MacroChain") + Ct(V"FileInclude") + (V"MacroArguementLine") + Ct(V"Tag") + Ct(V"PreProc") + Ct(V"ValueList") + V"Value") ) / (cfg) ->
             -- moon.p(cfg)
             return cfg
-        Line:        (V"WML2WSL" + V"Lua" + V"EmptyLine" + V"CommentLine" + Ct(Value(V"CodeLine") * Type"codeLine" * Cg(V"Comment", "comment")^-1) ) * Space * L(Stop)
+        Line:        (V"WML2WSL" + V"Lua" + V"EmptyLine" + V"CommentLine" + Ct(Value(V"CodeLine") * Type"codeLine" * Cg(C(Space), "space") * Cg(V"Comment", "comment")^-1) ) * Space * L(Stop)
 
         FileName:    (P(1) - S'."$ /}{,[]#~')^1
         Path:        Ct(Value(C(sym"~"^-1 * S"/"^0 * (V"FileName" + V"Macro") * (sym"/" * V"FileName")^0 * sym"/"^-1 * (P"." * V"FileName")^-1)) * Type"path")
@@ -162,7 +162,7 @@ build_parser = ->
         TagName:  (R "az", "__", "09")^1
         Tag:      (V"TagEmpty") + V"TagStart" + (V"TagEnd") + V"TagAmend"
         TagStart:  sym"["  * Value(V"TagName") * symx"]" * Type"tagStart"
-        TagEnd:   (sym"[/" * Value(V"TagName") * symx"]" * Type"tagEnd") * (P(1) - S"#")^0
+        TagEnd:   (sym"[/" * Value(V"TagName") * symx"]" * Type"tagEnd") --q* (P(1) - S"#")^0
         -- TagEnd: Ct( Value(sym"[/" * C(V"TagName") * symx"]") * ( sym")" * Cg(Cc"true", "arguement_closed") * V"MacroParameter" * (sym"}" * Cg(Cc"true", "macro_closed"))^-1 )^-1 * Type"tagEnd")
         -- TagEnd:   Ct( Value(sym"[/" * C(V"TagName") * symx"]") * ( sym")" * Cg(Cc"true", "arguement_closed") * V"MacroParameter" * (sym"}" * Cg(Cc"true", "macro_closed"))^-1 ) * Type"tagEnd")
         TagEmpty: Value(sym"["   * C(V"TagName") * symx"]"  * Space * "[/" * V"TagName" * sym"]") * Type"tagEmpty"
@@ -214,7 +214,7 @@ build_parser = ->
         EndIf:   sym"#endif"                                        * Type"endIf"
         -- EndDef:  #((P(1) - S"#")^0 * P"#enddef") * Ct( ((Value(Ct V"ValueList")) + Space) * sym"#enddef" * Type"endDef" )
         -- EndDef:  sym"#enddef" * Type"endDef"
-        EndDef:  (Value(V"ValueList")^-1 * sym"#enddef" * Type"endDef")
+        EndDef:  (Value(Ct V"ValueList")^-1 * sym"#enddef" * Type"endDef")
         -- EndDef:  (V"Value"^-1 * sym"#enddef" * Type"endDef") / (cfg) ->
             -- moon.p(cfg)
             -- return cfg
@@ -299,9 +299,9 @@ build_parser = ->
 
         ast = P(g)\match(line)
         -- moon.p(ast)
-        unless ast
+        -- unless ast
             -- sowas = true
-            error("Error parsing (#{context}) line #{lineNumber}: #{line}")
+            -- error("Error parsing (#{context}) line #{lineNumber}: #{line}")
             -- debug = true
             -- show_match_trace = true
         -- elseif last
