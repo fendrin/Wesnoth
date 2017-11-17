@@ -52,7 +52,7 @@ build_parser = ->
         ) * (S"eE" * P"-"^-1 * R"09"^1)^-1
 
 
-    wml = {
+    wml = -> {
         "Line"
 
         MapFileInclude: sym"map_data" * sym"=" * sym'"' * sym'{' * Value(V"Path") * sym'}' * sym'"' * Type"mapFileInclude"
@@ -228,7 +228,7 @@ build_parser = ->
         Warning: Value(sym"#warning" * SomeSpace * V"Anything") * Type"warning"
     }
 
-    stringLine = {
+    stringLine = -> {
         "line"
 
         QuotedString: (Ct ( ((sym"_" * Space * Cg(Cc"true", "translated"))^-1 ) * sym'"' * Value(C( (P(1) - S'"')^0) ) * ( sym'"' * Cg(Cc"true", "closed") )^-1 * Type"string")) / (ast) ->
@@ -251,7 +251,7 @@ build_parser = ->
             return ast
     }
 
-    altStringLine = {
+    altStringLine = -> {
         "line"
 
         QuotedString: (Ct ( ((sym"_" * Space * Cg(Cc"true", "translated"))^-1 ) * sym'<<' * Value(C( (P(1) - S'>>')^0) ) * ( sym'>>' * Cg(Cc"true", "closed") )^-1 * Type"string")) / (ast) ->
@@ -267,7 +267,7 @@ build_parser = ->
             return ast
     }
 
-    luaLine = {
+    luaLine = -> {
         "line"
         line: Ct(Value((P(1) - S">>")^0 ) * Type"luaLine" * (sym">>" * Cg(Cc"true", "closed"))^-1 ) / (ast) ->
             if ast.closed
@@ -286,13 +286,13 @@ build_parser = ->
 
         g = switch context
             when "wml"
-                wml
+                wml!
             when "lua"
-                luaLine
+                luaLine!
             when "string"
-                stringLine
+                stringLine!
             when "altString"
-                altStringLine
+                altStringLine!
             else
                 print "unknown context: #{context}"
                 assert(false)
