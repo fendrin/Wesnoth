@@ -18,8 +18,6 @@ L = lpeg.luversion and lpeg.L or (v) -> #v
 
 build_parser = ->
 
-    lineNumber = 0
-
     context = "wml"
 
     Type = (type_name) ->
@@ -276,11 +274,12 @@ build_parser = ->
     }
 
 
+    lineNumber = 0
     parse = (line, last) ->
 
         lineNumber += 1
 
-        local debug, show_match_trace
+        local debug, show_match_trace, ast
         -- debug = true
         -- show_match_trace = true
 
@@ -297,18 +296,11 @@ build_parser = ->
                 print "unknown context: #{context}"
                 assert(false)
 
-        ast = P(g)\match(line)
-        -- moon.p(ast)
-        -- unless ast
-            -- sowas = true
-            -- error("Error parsing (#{context}) line #{lineNumber}: #{line}")
-            -- debug = true
-            -- show_match_trace = true
-        -- elseif last
-            -- ast.isLast = true
-
-        ast.isLast = last if ast
-
+        if ast = P(g)\match(line)
+            ast.isLast = last
+        else
+            debug = true
+            show_match_trace = true
 
         if debug
             print("################# " .. line .. " #################")
@@ -318,9 +310,7 @@ build_parser = ->
             if ast
                 moon.p(ast)
             else
-                error("Error parsing (#{context}) line: #{line}")
-
-
+                error("Error parsing (#{context}) line #{lineNumber}: #{line}")
 
         return ast
 
