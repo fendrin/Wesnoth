@@ -1,104 +1,104 @@
 --textdomain wesnoth
-
+export ^
 -- title screen and no_gui mode do not need terrain_graphics
 if TITLE_SCREEN
-    NO_TERRAIN_GFX: () -> {
-        }true
-    
+    NO_TERRAIN_GFX = true
 
-    if NO_GUI
-        NO_TERRAIN_GFX: () -> {
-            }true
-        
 
-        INCLUDE("english.cfg")
 
-        INCLUDE("themes/")
+if NO_GUI
+    NO_TERRAIN_GFX = true
 
-        INCLUDE("core/")
 
-        Multiplayer_Side{
-            id: "Custom"
-            name: _ "Custom"
-            image: "units/unknown-unit.png"
-        }
 
-        if MULTIPLAYER
-            INCLUDE("multiplayer/")
+INCLUDE("english.cfg")
 
-            if MP_TEST
-                INCLUDE("test/multiplayer/")
-            
+INCLUDE("themes/")
 
-        
+INCLUDE("core/")
+
+Multiplayer_Side{
+    id: "Custom"
+    name: _ "Custom"
+    image: "units/unknown-unit.png"
+}
+
+if MULTIPLAYER
+    INCLUDE("multiplayer/")
+
+if MP_TEST
+    INCLUDE("test/multiplayer/")
+
+
+
 
 -- Using different default eras in SP and MP forces a config reload which we don't want.
-        INCLUDE("multiplayer/eras.cfg")
+INCLUDE("multiplayer/eras.cfg")
 
-        INCLUDE("campaigns/")
+INCLUDE("campaigns/")
 
-        Ais{
-            default_config: {
-                INCLUDE("ai/utils/default_config.cfg")
-            }
-            INCLUDE("ai/ais/")
-            <if DEBUG_MODE then {
-                INCLUDE("ai/dev/")
-            }
-        }
+Ais{
+    default_config: {
+        INCLUDE("ai/utils/default_config.cfg")
+    }
+    <<INCLUDE("ai/ais/")
+    <<if DEBUG_MODE
+        INCLUDE("ai/dev/")
 
-        if EDITOR
-            Textdomain{
-                name: "wesnoth-editor"
-            }
-        
+}
 
-        if TEST
-            INCLUDE("scenario-test.cfg")
-            INCLUDE("scenario-leaders.cfg")
-            INCLUDE("scenario-movethrough.cfg")
-            INCLUDE("ai/scenarios/")
-            INCLUDE("ai/micro_ais/scenarios/")
-            DONT_RELOAD_CORE: () -> {
-                }true
+if EDITOR
+    Textdomain{
+        name: "wesnoth-editor"
+    }
 
-                INCLUDE("test/")
-            
 
-            Textdomain{
-                name: "wesnoth"
-            }
-            Textdomain{
-                name: "wesnoth-help"
-            }
-            Textdomain{
-                name: "wesnoth-ai"
-            }
-            Textdomain{
-                name: "wesnoth-units"
-            }
-            Textdomain{
-                name: "wesnoth-multiplayer"
-            }
+if TEST
+    INCLUDE("scenario-test.cfg")
+    INCLUDE("scenario-leaders.cfg")
+    INCLUDE("scenario-movethrough.cfg")
+    INCLUDE("ai/scenarios/")
+    INCLUDE("ai/micro_ais/scenarios/")
+    DONT_RELOAD_CORE = true
+
+
+    INCLUDE("test/")
+
+
+Textdomain{
+    name: "wesnoth"
+}
+Textdomain{
+    name: "wesnoth-help"
+}
+Textdomain{
+    name: "wesnoth-ai"
+}
+Textdomain{
+    name: "wesnoth-units"
+}
+Textdomain{
+    name: "wesnoth-multiplayer"
+}
 -- does not work when wired in only in the multiplayer file, do not ask me why...
-            Textdomain{
-                name: "wesnoth-anl"
-            }
+Textdomain{
+    name: "wesnoth-anl"
+}
 
-            unless NO_TERRAIN_GFX!
+unless NO_TERRAIN_GFX!
 -- Include the terrain-graphics definitions after the campaigns so campaign specific
 -- terrains work properly.
-                INCLUDE("core/terrain-graphics.cfg")
-            
+    INCLUDE("core/terrain-graphics.cfg")
 
-            Binary_Path{
-                path: "data/core"
-            }
 
-            INCLUDE("advanced_preferences.cfg")
+Binary_Path{
+    path: "data/core"
+}
 
-            INCLUDE("game_config.cfg")
+INCLUDE("advanced_preferences.cfg")
 
-            Textdomain{
-                name: "wesnoth-lib"
-            }
+INCLUDE("game_config.cfg")
+
+Textdomain{
+    name: "wesnoth-lib"
+}
