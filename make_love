@@ -1,0 +1,6 @@
+#!/bin/sh
+zip -9 -r /tmp/wesnoth.love ./assets ./client ./data ./server ./shared ./conf.lua ./main.lua ./LICENSE
+
+cat ../love-win64/love.exe /tmp/wesnoth.love > /tmp/wesnoth.exe
+
+zip -9 -j -r /tmp/wesnoth_win64.zip /tmp/wesnoth.exe ../love-win64/SDL2.dll ../love-win64/OpenAL32.dll ../love-win64/license.txt ../love-win64/love.dll ../love-win64/lua51.dll ../love-win64/mpg123.dll ../love-win64/msvcp120.dll ../love-win64/msvcr120.dll
